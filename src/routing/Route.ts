@@ -1,0 +1,110 @@
+import httpMethods from './httpMethods'
+import * as pathToRegExp from 'path-to-regexp'
+import * as http from 'http'
+
+declare module Route {
+  export interface Controller {
+    (requset: http.IncomingMessage, response: http.ServerResponse, next: () => void, ...rest: Array<any>): void
+  }
+
+  export interface Routes {
+    [method: string]: Array<RouteObject>
+  }
+
+  export interface RouteObject {
+    path: RegExp,
+    controller: Controller
+  }
+}
+
+/**
+ *
+ */
+class Route {
+  [key: string]: any
+
+  public routes: Route.Routes = {}
+
+  protected _prefix?: string
+
+  /**
+   *
+   * @param {String?} prefix
+   */
+  constructor(prefix?: string) {
+    this._prefix = prefix
+
+    httpMethods.map((method) => {
+      this.routes[method] = []
+
+      /**
+       *
+       * @param {!String} path
+       * @param {!Function} controller
+       */
+      this[method.toLowerCase()] = (path: string, controller: Route.Controller) => this._push(method, path, controller)
+    })
+  }
+
+  /**
+   *
+   * @param {!String} method
+   * @param {!String} path
+   * @param {!Function} controller
+   * @private
+   */
+  protected _push(method: string, path: string, controller: Route.Controller) {
+    if (this._prefix) path = `${this._prefix}${path}`
+
+    let _path = pathToRegExp(path, [], { sensitive: true, end: false, strict: false })
+
+    this.routes[method].push({
+      path: _path,
+      controller
+    })
+  }
+
+  /**
+   *
+   * @param {Function|String|Route} [first=(function())]
+   * @param {Function} [second=(function())]
+   */
+  use(first: Route.Controller | string | Route = () => { }, second: Route.Controller = () => { }) {
+    if (first instanceof Route) {
+      let _routes = first.routes
+
+      httpMethods.map((method) => this._routes[method].push(..._routes[method]))
+    } else {
+      let _path = '/:path*';
+      let _middleware = first;
+
+      if (typeof first === 'string') {
+        _path = `${first}${_path}`;
+        _middleware = second;
+      }
+
+      this.any(_path, _middleware)
+    }
+  }
+
+  /**
+   *
+   * @param {!String} path
+   * @param {!Function} controller
+   */
+  any(path: string, controller: Route.Controller) {
+    httpMethods.map((method) => this._push(method, path, controller))
+  }
+
+  /**
+   *
+   * @param {!(String[])} methods
+   * @param {!String} path
+   * @param {!Function} controller
+   */
+  oneOf(methods: Array<string>, path: string, controller: Route.Controller) {
+    methods.map((method) => this._push(method.toUpperCase(), path, controller))
+  }
+}
+
+export default Route
