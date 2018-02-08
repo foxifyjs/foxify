@@ -2,7 +2,9 @@ import { IncomingMessage, ServerResponse } from 'http'
 import { HttpExeption } from '../exeptions'
 import httpMethods from './httpMethods'
 import * as constants from '../constants'
-import Route from './Route'
+import * as Route from './Route'
+
+declare module Router { }
 
 class Router {
   protected _routes: Route.Routes = {}
@@ -52,4 +54,4 @@ class Router {
   }
 }
 
-export default Router
+export = Router

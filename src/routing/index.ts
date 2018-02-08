@@ -1,12 +1,6 @@
 import httpMethods from './httpMethods'
-import Router from './Router'
-import Route from './Route'
-
-export default {
-  httpMethods,
-  Router,
-  Route
-}
+import * as Router from './Router'
+import * as Route from './Route'
 
 export { httpMethods }
 export { Router }

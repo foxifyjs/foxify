@@ -3,7 +3,7 @@ import * as http from 'http'
 import setPrototypeOf = require('setprototypeof')
 import { request, response } from './prototypes'
 import { Router, Route } from './routing'
-import * as db from './database'
+import * as DB from './database'
 
 declare module Fox {
 }
@@ -11,7 +11,8 @@ declare module Fox {
 class Fox {
   protected _router = new Router()
 
-  static db = db
+  static DB = DB
+  static Route = Route
 
   /**
    *

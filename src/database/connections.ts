@@ -1,5 +1,3 @@
-import * as mongodb from 'mongodb'
-import * as deasync from 'deasync'
 import * as connect from './connect'
 
 declare module connections { }

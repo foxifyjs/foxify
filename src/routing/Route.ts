@@ -107,4 +107,4 @@ class Route {
   }
 }
 
-export default Route
+export = Route
