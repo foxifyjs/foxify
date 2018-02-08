@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import { HttpExeption } from '../exeptions'
 import httpMethods from './httpMethods'
-import constants from '../constants'
+import * as constants from '../constants'
 import Route from './Route'
 
 class Router {

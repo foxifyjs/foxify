@@ -1,5 +1,6 @@
-export { default } from './Fox'
+import * as Fox from './Fox'
 
-export { default as database } from './database'
-export { default as middleware } from './middleware'
+export { Fox }
+
+export * from './database'
 export { default as routing } from './routing'

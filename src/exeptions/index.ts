@@ -1,7 +1,3 @@
-import HttpExeption from './HttpExeption'
-
-export default {
-  HttpExeption
-}
+import * as HttpExeption from './HttpExeption'
 
 export { HttpExeption }

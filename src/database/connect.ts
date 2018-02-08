@@ -1,7 +1,7 @@
 import * as mongodb from 'mongodb'
 import * as deasync from 'deasync'
 
-declare namespace connect {
+declare module connect {
   export interface Connection {
     database: string
     user: string
@@ -29,4 +29,4 @@ function connect(connection: connect.Connection): mongodb.Db {
   return server.db(connection.database)
 }
 
-export default connect
+export = connect

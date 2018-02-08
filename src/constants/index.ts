@@ -1,11 +1,3 @@
-import http from './http'
-
-exports = {
-  http
-}
-
-export default {
-  http
-}
+import * as http from './http'
 
 export { http }

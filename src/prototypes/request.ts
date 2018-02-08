@@ -230,11 +230,11 @@ req.is = function(types) {
  * @return {String}
  * @public
  */
-defineGetter(req, 'ip', function(this: IncomingMessage) {
-  let trust = this.app.get('trust proxy fn')
-
-  return proxyaddr(this, trust)
-})
+// defineGetter(req, 'ip', function(this: IncomingMessage) {
+//   let trust = this.app.get('trust proxy fn')
+//
+//   return proxyaddr(this, trust)
+// })
 
 /**
  * When "trust proxy" is set, trusted proxy addresses + client.
@@ -247,14 +247,14 @@ defineGetter(req, 'ip', function(this: IncomingMessage) {
  * @return {Array}
  * @public
  */
-defineGetter(req, 'ips', function(this: IncomingMessage) {
-  let trust = this.app.get('trust proxy fn')
-  let addrs = proxyaddr.all(this, trust)
-
-  // reverse the order (to farthest -> closest)
-  // and remove socket address
-  return addrs.reverse().initial()
-})
+// defineGetter(req, 'ips', function(this: IncomingMessage) {
+//   let trust = this.app.get('trust proxy fn')
+//   let addrs = proxyaddr.all(this, trust)
+//
+//   // reverse the order (to farthest -> closest)
+//   // and remove socket address
+//   return addrs.reverse().initial()
+// })
 
 /**
  * Return subdomains as an array.
@@ -270,16 +270,16 @@ defineGetter(req, 'ips', function(this: IncomingMessage) {
  * @return {Array}
  * @public
  */
-defineGetter(req, 'subdomains', function(this: IncomingMessage) {
-  let hostname = this.hostname
-
-  if (!hostname) return []
-
-  let offset = this.app.get('subdomain offset')
-  let subdomains = !isIP(hostname) ? hostname.split('.').reverse() : [hostname]
-
-  return subdomains.slice(offset)
-})
+// defineGetter(req, 'subdomains', function(this: IncomingMessage) {
+//   let hostname = this.hostname
+//
+//   if (!hostname) return []
+//
+//   let offset = this.app.get('subdomain offset')
+//   let subdomains = !isIP(hostname) ? hostname.split('.').reverse() : [hostname]
+//
+//   return subdomains.slice(offset)
+// })
 
 /**
  * Short-hand for `url.parse(req.url).pathname`.
@@ -303,21 +303,21 @@ defineGetter(req, 'path', function(this: IncomingMessage) {
  * @return {String}
  * @public
  */
-defineGetter(req, 'hostname', function(this: IncomingMessage) {
-  let trust = this.app.get('trust proxy fn')
-  let host = <string>this.get('X-Forwarded-Host')
-
-  if (!host || !trust(this.connection.remoteAddress, 0)) host = <string>this.get('Host')
-
-  if (!host) return;
-
-  // IPv6 literal support
-  var offset = host[0] === '[' ? host.indexOf(']') + 1 : 0
-
-  var index = host.indexOf(':', offset)
-
-  return index !== -1 ? host.substring(0, index) : host
-})
+// defineGetter(req, 'hostname', function(this: IncomingMessage) {
+//   let trust = this.app.get('trust proxy fn')
+//   let host = <string>this.get('X-Forwarded-Host')
+//
+//   if (!host || !trust(this.connection.remoteAddress, 0)) host = <string>this.get('Host')
+//
+//   if (!host) return;
+//
+//   // IPv6 literal support
+//   var offset = host[0] === '[' ? host.indexOf(']') + 1 : 0
+//
+//   var index = host.indexOf(':', offset)
+//
+//   return index !== -1 ? host.substring(0, index) : host
+// })
 
 /**
  * Check if the request is fresh, aka

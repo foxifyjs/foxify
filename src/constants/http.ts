@@ -76,5 +76,4 @@ const HTTP = {
   NETWORK_AUTHENTICATION_REQUIRED: 511,
 }
 
-export default HTTP
-module.exports = HTTP
+export = HTTP

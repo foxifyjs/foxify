@@ -1,13 +1,5 @@
-import Model from './Model'
-import Events from './Events'
-import Exceptions from './Exceptions'
-
-export default {
-  Model,
-  Events,
-  Exceptions
-}
+import * as Model from './Model'
+import * as connections from './connections'
 
 export { Model }
-export { Events }
-export { Exceptions }
+export { connections }

@@ -78,12 +78,12 @@ class Route {
       let _path = '/:path*';
       let _middleware = first;
 
-      if (typeof first === 'string') {
+      if (String.isInstance(first)) {
         _path = `${first}${_path}`;
         _middleware = second;
       }
 
-      this.any(_path, _middleware)
+      this.any(_path, <Route.Controller>_middleware)
     }
   }
 

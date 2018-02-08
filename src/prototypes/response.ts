@@ -65,100 +65,100 @@ res.links = function(links) {
  * @param {string|number|boolean|object|Buffer} body
  * @public
  */
-res.send = function(body) {
-  let chunk = body
-  let encoding
-  let req = this.req
-  let type
-
-  // settings
-  let app = this.app
-
-  switch (typeof chunk) {
-    // string defaulting to html
-    case 'string':
-      if (!this.get('Content-Type')) {
-        this.type('html');
-      }
-      break;
-    case 'boolean':
-    case 'number':
-    case 'object':
-      if (chunk === null) {
-        chunk = '';
-      } else if (Buffer.isBuffer(chunk)) {
-        if (!this.get('Content-Type')) {
-          this.type('bin');
-        }
-      } else {
-        return this.json(chunk);
-      }
-      break;
-  }
-
-  // write strings in utf-8
-  if (typeof chunk === 'string') {
-    encoding = 'utf8';
-    type = this.get('Content-Type');
-
-    // reflect this in content-type
-    if (typeof type === 'string') {
-      this.set('Content-Type', setCharset(type, 'utf-8'));
-    }
-  }
-
-  // determine if ETag should be generated
-  let etagFn = app.get('etag fn');
-  let generateETag = !this.get('ETag') && typeof etagFn === 'function';
-
-  // populate Content-Length
-  let len;
-  if (chunk !== undefined) {
-    if (Buffer.isBuffer(chunk)) {
-      // get length of Buffer
-      len = chunk.length;
-    } else if (!generateETag && chunk.length < 1000) {
-      // just calculate length when no ETag + small chunk
-      len = Buffer.byteLength(chunk, encoding);
-    } else {
-      // convert chunk to Buffer and calculate
-      chunk = Buffer.from(chunk, encoding);
-      encoding = undefined;
-      len = chunk.length;
-    }
-
-    this.set('Content-Length', len);
-  }
-
-  // populate ETag
-  let etag;
-  if (generateETag && len !== undefined) {
-    if ((etag = etagFn(chunk, encoding))) {
-      this.set('ETag', etag);
-    }
-  }
-
-  // freshness
-  if (req.fresh) this.statusCode = 304;
-
-  // strip irrelevant headers
-  if (204 === this.statusCode || 304 === this.statusCode) {
-    this.removeHeader('Content-Type');
-    this.removeHeader('Content-Length');
-    this.removeHeader('Transfer-Encoding');
-    chunk = '';
-  }
-
-  if (req.method === 'HEAD') {
-    // skip body for HEAD
-    this.end();
-  } else {
-    // respond
-    this.end(chunk, encoding);
-  }
-
-  return this;
-};
+// res.send = function(body) {
+//   let chunk = body
+//   let encoding
+//   let req = this.req
+//   let type
+//
+//   // settings
+//   let app = this.app
+//
+//   switch (typeof chunk) {
+//     // string defaulting to html
+//     case 'string':
+//       if (!this.get('Content-Type')) {
+//         this.type('html');
+//       }
+//       break;
+//     case 'boolean':
+//     case 'number':
+//     case 'object':
+//       if (chunk === null) {
+//         chunk = '';
+//       } else if (Buffer.isBuffer(chunk)) {
+//         if (!this.get('Content-Type')) {
+//           this.type('bin');
+//         }
+//       } else {
+//         return this.json(chunk);
+//       }
+//       break;
+//   }
+//
+//   // write strings in utf-8
+//   if (typeof chunk === 'string') {
+//     encoding = 'utf8';
+//     type = this.get('Content-Type');
+//
+//     // reflect this in content-type
+//     if (typeof type === 'string') {
+//       this.set('Content-Type', setCharset(type, 'utf-8'));
+//     }
+//   }
+//
+//   // determine if ETag should be generated
+//   let etagFn = app.get('etag fn');
+//   let generateETag = !this.get('ETag') && typeof etagFn === 'function';
+//
+//   // populate Content-Length
+//   let len;
+//   if (chunk !== undefined) {
+//     if (Buffer.isBuffer(chunk)) {
+//       // get length of Buffer
+//       len = chunk.length;
+//     } else if (!generateETag && chunk.length < 1000) {
+//       // just calculate length when no ETag + small chunk
+//       len = Buffer.byteLength(chunk, encoding);
+//     } else {
+//       // convert chunk to Buffer and calculate
+//       chunk = Buffer.from(chunk, encoding);
+//       encoding = undefined;
+//       len = chunk.length;
+//     }
+//
+//     this.set('Content-Length', len);
+//   }
+//
+//   // populate ETag
+//   let etag;
+//   if (generateETag && len !== undefined) {
+//     if ((etag = etagFn(chunk, encoding))) {
+//       this.set('ETag', etag);
+//     }
+//   }
+//
+//   // freshness
+//   if (req.fresh) this.statusCode = 304;
+//
+//   // strip irrelevant headers
+//   if (204 === this.statusCode || 304 === this.statusCode) {
+//     this.removeHeader('Content-Type');
+//     this.removeHeader('Content-Length');
+//     this.removeHeader('Transfer-Encoding');
+//     chunk = '';
+//   }
+//
+//   if (req.method === 'HEAD') {
+//     // skip body for HEAD
+//     this.end();
+//   } else {
+//     // respond
+//     this.end(chunk, encoding);
+//   }
+//
+//   return this;
+// };
 
 /**
  *
@@ -190,30 +190,30 @@ res.get = function(field) {
   return this.getHeader(field)
 }
 
-res.set = res.header = function(field, val) {
-  if (arguments.length === 2) {
-    let value = Array.isArray(val)
-      ? val.map(String)
-      : String(val);
-
-    // add charset to content-type
-    if (field.toLowerCase() === 'content-type') {
-      if (Array.isArray(value)) {
-        throw new TypeError('Content-Type cannot be set to an Array');
-      }
-      if (!charsetRegExp.test(value)) {
-        let charset = mime.charsets.lookup(value.split(';')[0]);
-        if (charset) value += '; charset=' + charset.toLowerCase();
-      }
-    }
-
-    this.setHeader(field, value);
-  } else {
-    for (let key in field) {
-      this.set(key, field[key]);
-    }
-  }
-  return this;
-};
+// res.set = res.header = function(field, val) {
+//   if (arguments.length === 2) {
+//     let value = Array.isArray(val)
+//       ? val.map(String)
+//       : String(val);
+//
+//     // add charset to content-type
+//     if (field.toLowerCase() === 'content-type') {
+//       if (Array.isArray(value)) {
+//         throw new TypeError('Content-Type cannot be set to an Array');
+//       }
+//       if (!charsetRegExp.test(value)) {
+//         let charset = mime.charsets.lookup(value.split(';')[0]);
+//         if (charset) value += '; charset=' + charset.toLowerCase();
+//       }
+//     }
+//
+//     this.setHeader(field, value);
+//   } else {
+//     for (let key in field) {
+//       this.set(key, field[key]);
+//     }
+//   }
+//   return this;
+// };
 
 export = res

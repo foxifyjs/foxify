@@ -1,9 +1,9 @@
-const Model = require('../dist/database/Model').default
+const Model = require('../framework/database/Model')
 
 class User extends Model {
 }
 
-User.connection = 'mirana'
+User.prototype.connection = 'mirana'
 
 User.schema = {
   first_name: String,

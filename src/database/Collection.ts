@@ -1,62 +1,79 @@
 import * as mongodb from 'mongodb'
-import * as deasync from 'deasync'
-import Model from './Model'
-import Cursor from './Cursor'
+import { EventEmitter } from 'events'
+import * as Model from './Model'
+import * as Cursor from './Cursor'
 
-declare interface Collection<TSchema = any> {
-  findOne<T = TSchema>(): T
-  findOne<T = TSchema>(cb: mongodb.MongoCallback<T | null>): void
-  findOne<T = TSchema>(query: Object): T
-  findOne<T = TSchema>(query: Object, cb: mongodb.MongoCallback<T | null>): void
-  findOne<T = TSchema>(query: Object, options: mongodb.FindOneOptions): T
-  findOne<T = TSchema>(query: Object, options: mongodb.FindOneOptions, cb: mongodb.MongoCallback<T | null>): void
+declare module Collection {
+  export interface ClientSession extends EventEmitter {
+    endSession(callback?: mongodb.MongoCallback<void>): void;
+    endSession(options: any, callback?: mongodb.MongoCallback<void>): void;
+    equals(session: ClientSession): boolean;
+  }
 }
 
-class Collection {
-  find(query?: Object, options?: mongodb.FindOneOptions) {
-    let collection = <mongodb.Collection>new (this as any)().model
+declare interface Collection<TSchema = any> {
+  findOne(): Promise<TSchema | null>
+  findOne(cb: mongodb.MongoCallback<TSchema | null>): void
+  findOne(query: Object): Promise<TSchema | null>
+  findOne(query: Object, cb: mongodb.MongoCallback<TSchema | null>): void
+  findOne(query: Object, options: mongodb.FindOneOptions): Promise<TSchema | null>
+  findOne(query: Object, options: mongodb.FindOneOptions, cb: mongodb.MongoCallback<TSchema | null>): void
 
-    let cursor
-    if (!query) cursor = collection.find()
-    else cursor = collection.find(query, options)
+  findOneAndDelete(filter: Object, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void
+  findOneAndDelete(filter: Object, options?: { projection?: Object, sort?: Object, maxTimeMS?: number, session?: Collection.ClientSession }): Promise<mongodb.FindAndModifyWriteOpResultObject<TSchema>>
+  findOneAndDelete(filter: Object, options: { projection?: Object, sort?: Object, maxTimeMS?: number, session?: Collection.ClientSession }, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void
+
+  findOneAndReplace(filter: Object, replacement: Object, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void;
+  findOneAndReplace(filter: Object, replacement: Object, options?: mongodb.FindOneAndReplaceOption): Promise<mongodb.FindAndModifyWriteOpResultObject<TSchema>>;
+  findOneAndReplace(filter: Object, replacement: Object, options: mongodb.FindOneAndReplaceOption, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void;
+
+  findOneAndUpdate(filter: Object, update: Object, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void;
+  findOneAndUpdate(filter: Object, update: Object, options?: mongodb.FindOneAndReplaceOption): Promise<mongodb.FindAndModifyWriteOpResultObject<TSchema>>;
+  findOneAndUpdate(filter: Object, update: Object, options: mongodb.FindOneAndReplaceOption, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void;
+
+  geoHaystackSearch(x: number, y: number, callback: mongodb.MongoCallback<any>): void;
+  geoHaystackSearch(x: number, y: number, options?: mongodb.GeoHaystackSearchOptions): Promise<any>;
+  geoHaystackSearch(x: number, y: number, options: mongodb.GeoHaystackSearchOptions, callback: mongodb.MongoCallback<any>): void;
+}
+
+class Collection<TSchema = any> {
+  find(...args: Array<any>): Cursor<TSchema> {
+    let collection = new (this as any)().model
+
+    let cursor = collection.find(...args)
 
     return new Cursor(cursor)
   }
 
-  findOne<T>(query?: Object | mongodb.MongoCallback<T | null>,
-    options?: mongodb.FindOneOptions | mongodb.MongoCallback<T | null>,
-    callback?: mongodb.MongoCallback<T | null>) {
-    let collection = <mongodb.Collection>new (this as any)().model
+  findOne(...args: Array<any>) {
+    let collection = new (this as any)().model
 
-    if (Function.isInstance(query)) {
-      callback = <mongodb.MongoCallback<T | null>>query
-      query = {}
-      options = {}
-    }
+    return collection.findOne(...args)
+  }
 
-    if (Function.isInstance(options)) {
-      callback = <mongodb.MongoCallback<T | null>>options
-      options = {}
-    }
+  findOneAndDelete(...args: Array<any>) {
+    let collection = new (this as any)().model
 
-    if (callback) {
-      return collection.findOne(<Object>query, <mongodb.FindOneOptions>options,
-        (err, doc) => (callback as mongodb.MongoCallback<T | null>)(err, doc))
-    }
+    return collection.findOneAndDelete(...args)
+  }
 
-    let item
+  findOneAndReplace(...args: Array<any>) {
+    let collection = new (this as any)().model
 
-    collection.findOne(<Object>query, <mongodb.FindOneOptions>options,
-      (err, doc) => {
-        if (err) throw err
+    return collection.findOneAndReplace(...args)
+  }
 
-        item = doc
-      })
+  findOneAndUpdate(...args: Array<any>) {
+    let collection = new (this as any)().model
 
-    while (item == undefined) deasync.sleep(1)
+    return collection.findOneAndUpdate(...args)
+  }
 
-    return item
+  geoHaystackSearch(...args: Array<any>) {
+    let collection = new (this as any)().model
+
+    return collection.geoHaystackSearch(...args)
   }
 }
 
-export default Collection
+export = Collection

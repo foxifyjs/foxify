@@ -3,16 +3,15 @@ import * as http from 'http'
 import setPrototypeOf = require('setprototypeof')
 import { request, response } from './prototypes'
 import { Router, Route } from './routing'
-import connect from './database/connect'
+import * as db from './database'
+
+declare module Fox {
+}
 
 class Fox {
-  protected _router: Router = new Router()
+  protected _router = new Router()
 
-  static connections(connections: { [name: string]: connect.Connection }) {
-    (connections as any).map((connection: connect.Connection, name: string) => {
-      __FOX__.db.connections[name] = connect(connection)
-    })
-  }
+  static db = db
 
   /**
    *
@@ -34,7 +33,7 @@ class Fox {
   /**
    * start the server
    */
-  exec() {
+  start() {
     let server = http.createServer((req, res) => {
       try {
         setPrototypeOf(req, request)
@@ -56,5 +55,4 @@ class Fox {
   }
 }
 
-export default Fox
-module.exports = Fox
+export = Fox

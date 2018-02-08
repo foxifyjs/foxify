@@ -1,11 +1,13 @@
 import { IncomingMessage, ServerResponse, STATUS_CODES } from 'http'
 import { http } from '../constants'
 
+declare module HttpExeption {}
+
 declare interface HttpExeption extends Error {
     code: number
     errors: object
 
-    handle: (exeption: any, req: IncomingMessage, res: ServerResponse) => void
+    handle(exeption: any, req: IncomingMessage, res: ServerResponse): void
 }
 
 class HttpExeption extends Error {
@@ -16,7 +18,13 @@ class HttpExeption extends Error {
     this.errors = errors
   }
 
-  static handle(exeption: any, req: IncomingMessage, res: ServerResponse) {
+  static handle(exeption: any, req: IncomingMessage, res: ServerResponse): void {
+    if (!exeption) {
+      res.json({ message: STATUS_CODES[http.INTERNAL_SERVER_ERROR] }, http.INTERNAL_SERVER_ERROR)
+
+      return
+    }
+
     switch (exeption.code) {
       case http.NOT_FOUND:
         res.json({ message: exeption.message || STATUS_CODES[http.NOT_FOUND] }, http.NOT_FOUND)
@@ -28,4 +36,4 @@ class HttpExeption extends Error {
   }
 }
 
-export default HttpExeption
+export = HttpExeption

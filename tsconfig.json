@@ -2,9 +2,10 @@
   "compileOnSave": true,
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "node",
     "target": "es6",
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./framework",
     "declaration": true,
     "strict": true
   }

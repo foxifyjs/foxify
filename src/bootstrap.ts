@@ -3,7 +3,6 @@ import * as dotenv from 'dotenv'
 
 dotenv.config()
 
-import { Events as DBEvents } from './database'
 import { HttpExeption } from './exeptions'
 import { Db } from 'mongodb'
 
