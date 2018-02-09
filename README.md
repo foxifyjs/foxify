@@ -5,7 +5,7 @@
 	<h1>Foxify</h1>
 	<p>The <b>fast</b>, <b>easy to use</b> &amp; <b>typescript ready</b> framework for <a href="https://nodejs.org" target="_blank">Node.js</a></p>
 	<p>Inspired by <a href="https://expressjs.com" target="__blank">Express</a></p>
-	<a href="https://www.npmjs.com/package/foxify.js" target="_blank">
+	<a href="https://www.npmjs.com/package/foxify" target="_blank">
 		<img src="https://img.shields.io/npm/v/foxify.svg" alt="npm version">
 	</a>
 	<a href="https://www.npmjs.com/package/foxify" target="_blank">
