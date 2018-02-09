@@ -15,7 +15,8 @@ Fox.DB.connections({
 })
 
 // just because it uses 'User' model it should be called after 'Fox.DB.connections'
-const routes = require('./routes')
+const users = require('./routes/users')
+const index = require('./routes/index')
 
 let app = new Fox()
 
@@ -29,7 +30,8 @@ app.use(Fox.static(path.join(__dirname, 'public')))
 app.use(morgan('dev'))
 
 // add routes to app
-app.use(routes)
+app.use(users)
+app.use(index)
 
 // start the server
 app.start()

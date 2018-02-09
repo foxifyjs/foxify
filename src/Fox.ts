@@ -50,11 +50,7 @@ class Fox {
 
   start(url?: string, port?: number) {
     let server = http.createServer((req, res) => {
-      try {
-        this._router.route(req, res)
-      } catch (err) {
-        HttpExeption.handle(err, req, res)
-      }
+      this._router.route(req, res)
     })
 
     if (!url) url = process.env.APP_URL || 'localhost'

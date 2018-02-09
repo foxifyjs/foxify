@@ -24,15 +24,23 @@ class Router {
 
         req.next = next
 
-        let result = route.controller(req, res, next, ...params.tail())
+        let result
 
+        try {
+          result = route.controller(req, res, next, ...params.tail())
+        } catch (err) {
+          // in case of sync function errors
+          HttpExeption.handle(err, req, res)
+        }
+
+        // in case of promise errors
         if (result && Function.isInstance((result as any).then)) (result as any).catch((err: Error) => HttpExeption.handle(err, req, res))
 
         return
       }
     }
 
-    throw new HttpExeption('Not Found', constants.http.NOT_FOUND)
+    HttpExeption.handle(new HttpExeption('Not Found', constants.http.NOT_FOUND), req, res)
   }
 
   push(routes: Route.Routes) {

@@ -1,25 +1,11 @@
 const Fox = require('../../framework/Fox')
-const {Route} = require('../../framework/routing')
-const {ObjectId} = require('../../framework/database')
-const User = require('../models/User')
 
-let routes = new Route()
+let routes = new Fox.Route()
 
-routes.get('/users/:id', async (req, res, next, userId) => {
-  let user = await User.findOne({_id: ObjectId(userId)})
-
-  if (!user) throw new HttpExeption('User Not Found', Fox.constants.http.NOT_FOUND)
-
-  res.json({user})
-})
-
-routes.get('/users', (req, res) => {
-  User.find().toArray((err, users) => {
-    res.render('users', {
-      users: users,
-      title: "Foxify EJS example",
-      header: "Users"
-    })
+routes.get('/', (req, res) => {
+  res.render('index', {
+    logo: 'https://avatars1.githubusercontent.com/u/36167886?s=200&v=4',
+    title: 'Foxify'
   })
 })
 

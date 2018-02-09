@@ -357,7 +357,7 @@ res.send = function(body) {
     type = this.get('Content-Type')
 
     // reflect this in content-type
-    if (String.isInstance(type)) this.set('Content-Type', setCharset(<string>type, 'utf-8'))
+    if (String.isInstance(type)) this.set('Content-Type', <string>setCharset(type, 'utf-8'))
   }
 
   // populate Content-Length
@@ -376,7 +376,7 @@ res.send = function(body) {
       len = (chunk as Buffer).length
     }
 
-    this.set('Content-Length', len)
+    this.set('Content-Length', `${len}`)
   }
 
   // freshness
@@ -720,7 +720,7 @@ res.format = function(obj: OBJ) {
   let keys = Object.keys(obj)
 
   let key = keys.length > 0
-    ? req.accepts(keys)
+    ? <string>req.accepts(keys)
     : false;
 
   this.vary("Accept")
@@ -919,7 +919,7 @@ res.location = function(url) {
   let loc = url
 
   // "back" is an alias for the referrer
-  if (url === 'back') loc = this.req.get('Referrer') || '/'
+  if (url === 'back') loc = <string>this.req.get('Referrer') || '/'
 
   // set location
   return this.set('Location', encodeUrl(loc))
@@ -944,7 +944,7 @@ res.location = function(url) {
  */
 res.redirect = function(url: string | number) {
   let address = <string>url
-  let body: string
+  let body: string = ''
   let status = 302
 
   // allow status / url

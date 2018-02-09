@@ -12,6 +12,9 @@ declare module "*.json" {
   export = json
 }
 
+declare module "encodeurl"
+declare module "serve-static"
+
 declare interface OBJ {
   [key: string]: any
 }
