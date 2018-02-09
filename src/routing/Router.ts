@@ -20,7 +20,13 @@ class Router {
       let params = route.path.exec(url)
 
       if (params) {
-        route.controller(req, res, () => this._next(req, res, url, routes, i + 1), ...params.tail())
+        let next = () => this._next(req, res, url, routes, i + 1)
+
+        req.next = next
+
+        let result = route.controller(req, res, next, ...params.tail())
+
+        if (result && Function.isInstance((result as any).then)) (result as any).catch((err: Error) => HttpExeption.handle(err, req, res))
 
         return
       }

@@ -1,4 +1,4 @@
-import { IncomingMessage } from 'http'
+import { IncomingMessage, ServerResponse } from 'http'
 import { isIP } from 'net'
 import * as accepts from 'accepts'
 import * as parseRange from 'range-parser'
@@ -16,6 +16,8 @@ declare module "http" {
   export interface IncomingMessage {
     [key: string]: any
 
+    res: ServerResponse
+
     get(name: string): string | Array<string> | undefined
     head(name: string): string | Array<string> | undefined
     accepts(type: Array<string> | ArrayLike<string> | string): string | Array<string> | false
@@ -24,6 +26,8 @@ declare module "http" {
     acceptsLanguages(lang?: Array<string> | ArrayLike<string> | string): string | Array<string>
     range(size: number, options?: parseRange.Options): parseRange.Result | parseRange.Ranges | undefined
     is(types?: string | Array<string>): string | false | null
+
+    next(): void
   }
 }
 
@@ -247,14 +251,15 @@ req.is = function(types) {
  * @return {Array}
  * @public
  */
-// defineGetter(req, 'ips', function(this: IncomingMessage) {
-//   let trust = this.app.get('trust proxy fn')
-//   let addrs = proxyaddr.all(this, trust)
-//
-//   // reverse the order (to farthest -> closest)
-//   // and remove socket address
-//   return addrs.reverse().initial()
-// })
+defineGetter(req, 'ips', function(this: IncomingMessage) {
+  // let trust = this.app.get('trust proxy fn')
+  // let addrs = proxyaddr.all(this, trust)
+  let addrs = proxyaddr.all(this)
+
+  // reverse the order (to farthest -> closest)
+  // and remove socket address
+  return addrs.reverse().initial()
+})
 
 /**
  * Return subdomains as an array.
@@ -270,16 +275,17 @@ req.is = function(types) {
  * @return {Array}
  * @public
  */
-// defineGetter(req, 'subdomains', function(this: IncomingMessage) {
-//   let hostname = this.hostname
-//
-//   if (!hostname) return []
-//
-//   let offset = this.app.get('subdomain offset')
-//   let subdomains = !isIP(hostname) ? hostname.split('.').reverse() : [hostname]
-//
-//   return subdomains.slice(offset)
-// })
+defineGetter(req, 'subdomains', function(this: IncomingMessage) {
+  let hostname = this.hostname
+
+  if (!hostname) return []
+
+  // let offset = this.app.get('subdomain offset')
+  let subdomains = !isIP(hostname) ? hostname.split('.').reverse() : [hostname]
+
+  // return subdomains.slice(offset)
+  return subdomains
+})
 
 /**
  * Short-hand for `url.parse(req.url).pathname`.
@@ -303,21 +309,20 @@ defineGetter(req, 'path', function(this: IncomingMessage) {
  * @return {String}
  * @public
  */
-// defineGetter(req, 'hostname', function(this: IncomingMessage) {
-//   let trust = this.app.get('trust proxy fn')
-//   let host = <string>this.get('X-Forwarded-Host')
-//
-//   if (!host || !trust(this.connection.remoteAddress, 0)) host = <string>this.get('Host')
-//
-//   if (!host) return;
-//
-//   // IPv6 literal support
-//   var offset = host[0] === '[' ? host.indexOf(']') + 1 : 0
-//
-//   var index = host.indexOf(':', offset)
-//
-//   return index !== -1 ? host.substring(0, index) : host
-// })
+defineGetter(req, 'hostname', function(this: IncomingMessage) {
+  let host = <string>this.get('X-Forwarded-Host')
+
+  if (!host) host = <string>this.get('Host')
+
+  if (!host) return;
+
+  // IPv6 literal support
+  var offset = host[0] === '[' ? host.indexOf(']') + 1 : 0
+
+  var index = host.indexOf(':', offset)
+
+  return index !== -1 ? host.substring(0, index) : host
+})
 
 /**
  * Check if the request is fresh, aka

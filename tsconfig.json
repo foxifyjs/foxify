@@ -4,9 +4,16 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es6",
-    "rootDir": "./src",
-    "outDir": "./framework",
+    "rootDir": "src",
+    "outDir": "framework",
     "declaration": true,
     "strict": true
-  }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }

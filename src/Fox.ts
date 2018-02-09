@@ -1,57 +1,70 @@
 import './bootstrap'
 import * as http from 'http'
-import setPrototypeOf = require('setprototypeof')
-import { request, response } from './prototypes'
-import { Router, Route } from './routing'
+import * as path from 'path'
+import * as serveStatic from 'serve-static'
 import * as DB from './database'
+import * as constants from './constants'
+import { Router, Route } from './routing'
+import { init, query } from './middleware'
+import { Engine } from './view'
+import { name } from '../package.json'
 
 declare module Fox {
 }
 
-class Fox {
-  protected _router = new Router()
+declare interface Fox {
+  use(middleware: Route.Controller): void
+  use(route: Route): void
+  use(path: string, controller: Route.Controller): void
+}
 
+class Fox {
+  static static = serveStatic
   static DB = DB
   static Route = Route
+  static constants = constants
 
-  /**
-   *
-   * @param {Function|String|Route} [first=(function())]
-   * @param {Function} [second=(function())]
-   */
-  use(first: Route.Controller | string | Route = () => { }, second: Route.Controller = () => { }) {
-    if (first instanceof Route) {
-      this._router.push(first.routes)
-    } else {
-      let route = new Route()
+  view?: Engine
 
-      route.use(first, second)
+  protected _router = new Router()
 
-      this._router.push(route.routes)
-    }
+  constructor() {
+    this.engine(path.join(process.cwd(), 'views'), 'html', () => { })
+
+    // apply default middlewares
+    this.use(init(this))
+    this.use(query({}))
   }
 
-  /**
-   * start the server
-   */
-  start() {
+  engine = (extention: string, path: string, handler: Function) => this.view = new Engine(path, extention, handler)
+
+  use(first: Route.Controller | string | Route = () => { }, second: Route.Controller = () => { }) {
+    if (first instanceof Route) return this._router.push(first.routes)
+
+    let route = new Route()
+
+    route.use(first, second)
+
+    this._router.push(route.routes)
+  }
+
+  start(url?: string, port?: number) {
     let server = http.createServer((req, res) => {
       try {
-        setPrototypeOf(req, request)
-        setPrototypeOf(res, response)
-
-        res.setHeader('X-Powered-By', 'Fox')
-
         this._router.route(req, res)
       } catch (err) {
         HttpExeption.handle(err, req, res)
       }
     })
 
+    if (!url) url = process.env.APP_URL || 'localhost'
+
+    if (!port) port = +(process.env.APP_PORT || '3000')
+
     server.listen(
-      +(process.env.APP_PORT || '3000'),
-      process.env.APP_URL,
-      () => console.log(`Fox server running at http://${process.env.APP_URL}:${process.env.APP_PORT}`)
+      port,
+      url,
+      () => console.log(`${name.capitalize()} server running at http://${url}:${port}`)
     )
   }
 }

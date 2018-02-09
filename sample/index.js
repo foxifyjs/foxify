@@ -1,14 +1,11 @@
-const dotenv = require('dotenv')
 const path = require('path')
 const morgan = require('morgan')
-
-dotenv.config({path: path.join(__dirname, '.env')})
-
 const Fox = require('../framework/Fox')
-const Route = require('../framework/routing').Route
 
+// initiate database connections just once to make database integration way faster
+// this should be called before requiring the models
 Fox.DB.connections({
-  mirana: {
+  foxify: {
     database: process.env.DATABASE_NAME,
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
@@ -17,24 +14,22 @@ Fox.DB.connections({
   }
 })
 
-const User = require('./User')
+// just because it uses 'User' model it should be called after 'Fox.DB.connections'
+const routes = require('./routes')
 
-let fox = new Fox()
+let app = new Fox()
 
-fox.use(morgan('dev'))
+// template engine support
+app.engine('ejs', path.join(__dirname, 'views'), require('ejs').__express)
 
-let routes = new Route()
+// static serve support
+app.use(Fox.static(path.join(__dirname, 'public')))
 
-routes.get('/users', (req, res) => {
-  User.find().toArray((err, users) => res.json({users}))
-})
+// express middleware support
+app.use(morgan('dev'))
 
-routes.get('/user', async (req, res) => {
-  res.json({
-    user: await User.findOne()
-  })
-})
+// add routes to app
+app.use(routes)
 
-fox.use(routes)
-
-fox.start()
+// start the server
+app.start()
