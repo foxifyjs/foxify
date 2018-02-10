@@ -1,6 +1,6 @@
-import httpMethods from './httpMethods'
-import * as pathToRegExp from 'path-to-regexp'
 import * as http from 'http'
+import * as pathToRegExp from 'path-to-regexp'
+import httpMethods from './httpMethods'
 
 declare module Route {
   export interface Controller {
@@ -17,12 +17,14 @@ declare module Route {
   }
 }
 
+declare interface Route {
+  [key: string]: any
+}
+
 /**
  *
  */
 class Route {
-  [key: string]: any
-
   public routes: Route.Routes = {}
 
   protected _prefix: string
@@ -37,11 +39,6 @@ class Route {
     httpMethods.map((method) => {
       this.routes[method] = []
 
-      /**
-       *
-       * @param {!String} path
-       * @param {!Function} controller
-       */
       this[method.toLowerCase()] = (path: string, controller: Route.Controller) => this._push(method, path, controller)
     })
   }

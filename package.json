@@ -1,6 +1,6 @@
 {
   "name": "foxify",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "The fast, easy to use & typescript ready framework for Node.js",
   "author": "Foxify",
   "contributors": [
@@ -55,7 +55,6 @@
     "qs": "^6.5.1",
     "send": "^0.16.2",
     "serve-static": "^1.13.2",
-    "setprototypeof": "^1.1.0",
     "type-is": "^1.6.15",
     "range-parser": "^1.2.0",
     "vary": "^1.1.2"

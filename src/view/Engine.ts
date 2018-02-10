@@ -1,4 +1,4 @@
-import { ServerResponse } from 'http'
+import * as http from 'http'
 import * as path from 'path'
 
 declare module Engine {
@@ -20,10 +20,10 @@ class Engine {
     this._handler(path.join(this._path, `${filename}.${this._ext}`), opts, cb)
   }
 
-  static responsePrototype(engine: Engine) {
-    let res: ServerResponse = Object.create(ServerResponse.prototype)
+  static responsePatch(res: typeof http.ServerResponse, engine?: Engine) {
+    res.prototype.render = function(view: string, data: Object, callback?: Engine.Callback) {
+      if (!engine) throw new Error('View engine is not specified')
 
-    res.render = function(view: string, data: Object, callback?: Engine.Callback) {
       if (!callback) callback = (err, str) => {
         if (err) throw err
 

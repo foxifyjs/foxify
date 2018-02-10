@@ -24,14 +24,7 @@ class Router {
 
         req.next = next
 
-        let result
-
-        try {
-          result = route.controller(req, res, next, ...params.tail())
-        } catch (err) {
-          // in case of sync function errors
-          HttpExeption.handle(err, req, res)
-        }
+        let result = route.controller(req, res, next, ...params.tail())
 
         // in case of promise errors
         if (result && Function.isInstance((result as any).then)) (result as any).catch((err: Error) => HttpExeption.handle(err, req, res))
@@ -40,7 +33,7 @@ class Router {
       }
     }
 
-    HttpExeption.handle(new HttpExeption('Not Found', constants.http.NOT_FOUND), req, res)
+    throw new HttpExeption('Not Found', constants.http.NOT_FOUND), req, res
   }
 
   push(routes: Route.Routes) {
@@ -48,23 +41,7 @@ class Router {
   }
 
   route(req: IncomingMessage, res: ServerResponse) {
-    if (!req.url) {
-      throw new HttpExeption('Bad Request', constants.http.BAD_REQUEST, {
-        url: {
-          message: 'Request url is not defined'
-        }
-      })
-    }
-
-    if (!req.method) {
-      throw new HttpExeption('Bad Request', constants.http.BAD_REQUEST, {
-        method: {
-          message: 'Request method is not defined'
-        }
-      })
-    }
-
-    this._next(req, res, req.url.split('?').first(), this._routes[req.method])
+    this._next(req, res, req.path, this._routes[<string>req.method])
   }
 }
 
