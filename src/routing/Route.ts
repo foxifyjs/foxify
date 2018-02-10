@@ -25,13 +25,13 @@ class Route {
 
   public routes: Route.Routes = {}
 
-  protected _prefix?: string
+  protected _prefix: string
 
   /**
    *
    * @param {String?} prefix
    */
-  constructor(prefix?: string) {
+  constructor(prefix: string = '') {
     this._prefix = prefix
 
     httpMethods.map((method) => {
@@ -54,37 +54,14 @@ class Route {
    * @private
    */
   protected _push(method: string, path: string, controller: Route.Controller) {
-    if (this._prefix) path = `${this._prefix}${path}`
+    path = `${this._prefix}${path}`.replace(/\/$/, '')
 
-    let _path = pathToRegExp(path, [], { sensitive: true, end: false, strict: false })
+    let _path = pathToRegExp(path, [], { sensitive: true })
 
     this.routes[method].push({
       path: _path,
       controller
     })
-  }
-
-  /**
-   *
-   * @param {Function|String|Route} [first=(function())]
-   * @param {Function} [second=(function())]
-   */
-  use(first: Route.Controller | string | Route = () => { }, second: Route.Controller = () => { }) {
-    if (first instanceof Route) {
-      let _routes = first.routes
-
-      httpMethods.map((method) => this._routes[method].push(..._routes[method]))
-    } else {
-      let _path = '/:path*';
-      let _middleware = first;
-
-      if (String.isInstance(first)) {
-        _path = `${first}${_path}`;
-        _middleware = second;
-      }
-
-      this.any(_path, <Route.Controller>_middleware)
-    }
   }
 
   /**
@@ -104,6 +81,29 @@ class Route {
    */
   oneOf(methods: Array<string>, path: string, controller: Route.Controller) {
     methods.map((method) => this._push(method.toUpperCase(), path, controller))
+  }
+
+  /**
+   *
+   * @param {Function|String|Route} [first=(function())]
+   * @param {Function} [second=(function())]
+   */
+  use(first: Route.Controller | string | Route = () => { }, second: Route.Controller = () => { }) {
+    if (first instanceof Route) {
+      let _routes = first.routes
+
+      httpMethods.map((method) => this._routes[method].push(..._routes[method]))
+    } else {
+      let _path = '/:path*'
+      let _middleware = first
+
+      if (String.isInstance(first)) {
+        _path = `${first}${_path}`
+        _middleware = second
+      }
+
+      this.any(_path, <Route.Controller>_middleware)
+    }
   }
 }
 
