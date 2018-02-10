@@ -84,9 +84,10 @@ More detailed [sample](https://github.com/foxifyjs/foxify/tree/master/sample) is
 ## Benchmarks
 
 **Machine**: Intel Core i7 (4 cores, 8 threads), 8GiB RAM
+
 **Method**: `autocannon -c 100 -d 40 -p 10 localhost:3000` * 2, taking the second average
 
-| Framework | Version | R/S |
+| Framework | Version | Request/Second |
 |:---------:|:-------:|:---:|
 | `http.Server` | 9.5.0 | 23,735 |
 | - | - | - |
