@@ -30,8 +30,8 @@ app.use(Fox.static(path.join(__dirname, 'public')))
 app.use(morgan('dev'))
 
 // add routes to app
-app.use(users)
 app.use(index)
+app.use(users)
 
 // start the server
 app.start()
