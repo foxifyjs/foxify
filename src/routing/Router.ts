@@ -2,15 +2,25 @@ import { IncomingMessage, ServerResponse } from 'http'
 import { HttpExeption } from '../exeptions'
 import httpMethods from './httpMethods'
 import * as constants from '../constants'
+import { Encapsulation } from '../exeptions'
 import * as Route from './Route'
 
 declare module Router { }
 
 class Router {
   protected _routes: Route.Routes = {}
+  protected _safeNext = new Encapsulation((req: IncomingMessage, res: ServerResponse, url: string, routes: Array<Route.RouteObject>, index = 0) => this._next(req, res, url, routes, index))
 
   constructor() {
     httpMethods.map((method) => this._routes[method] = [])
+  }
+
+  push(routes: Route.Routes) {
+    httpMethods.map((method) => this._routes[method].push(...routes[method]))
+  }
+
+  route(req: IncomingMessage, res: ServerResponse) {
+    this._safeNext.run(req, res, req.path, this._routes[<string>req.method])
   }
 
   protected _next(req: IncomingMessage, res: ServerResponse, url: string, routes: Array<Route.RouteObject>, index = 0) {
@@ -20,28 +30,17 @@ class Router {
       let params = route.path.exec(url)
 
       if (params) {
-        let next = () => this._next(req, res, url, routes, i + 1)
+        let next = () => this._safeNext.run(req, res, url, routes, i + 1)
+
+        let safeController = new Encapsulation((req: IncomingMessage, res: ServerResponse, next: () => void, ...args: Array<any>) => route.controller(req, res, next, ...args))
 
         req.next = next
 
-        let result = route.controller(req, res, next, ...params.tail())
-
-        // in case of promise errors
-        if (result && Function.isInstance((result as any).then)) (result as any).catch((err: Error) => HttpExeption.handle(err, req, res))
-
-        return
+        return safeController.run(req, res, next, ...params.tail())
       }
     }
 
-    throw new HttpExeption('Not Found', constants.http.NOT_FOUND), req, res
-  }
-
-  push(routes: Route.Routes) {
-    httpMethods.map((method) => this._routes[method].push(...routes[method]))
-  }
-
-  route(req: IncomingMessage, res: ServerResponse) {
-    this._next(req, res, req.path, this._routes[<string>req.method])
+    throw new HttpExeption('Not Found', constants.http.NOT_FOUND)
   }
 }
 

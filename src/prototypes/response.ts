@@ -722,7 +722,7 @@ const patch = (res: typeof http.ServerResponse) => {
 
     let key = keys.length > 0
       ? <string>req.accepts(keys)
-      : false;
+      : false
 
     this.vary("Accept")
 

@@ -7,7 +7,6 @@ import * as constants from './constants'
 import { Router, Route, httpMethods } from './routing'
 import { init, query } from './middleware'
 import { request, response } from './prototypes'
-import { Encapsulation } from './exeptions'
 import { Engine } from './view'
 import { name } from '../package.json'
 
@@ -67,19 +66,17 @@ class Foxify {
     this._router.push(route.routes)
   }
 
-  start(url?: string, port?: number) {
-    if (!url) url = process.env.APP_URL || 'localhost'
-    if (!port) port = +(process.env.APP_PORT || '3000')
-
+  start(url: string = process.env.APP_URL || 'localhost', port: number = +(process.env.APP_PORT || '3000')) {
     /* apply http patches */
     request(http.IncomingMessage)
     response(http.ServerResponse)
     Engine.responsePatch(http.ServerResponse, this.view)
 
-    const encapsulation = new Encapsulation((req: http.IncomingMessage, res: http.ServerResponse) => this._router.route(req, res))
+    /* no server fail at any cost */
+    process.on('uncaughtException', (err) => console.error('Caught exception: ' + err))
+    process.on('unhandledRejection', (err) => console.warn('Caught rejection: ' + err))
 
-    /* creating server */
-    let server = http.createServer((req, res) => encapsulation.run(req, res))
+    let server = http.createServer((req, res) => this._router.route(req, res))
 
     server.listen(port, url,
       () => console.log(`${name.capitalize()} server running at http://${url}:${port}`))

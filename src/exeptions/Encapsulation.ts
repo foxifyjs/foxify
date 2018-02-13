@@ -8,19 +8,15 @@ class Encapsulation {
 
   constructor(fn: Function) {
     this._fn = fn
-
-    // process.on('uncaughtException', function(err) {
-    //   console.log('Caught exception: ' + err);
-    // })
-    //
-    // process.on('unhandledRejection', function(err) {
-    //   console.log('Caught exception: ' + err);
-    // })
   }
 
-  run(req: IncomingMessage, res: ServerResponse) {
+  run(req: IncomingMessage, res: ServerResponse, ...rest: Array<any>) {
     try {
-      this._fn(req, res)
+      let result = this._fn(req, res, ...rest)
+
+      if (result && Function.isInstance((result as any).then)) {
+        (result as Promise<any>).catch((err: Error) => HttpExeption.handle(err, req, res))
+      }
     } catch (err) {
       HttpExeption.handle(err, req, res)
     }

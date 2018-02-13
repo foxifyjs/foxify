@@ -1,7 +1,10 @@
-import 'prototyped.js/es6'
+import * as path from 'path'
 import * as dotenv from 'dotenv'
+import 'prototyped.js/es6'
 
-dotenv.config()
+dotenv.config({
+  path: path.join(path.dirname((require.main as OBJ).filename), '.env')
+})
 
 import { HttpExeption } from './exeptions'
 import { Db } from 'mongodb'

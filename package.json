@@ -45,6 +45,7 @@
     "encodeurl": "^1.0.2",
     "escape-html": "^1.0.3",
     "fresh": "^0.5.2",
+    "joi": "^13.1.2",
     "methods": "^1.1.2",
     "mongodb": "^3.0.2",
     "on-finished": "^2.3.0",
@@ -53,10 +54,10 @@
     "prototyped.js": "^0.4.0",
     "proxy-addr": "^2.0.2",
     "qs": "^6.5.1",
+    "range-parser": "^1.2.0",
     "send": "^0.16.2",
     "serve-static": "^1.13.2",
     "type-is": "^1.6.15",
-    "range-parser": "^1.2.0",
     "vary": "^1.1.2"
   },
   "devDependencies": {
