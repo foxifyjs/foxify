@@ -9,7 +9,7 @@ declare module Router { }
 
 class Router {
   protected _routes: Route.Routes = {}
-  protected _safeNext = new Encapsulation((req: IncomingMessage, res: ServerResponse, url: string, routes: Array<Route.RouteObject>, index = 0) => this._next(req, res, url, routes, index))
+  protected _safeNext = new Encapsulation((req, res, url: string, routes: Array<Route.RouteObject>, index = 0) => this._next(req, res, url, routes, index))
 
   constructor() {
     httpMethods.map((method) => this._routes[method] = [])
@@ -32,11 +32,9 @@ class Router {
       if (params) {
         let next = () => this._safeNext.run(req, res, url, routes, i + 1)
 
-        let safeController = new Encapsulation((req: IncomingMessage, res: ServerResponse, next: () => void, ...args: Array<any>) => route.controller(req, res, next, ...args))
-
         req.next = next
 
-        return safeController.run(req, res, next, ...params.tail())
+        return route.controller.run(req, res, next, ...params.tail())
       }
     }
 

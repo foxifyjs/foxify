@@ -1,5 +1,6 @@
 import * as http from 'http'
 import * as pathToRegExp from 'path-to-regexp'
+import { Encapsulation } from '../exeptions'
 import httpMethods from './httpMethods'
 
 declare module Route {
@@ -13,7 +14,7 @@ declare module Route {
 
   export interface RouteObject {
     path: RegExp,
-    controller: Controller
+    controller: Encapsulation
   }
 }
 
@@ -57,7 +58,7 @@ class Route {
 
     this.routes[method].push({
       path: _path,
-      controller
+      controller: new Encapsulation((req, res, next: () => void, ...args: Array<any>) => controller(req, res, next, ...args))
     })
   }
 

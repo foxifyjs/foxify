@@ -6,7 +6,7 @@ declare module Encapsulation { }
 class Encapsulation {
   protected _fn: Function
 
-  constructor(fn: Function) {
+  constructor(fn: (req: IncomingMessage, res: ServerResponse, ...rest: Array<any>) => any) {
     this._fn = fn
   }
 
