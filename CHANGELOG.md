@@ -1,6 +1,12 @@
 # Changelog
 
 
+## [v0.2.1](https://github.com/foxifyjs/foxify/releases/tag/v0.2.1) *(2018-02-14)*
+
+**Fixed bugs:**
+- Encapsulation
+
+
 ## [v0.2.0](https://github.com/foxifyjs/foxify/releases/tag/v0.2.0) *(2018-02-10)*
 
 **Implemented enhancements:**
