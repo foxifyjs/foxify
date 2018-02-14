@@ -1,4 +1,4 @@
-const Fox = require('../../framework/Fox')
+const Fox = require('../../framework')
 const {Route} = require('../../framework/routing')
 const {ObjectId} = require('../../framework/database')
 const User = require('../models/User')

@@ -337,10 +337,10 @@ const patch = (res: typeof http.ServerResponse) => {
    * @public
    */
   res.prototype.send = function(body = '') {
+    let contentType = <string>this.get('Content-Type')
     let req = this.req
     let chunk = body
     let encoding
-    let type
 
     // populate Content-Length
     let len
@@ -348,29 +348,6 @@ const patch = (res: typeof http.ServerResponse) => {
     if (String.isInstance(chunk)) {
       encoding = 'utf8'
 
-      type = <string>this.get('Content-Type')
-
-      if (!type) {
-        // string defaulting to html
-        type = 'text/html'
-
-        this.type(type)
-      }
-
-      // reflect this in content-type
-      this.setHeader('Content-Type', <string>setCharset(type, 'utf-8'))
-    } else {
-      if (Buffer.isBuffer(chunk)) {
-        if (!this.get('Content-Type')) this.type('bin')
-
-        // get length of Buffer
-        len = chunk.length
-      } else {
-        return this.json(<Object>chunk)
-      }
-    }
-
-    if (!len) {
       if ((chunk as any).length < 1000) {
         // just calculate length when no ETag + small chunk
         len = Buffer.byteLength(<string>chunk, encoding)
@@ -380,6 +357,21 @@ const patch = (res: typeof http.ServerResponse) => {
         encoding = undefined
         len = (chunk as Buffer).length
       }
+
+      if (!contentType) {
+        // string defaulting to html
+        contentType = 'text/html'
+
+        // reflect this in content-type
+        this.setHeader('Content-Type', <string>setCharset(contentType, 'utf-8'))
+      }
+    } else if (Buffer.isBuffer(chunk)) {
+      if (!contentType) this.type('bin')
+
+      // get length of Buffer
+      len = chunk.length
+    } else {
+      return this.json(<Object>chunk)
     }
 
     this.setHeader('Content-Length', len)
@@ -396,13 +388,9 @@ const patch = (res: typeof http.ServerResponse) => {
       chunk = ''
     }
 
-    if (req.method === 'HEAD') {
-      // skip body for HEAD
-      this.end()
-    } else {
-      // respond
-      this.end(chunk, encoding)
-    }
+    // skip body for HEAD
+    if (req.method == 'HEAD') this.end()
+    else this.end(chunk, encoding)
 
     return this
   }
@@ -722,7 +710,7 @@ const patch = (res: typeof http.ServerResponse) => {
 
     let key = keys.length > 0
       ? <string>req.accepts(keys)
-      : false;
+      : false
 
     this.vary("Accept")
 
