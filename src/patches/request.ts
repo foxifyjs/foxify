@@ -182,7 +182,7 @@ const patch = (req: typeof http.IncomingMessage) => {
 
     if (!range) return
 
-    if (range instanceof Array) range = range.join(',')
+    if (Array.isInstance(range)) range = range.join(',')
 
     return parseRange(size, range, options)
   }
@@ -215,7 +215,7 @@ const patch = (req: typeof http.IncomingMessage) => {
   req.prototype.is = function(types) {
 
     // support flattened arguments
-    if (!Array.isArray(types)) {
+    if (!Array.isInstance(types)) {
       let arr = new Array(arguments.length)
 
       for (let i = 0; i < arr.length; i++) arr[i] = arguments[i]

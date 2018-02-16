@@ -1,5 +1,5 @@
+import dotenv = require('dotenv')
 import * as path from 'path'
-import * as dotenv from 'dotenv'
 import 'prototyped.js/es6'
 
 dotenv.config({

@@ -19,6 +19,12 @@ declare interface Foxify {
   use(route: Route): void
   use(middleware: Route.Controller): void
   use(path: string, controller: Route.Controller): void
+
+  start(): void
+  start(callback?: () => void): void
+  start(url: string, callback?: () => void): void
+  start(port: number, callback?: () => void): void
+  start(url: string, port: number, callback?: () => void): void
 }
 
 class Foxify {
@@ -32,6 +38,17 @@ class Foxify {
   protected _router = new Router()
 
   constructor() {
+    /* apply default db connection */
+    Foxify.DB.connections({
+      default: {
+        host: <string>process.env.DATABASE_HOST,
+        port: <string>process.env.DATABASE_PORT,
+        database: <string>process.env.DATABASE_NAME,
+        user: <string>process.env.DATABASE_USER,
+        password: <string>process.env.DATABASE_PASSWORD
+      }
+    })
+
     /* apply http routing methods */
     httpMethods.map((method) => {
       method = method.toLowerCase()
@@ -70,10 +87,28 @@ class Foxify {
   }
 
   start(
-    url: string = process.env.APP_URL || 'localhost',
-    port: number = +(process.env.APP_PORT || '3000'),
+    url: string | number | (() => void) = process.env.APP_URL || 'localhost',
+    port: number | (() => void) = +(process.env.APP_PORT || '3000'),
     callback?: () => void
   ) {
+    if (Function.isInstance(url)) {
+      callback = url
+      url = 'localhost'
+      port = 3000
+    }
+
+    if (Number.isInstance(url)) {
+      if (Function.isInstance(port)) callback = port
+
+      port = url
+      url = 'localhost'
+    }
+
+    if (Function.isInstance(port)) {
+      callback = port
+      port = 3000
+    }
+
     /* apply http patches */
     request(http.IncomingMessage)
     response(http.ServerResponse)
