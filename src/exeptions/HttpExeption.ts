@@ -17,7 +17,10 @@ declare interface HttpExeption extends Error {
 }
 
 class HttpExeption extends Error {
-  constructor(message: string | number | object = <string>STATUS_CODES[http.INTERNAL_SERVER_ERROR], code: number | object = http.INTERNAL_SERVER_ERROR, errors: object = {}) {
+  constructor(
+    message: string | number | object = <string>STATUS_CODES[http.INTERNAL_SERVER_ERROR],
+    code: number | object = http.INTERNAL_SERVER_ERROR,
+    errors: object = {}) {
     if (Object.isInstance(message)) {
       errors = message
       code = http.INTERNAL_SERVER_ERROR

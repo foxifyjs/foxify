@@ -16,6 +16,7 @@ routes.get('/', (req, res) => {
 })
 
 routes.get('/:id', async (req, res, next, userId) => {
+  await User.insertOne({username: '12'}) // TODO remove this
   let user = await User.findOne({_id: ObjectId(userId)})
 
   if (!user) throw new HttpExeption('User Not Found', Fox.constants.http.NOT_FOUND)

@@ -1,6 +1,7 @@
 import * as mongodb from 'mongodb'
 import * as connect from './connect'
-import * as Collection from './Collection'
+import * as Collection from './native/Collection'
+import * as Schema from './Schema'
 import * as types from './types'
 import { applyStaticMixins } from '../utils'
 
@@ -26,13 +27,17 @@ abstract class Model implements Collection {
 
   protected static connection: string = 'default'
 
-  protected collection = this.constructor.name.toLowerCase() + 's'
+  protected static collection: string
+
+  protected static get _collection() {
+    return this.collection || this.name.toLowerCase() + 's'
+  }
 
   protected static schema: Model.SchemaDefinition = {}
 
   readonly hidden: Array<string> = []
 
-  model: mongodb.Collection = this._connect()
+  model: mongodb.Collection = (this.constructor as any)._connect()
 
   /**
    *
@@ -43,12 +48,21 @@ abstract class Model implements Collection {
     }
   }
 
-  private _connect(): mongodb.Collection {
-    return __FOX__.db.connections[(this.constructor as any).connection].collection(this.collection)
+  private static _connect(): mongodb.Collection {
+    return __FOX__.db.connections[this.connection].collection(this._collection)
   }
 
-  static validate(document: Partial<Model.Schema>) {
-    return types.validate(document, types.object().keys(this.schema))
+  protected static _validate(document: Partial<Model.Schema>) {
+    let validation = types.validate(document, types.object().keys(this.schema))
+
+    if (validation.error) {
+      let errors = {}
+      // TODO fix this
+
+      throw new HttpExeption(500, errors)
+    }
+
+    return validation.value
   }
 
   static isInstance(arg: any) {

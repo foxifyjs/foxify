@@ -6,7 +6,7 @@ dotenv.config({
   path: path.join(path.dirname((require.main as OBJ).filename), '.env')
 })
 
-import { HttpExeption } from './exeptions'
+import { HttpExeption as HttpEx } from './exeptions'
 import { Db } from 'mongodb'
 
 declare global {
@@ -20,7 +20,7 @@ declare global {
         }
       }
 
-      HttpExeption: HttpExeption
+      HttpExeption: typeof HttpEx
     }
   }
 
@@ -32,7 +32,7 @@ declare global {
     }
   }
 
-  var HttpExeption: HttpExeption
+  var HttpExeption: typeof HttpEx
 }
 
 global.__FOX__ = {
@@ -41,4 +41,4 @@ global.__FOX__ = {
   }
 }
 
-global.HttpExeption = require('./exeptions/HttpExeption')
+global.HttpExeption = HttpEx
