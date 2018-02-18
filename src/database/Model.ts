@@ -53,14 +53,9 @@ abstract class Model implements Collection {
   }
 
   protected static _validate(document: Partial<Model.Schema>) {
-    let validation = types.validate(document, types.object().keys(this.schema))
+    let validation = Schema.validate(this.schema, document)
 
-    if (validation.error) {
-      let errors = {}
-      // TODO fix this
-
-      throw new HttpExeption(500, errors)
-    }
+    if (validation.errors) throw new HttpExeption(500, validation.errors)
 
     return validation.value
   }

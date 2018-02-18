@@ -72,7 +72,7 @@ More detailed [sample](https://github.com/foxifyjs/foxify/tree/master/sample) is
 - Written in ES6
 - Robust routing (faster than `Express`)
 - `Express` middleware support
-- Robust database modeling (at the moment it's basically `mongodb` package but implemented the fast way)
+- Robust database modeling (at the moment it's basically `mongodb` package but implemented in a fast way + schema validation)
 - Simple and powerful error handling
 - Focus on high performance
 - HTTP helpers (redirection, etc)

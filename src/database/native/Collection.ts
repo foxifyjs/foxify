@@ -153,10 +153,11 @@ class Collection<TSchema = any> {
     return collection.aggregate.apply(collection, args)
   }
 
-  bulkWrite(...args: Array<any>) {
+  bulkWrite(operations: Object[], ...rest: Array<any>) {
+    // TODO
     let collection = this._connect()
 
-    return collection.bulkWrite.apply(collection, args)
+    return collection.bulkWrite.apply(collection, [operations, ...rest])
   }
 
   count(...args: Array<any>) {
@@ -233,16 +234,20 @@ class Collection<TSchema = any> {
     return collection.findOneAndDelete.apply(collection, args)
   }
 
-  findOneAndReplace(...args: Array<any>) {
+  findOneAndReplace(filter: Object, replacement: Object, ...rest: Array<any>) {
+    replacement = this._validate(replacement)
+
     let collection = this._connect()
 
-    return collection.findOneAndReplace.apply(collection, args)
+    return collection.findOneAndReplace.apply(collection, [filter, replacement, ...rest])
   }
 
-  findOneAndUpdate(...args: Array<any>) {
+  findOneAndUpdate(filter: Object, update: Object, ...rest: Array<any>) {
+    update = this._validate(update)
+
     let collection = this._connect()
 
-    return collection.findOneAndUpdate.apply(collection, args)
+    return collection.findOneAndUpdate.apply(collection, [filter, update, ...rest])
   }
 
   geoHaystackSearch(...args: Array<any>) {
@@ -281,10 +286,12 @@ class Collection<TSchema = any> {
     return collection.initializeUnorderedBulkOp.apply(collection, args)
   }
 
-  insertMany(...args: Array<any>) {
+  insertMany(docs: Array<Object>, ...rest: Array<any>) {
+    docs = docs.map((doc) => this._validate(doc))
+
     let collection = this._connect()
 
-    return collection.insertMany.apply(collection, args)
+    return collection.insertMany.apply(collection, [docs, ...rest])
   }
 
   insertOne(doc: Object,...rest: Array<any>) {
@@ -333,10 +340,12 @@ class Collection<TSchema = any> {
 
   // rename ?
 
-  replaceOne(...args: Array<any>) {
+  replaceOne(filter: Object, doc: Object, ...rest: Array<any>) {
+    doc = this._validate(doc)
+
     let collection = this._connect()
 
-    return collection.replaceOne.apply(collection, args)
+    return collection.replaceOne.apply(collection, [filter, doc, ...rest])
   }
 
   stats(...args: Array<any>) {
@@ -345,16 +354,20 @@ class Collection<TSchema = any> {
     return collection.stats.apply(collection, args)
   }
 
-  updateMany(...args: Array<any>) {
+  updateMany(filter: Object, update: Object, ...rest: Array<any>) {
+    update = this._validate(update)
+
     let collection = this._connect()
 
-    return collection.updateMany.apply(collection, args)
+    return collection.updateMany.apply(collection, [filter, update, ...rest])
   }
 
-  updateOne(...args: Array<any>) {
+  updateOne(filter: Object, update: Object, ...rest: Array<any>) {
+    update = this._validate(update)
+
     let collection = this._connect()
 
-    return collection.updateOne.apply(collection, args)
+    return collection.updateOne.apply(collection, [filter, update, ...rest])
   }
 
   watch(...args: Array<any>) {

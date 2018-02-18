@@ -1,12 +1,11 @@
-import { TypeAny } from './Any'
+import TypeAny from './Any'
 
 class TypeObject extends TypeAny {
-  protected _base(value: any) {
-    if (Object.isInstance(value)) return null
+  protected _base(v: any = this._value) {
+    if (Object.isInstance(v)) return null
 
     return 'Must be a object'
   }
 }
 
-export { TypeObject }
-export default new TypeObject
+export default TypeObject

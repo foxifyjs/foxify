@@ -4,13 +4,11 @@ class User extends Model {
 }
 
 User.schema = {
-  name: Model.types.object().keys({
-    first: Model.types.string().alphanum().required(),
-    last: Model.types.string()
-  }),
-  username: Model.types.string().required()
+  name: {
+    first: Model.types.String.min(3).required.default('Ardalan'),
+    last: Model.types.String
+  },
+  username: Model.types.String.required
 }
-
-// User.prototype.connection = 'foxify'
 
 module.exports = User

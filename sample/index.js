@@ -1,6 +1,6 @@
 const path = require('path')
 const morgan = require('morgan')
-const Foxify = require('../framework/Foxify')
+const Foxify = require('../framework')
 const users = require('./routes/users')
 const index = require('./routes/index')
 

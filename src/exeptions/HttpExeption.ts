@@ -44,30 +44,34 @@ class HttpExeption extends Error {
 
   static handle(exeption: any = new HttpExeption(http.INTERNAL_SERVER_ERROR), req: IncomingMessage, res: ServerResponse): void {
     let message = exeption.message
+    let errors = exeption.errors
     let code = exeption.code
-    let format = {}
+
+    let html
+    let json
+    let def
 
     switch (code) {
       case http.NOT_FOUND:
         message = message || STATUS_CODES[code]
-        format = {
-          'text/html': () => res.status(code).send(`<p>${message}</p>`),
-          'application/json': () => res.status(code).json({ message }),
-          'default': () => res.status(code).send(message)
-        }
+        html = () => res.status(code).send(`<p>${message}</p>`)
+        json = () => res.status(code).json({ message })
+        def = () => res.status(code).send(message)
         break
       case http.INTERNAL_SERVER_ERROR:
       default:
         code = http.INTERNAL_SERVER_ERROR
         message = message || STATUS_CODES[code]
-        format = {
-          'text/html': () => res.status(code).send(`<p>${message}</p>`),
-          'application/json': () => res.status(code).json({ message }),
-          'default': () => res.status(code).send(message)
-        }
+        html = () => res.status(code).send(`<p>${message}</p>`)
+        json = () => res.status(code).json({ message, errors })
+        def = () => res.status(code).send(message)
     }
 
-    res.format(format)
+    res.format({
+      'text/html': html,
+      'application/json': json,
+      'default': def
+    })
   }
 }
 

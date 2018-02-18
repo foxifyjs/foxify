@@ -1,8 +1,8 @@
-import { TypeAny } from './Any'
+import TypeAny from './Any'
 
 class TypeBuffer extends TypeAny {
-  protected _base(value: any) {
-    if (Buffer.isBuffer(value)) return null
+  protected _base(v: any = this._value) {
+    if (Buffer.isBuffer(v)) return null
 
     return 'Must be a buffer'
   }
@@ -12,29 +12,28 @@ class TypeBuffer extends TypeAny {
   }
 
   min(n: number) {
+    if (!Number.isInstance(n)) throw new TypeError('"n" must be a number')
+
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    this._test((value) => value.length < n ? `Size must be at least ${n}` : null)
-
-    return this
+    return this._test(() => this._value.length < n ? `Size must be at least ${n}` : null)
   }
 
   max(n: number) {
+    if (!Number.isInstance(n)) throw new TypeError('"n" must be a number')
+
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    this._test((value) => value.length > n ? `Size must be at most ${n}` : null)
-
-    return this
+    return this._test(() => this._value.length > n ? `Size must be at most ${n}` : null)
   }
 
   length(n: number) {
+    if (!Number.isInstance(n)) throw new TypeError('"n" must be a number')
+
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    this._test((value) => value.length != n ? `Size must be exactly ${n}` : null)
-
-    return this
+    return this._test(() => this._value.length != n ? `Size must be exactly ${n}` : null)
   }
 }
 
-export { TypeBuffer }
-export default new TypeBuffer
+export default TypeBuffer
