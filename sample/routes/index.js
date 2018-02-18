@@ -13,4 +13,12 @@ routes.get('/greet', (req, res) => {
   res.json({hello: 'world'})
 })
 
+routes.get('/404', (req, res) => {
+  throw new HttpExeption(404)
+})
+
+routes.get('/error', async (req, res) => {
+  throw new Error('Ooops!')
+})
+
 module.exports = routes

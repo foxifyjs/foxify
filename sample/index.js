@@ -1,20 +1,6 @@
 const path = require('path')
 const morgan = require('morgan')
-const Foxify = require('../framework/Foxify')
-
-// initiate database connections just once to make database integration way faster
-// this should be called before requiring the models
-Foxify.DB.connections({
-  foxify: {
-    database: process.env.DATABASE_NAME,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    host: process.env.DATABASE_HOST,
-    port: process.env.DATABASE_PORT
-  }
-})
-
-// just because it uses 'User' model it should be called after 'Foxify.DB.connections'
+const Foxify = require('../framework')
 const users = require('./routes/users')
 const index = require('./routes/index')
 
@@ -34,4 +20,4 @@ app.use(index)
 app.use(users)
 
 // start the server
-app.start()
+app.start(() => console.log('Foxify server running at http://localhost:3000'))

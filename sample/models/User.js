@@ -3,6 +3,12 @@ const {Model} = require('../../framework/database')
 class User extends Model {
 }
 
-User.prototype.connection = 'foxify'
+User.schema = {
+  name: {
+    first: Model.types.String.min(3).required.default('Ardalan'),
+    last: Model.types.String
+  },
+  username: Model.types.String.required
+}
 
-module.exports = (new User())
+module.exports = User

@@ -1,6 +1,6 @@
 {
   "name": "foxify",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "The fast, easy to use & typescript ready framework for Node.js",
   "author": "Foxify",
   "contributors": [
@@ -45,7 +45,6 @@
     "encodeurl": "^1.0.2",
     "escape-html": "^1.0.3",
     "fresh": "^0.5.2",
-    "joi": "^13.1.2",
     "methods": "^1.1.2",
     "mongodb": "^3.0.2",
     "on-finished": "^2.3.0",
@@ -57,7 +56,7 @@
     "range-parser": "^1.2.0",
     "send": "^0.16.2",
     "serve-static": "^1.13.2",
-    "type-is": "^1.6.15",
+    "type-is": "^1.6.16",
     "vary": "^1.1.2"
   },
   "devDependencies": {
@@ -85,7 +84,7 @@
     "fs-readdir-recursive": "^1.1.0",
     "morgan": "^1.9.0",
     "rimraf": "^2.6.2",
-    "typescript": "^2.7.1",
+    "typescript": "^2.7.2",
     "uglify-es": "^3.3.10"
   }
 }

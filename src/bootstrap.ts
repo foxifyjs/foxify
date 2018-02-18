@@ -1,12 +1,14 @@
+import dotenv = require('dotenv')
 import * as path from 'path'
-import * as dotenv from 'dotenv'
 import 'prototyped.js/es6'
 
-dotenv.config({
-  path: path.join(path.dirname((require.main as OBJ).filename), '.env')
-})
+dotenv.config()
 
-import { HttpExeption } from './exeptions'
+// dotenv.config({
+//   path: path.join(path.dirname((require.main as OBJ).filename), '.env')
+// })
+
+import { HttpExeption as HttpEx } from './exeptions'
 import { Db } from 'mongodb'
 
 declare global {
@@ -20,7 +22,7 @@ declare global {
         }
       }
 
-      HttpExeption: HttpExeption
+      HttpExeption: typeof HttpEx
     }
   }
 
@@ -32,7 +34,7 @@ declare global {
     }
   }
 
-  var HttpExeption: HttpExeption
+  var HttpExeption: typeof HttpEx
 }
 
 global.__FOX__ = {
@@ -41,4 +43,4 @@ global.__FOX__ = {
   }
 }
 
-global.HttpExeption = require('./exeptions/HttpExeption')
+global.HttpExeption = HttpEx
