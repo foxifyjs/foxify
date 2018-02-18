@@ -1,10 +1,18 @@
 # Changelog
 
 
+## [next](https://github.com/foxifyjs/foxify/releases/tag/next) *(2018-__-__)*
+
+**Implemented enhancements:**
+- improved database model schema validation
+**Fixed bugs:**
+- database model schema validation instance
+
+
 ## [v0.3.0](https://github.com/foxifyjs/foxify/releases/tag/v0.3.0) *(2018-02-18)*
 
 **Implemented enhancements:**
-- added simple model schema validation
+- added simple database model schema validation
 - Default database connection will be set according to `.env` file
 
 
