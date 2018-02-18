@@ -1,7 +1,7 @@
 import TypeAny from './Any'
 
 class TypeBuffer extends TypeAny {
-  protected _base(v: any = this._value) {
+  protected _base(v: any) {
     if (Buffer.isBuffer(v)) return null
 
     return 'Must be a buffer'
@@ -16,7 +16,7 @@ class TypeBuffer extends TypeAny {
 
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    return this._test(() => this._value.length < n ? `Size must be at least ${n}` : null)
+    return this._test((v: Buffer) => v.length < n ? `Size must be at least ${n}` : null)
   }
 
   max(n: number) {
@@ -24,7 +24,7 @@ class TypeBuffer extends TypeAny {
 
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    return this._test(() => this._value.length > n ? `Size must be at most ${n}` : null)
+    return this._test((v: Buffer) => v.length > n ? `Size must be at most ${n}` : null)
   }
 
   length(n: number) {
@@ -32,7 +32,7 @@ class TypeBuffer extends TypeAny {
 
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    return this._test(() => this._value.length != n ? `Size must be exactly ${n}` : null)
+    return this._test((v: Buffer) => v.length != n ? `Size must be exactly ${n}` : null)
   }
 }
 
