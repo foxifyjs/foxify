@@ -3,23 +3,29 @@ import * as deasync from 'deasync'
 
 declare module connect {
   export interface Connection {
+    host?: string
+    port?: string
     database: string
-    user: string
-    password: string
-    host: string
-    port: string
+    user?: string
+    password?: string
   }
 }
 
 function connect(connection: connect.Connection): mongodb.Db {
-  let uri = `mongodb://${
-    connection.user
+  let uri = 'mongodb://'
+
+  if (connection.user && connection.password) {
+    uri += `${
+      connection.user
+      }:${
+      connection.password
+      }@`
+  }
+
+  uri += `${
+    connection.host || 'localhost'
     }:${
-    connection.password
-    }@${
-    connection.host
-    }:${
-    connection.port
+    connection.port || '27017'
     }/${
     connection.database
     }`

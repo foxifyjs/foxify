@@ -38,16 +38,18 @@ class Foxify {
   protected _router = new Router()
 
   constructor() {
-    /* apply default db connection */
-    Foxify.DB.connections({
-      default: {
-        host: <string>process.env.DATABASE_HOST,
-        port: <string>process.env.DATABASE_PORT,
-        database: <string>process.env.DATABASE_NAME,
-        user: <string>process.env.DATABASE_USER,
-        password: <string>process.env.DATABASE_PASSWORD
-      }
-    })
+    if (process.env.DATABASE_NAME) {
+      /* apply default db connection */
+      Foxify.DB.connections({
+        default: {
+          host: process.env.DATABASE_HOST,
+          port: process.env.DATABASE_PORT,
+          database: process.env.DATABASE_NAME,
+          user: process.env.DATABASE_USER,
+          password: process.env.DATABASE_PASSWORD
+        }
+      })
+    }
 
     /* apply http routing methods */
     httpMethods.map((method) => {
