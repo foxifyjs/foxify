@@ -1,7 +1,7 @@
 import TypeAny from './Any'
 
 class TypeArray extends TypeAny {
-  protected _base(v: any = this._value): string | null {
+  protected _base(v: any): string | null {
     if (Array.isInstance(v)) return null
 
     return 'Must be an array'
@@ -12,7 +12,7 @@ class TypeArray extends TypeAny {
 
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    return this._test(() => this._value.length < n ? `Must be at least ${n} items` : null)
+    return this._test((v: Array<any>) => v.length < n ? `Must be at least ${n} items` : null)
   }
 
   max(n: number) {
@@ -20,7 +20,7 @@ class TypeArray extends TypeAny {
 
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    return this._test(() => this._value.length > n ? `Must be at most ${n} items` : null)
+    return this._test((v: Array<any>) => v.length > n ? `Must be at most ${n} items` : null)
   }
 
   length(n: number) {
@@ -28,7 +28,7 @@ class TypeArray extends TypeAny {
 
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    return this._test(() => this._value.length != n ? `Must be exactly ${n} items` : null)
+    return this._test((v: Array<any>) => v.length != n ? `Must be exactly ${n} items` : null)
   }
 }
 

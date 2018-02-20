@@ -1,14 +1,14 @@
 import TypeAny from './Any'
 
 class TypeString extends TypeAny {
-  protected _base(v: any = this._value) {
+  protected _base(v: any) {
     if (String.isInstance(v)) return null
 
     return 'Must be a string'
   }
 
   get token() {
-    return this._test(() => !/^[a-zA-Z0-9_]*$/.test(this._value) ? `Must only contain a-z, A-Z, 0-9, and underscore _` : null)
+    return this._test((v: string) => !/^[a-zA-Z0-9_]*$/.test(v) ? `Must only contain a-z, A-Z, 0-9, and underscore _` : null)
   }
 
   // TODO
@@ -46,7 +46,7 @@ class TypeString extends TypeAny {
 
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    return this._test(() => this._value.length < n ? `Must be at least ${n} characters` : null)
+    return this._test((v: string) => v.length < n ? `Must be at least ${n} characters` : null)
   }
 
   max(n: number) {
@@ -54,7 +54,7 @@ class TypeString extends TypeAny {
 
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    return this._test(() => this._value.length > n ? `Must be at most ${n} characters` : null)
+    return this._test((v: string) => v.length > n ? `Must be at most ${n} characters` : null)
   }
 
   length(n: number) {
@@ -62,13 +62,13 @@ class TypeString extends TypeAny {
 
     if (n < 0) throw new TypeError('"n" must be a positive number')
 
-    return this._test(() => this._value.length != n ? `Must be exactly ${n} characters` : null)
+    return this._test((v: string) => v.length != n ? `Must be exactly ${n} characters` : null)
   }
 
   regex(r: RegExp) {
     if (!(r instanceof RegExp)) throw new TypeError('"r" must be a regex')
 
-    return this._test(() => !r.test(this._value) ? `Must match ${r}` : null)
+    return this._test((v: string) => !r.test(v) ? `Must match ${r}` : null)
   }
 }
 
