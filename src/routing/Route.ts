@@ -92,7 +92,7 @@ class Route {
 
       httpMethods.map((method) => this._routes[method].push(..._routes[method]))
     } else {
-      let _path = '/:path*'
+      let _path = '(.*)'
       let _middleware = first
 
       if (String.isInstance(first)) {

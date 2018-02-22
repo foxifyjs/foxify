@@ -37,5 +37,5 @@ tsc.on('close', (code) => {
   })
 
   if (code === 0) console.log(`finished in ${new Date().getTime() - startTime}ms`)
-  else console.log(`child process exited with code ${code}`)
+  else console.error(`child process exited with code ${code}`)
 })

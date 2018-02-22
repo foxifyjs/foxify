@@ -8,8 +8,8 @@ class TypeBuffer extends TypeAny {
   }
 
   // TODO
-  encoding(encoding: string) {
-  }
+  // encoding(encoding: string) {
+  // }
 
   min(n: number) {
     if (!Number.isInstance(n)) throw new TypeError('"n" must be a number')

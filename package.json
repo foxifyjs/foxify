@@ -1,17 +1,17 @@
 {
   "name": "foxify",
-  "version": "0.3.2",
-  "description": "The fast, easy to use & typescript ready framework for Node.js",
+  "version": "0.4.0",
+  "description": "The fast, easy to use & typescript ready web framework for Node.js",
   "author": "Foxify",
   "contributors": [
     "Ardalan Amini <ardalanamini22@gmail.com>"
   ],
   "license": "MIT",
+  "homepage": "https://foxify.js.org",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/foxifyjs/foxify.git"
   },
-  "homepage": "https://github.com/foxifyjs/foxify#readme",
   "keywords": [
     "node",
     "fast",
@@ -58,7 +58,8 @@
     "send": "^0.16.2",
     "serve-static": "^1.13.2",
     "type-is": "^1.6.16",
-    "vary": "^1.1.2"
+    "vary": "^1.1.2",
+    "verifications": "^0.3.0"
   },
   "devDependencies": {
     "@types/accepts": "^1.3.5",

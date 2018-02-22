@@ -71,7 +71,7 @@ class Foxify {
     this.use(query())
   }
 
-  engine = (extention: string, path: string, handler: Function) => {
+  engine(extention: string, path: string, handler: Function) {
     this.view = new Engine(path, extention, handler)
   }
 

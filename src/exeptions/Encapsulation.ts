@@ -15,10 +15,16 @@ class Encapsulation {
       let result = this._fn(req, res, ...rest)
 
       if (result && Function.isInstance((result as any).then)) {
-        (result as Promise<any>).catch((err: Error) => HttpExeption.handle(err, req, res))
+        (result as Promise<any>).catch((err: Error) => {
+          HttpExeption.handle(err, req, res)
+
+          if (process.env.NODE_ENV == 'debug') console.error(err)
+        })
       }
     } catch (err) {
       HttpExeption.handle(err, req, res)
+
+      if (process.env.NODE_ENV == 'debug') console.error(err)
     }
   }
 }

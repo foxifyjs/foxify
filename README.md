@@ -3,7 +3,7 @@
 		<img src="http://res.cloudinary.com/dmny54mk6/image/upload/v1518111172/3ZIcg4.jpg" alt="Foxify Logo" style="max-width: 400px;">
 	</a>
 	<h1>Foxify</h1>
-	<p>The <b>fast</b>, <b>easy to use</b> &amp; <b>typescript ready</b> framework for <a href="https://nodejs.org" target="_blank">Node.js</a></p>
+	<p>The <b>fast</b>, <b>easy to use</b> &amp; <b>typescript ready</b> web framework for <a href="https://nodejs.org" target="_blank">Node.js</a></p>
 	<p>Inspired by <a href="https://expressjs.com" target="__blank">Express</a></p>
 	<a href="https://www.npmjs.com/package/foxify" target="_blank">
 		<img src="https://img.shields.io/npm/v/foxify.svg" alt="npm version">
@@ -22,6 +22,9 @@
 	</a>
 	<a href="https://github.com/foxifyjs/foxify" target="_blank">
 		<img src="https://img.shields.io/github/stars/foxifyjs/foxify.svg?style=social&label=Stars" alt="github stars">
+	</a>
+	<a href="https://github.com/foxifyjs/foxify" target="_blank">
+		<img src="https://img.shields.io/github/forks/foxifyjs/foxify.svg?style=social&label=Fork" alt="github stars">
 	</a>
 	<br>
 </div>

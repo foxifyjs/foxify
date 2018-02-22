@@ -336,7 +336,7 @@ const patch = (res: typeof http.ServerResponse) => {
    * @param {string|object|Buffer} body
    * @public
    */
-  res.prototype.send = function(body = '') {
+  res.prototype.send = function(body) {
     let contentType = <string>this.get('Content-Type')
     let req = this.req
     let chunk = body
@@ -406,15 +406,12 @@ const patch = (res: typeof http.ServerResponse) => {
    * @public
    */
   res.prototype.json = function(obj) {
-    // settings
-    let escape = true
-    let replacer = undefined
-    let spaces = undefined
-    let body = stringify(obj, replacer, spaces, escape)
+    let body = stringify(obj)
     // let body = JSON.stringify(obj)
 
     // content-type
-    if (!this.get('Content-Type')) this.set('Content-Type', 'application/json')
+    // if (!this.get('Content-Type')) this.setHeader('Content-Type', 'application/json')
+    this.setHeader('Content-Type', 'application/json')
 
     return this.send(body)
   }
@@ -822,9 +819,7 @@ const patch = (res: typeof http.ServerResponse) => {
    * @return {String}
    * @public
    */
-  res.prototype.get = function(field) {
-    return this.getHeader(field)
-  }
+  res.prototype.get = res.prototype.getHeader
 
   /**
    * Clear cookie `name`.

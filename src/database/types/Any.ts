@@ -1,8 +1,8 @@
 import * as async from 'async'
 
 class TypeAny {
-  protected _casts: Array<Function> = []
-  protected _tests: Array<Function> = [this._base]
+  protected _casts: Array<(v: any) => any> = []
+  protected _tests: Array<(v: any) => string | null> = []
 
   protected _required: boolean = false
 
@@ -14,7 +14,7 @@ class TypeAny {
     return 'Invalid type'
   }
 
-  protected _cast(test: () => string | null) {
+  protected _cast(test: (v: any) => any) {
     this._casts.push(test)
 
     return this
@@ -51,16 +51,29 @@ class TypeAny {
       return { errors: null, value }
     }
 
+    let baseError = this._base(value)
+    if (baseError) return { errors: [baseError], value }
+
     this._casts.map((_cast) => value = _cast(value))
 
     let errors: string[] = []
 
-    async.parallel(
-      this._tests.map((_test) =>
-        (cb: (err: null, result: string | null) => void) => cb(null, _test(value))),
-      (err, result) => {
+    async.map(
+      this._tests,
+      (test, cb1: Function) => cb1(undefined, (cb2: Function) => cb2(undefined, test(value))),
+      (err, tests) => {
         if (err) throw err
-        if (result) errors = <string[]>result.compact()
+
+        if (tests) {
+          async.parallel(
+            <any>tests,
+            (err, result) => {
+              if (err) throw err
+
+              if (result) errors = <string[]>result.compact()
+            }
+          )
+        }
       }
     )
 
