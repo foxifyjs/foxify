@@ -19,17 +19,17 @@ declare interface HttpExeption extends Error {
 
 class HttpExeption extends Error {
   constructor(
-    message: string | number | object = <string>STATUS_CODES[http.INTERNAL_SERVER_ERROR],
+    message?: string | number | object,
     code: number | object = http.INTERNAL_SERVER_ERROR,
     errors: object = {}) {
     if (Object.isInstance(message)) {
       errors = message
       code = http.INTERNAL_SERVER_ERROR
-      message = STATUS_CODES[code] || `${code}`
+      message = undefined
     } else if (Number.isInstance(message)) {
       errors = <object>code || {}
       code = message
-      message = STATUS_CODES[code] || `${code}`
+      message = undefined
     }
 
     if (Object.isInstance(code)) {
@@ -53,17 +53,14 @@ class HttpExeption extends Error {
 
     switch (code) {
       case http.NOT_FOUND:
-        message = message || STATUS_CODES[code]
-
-        html = htmlError(code, message)
+        html = htmlError(code, STATUS_CODES[code], message)
         json = { message }
         break
       case http.INTERNAL_SERVER_ERROR:
       default:
         code = http.INTERNAL_SERVER_ERROR
-        message = message || STATUS_CODES[code]
 
-        html = htmlError(code, message)
+        html = htmlError(code, STATUS_CODES[code], message)
         json = { message, errors }
     }
 

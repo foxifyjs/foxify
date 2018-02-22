@@ -14,6 +14,7 @@ declare module "*.json" {
 
 declare module "encodeurl"
 declare module "serve-static"
+declare module "verifications"
 
 declare interface OBJ {
   [key: string]: any
