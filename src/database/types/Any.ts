@@ -2,7 +2,7 @@ import * as async from 'async'
 
 class TypeAny {
   protected _casts: Array<(v: any) => any> = []
-  protected _tests: Array<(v: any) => string | null> = [this._base]
+  protected _tests: Array<(v: any) => string | null> = []
 
   protected _required: boolean = false
 
@@ -50,6 +50,9 @@ class TypeAny {
 
       return { errors: null, value }
     }
+
+    let baseError = this._base(value)
+    if (baseError) return { errors: [baseError], value }
 
     this._casts.map((_cast) => value = _cast(value))
 

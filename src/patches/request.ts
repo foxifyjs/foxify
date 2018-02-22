@@ -180,7 +180,7 @@ const patch = (req: typeof http.IncomingMessage) => {
   req.prototype.range = function(size, options) {
     let range = this.get('Range')
 
-    if (!range) return
+    if (!range) return;
 
     if (Array.isInstance(range)) range = range.join(',')
 

@@ -24,7 +24,9 @@ class Router {
   }
 
   protected _next(req: IncomingMessage, res: ServerResponse, url: string, routes: Array<Route.RouteObject>, index = 0) {
-    for (let i = index; i < routes.length; i++) {
+    let i = index, length = routes.length
+
+    for (; i < length; i++) {
       let route = routes[i]
 
       let params = route.path.exec(url)
