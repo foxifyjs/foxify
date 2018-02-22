@@ -1,7 +1,7 @@
 {
   "name": "foxify",
-  "version": "0.3.2",
-  "description": "The fast, easy to use & typescript ready framework for Node.js",
+  "version": "0.4.0",
+  "description": "The fast, easy to use & typescript ready web framework for Node.js",
   "author": "Foxify",
   "contributors": [
     "Ardalan Amini <ardalanamini22@gmail.com>"

@@ -1,6 +1,18 @@
 # Changelog
 
 
+## [v0.4.0](https://github.com/foxifyjs/foxify/releases/tag/v0.4.0) *(2018-02-22)*
+
+**Implemented enhancements:**
+- improved performance
+- improved error responses
+- improved database schema validation
+- logging errors when `NODE_ENV` is set to `debug`
+
+**Fixed bugs:**
+- wrong database name according to model name
+
+
 ## [v0.3.2](https://github.com/foxifyjs/foxify/releases/tag/v0.3.2) *(2018-02-20)*
 
 **Implemented enhancements:**
