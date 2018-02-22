@@ -7,11 +7,11 @@
     "Ardalan Amini <ardalanamini22@gmail.com>"
   ],
   "license": "MIT",
+  "homepage": "https://foxify.js.org",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/foxifyjs/foxify.git"
   },
-  "homepage": "https://github.com/foxifyjs/foxify#readme",
   "keywords": [
     "node",
     "fast",
