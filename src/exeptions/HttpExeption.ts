@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse, STATUS_CODES } from 'http'
 import { http } from '../constants'
+import htmlError from './htmlError'
 
 declare module HttpExeption { }
 
@@ -42,35 +43,34 @@ class HttpExeption extends Error {
     this.errors = errors
   }
 
-  static handle(exeption: any = new HttpExeption(http.INTERNAL_SERVER_ERROR), req: IncomingMessage, res: ServerResponse): void {
+  static handle(exeption: any = new HttpExeption, req: IncomingMessage, res: ServerResponse): void {
     let message = exeption.message
     let errors = exeption.errors
     let code = exeption.code
 
-    let html
-    let json
-    let def
+    let html: string
+    let json: Object
 
     switch (code) {
       case http.NOT_FOUND:
         message = message || STATUS_CODES[code]
-        html = () => res.status(code).send(`<p>${message}</p>`)
-        json = () => res.status(code).json({ message })
-        def = () => res.status(code).send(message)
+
+        html = htmlError(code, message)
+        json = { message }
         break
       case http.INTERNAL_SERVER_ERROR:
       default:
         code = http.INTERNAL_SERVER_ERROR
         message = message || STATUS_CODES[code]
-        html = () => res.status(code).send(`<p>${message}</p>`)
-        json = () => res.status(code).json({ message, errors })
-        def = () => res.status(code).send(message)
+
+        html = htmlError(code, message)
+        json = { message, errors }
     }
 
     res.format({
-      'text/html': html,
-      'application/json': json,
-      'default': def
+      'text/html': () => res.status(code).send(html),
+      'application/json': () => res.status(code).json(json),
+      'default': () => res.status(code).send(message)
     })
   }
 }

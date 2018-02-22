@@ -29,23 +29,18 @@ abstract class Model implements Collection {
 
   protected static collection: string
 
-  protected static get _collection() {
-    return this.collection || this.name.toLowerCase() + 's'
-  }
-
   protected static schema: Model.SchemaDefinition = {}
 
-  readonly hidden: Array<string> = []
+  protected static hidden: Array<string> = []
 
-  model: mongodb.Collection = (this.constructor as any)._connect()
+  // constructor(document?: Partial<Model.Schema>) {
+  //   if (document) {
+  //     // TODO
+  //   }
+  // }
 
-  /**
-   *
-   */
-  constructor(document?: Partial<Model.Schema>) {
-    if (document) {
-      // TODO
-    }
+  private static get _collection() {
+    return this.collection || `${this.name.snakeCase()}s`
   }
 
   private static _connect(): mongodb.Collection {
@@ -58,10 +53,6 @@ abstract class Model implements Collection {
     if (validation.errors) throw new HttpExeption(500, validation.errors)
 
     return validation.value
-  }
-
-  static isInstance(arg: any) {
-    return arg instanceof this
   }
 }
 

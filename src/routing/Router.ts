@@ -38,7 +38,7 @@ class Router {
       }
     }
 
-    throw new HttpExeption('Not Found', constants.http.NOT_FOUND)
+    throw new HttpExeption(constants.http.NOT_FOUND)
   }
 }
 

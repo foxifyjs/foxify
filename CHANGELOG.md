@@ -5,6 +5,7 @@
 
 **Implemented enhancements:**
 - improved database model schema validation
+
 **Fixed bugs:**
 - database model schema validation instance
 - default database connection when there is no `.env` file

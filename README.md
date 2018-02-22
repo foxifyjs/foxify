@@ -23,6 +23,9 @@
 	<a href="https://github.com/foxifyjs/foxify" target="_blank">
 		<img src="https://img.shields.io/github/stars/foxifyjs/foxify.svg?style=social&label=Stars" alt="github stars">
 	</a>
+	<a href="https://github.com/foxifyjs/foxify" target="_blank">
+		<img src="https://img.shields.io/github/forks/foxifyjs/foxify.svg?style=social&label=Fork" alt="github stars">
+	</a>
 	<br>
 </div>
 
