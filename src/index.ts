@@ -31,7 +31,7 @@ class Foxify {
   static constants = constants
   static static = serveStatic
   static DB = DB
-  static Route = Route
+  static route = (prefix?: string) => new Route(prefix)
 
   view?: Engine
 
