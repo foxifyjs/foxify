@@ -29,13 +29,35 @@ declare interface Foxify {
 
 class Foxify {
   static constants = constants
-  static static = serveStatic
   static DB = DB
   static route = (prefix?: string) => new Route(prefix)
+  static static = serveStatic
 
-  view?: Engine
+  protected _options = {
+    'x-powered-by': true,
+    routing: {
+      strict: false,
+      sensitive: true,
+    },
+    json: {
+      escape: false,
+    }
+  }
+
+  protected _settings = {
+    env: process.env.NODE_ENV || 'development',
+    json: {
+      replacer: null,
+      spaces: null
+    },
+    query: {
+      parser: null
+    }
+  }
 
   protected _router = new Router()
+
+  protected _view?: Engine
 
   constructor() {
     if (process.env.DATABASE_NAME) {
@@ -65,14 +87,119 @@ class Foxify {
         }
       }
     })
-
-    /* apply default middlewares */
-    this.use(init)
-    this.use(query())
   }
 
+  /* handle options */
+  protected _setOption(option: string, value: boolean, options: OBJ = this._options) {
+    if (!String.isInstance(option)) throw new TypeError('\'option\' should be an string')
+    if (!Boolean.isInstance(value)) throw new TypeError('\'value\' should be a boolean')
+    if (Boolean.isInstance(options)) throw new Error('Unknown option')
+
+    let keys = option.split('.')
+
+    if (keys.length == 1) {
+      options[keys.first()] = value
+    } else {
+      this._setOption(keys.tail().join('.'), value, options[keys.first()])
+    }
+  }
+
+  enable(option: string) {
+    this._setOption(option, true)
+  }
+
+  disable(option: string) {
+    this._setOption(option, false)
+  }
+
+  enabled(option: string): boolean {
+    if (!String.isInstance(option)) throw new TypeError('\'option\' should be an string')
+
+    let keys = option.split('.')
+
+    let _opt: OBJ | boolean = this._options
+
+    keys.map((key) => {
+      if (Boolean.isInstance(_opt)) throw new Error('Unknown option')
+
+      _opt = (_opt as OBJ)[key]
+    })
+
+    return _opt
+  }
+
+  disabled(option: string): boolean {
+    return !this.enabled(option)
+  }
+
+  /* handle settings */
+  protected _set(setting: string, value: any, settings: OBJ = this._settings) {
+    if (!String.isInstance(setting)) throw new TypeError('\'setting\' should be an string')
+    if (Boolean.isInstance(settings)) throw new Error('Unknown setting')
+
+    let keys = setting.split('.')
+
+    if (keys.length == 1) {
+      settings[keys.first()] = value
+    } else {
+      this._set(keys.tail().join('.'), value, settings[keys.first()])
+    }
+  }
+
+  set(setting: string, value: any) {
+    this._set(setting, value)
+  }
+
+  get(...args: any[]): any {
+    let length = args.length
+
+    if (length == 0 || length > 2) throw new TypeError('\'args\' should be an array of 1 or 2 values')
+
+    if (length == 1) {
+      let setting: string = args.first()
+
+      if (!String.isInstance(setting)) throw new TypeError('\'setting\' should be an string')
+
+      let keys = setting.split('.')
+
+      let _setting: OBJ | boolean = this._settings
+
+      keys.map((key) => {
+        if (!Object.isInstance(_setting)) throw new Error('Unknown setting')
+
+        _setting = (_setting as OBJ)[key]
+      })
+
+      return _setting
+    }
+
+    let path: string = args.first()
+    let controller: Route.Controller = args.last()
+
+    let route = new Route()
+
+    route.get(path, controller)
+
+    this._router.push(route.routes)
+  }
+
+  /* handle view */
   engine(extention: string, path: string, handler: Function) {
-    this.view = new Engine(path, extention, handler)
+    this._view = new Engine(path, extention, handler)
+  }
+
+  /* handle middlewares */
+  protected _use(
+    first: Route.Controller | string | Route = () => { },
+    second?: Route.Controller
+  ) {
+    if (first instanceof Route) return this._router.push(first.routes)
+
+    let route = new Route()
+
+    route.use(first, second)
+
+    this._router.prepend(route.routes)
   }
 
   use(
@@ -111,10 +238,18 @@ class Foxify {
       port = 3000
     }
 
+    process.env.NODE_ENV = this.get('env')
+
+    /* apply default middlewares */
+    this._use(init(this))
+    this._use(query(this))
+
     /* apply http patches */
-    request(http.IncomingMessage)
-    response(http.ServerResponse)
-    Engine.responsePatch(http.ServerResponse, this.view)
+    request(http.IncomingMessage, this)
+    response(http.ServerResponse, this)
+    Engine.responsePatch(http.ServerResponse, this._view)
+
+    this._router.initialize(this)
 
     /* no server fail at any cost */
     process.on('uncaughtException', (err) => console.error('Caught exception: ' + err))
