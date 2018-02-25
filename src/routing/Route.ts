@@ -1,5 +1,4 @@
 import * as http from 'http'
-import * as pathToRegExp from 'path-to-regexp'
 import { Encapsulation } from '../exeptions'
 import httpMethods from './httpMethods'
 
@@ -13,7 +12,7 @@ declare module Route {
   }
 
   export interface RouteObject {
-    path: RegExp,
+    path: string | RegExp,
     controller: Encapsulation
   }
 }
@@ -54,10 +53,8 @@ class Route {
   protected _push(method: string, path: string, controller: Route.Controller) {
     path = `${this._prefix}${path}`.replace(/\/$/, '')
 
-    let _path = pathToRegExp(path, [], { sensitive: true })
-
     this.routes[method].push({
-      path: _path,
+      path,
       controller: new Encapsulation((req, res, next: () => void, ...args: Array<any>) => controller(req, res, next, ...args))
     })
   }
