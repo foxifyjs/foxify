@@ -10,7 +10,6 @@ import * as Fox from '../index'
 declare module Router { }
 
 class Router {
-  protected _app?: Fox
   protected _routes: Route.Routes = {}
   protected _safeNext = new Encapsulation((req, res, url: string, routes: Array<Route.RouteObject>, index = 0) => this._next(req, res, url, routes, index))
 
@@ -39,14 +38,12 @@ class Router {
   }
 
   initialize(app: Fox) {
-    this._app = app
+    let strict = app.enabled('routing.strict')
+    let sensitive = app.enabled('routing.sensitive')
 
     httpMethods.map((method) => this._routes[method] = this._routes[method].map((route) => {
       return {
-        path: pathToRegExp(route.path, [], {
-          strict: app.enabled('routing.strict'),
-          sensitive: app.enabled('routing.sensitive')
-        }),
+        path: pathToRegExp(route.path, [], { strict, sensitive }),
         controller: route.controller
       }
     }))

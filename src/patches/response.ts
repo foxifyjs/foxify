@@ -396,6 +396,13 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     return this
   }
 
+  /* json options*/
+  const jsonOptions = {
+    escape: app.enabled('json.escape'),
+    spaces: app.get('json.spaces') || undefined,
+    replacer: app.get('json.replacer') || undefined
+  }
+
   /**
    * Send JSON response.
    *
@@ -407,7 +414,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.json = function(obj) {
-    let body = stringify(obj, app.get('json.replacer'), app.get('json.spaces'), app.enabled('json.escape'))
+    let body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape)
     // let body = JSON.stringify(obj)
 
     // content-type

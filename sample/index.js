@@ -17,7 +17,7 @@ app.use(morgan('dev'))
 
 // add routes to app
 app.use(index)
-app.use(users)
+  .use(users)
 
 // start the server
 app.start(() => console.log('Foxify server running at http://localhost:3000'))

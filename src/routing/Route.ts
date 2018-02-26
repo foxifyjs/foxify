@@ -21,18 +21,11 @@ declare interface Route {
   [key: string]: any
 }
 
-/**
- *
- */
 class Route {
   public routes: Route.Routes = {}
 
   protected _prefix: string
 
-  /**
-   *
-   * @param {String?} prefix
-   */
   constructor(prefix: string = '') {
     this._prefix = prefix
 
@@ -43,13 +36,6 @@ class Route {
     })
   }
 
-  /**
-   *
-   * @param {!String} method
-   * @param {!String} path
-   * @param {!Function} controller
-   * @private
-   */
   protected _push(method: string, path: string, controller: Route.Controller) {
     path = `${this._prefix}${path}`.replace(/\/$/, '')
 
@@ -57,25 +43,20 @@ class Route {
       path,
       controller: new Encapsulation((req, res, next: () => void, ...args: Array<any>) => controller(req, res, next, ...args))
     })
+
+    return this
   }
 
-  /**
-   *
-   * @param {!String} path
-   * @param {!Function} controller
-   */
   any(path: string, controller: Route.Controller) {
     httpMethods.map((method) => this._push(method, path, controller))
+
+    return this
   }
 
-  /**
-   *
-   * @param {!(String[])} methods
-   * @param {!String} path
-   * @param {!Function} controller
-   */
   oneOf(methods: Array<string>, path: string, controller: Route.Controller) {
     methods.map((method) => this._push(method.toUpperCase(), path, controller))
+
+    return this
   }
 
   /**
@@ -99,6 +80,8 @@ class Route {
 
       this.any(_path, <Route.Controller>_middleware)
     }
+
+    return this
   }
 }
 

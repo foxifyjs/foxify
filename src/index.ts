@@ -19,12 +19,6 @@ declare interface Foxify {
   use(route: Route): void
   use(middleware: Route.Controller): void
   use(path: string, controller: Route.Controller): void
-
-  start(): void
-  start(callback?: () => void): void
-  start(url: string, callback?: () => void): void
-  start(port: number, callback?: () => void): void
-  start(url: string, port: number, callback?: () => void): void
 }
 
 class Foxify {
@@ -45,7 +39,9 @@ class Foxify {
   }
 
   protected _settings = {
-    env: process.env.NODE_ENV || 'development',
+    env: process.env.NODE_ENV || 'production',
+    url: process.env.APP_URL || 'localhost',
+    port: process.env.APP_PORT || 3000,
     json: {
       replacer: null,
       spaces: null
@@ -84,6 +80,8 @@ class Foxify {
           route[method](path, controller)
 
           this._router.push(route.routes)
+
+          return this
         }
       }
     })
@@ -106,10 +104,14 @@ class Foxify {
 
   enable(option: string) {
     this._setOption(option, true)
+
+    return this
   }
 
   disable(option: string) {
     this._setOption(option, false)
+
+    return this
   }
 
   enabled(option: string): boolean {
@@ -117,12 +119,12 @@ class Foxify {
 
     let keys = option.split('.')
 
-    let _opt: OBJ | boolean = this._options
+    let _opt: any = this._options
 
     keys.map((key) => {
       if (Boolean.isInstance(_opt)) throw new Error('Unknown option')
 
-      _opt = (_opt as OBJ)[key]
+      _opt = _opt[key]
     })
 
     return _opt
@@ -148,6 +150,8 @@ class Foxify {
 
   set(setting: string, value: any) {
     this._set(setting, value)
+
+    return this
   }
 
   get(...args: any[]): any {
@@ -181,11 +185,15 @@ class Foxify {
     route.get(path, controller)
 
     this._router.push(route.routes)
+
+    return this
   }
 
   /* handle view */
   engine(extention: string, path: string, handler: Function) {
     this._view = new Engine(path, extention, handler)
+
+    return this
   }
 
   /* handle middlewares */
@@ -193,71 +201,60 @@ class Foxify {
     first: Route.Controller | string | Route = () => { },
     second?: Route.Controller
   ) {
-    if (first instanceof Route) return this._router.push(first.routes)
+    if (first instanceof Route) {
+      this._router.push(first.routes)
+    } else {
+      let route = new Route()
 
-    let route = new Route()
+      route.use(first, second)
 
-    route.use(first, second)
+      this._router.prepend(route.routes)
+    }
 
-    this._router.prepend(route.routes)
+    return this
   }
 
   use(
     first: Route.Controller | string | Route = () => { },
     second?: Route.Controller
   ) {
-    if (first instanceof Route) return this._router.push(first.routes)
+    if (first instanceof Route) {
+      this._router.push(first.routes)
+    } else {
+      let route = new Route()
 
-    let route = new Route()
+      route.use(first, second)
 
-    route.use(first, second)
+      this._router.push(route.routes)
+    }
 
-    this._router.push(route.routes)
+    return this
   }
 
-  start(
-    url: string | number | (() => void) = process.env.APP_URL || 'localhost',
-    port: number | (() => void) = +(process.env.APP_PORT || '3000'),
-    callback?: () => void
-  ) {
-    if (Function.isInstance(url)) {
-      callback = url
-      url = 'localhost'
-      port = 3000
-    }
+  start(callback?: () => void) {
+    if (callback && !Function.isInstance(callback)) throw new TypeError('\'callback\' must be a function')
 
-    if (Number.isInstance(url)) {
-      if (Function.isInstance(port)) callback = port
-
-      port = url
-      url = 'localhost'
-    }
-
-    if (Function.isInstance(port)) {
-      callback = port
-      port = 3000
-    }
-
+    /* set node env */
     process.env.NODE_ENV = this.get('env')
 
     /* apply default middlewares */
     this._use(init(this))
-    this._use(query(this))
+      ._use(query(this))
 
     /* apply http patches */
     request(http.IncomingMessage, this)
     response(http.ServerResponse, this)
     Engine.responsePatch(http.ServerResponse, this._view)
 
+    /* initialize the router with provided options and settings */
     this._router.initialize(this)
 
     /* no server fail at any cost */
     process.on('uncaughtException', (err) => console.error('Caught exception: ' + err))
-    process.on('unhandledRejection', (err) => console.warn('Caught rejection: ' + err))
+      .on('unhandledRejection', (err) => console.warn('Caught rejection: ' + err))
 
-    let server = http.createServer((req, res) => this._router.route(req, res))
-
-    server.listen(port, url, callback)
+    http.createServer((req, res) => this._router.route(req, res))
+      .listen(+this.get('port'), this.get('url'), callback)
   }
 }
 
