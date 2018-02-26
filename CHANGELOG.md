@@ -1,6 +1,15 @@
 # Changelog
 
 
+## [next](https://github.com/foxifyjs/foxify/releases/tag/next) *(2018--)*
+
+**Implemented enhancements:**
+- added multiple options [`x-powered-by`, `routing.strict`, `routing.sensitive`, `json.escape`]
+- added multiple settings [`enc`, `url`, `port`, `json.replacer`, `json.spaces`, `query.parser`]
+- added multiple model relations [`hasOne`, `hasMany`]
+- improved usage
+
+
 ## [v0.4.0](https://github.com/foxifyjs/foxify/releases/tag/v0.4.0) *(2018-02-22)*
 
 **Implemented enhancements:**
