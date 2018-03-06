@@ -9,6 +9,7 @@ declare module "*/package.json" {
 
 declare module "*.json" {
   const json: Array<any> | OBJ
+
   export = json
 }
 

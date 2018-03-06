@@ -10,15 +10,15 @@ import { request, response } from './patches'
 import { Engine } from './view'
 import { name } from '../package.json'
 
-declare module Foxify {
-}
-
 declare interface Foxify {
   [key: string]: any
 
   use(route: Route): void
   use(middleware: Route.Controller): void
   use(path: string, controller: Route.Controller): void
+}
+
+declare module Foxify {
 }
 
 class Foxify {
@@ -41,7 +41,7 @@ class Foxify {
   protected _settings = {
     env: process.env.NODE_ENV || 'production',
     url: process.env.APP_URL || 'localhost',
-    port: process.env.APP_PORT || 3000,
+    port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
     json: {
       replacer: null,
       spaces: null
@@ -254,7 +254,7 @@ class Foxify {
       .on('unhandledRejection', (err) => console.warn('Caught rejection: ' + err))
 
     http.createServer((req, res) => this._router.route(req, res))
-      .listen(+this.get('port'), this.get('url'), callback)
+      .listen(this.get('port'), this.get('url'), callback)
   }
 }
 
