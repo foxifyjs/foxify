@@ -36,7 +36,7 @@
 
 ## Installation
 
-Before installing, [download and install Node.js](https://nodejs.org/en/download/).
+Before installing, [download and install Node.js](https://nodejs.org/en/download).
 Node.js 6.4.0 or higher is required.
 
 ```bash
@@ -74,6 +74,7 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 
 
 ## Features
+
 - Written in ES6
 - Robust routing (faster than `Express`)
 - `Express` middleware support
@@ -104,14 +105,18 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 | Express | 4.16.2 | 31,040 |
 | Hapi | 17.2.0 | 29,476 |
 
+
 ## TODOs
+
 - [x] Routing
-- [x] Middlewares
+- [x] Middleware support
+- [x] Error handling
+- [x] View engine
 - [x] Options
 - [x] Settings
 - [ ] Database
 	- [ ] MongoDB
-		- [x] `shema` validation
+		- [x] `schema` validation
 		- [ ] Relations
 			- [x] `hasOne` relation
 			- [x] `hasMany` relation
@@ -119,5 +124,5 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 			- [x] Read operation
 			- [ ] Update operation
 			- [ ] Delete operation
-- [ ] Clustering
+- [x] Clustering
 - [ ] File storage

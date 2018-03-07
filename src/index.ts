@@ -1,4 +1,6 @@
 import './bootstrap'
+import * as cluster from 'cluster'
+import * as os from 'os'
 import * as http from 'http'
 import * as path from 'path'
 import * as serveStatic from 'serve-static'
@@ -42,6 +44,7 @@ class Foxify {
     env: process.env.NODE_ENV || 'production',
     url: process.env.APP_URL || 'localhost',
     port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
+    clusters: process.env.CLUSTERS || os.cpus().length,
     json: {
       replacer: null,
       spaces: null
@@ -248,6 +251,22 @@ class Foxify {
 
     /* initialize the router with provided options and settings */
     this._router.initialize(this)
+
+    const _clusters = this.get('clusters')
+    if (_clusters > 1) {
+      if (cluster.isMaster) {
+        for (let i = 0; i < _clusters; i++) cluster.fork()
+      } else {
+        /* no server fail at any cost */
+        process.on('uncaughtException', (err) => console.error('Caught exception: ' + err))
+          .on('unhandledRejection', (err) => console.warn('Caught rejection: ' + err))
+
+        http.createServer((req, res) => this._router.route(req, res))
+          .listen(this.get('port'), this.get('url'), callback)
+      }
+
+      return;
+    }
 
     /* no server fail at any cost */
     process.on('uncaughtException', (err) => console.error('Caught exception: ' + err))
