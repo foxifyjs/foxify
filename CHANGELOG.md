@@ -5,8 +5,9 @@
 
 **Implemented enhancements:**
 - added multiple options [`x-powered-by`, `routing.strict`, `routing.sensitive`, `json.escape`]
-- added multiple settings [`env`, `url`, `port`, `json.replacer`, `json.spaces`, `query.parser`]
+- added multiple settings [`env`, `url`, `port`, `clusters`, `json.replacer`, `json.spaces`, `query.parser`]
 - added multiple model relations [`hasOne`, `hasMany`]
+- added clustering
 - improved usage
 
 

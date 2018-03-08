@@ -44,7 +44,7 @@ class Foxify {
     env: process.env.NODE_ENV || 'production',
     url: process.env.APP_URL || 'localhost',
     port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
-    clusters: process.env.CLUSTERS || os.cpus().length,
+    clusters: process.env.CLUSTERS ? +process.env.CLUSTERS : os.cpus().length,
     json: {
       replacer: null,
       spaces: null
@@ -90,35 +90,66 @@ class Foxify {
     })
   }
 
-  /* handle options */
-  protected _setOption(option: string, value: boolean, options: OBJ = this._options) {
-    if (!String.isInstance(option)) throw new TypeError('\'option\' should be an string')
-    if (!Boolean.isInstance(value)) throw new TypeError('\'value\' should be a boolean')
-    if (Boolean.isInstance(options)) throw new Error('Unknown option')
-
-    let keys = option.split('.')
+  /* handle options & settings */
+  protected _set(setting: string, value: any, object: OBJ) {
+    let keys = setting.split('.')
 
     if (keys.length == 1) {
-      options[keys.first()] = value
+      object[keys.first()] = value
     } else {
-      this._setOption(keys.tail().join('.'), value, options[keys.first()])
+      this._set(keys.tail().join('.'), value, object[keys.first()])
     }
   }
 
+  /* handle options */
   enable(option: string) {
-    this._setOption(option, true)
+    if (!String.isInstance(option)) throw new TypeError('Argument \'option\' should be an string')
+
+    switch (option) {
+      case 'x-powered-by':
+      case 'routing.strict':
+      case 'routing.sensitive':
+      case 'json.escape':
+        break
+      default:
+        throw new TypeError(`Unknown option '${option}'`)
+    }
+
+    this._set(option, true, this._options)
 
     return this
   }
 
   disable(option: string) {
-    this._setOption(option, false)
+    if (!String.isInstance(option)) throw new TypeError('Argument \'option\' should be an string')
+
+    switch (option) {
+      case 'x-powered-by':
+      case 'routing.strict':
+      case 'routing.sensitive':
+      case 'json.escape':
+        break
+      default:
+        throw new TypeError(`Unknown option '${option}'`)
+    }
+
+    this._set(option, false, this._options)
 
     return this
   }
 
   enabled(option: string): boolean {
-    if (!String.isInstance(option)) throw new TypeError('\'option\' should be an string')
+    if (!String.isInstance(option)) throw new TypeError('Argument \'option\' should be an string')
+
+    switch (option) {
+      case 'x-powered-by':
+      case 'routing.strict':
+      case 'routing.sensitive':
+      case 'json.escape':
+        break
+      default:
+        throw new TypeError(`Unknown option '${option}'`)
+    }
 
     let keys = option.split('.')
 
@@ -138,21 +169,34 @@ class Foxify {
   }
 
   /* handle settings */
-  protected _set(setting: string, value: any, settings: OBJ = this._settings) {
-    if (!String.isInstance(setting)) throw new TypeError('\'setting\' should be an string')
-    if (Boolean.isInstance(settings)) throw new Error('Unknown setting')
-
-    let keys = setting.split('.')
-
-    if (keys.length == 1) {
-      settings[keys.first()] = value
-    } else {
-      this._set(keys.tail().join('.'), value, settings[keys.first()])
-    }
-  }
-
   set(setting: string, value: any) {
-    this._set(setting, value)
+    if (!String.isInstance(setting)) throw new TypeError('Argument \'setting\' should be an string')
+
+    switch (setting) {
+      case 'env':
+      case 'url':
+        if (!String.isInstance(value)) throw new TypeError(`setting '${setting}' should be an string`)
+        break
+      case 'port':
+      case 'clusters':
+        if (!Number.isInstance(value)) throw new TypeError(`setting '${setting}' should be a number`)
+        if (value < 1) throw new TypeError(`setting '${setting}' should be a positive number`)
+        break
+      case 'json.spaces':
+        if (value == null) break
+        if (!Number.isInstance(value)) throw new TypeError(`setting '${setting}' should be a number`)
+        if (value < 0) throw new TypeError(`setting '${setting}' should be a positive number or zero`)
+        break
+      case 'json.replacer':
+      case 'query.parser':
+        if (value == null) break
+        if (!Function.isInstance(value)) throw new TypeError(`setting '${setting}' should be a function`)
+        break
+      default:
+        throw new TypeError(`Unknown setting '${setting}'`)
+    }
+
+    this._set(setting, value, this._settings)
 
     return this
   }
@@ -166,6 +210,19 @@ class Foxify {
       let setting: string = args.first()
 
       if (!String.isInstance(setting)) throw new TypeError('\'setting\' should be an string')
+
+      switch (setting) {
+        case 'env':
+        case 'url':
+        case 'port':
+        case 'clusters':
+        case 'json.spaces':
+        case 'json.replacer':
+        case 'query.parser':
+          break
+        default:
+          throw new TypeError(`Unknown setting '${setting}'`)
+      }
 
       let keys = setting.split('.')
 
@@ -199,7 +256,7 @@ class Foxify {
     return this
   }
 
-  /* handle middlewares */
+  /* handle built-in middlewares */
   protected _use(
     first: Route.Controller | string | Route = () => { },
     second?: Route.Controller
@@ -217,6 +274,7 @@ class Foxify {
     return this
   }
 
+  /* handle middlewares */
   use(
     first: Route.Controller | string | Route = () => { },
     second?: Route.Controller
@@ -235,12 +293,12 @@ class Foxify {
   }
 
   start(callback?: () => void) {
-    if (callback && !Function.isInstance(callback)) throw new TypeError('\'callback\' must be a function')
+    if (callback && !Function.isInstance(callback)) throw new TypeError('Argument \'callback\' must be a function')
 
     /* set node env */
     process.env.NODE_ENV = this.get('env')
 
-    /* apply default middlewares */
+    /* apply built-in middlewares */
     this._use(init(this))
       ._use(query(this))
 
@@ -252,25 +310,28 @@ class Foxify {
     /* initialize the router with provided options and settings */
     this._router.initialize(this)
 
+    /* apply clusters */
     const _clusters = this.get('clusters')
     if (_clusters > 1) {
       if (cluster.isMaster) {
         for (let i = 0; i < _clusters; i++) cluster.fork()
-      } else {
-        /* no server fail at any cost */
-        process.on('uncaughtException', (err) => console.error('Caught exception: ' + err))
-          .on('unhandledRejection', (err) => console.warn('Caught rejection: ' + err))
 
-        http.createServer((req, res) => this._router.route(req, res))
-          .listen(this.get('port'), this.get('url'), callback)
+        return
       }
 
-      return;
+      /* no server fail at any cost ;) */
+      process.on('uncaughtException', (err) => console.error(`Caught exception (worker pid: ${process.pid}): `, err))
+        .on('unhandledRejection', (err) => console.warn(`Caught rejection (worker pid: ${process.pid}): `, err))
+
+      http.createServer((req, res) => this._router.route(req, res))
+        .listen(this.get('port'), this.get('url'), callback)
+
+      return
     }
 
-    /* no server fail at any cost */
-    process.on('uncaughtException', (err) => console.error('Caught exception: ' + err))
-      .on('unhandledRejection', (err) => console.warn('Caught rejection: ' + err))
+    /* no server fail at any cost ;) */
+    process.on('uncaughtException', (err) => console.error('Caught exception: ', err))
+      .on('unhandledRejection', (err) => console.warn('Caught rejection: ', err))
 
     http.createServer((req, res) => this._router.route(req, res))
       .listen(this.get('port'), this.get('url'), callback)

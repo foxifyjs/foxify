@@ -20,4 +20,4 @@ app.use(index)
   .use(users)
 
 // start the server
-app.start(() => console.log('Foxify server running at http://localhost:3000'))
+app.start(() => console.log(`Foxify server running at http://localhost:3000 (worker: ${process.pid})`))
