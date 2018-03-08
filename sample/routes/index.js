@@ -1,6 +1,6 @@
 const Fox = require('../../framework')
 
-let routes = new Fox.Route()
+let routes = Fox.route()
 
 routes.get('/', (req, res) => {
   res.render('index', {

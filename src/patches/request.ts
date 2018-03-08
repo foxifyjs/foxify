@@ -7,6 +7,7 @@ import proxyaddr = require('proxy-addr')
 import * as parseUrl from 'parseurl'
 import fresh = require('fresh')
 import * as constants from '../constants'
+import * as Fox from '../index'
 import { defineGetter } from '../utils'
 
 /**
@@ -33,7 +34,7 @@ declare module "http" {
 
 let req: http.IncomingMessage = Object.create(http.IncomingMessage.prototype)
 
-const patch = (req: typeof http.IncomingMessage) => {
+const patch = (req: typeof http.IncomingMessage, app: Fox) => {
   /**
    * Return request header.
    *

@@ -41,8 +41,8 @@ class TypeAny {
   }
 
   // TODO whitelist
-  allow(...vs: any[]) {
-  }
+  // allow(...vs: any[]) {
+  // }
 
   validate(value: any = this._default): { value: any, errors: string[] | null } {
     if (value == undefined) {

@@ -1,9 +1,10 @@
 import * as mongodb from 'mongodb'
 import * as connect from './connect'
 import * as Collection from './native/Collection'
+import * as Relation from './relation'
 import * as Schema from './Schema'
 import * as types from './types'
-import { applyStaticMixins } from '../utils'
+import { applyMixins, applyAsStaticMixins } from '../utils'
 
 declare module Model {
   export interface SchemaDefinition {
@@ -15,14 +16,17 @@ declare module Model {
   }
 }
 
-declare interface Model extends Collection {
+// declare interface Model extends Collection, Relation {
+declare interface Model extends Relation {
 }
 
 /**
  *
  * @abstract
  */
-abstract class Model implements Collection {
+// abstract class Model implements Collection, Relation {
+abstract class Model implements Relation {
+  protected _relations: Array<string> = []
   static types = types
 
   protected static connection: string = 'default'
@@ -39,6 +43,10 @@ abstract class Model implements Collection {
   //   }
   // }
 
+  static toString() {
+    return this._collection
+  }
+
   private static get _collection() {
     return this.collection || `${this.name.snakeCase()}s`
   }
@@ -47,8 +55,16 @@ abstract class Model implements Collection {
     return __FOX__.db.connections[this.connection].collection(this._collection)
   }
 
-  protected static _validate(document: Partial<Model.Schema>) {
+  protected static _validate(document: Partial<Model.Schema>, required: boolean = true) {
     let validation = Schema.validate(this.schema, document)
+
+    if (validation.errors && !required) {
+      validation.errors.map((errors, key) => {
+        if (errors.length == 1 && errors.first() == 'Must be provided') delete (validation.errors as any)[key]
+      })
+
+      if (validation.errors.size() == 0) validation.errors = null
+    }
 
     if (validation.errors) throw new HttpExeption(500, validation.errors)
 
@@ -56,6 +72,8 @@ abstract class Model implements Collection {
   }
 }
 
-applyStaticMixins(Model, [Collection])
+applyMixins(Model, [Relation])
+
+applyAsStaticMixins(Model, [Collection])
 
 export = Model

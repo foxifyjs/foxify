@@ -36,7 +36,7 @@
 
 ## Installation
 
-Before installing, [download and install Node.js](https://nodejs.org/en/download/).
+Before installing, [download and install Node.js](https://nodejs.org/en/download).
 Node.js 6.4.0 or higher is required.
 
 ```bash
@@ -70,12 +70,15 @@ app.start();
 
 More detailed [sample](https://github.com/foxifyjs/foxify/tree/master/sample) is available.
 
+You can also find all the documents [here](https://foxify.js.org/api.html).
+
 
 ## Features
+
 - Written in ES6
 - Robust routing (faster than `Express`)
 - `Express` middleware support
-- Robust database modeling (at the moment it's basically `mongodb` package but implemented in a fast way + schema validation)
+- Robust database modeling (`mongodb`)
 - Simple and powerful error handling
 - Focus on high performance
 - HTTP helpers (redirection, etc)
@@ -86,15 +89,41 @@ More detailed [sample](https://github.com/foxifyjs/foxify/tree/master/sample) is
 
 ## Benchmarks
 
-**Machine**: Intel Core i7 (4 cores, 8 threads), 8GiB RAM
+**Machine**: Intel Virtual CPU (2 cores), 2GiB (DDR4)
 
 **Method**: `autocannon -c 100 -d 40 -p 10 localhost:3000` * 2, taking the second average
 
-| Framework | Version | Request/Second |
+**sort**: Request / Second
+
+| Framework | Version | R/S |
 |:---------:|:-------:|:---:|
-| `http.Server` | 9.5.0 | 23,735 |
+| `http.Server` | 9.5.0 | 54,669 |
 | - | - | - |
-| **Foxify** | 0.2.0 | 15,661 |
-| Restify | 6.3.4 | 15,067 |
-| Hapi | 17.2.0 | 13,657 |
-| Express | 4.16.2 | 10,913 |
+| fastify | 1.0.0-rc.2 | 43,746 |
+| **Foxify (1 cluster)** | **0.4.0** | **38,982** |
+| Restify | 6.3.4 | 37,006 |
+| Express | 4.16.2 | 31,040 |
+| Hapi | 17.2.0 | 29,476 |
+
+
+## TODOs
+
+- [x] Routing
+- [x] Middleware support
+- [x] Error handling
+- [x] View engine
+- [x] Options
+- [x] Settings
+- [ ] Database
+	- [ ] MySQL ?
+	- [ ] MongoDB
+		- [x] `schema` validation
+		- [ ] Relations
+			- [x] `hasOne` relation
+			- [x] `hasMany` relation
+			- [ ] Create operation
+			- [x] Read operation
+			- [ ] Update operation
+			- [ ] Delete operation
+- [x] Clustering
+- [ ] File storage

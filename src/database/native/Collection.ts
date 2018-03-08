@@ -13,7 +13,7 @@ declare module Collection {
 
 declare interface Collection<TSchema = any> {
   _connect(): mongodb.Collection
-  _validate(document: Partial<Model.Schema>): any
+  _validate(document: Partial<Model.Schema>, required?: boolean): any
 
   aggregate(pipeline: Object[], callback: mongodb.MongoCallback<TSchema[]>): mongodb.AggregationCursor<TSchema>
   aggregate(pipeline: Object[], options?: mongodb.CollectionAggregationOptions, callback?: mongodb.MongoCallback<TSchema[]>): mongodb.AggregationCursor<TSchema>
@@ -153,8 +153,16 @@ class Collection<TSchema = any> {
     return collection.aggregate.apply(collection, args)
   }
 
-  bulkWrite(operations: Object[], ...rest: Array<any>) {
-    // TODO
+  bulkWrite(operations: OBJ[], ...rest: Array<any>) {
+    operations = operations.map((operation) => {
+      if (operation.insertOne) operation.insertOne.document = this._validate(operation.insertOne.document, false)
+      if (operation.updateOne) operation.updateOne.update.$set = this._validate(operation.updateOne.update.$set, false)
+      if (operation.updateMany) operation.updateMany.update.$set = this._validate(operation.updateMany.update.$set, false)
+      if (operation.replaceOne) operation.replaceOne.replacement = this._validate(operation.replaceOne.replacement, false)
+
+      return operation
+    })
+
     let collection = this._connect()
 
     return collection.bulkWrite.apply(collection, [operations, ...rest])
@@ -235,15 +243,15 @@ class Collection<TSchema = any> {
   }
 
   findOneAndReplace(filter: Object, replacement: Object, ...rest: Array<any>) {
-    replacement = this._validate(replacement)
+    replacement = this._validate(replacement, false)
 
     let collection = this._connect()
 
     return collection.findOneAndReplace.apply(collection, [filter, replacement, ...rest])
   }
 
-  findOneAndUpdate(filter: Object, update: Object, ...rest: Array<any>) {
-    update = this._validate(update)
+  findOneAndUpdate(filter: Object, update: OBJ, ...rest: Array<any>) {
+    update.$set = this._validate(update.$set, false)
 
     let collection = this._connect()
 
@@ -294,7 +302,7 @@ class Collection<TSchema = any> {
     return collection.insertMany.apply(collection, [docs, ...rest])
   }
 
-  insertOne(doc: Object,...rest: Array<any>) {
+  insertOne(doc: Object, ...rest: Array<any>) {
     doc = this._validate(doc)
 
     let collection = this._connect()
@@ -341,7 +349,7 @@ class Collection<TSchema = any> {
   // rename ?
 
   replaceOne(filter: Object, doc: Object, ...rest: Array<any>) {
-    doc = this._validate(doc)
+    doc = this._validate(doc, false)
 
     let collection = this._connect()
 
@@ -354,16 +362,16 @@ class Collection<TSchema = any> {
     return collection.stats.apply(collection, args)
   }
 
-  updateMany(filter: Object, update: Object, ...rest: Array<any>) {
-    update = this._validate(update)
+  updateMany(filter: Object, update: OBJ, ...rest: Array<any>) {
+    update.$set = this._validate(update.$set, false)
 
     let collection = this._connect()
 
     return collection.updateMany.apply(collection, [filter, update, ...rest])
   }
 
-  updateOne(filter: Object, update: Object, ...rest: Array<any>) {
-    update = this._validate(update)
+  updateOne(filter: Object, update: OBJ, ...rest: Array<any>) {
+    update.$set = this._validate(update.$set, false)
 
     let collection = this._connect()
 

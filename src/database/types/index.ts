@@ -5,11 +5,10 @@ import Buffer from './Buffer'
 import Date from './Date'
 import Number from './Number'
 import Object from './Object'
+import ObjectId from './ObjectId'
 import String from './String'
 
 declare module Type {}
-
-// TODO ObjectId
 
 class Type {
   static get Any() {
@@ -38,6 +37,10 @@ class Type {
 
   static get Object() {
     return new Object
+  }
+
+  static get ObjectId() {
+    return new ObjectId
   }
 
   static get String() {

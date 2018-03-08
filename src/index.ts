@@ -1,4 +1,6 @@
 import './bootstrap'
+import * as cluster from 'cluster'
+import * as os from 'os'
 import * as http from 'http'
 import * as path from 'path'
 import * as serveStatic from 'serve-static'
@@ -10,32 +12,51 @@ import { request, response } from './patches'
 import { Engine } from './view'
 import { name } from '../package.json'
 
-declare module Foxify {
-}
-
 declare interface Foxify {
   [key: string]: any
 
   use(route: Route): void
   use(middleware: Route.Controller): void
   use(path: string, controller: Route.Controller): void
+}
 
-  start(): void
-  start(callback?: () => void): void
-  start(url: string, callback?: () => void): void
-  start(port: number, callback?: () => void): void
-  start(url: string, port: number, callback?: () => void): void
+declare module Foxify {
 }
 
 class Foxify {
   static constants = constants
-  static static = serveStatic
   static DB = DB
-  static Route = Route
+  static route = (prefix?: string) => new Route(prefix)
+  static static = serveStatic
 
-  view?: Engine
+  protected _options = {
+    'x-powered-by': true,
+    routing: {
+      strict: false,
+      sensitive: true,
+    },
+    json: {
+      escape: false,
+    }
+  }
+
+  protected _settings = {
+    env: process.env.NODE_ENV || 'production',
+    url: process.env.APP_URL || 'localhost',
+    port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
+    clusters: process.env.CLUSTERS ? +process.env.CLUSTERS : os.cpus().length,
+    json: {
+      replacer: null,
+      spaces: null
+    },
+    query: {
+      parser: null
+    }
+  }
 
   protected _router = new Router()
+
+  protected _view?: Engine
 
   constructor() {
     if (process.env.DATABASE_NAME) {
@@ -62,67 +83,258 @@ class Foxify {
           route[method](path, controller)
 
           this._router.push(route.routes)
+
+          return this
         }
       }
     })
-
-    /* apply default middlewares */
-    this.use(init)
-    this.use(query())
   }
 
+  /* handle options & settings */
+  protected _set(setting: string, value: any, object: OBJ) {
+    let keys = setting.split('.')
+
+    if (keys.length == 1) {
+      object[keys.first()] = value
+    } else {
+      this._set(keys.tail().join('.'), value, object[keys.first()])
+    }
+  }
+
+  /* handle options */
+  enable(option: string) {
+    if (!String.isInstance(option)) throw new TypeError('Argument \'option\' should be an string')
+
+    switch (option) {
+      case 'x-powered-by':
+      case 'routing.strict':
+      case 'routing.sensitive':
+      case 'json.escape':
+        break
+      default:
+        throw new TypeError(`Unknown option '${option}'`)
+    }
+
+    this._set(option, true, this._options)
+
+    return this
+  }
+
+  disable(option: string) {
+    if (!String.isInstance(option)) throw new TypeError('Argument \'option\' should be an string')
+
+    switch (option) {
+      case 'x-powered-by':
+      case 'routing.strict':
+      case 'routing.sensitive':
+      case 'json.escape':
+        break
+      default:
+        throw new TypeError(`Unknown option '${option}'`)
+    }
+
+    this._set(option, false, this._options)
+
+    return this
+  }
+
+  enabled(option: string): boolean {
+    if (!String.isInstance(option)) throw new TypeError('Argument \'option\' should be an string')
+
+    switch (option) {
+      case 'x-powered-by':
+      case 'routing.strict':
+      case 'routing.sensitive':
+      case 'json.escape':
+        break
+      default:
+        throw new TypeError(`Unknown option '${option}'`)
+    }
+
+    let keys = option.split('.')
+
+    let _opt: any = this._options
+
+    keys.map((key) => {
+      if (Boolean.isInstance(_opt)) throw new Error('Unknown option')
+
+      _opt = _opt[key]
+    })
+
+    return _opt
+  }
+
+  disabled(option: string): boolean {
+    return !this.enabled(option)
+  }
+
+  /* handle settings */
+  set(setting: string, value: any) {
+    if (!String.isInstance(setting)) throw new TypeError('Argument \'setting\' should be an string')
+
+    switch (setting) {
+      case 'env':
+      case 'url':
+        if (!String.isInstance(value)) throw new TypeError(`setting '${setting}' should be an string`)
+        break
+      case 'port':
+      case 'clusters':
+        if (!Number.isInstance(value)) throw new TypeError(`setting '${setting}' should be a number`)
+        if (value < 1) throw new TypeError(`setting '${setting}' should be a positive number`)
+        break
+      case 'json.spaces':
+        if (value == null) break
+        if (!Number.isInstance(value)) throw new TypeError(`setting '${setting}' should be a number`)
+        if (value < 0) throw new TypeError(`setting '${setting}' should be a positive number or zero`)
+        break
+      case 'json.replacer':
+      case 'query.parser':
+        if (value == null) break
+        if (!Function.isInstance(value)) throw new TypeError(`setting '${setting}' should be a function`)
+        break
+      default:
+        throw new TypeError(`Unknown setting '${setting}'`)
+    }
+
+    this._set(setting, value, this._settings)
+
+    return this
+  }
+
+  get(...args: any[]): any {
+    let length = args.length
+
+    if (length == 0 || length > 2) throw new TypeError('\'args\' should be an array of 1 or 2 values')
+
+    if (length == 1) {
+      let setting: string = args.first()
+
+      if (!String.isInstance(setting)) throw new TypeError('\'setting\' should be an string')
+
+      switch (setting) {
+        case 'env':
+        case 'url':
+        case 'port':
+        case 'clusters':
+        case 'json.spaces':
+        case 'json.replacer':
+        case 'query.parser':
+          break
+        default:
+          throw new TypeError(`Unknown setting '${setting}'`)
+      }
+
+      let keys = setting.split('.')
+
+      let _setting: OBJ | boolean = this._settings
+
+      keys.map((key) => {
+        if (!Object.isInstance(_setting)) throw new Error('Unknown setting')
+
+        _setting = (_setting as OBJ)[key]
+      })
+
+      return _setting
+    }
+
+    let path: string = args.first()
+    let controller: Route.Controller = args.last()
+
+    let route = new Route()
+
+    route.get(path, controller)
+
+    this._router.push(route.routes)
+
+    return this
+  }
+
+  /* handle view */
   engine(extention: string, path: string, handler: Function) {
-    this.view = new Engine(path, extention, handler)
+    this._view = new Engine(path, extention, handler)
+
+    return this
   }
 
+  /* handle built-in middlewares */
+  protected _use(
+    first: Route.Controller | string | Route = () => { },
+    second?: Route.Controller
+  ) {
+    if (first instanceof Route) {
+      this._router.push(first.routes)
+    } else {
+      let route = new Route()
+
+      route.use(first, second)
+
+      this._router.prepend(route.routes)
+    }
+
+    return this
+  }
+
+  /* handle middlewares */
   use(
     first: Route.Controller | string | Route = () => { },
     second?: Route.Controller
   ) {
-    if (first instanceof Route) return this._router.push(first.routes)
+    if (first instanceof Route) {
+      this._router.push(first.routes)
+    } else {
+      let route = new Route()
 
-    let route = new Route()
+      route.use(first, second)
 
-    route.use(first, second)
+      this._router.push(route.routes)
+    }
 
-    this._router.push(route.routes)
+    return this
   }
 
-  start(
-    url: string | number | (() => void) = process.env.APP_URL || 'localhost',
-    port: number | (() => void) = +(process.env.APP_PORT || '3000'),
-    callback?: () => void
-  ) {
-    if (Function.isInstance(url)) {
-      callback = url
-      url = 'localhost'
-      port = 3000
-    }
+  start(callback?: () => void) {
+    if (callback && !Function.isInstance(callback)) throw new TypeError('Argument \'callback\' must be a function')
 
-    if (Number.isInstance(url)) {
-      if (Function.isInstance(port)) callback = port
+    /* set node env */
+    process.env.NODE_ENV = this.get('env')
 
-      port = url
-      url = 'localhost'
-    }
-
-    if (Function.isInstance(port)) {
-      callback = port
-      port = 3000
-    }
+    /* apply built-in middlewares */
+    this._use(init(this))
+      ._use(query(this))
 
     /* apply http patches */
-    request(http.IncomingMessage)
-    response(http.ServerResponse)
-    Engine.responsePatch(http.ServerResponse, this.view)
+    request(http.IncomingMessage, this)
+    response(http.ServerResponse, this)
+    Engine.responsePatch(http.ServerResponse, this._view)
 
-    /* no server fail at any cost */
-    process.on('uncaughtException', (err) => console.error('Caught exception: ' + err))
-    process.on('unhandledRejection', (err) => console.warn('Caught rejection: ' + err))
+    /* initialize the router with provided options and settings */
+    this._router.initialize(this)
 
-    let server = http.createServer((req, res) => this._router.route(req, res))
+    /* apply clusters */
+    const _clusters = this.get('clusters')
+    if (_clusters > 1) {
+      if (cluster.isMaster) {
+        for (let i = 0; i < _clusters; i++) cluster.fork()
 
-    server.listen(port, url, callback)
+        return
+      }
+
+      /* no server fail at any cost ;) */
+      process.on('uncaughtException', (err) => console.error(`Caught exception (worker pid: ${process.pid}): `, err))
+        .on('unhandledRejection', (err) => console.warn(`Caught rejection (worker pid: ${process.pid}): `, err))
+
+      http.createServer((req, res) => this._router.route(req, res))
+        .listen(this.get('port'), this.get('url'), callback)
+
+      return
+    }
+
+    /* no server fail at any cost ;) */
+    process.on('uncaughtException', (err) => console.error('Caught exception: ', err))
+      .on('unhandledRejection', (err) => console.warn('Caught rejection: ', err))
+
+    http.createServer((req, res) => this._router.route(req, res))
+      .listen(this.get('port'), this.get('url'), callback)
   }
 }
 

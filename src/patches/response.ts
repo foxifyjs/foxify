@@ -10,6 +10,7 @@ import * as contentDisposition from 'content-disposition'
 import * as vary from 'vary'
 import send = require('send')
 import * as constants from '../constants'
+import * as Fox from '../index'
 import { Engine } from '../view'
 
 declare module "http" {
@@ -285,7 +286,7 @@ const normalizeTypes = function(types: Array<string>) {
   return ret
 }
 
-const patch = (res: typeof http.ServerResponse) => {
+const patch = (res: typeof http.ServerResponse, app: Fox) => {
   /**
    * Set Link header field with the given `links`.
    *
@@ -395,6 +396,13 @@ const patch = (res: typeof http.ServerResponse) => {
     return this
   }
 
+  /* json options*/
+  const jsonOptions = {
+    escape: app.enabled('json.escape'),
+    spaces: app.get('json.spaces') || undefined,
+    replacer: app.get('json.replacer') || undefined
+  }
+
   /**
    * Send JSON response.
    *
@@ -406,7 +414,7 @@ const patch = (res: typeof http.ServerResponse) => {
    * @public
    */
   res.prototype.json = function(obj) {
-    let body = stringify(obj)
+    let body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape)
     // let body = JSON.stringify(obj)
 
     // content-type
