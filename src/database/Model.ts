@@ -16,14 +16,16 @@ declare module Model {
   }
 }
 
-declare interface Model extends Collection, Relation {
+// declare interface Model extends Collection, Relation {
+declare interface Model extends Relation {
 }
 
 /**
  *
  * @abstract
  */
-abstract class Model implements Collection, Relation {
+// abstract class Model implements Collection, Relation {
+abstract class Model implements Relation {
   protected _relations: Array<string> = []
   static types = types
 
@@ -57,8 +59,8 @@ abstract class Model implements Collection, Relation {
     let validation = Schema.validate(this.schema, document)
 
     if (validation.errors && !required) {
-       validation.errors.map((errors, key) => {
-        if (errors.length == 1 && errors.first() == 'Must be provided') delete validation.errors[key]
+      validation.errors.map((errors, key) => {
+        if (errors.length == 1 && errors.first() == 'Must be provided') delete (validation.errors as any)[key]
       })
 
       if (validation.errors.size() == 0) validation.errors = null

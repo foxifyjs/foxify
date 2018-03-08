@@ -23,7 +23,7 @@ class Router {
     for (; i < length; i++) {
       let route = routes[i]
 
-      let params = route.path.exec(url)
+      let params = (route.path as RegExp).exec(url)
 
       if (params) {
         let next = () => this._safeNext.run(req, res, url, routes, i + 1)

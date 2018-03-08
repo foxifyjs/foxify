@@ -1,6 +1,6 @@
 {
   "name": "foxify",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "The fast, easy to use & typescript ready web framework for Node.js",
   "author": "Ardalan Amini <ardalanamini22@gmail.com>",
   "contributors": [
@@ -20,9 +20,13 @@
     "web",
     "app",
     "application",
+    "cluster",
+    "clustering",
     "database",
     "model",
     "mongodb",
+    "relation",
+    "relationships",
     "framework",
     "foxify"
   ],

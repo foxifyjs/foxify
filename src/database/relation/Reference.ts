@@ -36,12 +36,12 @@ class Reference {
 
     let data = (this._relation as string).split('.')
 
+    let connection = 'default'
+    let collection = data.first()
+
     if (data.length == 2) {
-      let connection = data.first()
-      let collection = data.last()
-    } else {
-      let connection = 'default'
-      let collection = data.first()
+      connection = data.first()
+      collection = data.last()
     }
 
     return __FOX__.db.connections[connection].collection(collection)

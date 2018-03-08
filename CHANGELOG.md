@@ -1,13 +1,13 @@
 # Changelog
 
 
-## [next](https://github.com/foxifyjs/foxify/releases/tag/next) *(2018--)*
+## [v0.5.0](https://github.com/foxifyjs/foxify/releases/tag/v0.5.0) *(2018-03-08)*
 
 **Implemented enhancements:**
+- added clustering
+- added multiple model relations [`hasOne`, `hasMany`]
 - added multiple options [`x-powered-by`, `routing.strict`, `routing.sensitive`, `json.escape`]
 - added multiple settings [`env`, `url`, `port`, `clusters`, `json.replacer`, `json.spaces`, `query.parser`]
-- added multiple model relations [`hasOne`, `hasMany`]
-- added clustering
 - improved usage
 
 
