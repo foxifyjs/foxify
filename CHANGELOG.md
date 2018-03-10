@@ -1,6 +1,12 @@
 # Changelog
 
 
+## [v0.5.1](https://github.com/foxifyjs/foxify/releases/tag/v0.5.1) *(2018-03-10)*
+
+**Implemented enhancements:**
+- renamed `clusters` setting into `workers`
+
+
 ## [v0.5.0](https://github.com/foxifyjs/foxify/releases/tag/v0.5.0) *(2018-03-08)*
 
 **Implemented enhancements:**

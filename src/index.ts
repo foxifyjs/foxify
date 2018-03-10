@@ -44,7 +44,7 @@ class Foxify {
     env: process.env.NODE_ENV || 'production',
     url: process.env.APP_URL || 'localhost',
     port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
-    clusters: process.env.CLUSTERS ? +process.env.CLUSTERS : os.cpus().length,
+    workers: process.env.WORKERS ? +process.env.WORKERS : os.cpus().length,
     json: {
       replacer: null,
       spaces: null
@@ -105,15 +105,8 @@ class Foxify {
   enable(option: string) {
     if (!String.isInstance(option)) throw new TypeError('Argument \'option\' should be an string')
 
-    switch (option) {
-      case 'x-powered-by':
-      case 'routing.strict':
-      case 'routing.sensitive':
-      case 'json.escape':
-        break
-      default:
-        throw new TypeError(`Unknown option '${option}'`)
-    }
+    if (!['x-powered-by', 'routing.strict', 'routing.sensitive', 'json.escape'].contains(option))
+      throw new TypeError(`Unknown option '${option}'`)
 
     this._set(option, true, this._options)
 
@@ -123,15 +116,8 @@ class Foxify {
   disable(option: string) {
     if (!String.isInstance(option)) throw new TypeError('Argument \'option\' should be an string')
 
-    switch (option) {
-      case 'x-powered-by':
-      case 'routing.strict':
-      case 'routing.sensitive':
-      case 'json.escape':
-        break
-      default:
-        throw new TypeError(`Unknown option '${option}'`)
-    }
+    if (!['x-powered-by', 'routing.strict', 'routing.sensitive', 'json.escape'].contains(option))
+      throw new TypeError(`Unknown option '${option}'`)
 
     this._set(option, false, this._options)
 
@@ -141,15 +127,8 @@ class Foxify {
   enabled(option: string): boolean {
     if (!String.isInstance(option)) throw new TypeError('Argument \'option\' should be an string')
 
-    switch (option) {
-      case 'x-powered-by':
-      case 'routing.strict':
-      case 'routing.sensitive':
-      case 'json.escape':
-        break
-      default:
-        throw new TypeError(`Unknown option '${option}'`)
-    }
+    if (!['x-powered-by', 'routing.strict', 'routing.sensitive', 'json.escape'].contains(option))
+      throw new TypeError(`Unknown option '${option}'`)
 
     let keys = option.split('.')
 
@@ -178,7 +157,7 @@ class Foxify {
         if (!String.isInstance(value)) throw new TypeError(`setting '${setting}' should be an string`)
         break
       case 'port':
-      case 'clusters':
+      case 'workers':
         if (!Number.isInstance(value)) throw new TypeError(`setting '${setting}' should be a number`)
         if (value < 1) throw new TypeError(`setting '${setting}' should be a positive number`)
         break
@@ -211,18 +190,10 @@ class Foxify {
 
       if (!String.isInstance(setting)) throw new TypeError('\'setting\' should be an string')
 
-      switch (setting) {
-        case 'env':
-        case 'url':
-        case 'port':
-        case 'clusters':
-        case 'json.spaces':
-        case 'json.replacer':
-        case 'query.parser':
-          break
-        default:
-          throw new TypeError(`Unknown setting '${setting}'`)
-      }
+      if (
+        !['env', 'url', 'port', 'workers', 'json.spaces', 'json.replacer',
+          'query.parser'].contains(setting)
+      ) throw new TypeError(`Unknown setting '${setting}'`)
 
       let keys = setting.split('.')
 
@@ -310,11 +281,11 @@ class Foxify {
     /* initialize the router with provided options and settings */
     this._router.initialize(this)
 
-    /* apply clusters */
-    const _clusters = this.get('clusters')
-    if (_clusters > 1) {
+    /* apply workers */
+    const workers = this.get('workers')
+    if (workers > 1) {
       if (cluster.isMaster) {
-        for (let i = 0; i < _clusters; i++) cluster.fork()
+        for (let i = 0; i < workers; i++) cluster.fork()
 
         return
       }
