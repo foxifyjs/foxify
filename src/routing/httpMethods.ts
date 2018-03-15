@@ -1,3 +1,3 @@
-import * as httpMethods from 'methods'
+import * as httpMethods from "methods";
 
-export default httpMethods.map((method) => method.toUpperCase())
+export default httpMethods.map((method) => method.toUpperCase());

@@ -1,62 +1,68 @@
-import * as http from 'http'
-import { Encapsulation } from '../exeptions'
-import httpMethods from './httpMethods'
+import * as http from "http";
+import { Encapsulation } from "../exeptions";
+import httpMethods from "./httpMethods";
 
 declare module Route {
-  export interface Controller {
-    (requset: http.IncomingMessage, response: http.ServerResponse, next: () => void, ...rest: Array<any>): void
-  }
+  type Controller =
+    (
+      requset: http.IncomingMessage,
+      response: http.ServerResponse,
+      next: () => void,
+      ...rest: any[],
+    ) => void;
 
   export interface Routes {
-    [method: string]: Array<RouteObject>
+    [method: string]: RouteObject[];
   }
 
   export interface RouteObject {
-    path: string | RegExp,
-    controller: Encapsulation
+    path: string | RegExp;
+    controller: Encapsulation;
   }
 }
 
 declare interface Route {
-  [key: string]: any
+  [key: string]: any;
 }
 
 class Route {
-  public routes: Route.Routes = {}
+  routes: Route.Routes = {};
 
-  protected _prefix: string
+  protected _prefix: string;
 
-  constructor(prefix: string = '') {
-    this._prefix = prefix
+  constructor(prefix: string = "") {
+    this._prefix = prefix;
 
     httpMethods.map((method) => {
-      this.routes[method] = []
+      this.routes[method] = [];
 
-      this[method.toLowerCase()] = (path: string, controller: Route.Controller) => this._push(method, path, controller)
-    })
+      this[method.toLowerCase()] = (path: string, controller: Route.Controller) => this._push(method, path, controller);
+    });
   }
 
   protected _push(method: string, path: string, controller: Route.Controller) {
-    path = `${this._prefix}${path}`.replace(/\/$/, '')
+    path = `${this._prefix}${path}`.replace(/\/$/, "");
 
     this.routes[method].push({
       path,
-      controller: new Encapsulation((req, res, next: () => void, ...args: Array<any>) => controller(req, res, next, ...args))
-    })
+      controller: new Encapsulation(
+        (req, res, next: () => void, ...args: any[],
+        ) => controller(req, res, next, ...args)),
+    });
 
-    return this
+    return this;
   }
 
   any(path: string, controller: Route.Controller) {
-    httpMethods.map((method) => this._push(method, path, controller))
+    httpMethods.map((method) => this._push(method, path, controller));
 
-    return this
+    return this;
   }
 
-  oneOf(methods: Array<string>, path: string, controller: Route.Controller) {
-    methods.map((method) => this._push(method.toUpperCase(), path, controller))
+  oneOf(methods: string[], path: string, controller: Route.Controller) {
+    methods.map((method) => this._push(method.toUpperCase(), path, controller));
 
-    return this
+    return this;
   }
 
   /**
@@ -66,23 +72,23 @@ class Route {
    */
   use(first: Route.Controller | string | Route = () => { }, second: Route.Controller = () => { }) {
     if (first instanceof Route) {
-      let _routes = first.routes
+      const _routes = first.routes;
 
-      httpMethods.map((method) => this._routes[method].push(..._routes[method]))
+      httpMethods.map((method) => this._routes[method].push(..._routes[method]));
     } else {
-      let _path = '(.*)'
-      let _middleware = first
+      let _path = "(.*)";
+      let _middleware = first;
 
       if (String.isInstance(first)) {
-        _path = `${first}${_path}`
-        _middleware = second
+        _path = `${first}${_path}`;
+        _middleware = second;
       }
 
-      this.any(_path, <Route.Controller>_middleware)
+      this.any(_path, <Route.Controller> _middleware);
     }
 
-    return this
+    return this;
   }
 }
 
-export = Route
+export = Route;

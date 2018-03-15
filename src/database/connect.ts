@@ -1,38 +1,37 @@
-import * as mongodb from 'mongodb'
-import * as deasync from 'deasync'
+import * as mongodb from "mongodb";
+import * as deasync from "deasync";
 
 declare module connect {
   export interface Connection {
-    host?: string
-    port?: string
-    database: string
-    user?: string
-    password?: string
+    host?: string;
+    port?: string;
+    database: string;
+    user?: string;
+    password?: string;
   }
 }
 
 function connect(connection: connect.Connection): mongodb.Db {
-  let uri = 'mongodb://'
+  let uri = "mongodb://";
 
-  if (connection.user && connection.password) {
+  if (connection.user && connection.password)
     uri += `${
       connection.user
       }:${
       connection.password
-      }@`
-  }
+    }@`;
 
   uri += `${
-    connection.host || 'localhost'
+    connection.host || "localhost"
     }:${
-    connection.port || '27017'
+    connection.port || "27017"
     }/${
     connection.database
-    }`
+  }`;
 
-  let server = <mongodb.MongoClient>deasync(mongodb.MongoClient.connect)(uri)
+  const server = <mongodb.MongoClient>deasync(mongodb.MongoClient.connect)(uri);
 
-  return server.db(connection.database)
+  return server.db(connection.database);
 }
 
-export = connect
+export = connect;

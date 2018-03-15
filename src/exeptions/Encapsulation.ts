@@ -1,32 +1,31 @@
-import { IncomingMessage, ServerResponse } from 'http'
-import * as HttpExeption from './HttpExeption'
+import { IncomingMessage, ServerResponse } from "http";
+import * as HttpExeption from "./HttpExeption";
 
 declare module Encapsulation { }
 
 class Encapsulation {
-  protected _fn: Function
+  protected _fn: (req: IncomingMessage, res: ServerResponse, ...rest: any[]) => any;
 
-  constructor(fn: (req: IncomingMessage, res: ServerResponse, ...rest: Array<any>) => any) {
-    this._fn = fn
+  constructor(fn: (req: IncomingMessage, res: ServerResponse, ...rest: any[]) => any) {
+    this._fn = fn;
   }
 
-  run(req: IncomingMessage, res: ServerResponse, ...rest: Array<any>) {
+  run(req: IncomingMessage, res: ServerResponse, ...rest: any[]) {
     try {
-      let result = this._fn(req, res, ...rest)
+      const result = this._fn(req, res, ...rest);
 
-      if (result && Function.isInstance((result as any).then)) {
+      if (result && Function.isInstance((result as any).then))
         (result as Promise<any>).catch((err: Error) => {
-          HttpExeption.handle(err, req, res)
+          HttpExeption.handle(err, req, res);
 
-          if (process.env.NODE_ENV == 'debug') console.error(err)
-        })
-      }
+          if (process.env.NODE_ENV === "development") console.error(err);
+        });
     } catch (err) {
-      HttpExeption.handle(err, req, res)
+      HttpExeption.handle(err, req, res);
 
-      if (process.env.NODE_ENV == 'debug') console.error(err)
+      if (process.env.NODE_ENV === "development") console.error(err);
     }
   }
 }
 
-export = Encapsulation
+export = Encapsulation;

@@ -38,7 +38,8 @@
   ],
   "main": "framework/index.js",
   "scripts": {
-    "prepare": "node scripts/prepare.js",
+    "prepare": "npm run lint && node scripts/prepare.js",
+    "lint": "tslint -p tsconfig.json -c tslint.json --exclude '**/*.d.ts'",
     "build": "tsc"
   },
   "dependencies": {
@@ -94,6 +95,7 @@
     "fs-readdir-recursive": "^1.1.0",
     "morgan": "^1.9.0",
     "rimraf": "^2.6.2",
+    "tslint": "^5.9.1",
     "typescript": "^2.7.2",
     "uglify-es": "^3.3.10"
   }

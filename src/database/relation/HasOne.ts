@@ -1,13 +1,19 @@
-import * as Model from '../Model'
-import * as Reference from './Reference'
+import * as Model from "../Model";
+import * as Reference from "./Reference";
 
 declare module HasOne { }
 
 class HasOne extends Reference {
-  constructor(owner: typeof Model, model: typeof Model, localKey?: string, foreignKey: string = '_id', relation?: string | typeof Model) {
-    localKey = localKey || `${model.toString().slice(0, -1)}_id`
+  constructor(
+    owner: typeof Model,
+    model: typeof Model,
+    localKey?: string,
+    foreignKey: string = "_id",
+    relation?: string | typeof Model,
+  ) {
+    localKey = localKey || `${model.toString().slice(0, -1)}_id`;
 
-    super(model, localKey, foreignKey, relation)
+    super(model, localKey, foreignKey, relation);
   }
 
   stages(field: string) {
@@ -17,12 +23,12 @@ class HasOne extends Reference {
           from: this.model.toString(),
           localField: this.localKey,
           foreignField: this.foreignKey,
-          as: field
-        }
+          as: field,
+        },
       },
-      { $unwind: { path: `$${field}`, preserveNullAndEmptyArrays: true } }
-    ]
+      { $unwind: { path: `$${field}`, preserveNullAndEmptyArrays: true } },
+    ];
   }
 }
 
-export = HasOne
+export = HasOne;

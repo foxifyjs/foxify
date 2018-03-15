@@ -1,27 +1,27 @@
-import * as http from 'http'
-import * as Fox from '../index'
-import { name } from '../../package.json'
+import * as http from "http";
+import * as Fox from "../index";
+import { name } from "../../package.json";
 
 const init = (app: Fox) => {
-  if (app.enabled('x-powered-by')) {
-    const xPoweredBy = name.capitalize()
+  if (app.enabled("x-powered-by")) {
+    const xPoweredBy = name.capitalize();
 
     return (req: http.IncomingMessage, res: http.ServerResponse, next: () => void) => {
-      req.res = res
-      res.req = req
+      req.res = res;
+      res.req = req;
 
-      res.setHeader('X-Powered-By', xPoweredBy)
+      res.setHeader("X-Powered-By", xPoweredBy);
 
-      next()
-    }
+      next();
+    };
   }
 
   return (req: http.IncomingMessage, res: http.ServerResponse, next: () => void) => {
-    req.res = res
-    res.req = req
+    req.res = res;
+    res.req = req;
 
-    next()
-  }
-}
+    next();
+  };
+};
 
-export = init
+export = init;

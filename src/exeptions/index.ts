@@ -1,7 +1,7 @@
-import * as HttpExeption from './HttpExeption'
-import * as Encapsulation from './Encapsulation'
+import * as HttpExeption from "./HttpExeption";
+import * as Encapsulation from "./Encapsulation";
 
 export {
   HttpExeption,
-  Encapsulation
-}
+  Encapsulation,
+};

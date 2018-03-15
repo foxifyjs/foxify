@@ -1,7 +1,7 @@
-import * as mongodb from 'mongodb'
-import { EventEmitter } from 'events'
-import * as Model from '../Model'
-import * as Cursor from './Cursor'
+import * as mongodb from "mongodb";
+import { EventEmitter } from "events";
+import * as Model from "../Model";
+import * as Cursor from "./Cursor";
 
 declare module Collection {
   export interface ClientSession extends EventEmitter {
@@ -12,377 +12,526 @@ declare module Collection {
 }
 
 declare interface Collection<TSchema = any> {
-  _connect(): mongodb.Collection
-  _validate(document: Partial<Model.Schema>, required?: boolean): any
+  _connect(): mongodb.Collection;
+  _validate(document: Partial<Model.Schema>, required?: boolean): any;
 
-  aggregate(pipeline: Object[], callback: mongodb.MongoCallback<TSchema[]>): mongodb.AggregationCursor<TSchema>
-  aggregate(pipeline: Object[], options?: mongodb.CollectionAggregationOptions, callback?: mongodb.MongoCallback<TSchema[]>): mongodb.AggregationCursor<TSchema>
+  aggregate(pipeline: object[], callback: mongodb.MongoCallback<TSchema[]>): mongodb.AggregationCursor<TSchema>;
+  aggregate(
+    pipeline: object[],
+    options?: mongodb.CollectionAggregationOptions,
+    callback?: mongodb.MongoCallback<TSchema[]>,
+  ): mongodb.AggregationCursor<TSchema>;
 
-  bulkWrite(operations: Object[], callback: mongodb.MongoCallback<mongodb.BulkWriteOpResultObject>): void
-  bulkWrite(operations: Object[], options?: mongodb.CollectionBluckWriteOptions): Promise<mongodb.BulkWriteOpResultObject>
-  bulkWrite(operations: Object[], options: mongodb.CollectionBluckWriteOptions, callback: mongodb.MongoCallback<mongodb.BulkWriteOpResultObject>): void
+  bulkWrite(operations: object[], callback: mongodb.MongoCallback<mongodb.BulkWriteOpResultObject>): void;
+  bulkWrite(
+    operations: object[],
+    options?: mongodb.CollectionBluckWriteOptions,
+  ): Promise<mongodb.BulkWriteOpResultObject>;
+  bulkWrite(
+    operations: object[],
+    options: mongodb.CollectionBluckWriteOptions,
+    callback: mongodb.MongoCallback<mongodb.BulkWriteOpResultObject>,
+  ): void;
 
-  count(query: Object, callback: mongodb.MongoCallback<number>): void
-  count(query: Object, options?: mongodb.MongoCountPreferences): Promise<number>
-  count(query: Object, options: mongodb.MongoCountPreferences, callback: mongodb.MongoCallback<number>): void
+  count(query: object, callback: mongodb.MongoCallback<number>): void;
+  count(query: object, options?: mongodb.MongoCountPreferences): Promise<number>;
+  count(query: object, options: mongodb.MongoCountPreferences, callback: mongodb.MongoCallback<number>): void;
 
-  createIndex(fieldOrSpec: string | any, callback: mongodb.MongoCallback<string>): void
-  createIndex(fieldOrSpec: string | any, options?: mongodb.IndexOptions): Promise<string>
-  createIndex(fieldOrSpec: string | any, options: mongodb.IndexOptions, callback: mongodb.MongoCallback<string>): void
+  createIndex(fieldOrSpec: string | any, callback: mongodb.MongoCallback<string>): void;
+  createIndex(fieldOrSpec: string | any, options?: mongodb.IndexOptions): Promise<string>;
+  createIndex(fieldOrSpec: string | any, options: mongodb.IndexOptions, callback: mongodb.MongoCallback<string>): void;
 
-  createIndexes(indexSpecs: Object[], callback: mongodb.MongoCallback<any>): void
-  createIndexes(indexSpecs: Object[], options?: { session?: Collection.ClientSession }): Promise<any>
-  createIndexes(indexSpecs: Object[], options: { session?: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void
+  createIndexes(indexSpecs: object[], callback: mongodb.MongoCallback<any>): void;
+  createIndexes(indexSpecs: object[], options?: { session?: Collection.ClientSession }): Promise<any>;
+  createIndexes(
+    indexSpecs: object[],
+    options: { session?: Collection.ClientSession },
+    callback: mongodb.MongoCallback<any>,
+  ): void;
 
-  deleteMany(filter: Object, callback: mongodb.MongoCallback<mongodb.DeleteWriteOpResultObject>): void
-  deleteMany(filter: Object, options?: mongodb.CommonOptions): Promise<mongodb.DeleteWriteOpResultObject>
-  deleteMany(filter: Object, options: mongodb.CommonOptions, callback: mongodb.MongoCallback<mongodb.DeleteWriteOpResultObject>): void
+  deleteMany(filter: object, callback: mongodb.MongoCallback<mongodb.DeleteWriteOpResultObject>): void;
+  deleteMany(filter: object, options?: mongodb.CommonOptions): Promise<mongodb.DeleteWriteOpResultObject>;
+  deleteMany(
+    filter: object,
+    options: mongodb.CommonOptions,
+    callback: mongodb.MongoCallback<mongodb.DeleteWriteOpResultObject>,
+  ): void;
 
-  deleteOne(filter: Object, callback: mongodb.MongoCallback<mongodb.DeleteWriteOpResultObject>): void
-  deleteOne(filter: Object, options?: mongodb.CommonOptions & { bypassDocumentValidation?: boolean }): Promise<mongodb.DeleteWriteOpResultObject>
-  deleteOne(filter: Object, options: mongodb.CommonOptions & { bypassDocumentValidation?: boolean }, callback: mongodb.MongoCallback<mongodb.DeleteWriteOpResultObject>): void
+  deleteOne(filter: object, callback: mongodb.MongoCallback<mongodb.DeleteWriteOpResultObject>): void;
+  deleteOne(
+    filter: object,
+    options?: mongodb.CommonOptions & { bypassDocumentValidation?: boolean },
+  ): Promise<mongodb.DeleteWriteOpResultObject>;
+  deleteOne(
+    filter: object,
+    options: mongodb.CommonOptions & { bypassDocumentValidation?: boolean },
+    callback: mongodb.MongoCallback<mongodb.DeleteWriteOpResultObject>,
+  ): void;
 
-  distinct(key: string, query: Object, callback: mongodb.MongoCallback<any>): void
-  distinct(key: string, query: Object, options?: { readPreference?: mongodb.ReadPreference | string, maxTimeMS?: number, session?: Collection.ClientSession }): Promise<any>
-  distinct(key: string, query: Object, options: { readPreference?: mongodb.ReadPreference | string, maxTimeMS?: number, session?: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void
+  distinct(key: string, query: object, callback: mongodb.MongoCallback<any>): void;
+  distinct(
+    key: string,
+    query: object,
+    options?: {
+      readPreference?: mongodb.ReadPreference | string, maxTimeMS?: number, session?: Collection.ClientSession,
+    },
+  ): Promise<any>;
+  distinct(
+    key: string,
+    query: object,
+    options: {
+      readPreference?: mongodb.ReadPreference | string, maxTimeMS?: number, session?: Collection.ClientSession,
+    },
+    callback: mongodb.MongoCallback<any>,
+  ): void;
 
-  drop(options?: { session: Collection.ClientSession }): Promise<any>
-  drop(callback: mongodb.MongoCallback<any>): void
-  drop(options: { session: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void
+  drop(options?: { session: Collection.ClientSession }): Promise<any>;
+  drop(callback: mongodb.MongoCallback<any>): void;
+  drop(options: { session: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void;
 
-  dropIndex(indexName: string, callback: mongodb.MongoCallback<any>): void
-  dropIndex(indexName: string, options?: mongodb.CommonOptions & { maxTimeMS?: number }): Promise<any>
-  dropIndex(indexName: string, options: mongodb.CommonOptions & { maxTimeMS?: number }, callback: mongodb.MongoCallback<any>): void
+  dropIndex(indexName: string, callback: mongodb.MongoCallback<any>): void;
+  dropIndex(indexName: string, options?: mongodb.CommonOptions & { maxTimeMS?: number }): Promise<any>;
+  dropIndex(
+    indexName: string,
+    options: mongodb.CommonOptions & { maxTimeMS?: number },
+    callback: mongodb.MongoCallback<any>,
+  ): void;
 
   dropIndexes(options?: { session?: Collection.ClientSession, maxTimeMS?: number }): Promise<any>;
   dropIndexes(callback?: mongodb.MongoCallback<any>): void;
-  dropIndexes(options: { session?: Collection.ClientSession, maxTimeMS?: number }, callback: mongodb.MongoCallback<any>): void;
+  dropIndexes(
+    options: { session?: Collection.ClientSession, maxTimeMS?: number },
+    callback: mongodb.MongoCallback<any>,
+  ): void;
 
-  find<T = TSchema>(query?: Object): Cursor<T>
-  find<T = TSchema>(query: Object, options?: mongodb.FindOneOptions): Cursor<T>
+  find<T = TSchema>(query?: object, options?: mongodb.FindOneOptions): Cursor<T>;
 
-  findOne<T = TSchema>(filter: Object, callback: mongodb.MongoCallback<T | null>): void
-  findOne<T = TSchema>(filter: Object, options?: mongodb.FindOneOptions): Promise<T | null>
-  findOne<T = TSchema>(filter: Object, options: mongodb.FindOneOptions, callback: mongodb.MongoCallback<T | null>): void
+  findOne<T = TSchema>(filter: object, callback: mongodb.MongoCallback<T | null>): void;
+  findOne<T = TSchema>(filter: object, options?: mongodb.FindOneOptions): Promise<T | null>;
+  findOne<T = TSchema>(
+    filter: object,
+    options: mongodb.FindOneOptions,
+    callback: mongodb.MongoCallback<T | null>,
+  ): void;
 
-  findOneAndDelete(filter: Object, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void
-  findOneAndDelete(filter: Object, options?: { projection?: Object, sort?: Object, maxTimeMS?: number, session?: Collection.ClientSession }): Promise<mongodb.FindAndModifyWriteOpResultObject<TSchema>>
-  findOneAndDelete(filter: Object, options: { projection?: Object, sort?: Object, maxTimeMS?: number, session?: Collection.ClientSession }, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void
+  findOneAndDelete(
+    filter: object,
+    callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void;
+  findOneAndDelete(
+    filter: object,
+    options?: {
+      projection?: object, sort?: object, maxTimeMS?: number, session?: Collection.ClientSession,
+    }): Promise<mongodb.FindAndModifyWriteOpResultObject<TSchema>>;
+  findOneAndDelete(
+    filter: object,
+    options: {
+      projection?: object, sort?: object, maxTimeMS?: number, session?: Collection.ClientSession,
+    },
+    callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>,
+  ): void;
 
-  findOneAndReplace(filter: Object, replacement: Object, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void
-  findOneAndReplace(filter: Object, replacement: Object, options?: mongodb.FindOneAndReplaceOption): Promise<mongodb.FindAndModifyWriteOpResultObject<TSchema>>
-  findOneAndReplace(filter: Object, replacement: Object, options: mongodb.FindOneAndReplaceOption, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void
+  findOneAndReplace(
+    filter: object,
+    replacement: object,
+    callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>,
+  ): void;
+  findOneAndReplace(
+    filter: object,
+    replacement: object,
+    options?: mongodb.FindOneAndReplaceOption,
+  ): Promise<mongodb.FindAndModifyWriteOpResultObject<TSchema>>;
+  findOneAndReplace(
+    filter: object,
+    replacement: object,
+    options: mongodb.FindOneAndReplaceOption,
+    callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>,
+  ): void;
 
-  findOneAndUpdate(filter: Object, update: Object, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void
-  findOneAndUpdate(filter: Object, update: Object, options?: mongodb.FindOneAndReplaceOption): Promise<mongodb.FindAndModifyWriteOpResultObject<TSchema>>
-  findOneAndUpdate(filter: Object, update: Object, options: mongodb.FindOneAndReplaceOption, callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>): void
+  findOneAndUpdate(
+    filter: object,
+    update: object,
+    callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>,
+  ): void;
+  findOneAndUpdate(
+    filter: object,
+    update: object,
+    options?: mongodb.FindOneAndReplaceOption,
+  ): Promise<mongodb.FindAndModifyWriteOpResultObject<TSchema>>;
+  findOneAndUpdate(
+    filter: object,
+    update: object,
+    options: mongodb.FindOneAndReplaceOption,
+    callback: mongodb.MongoCallback<mongodb.FindAndModifyWriteOpResultObject<TSchema>>,
+  ): void;
 
-  geoHaystackSearch(x: number, y: number, callback: mongodb.MongoCallback<any>): void
-  geoHaystackSearch(x: number, y: number, options?: mongodb.GeoHaystackSearchOptions): Promise<any>
-  geoHaystackSearch(x: number, y: number, options: mongodb.GeoHaystackSearchOptions, callback: mongodb.MongoCallback<any>): void
+  geoHaystackSearch(x: number, y: number, callback: mongodb.MongoCallback<any>): void;
+  geoHaystackSearch(x: number, y: number, options?: mongodb.GeoHaystackSearchOptions): Promise<any>;
+  geoHaystackSearch(
+    x: number,
+    y: number,
+    options: mongodb.GeoHaystackSearchOptions,
+    callback: mongodb.MongoCallback<any>,
+  ): void;
 
-  indexes(options?: { session: Collection.ClientSession }): Promise<any>
-  indexes(callback: mongodb.MongoCallback<any>): void
-  indexes(options: { session?: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void
+  indexes(options?: { session: Collection.ClientSession }): Promise<any>;
+  indexes(callback: mongodb.MongoCallback<any>): void;
+  indexes(options: { session?: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void;
 
-  indexExists(indexes: string | string[], callback: mongodb.MongoCallback<boolean>): void
-  indexExists(indexes: string | string[], options?: { session: Collection.ClientSession }): Promise<boolean>
-  indexExists(indexes: string | string[], options: { session: Collection.ClientSession }, callback: mongodb.MongoCallback<boolean>): void
+  indexExists(indexes: string | string[], callback: mongodb.MongoCallback<boolean>): void;
+  indexExists(indexes: string | string[], options?: { session: Collection.ClientSession }): Promise<boolean>;
+  indexExists(
+    indexes: string | string[],
+    options: { session: Collection.ClientSession },
+    callback: mongodb.MongoCallback<boolean>,
+  ): void;
 
-  indexInformation(callback: mongodb.MongoCallback<any>): void
-  indexInformation(options?: { full: boolean, session: Collection.ClientSession }): Promise<any>
-  indexInformation(options: { full: boolean, session: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void
+  indexInformation(callback: mongodb.MongoCallback<any>): void;
+  indexInformation(options?: { full: boolean, session: Collection.ClientSession }): Promise<any>;
+  indexInformation(
+    options: { full: boolean, session: Collection.ClientSession },
+    callback: mongodb.MongoCallback<any>,
+  ): void;
 
-  initializeOrderedBulkOp(options?: mongodb.CommonOptions): mongodb.OrderedBulkOperation
+  initializeOrderedBulkOp(options?: mongodb.CommonOptions): mongodb.OrderedBulkOperation;
 
-  initializeUnorderedBulkOp(options?: mongodb.CommonOptions): mongodb.UnorderedBulkOperation
+  initializeUnorderedBulkOp(options?: mongodb.CommonOptions): mongodb.UnorderedBulkOperation;
 
-  insertMany(docs: Object[], callback: mongodb.MongoCallback<mongodb.InsertWriteOpResult>): void
-  insertMany(docs: Object[], options?: mongodb.CollectionInsertManyOptions): Promise<mongodb.InsertWriteOpResult>
-  insertMany(docs: Object[], options: mongodb.CollectionInsertManyOptions, callback: mongodb.MongoCallback<mongodb.InsertWriteOpResult>): void
+  insertMany(docs: object[], callback: mongodb.MongoCallback<mongodb.InsertWriteOpResult>): void;
+  insertMany(docs: object[], options?: mongodb.CollectionInsertManyOptions): Promise<mongodb.InsertWriteOpResult>;
+  insertMany(
+    docs: object[],
+    options: mongodb.CollectionInsertManyOptions,
+    callback: mongodb.MongoCallback<mongodb.InsertWriteOpResult>,
+  ): void;
 
-  insertOne(docs: Object, callback: mongodb.MongoCallback<mongodb.InsertOneWriteOpResult>): void
-  insertOne(docs: Object, options?: mongodb.CollectionInsertOneOptions): Promise<mongodb.InsertOneWriteOpResult>
-  insertOne(docs: Object, options: mongodb.CollectionInsertOneOptions, callback: mongodb.MongoCallback<mongodb.InsertOneWriteOpResult>): void
+  insertOne(docs: object, callback: mongodb.MongoCallback<mongodb.InsertOneWriteOpResult>): void;
+  insertOne(docs: object, options?: mongodb.CollectionInsertOneOptions): Promise<mongodb.InsertOneWriteOpResult>;
+  insertOne(
+    docs: object,
+    options: mongodb.CollectionInsertOneOptions,
+    callback: mongodb.MongoCallback<mongodb.InsertOneWriteOpResult>,
+  ): void;
 
-  isCapped(options?: { session: Collection.ClientSession }): Promise<any>
-  isCapped(callback: mongodb.MongoCallback<any>): void
-  isCapped(options: { session: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void
+  isCapped(options?: { session: Collection.ClientSession }): Promise<any>;
+  isCapped(callback: mongodb.MongoCallback<any>): void;
+  isCapped(options: { session: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void;
 
-  listIndexes(options?: { batchSize?: number, readPreference?: mongodb.ReadPreference | string, session?: Collection.ClientSession }): mongodb.CommandCursor
+  listIndexes(
+    options?: {
+      batchSize?: number, readPreference?: mongodb.ReadPreference | string, session?: Collection.ClientSession,
+    },
+  ): mongodb.CommandCursor;
 
-  mapReduce(map: Function | string, reduce: Function | string, callback: mongodb.MongoCallback<any>): void
-  mapReduce(map: Function | string, reduce: Function | string, options?: mongodb.MapReduceOptions): Promise<any>
-  mapReduce(map: Function | string, reduce: Function | string, options: mongodb.MapReduceOptions, callback: mongodb.MongoCallback<any>): void
+  mapReduce(map: () => void | string, reduce: () => void | string, callback: mongodb.MongoCallback<any>): void;
+  mapReduce(map: () => void | string, reduce: () => void | string, options?: mongodb.MapReduceOptions): Promise<any>;
+  mapReduce(
+    map: (() => void) | string,
+    reduce: (() => void) | string,
+    options: mongodb.MapReduceOptions,
+    callback: mongodb.MongoCallback<any>,
+  ): void;
 
-  options(options?: { session: Collection.ClientSession }): Promise<any>
-  options(callback: mongodb.MongoCallback<any>): void
-  options(options: { session: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void
+  options(options?: { session: Collection.ClientSession }): Promise<any>;
+  options(callback: mongodb.MongoCallback<any>): void;
+  options(options: { session: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void;
 
-  parallelCollectionScan(callback: mongodb.MongoCallback<Cursor<any>[]>): void
-  parallelCollectionScan(options?: mongodb.ParallelCollectionScanOptions): Promise<Cursor<any>[]>
-  parallelCollectionScan(options: mongodb.ParallelCollectionScanOptions, callback: mongodb.MongoCallback<Cursor<any>[]>): void
+  parallelCollectionScan(callback: mongodb.MongoCallback<Array<Cursor<any>>>): void;
+  parallelCollectionScan(options?: mongodb.ParallelCollectionScanOptions): Promise<Array<Cursor<any>>>;
+  parallelCollectionScan(
+    options: mongodb.ParallelCollectionScanOptions,
+    callback: mongodb.MongoCallback<Array<Cursor<any>>>,
+  ): void;
 
-  reIndex(options?: { session: Collection.ClientSession }): Promise<any>
-  reIndex(callback: mongodb.MongoCallback<any>): void
-  reIndex(options: { session: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void
+  reIndex(options?: { session: Collection.ClientSession }): Promise<any>;
+  reIndex(callback: mongodb.MongoCallback<any>): void;
+  reIndex(options: { session: Collection.ClientSession }, callback: mongodb.MongoCallback<any>): void;
 
-  replaceOne(filter: Object, doc: Object, callback: mongodb.MongoCallback<mongodb.ReplaceWriteOpResult>): void
-  replaceOne(filter: Object, doc: Object, options?: mongodb.ReplaceOneOptions): Promise<mongodb.ReplaceWriteOpResult>
-  replaceOne(filter: Object, doc: Object, options: mongodb.ReplaceOneOptions, callback: mongodb.MongoCallback<mongodb.ReplaceWriteOpResult>): void
+  replaceOne(filter: object, doc: object, callback: mongodb.MongoCallback<mongodb.ReplaceWriteOpResult>): void;
+  replaceOne(filter: object, doc: object, options?: mongodb.ReplaceOneOptions): Promise<mongodb.ReplaceWriteOpResult>;
+  replaceOne(
+    filter: object,
+    doc: object,
+    options: mongodb.ReplaceOneOptions,
+    callback: mongodb.MongoCallback<mongodb.ReplaceWriteOpResult>,
+  ): void;
 
-  stats(callback: mongodb.MongoCallback<mongodb.CollStats>): void
-  stats(options?: { scale: number, session?: Collection.ClientSession }): Promise<mongodb.CollStats>
-  stats(options: { scale: number, session?: Collection.ClientSession }, callback: mongodb.MongoCallback<mongodb.CollStats>): void
+  stats(callback: mongodb.MongoCallback<mongodb.CollStats>): void;
+  stats(options?: { scale: number, session?: Collection.ClientSession }): Promise<mongodb.CollStats>;
+  stats(
+    options: { scale: number, session?: Collection.ClientSession },
+    callback: mongodb.MongoCallback<mongodb.CollStats>,
+  ): void;
 
-  updateMany(filter: Object, update: Object, callback: mongodb.MongoCallback<mongodb.UpdateWriteOpResult>): void
-  updateMany(filter: Object, update: Object, options?: mongodb.CommonOptions & { upsert?: boolean }): Promise<mongodb.UpdateWriteOpResult>
-  updateMany(filter: Object, update: Object, options: mongodb.CommonOptions & { upsert?: boolean }, callback: mongodb.MongoCallback<mongodb.UpdateWriteOpResult>): void
+  updateMany(filter: object, update: object, callback: mongodb.MongoCallback<mongodb.UpdateWriteOpResult>): void;
+  updateMany(
+    filter: object,
+    update: object,
+    options?: mongodb.CommonOptions & { upsert?: boolean },
+  ): Promise<mongodb.UpdateWriteOpResult>;
+  updateMany(
+    filter: object,
+    update: object,
+    options: mongodb.CommonOptions & { upsert?: boolean },
+    callback: mongodb.MongoCallback<mongodb.UpdateWriteOpResult>,
+  ): void;
 
-  updateOne(filter: Object, update: Object, callback: mongodb.MongoCallback<mongodb.UpdateWriteOpResult>): void
-  updateOne(filter: Object, update: Object, options?: mongodb.ReplaceOneOptions): Promise<mongodb.UpdateWriteOpResult>
-  updateOne(filter: Object, update: Object, options: mongodb.ReplaceOneOptions, callback: mongodb.MongoCallback<mongodb.UpdateWriteOpResult>): void
+  updateOne(filter: object, update: object, callback: mongodb.MongoCallback<mongodb.UpdateWriteOpResult>): void;
+  updateOne(filter: object, update: object, options?: mongodb.ReplaceOneOptions): Promise<mongodb.UpdateWriteOpResult>;
+  updateOne(
+    filter: object,
+    update: object,
+    options: mongodb.ReplaceOneOptions,
+    callback: mongodb.MongoCallback<mongodb.UpdateWriteOpResult>,
+  ): void;
 
-  watch(pipeline?: Object[], options?: mongodb.ChangeStreamOptions & { session?: Collection.ClientSession }): mongodb.ChangeStream
+  watch(pipeline?: object[], options?: mongodb.ChangeStreamOptions & { session?: Collection.ClientSession }):
+    mongodb.ChangeStream;
 }
 
 class Collection<TSchema = any> {
-  aggregate(...args: Array<any>) {
-    let collection = this._connect()
+  aggregate(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.aggregate.apply(collection, args)
+    return collection.aggregate.apply(collection, args);
   }
 
-  bulkWrite(operations: OBJ[], ...rest: Array<any>) {
+  bulkWrite(operations: OBJ[], ...rest: any[]) {
     operations = operations.map((operation) => {
-      if (operation.insertOne) operation.insertOne.document = this._validate(operation.insertOne.document, false)
-      if (operation.updateOne) operation.updateOne.update.$set = this._validate(operation.updateOne.update.$set, false)
-      if (operation.updateMany) operation.updateMany.update.$set = this._validate(operation.updateMany.update.$set, false)
-      if (operation.replaceOne) operation.replaceOne.replacement = this._validate(operation.replaceOne.replacement, false)
+      if (operation.insertOne)
+        operation.insertOne.document = this._validate(operation.insertOne.document, false);
 
-      return operation
-    })
+      if (operation.updateOne)
+        operation.updateOne.update.$set = this._validate(operation.updateOne.update.$set, false);
 
-    let collection = this._connect()
+      if (operation.updateMany)
+        operation.updateMany.update.$set = this._validate(operation.updateMany.update.$set, false);
 
-    return collection.bulkWrite.apply(collection, [operations, ...rest])
+      if (operation.replaceOne)
+        operation.replaceOne.replacement = this._validate(operation.replaceOne.replacement, false);
+
+      return operation;
+    });
+
+    const collection = this._connect();
+
+    return collection.bulkWrite.apply(collection, [operations, ...rest]);
   }
 
-  count(...args: Array<any>) {
-    let collection = this._connect()
+  count(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.count.apply(collection, args)
+    return collection.count.apply(collection, args);
   }
 
-  createIndex(...args: Array<any>) {
-    let collection = this._connect()
+  createIndex(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.createIndex.apply(collection, args)
+    return collection.createIndex.apply(collection, args);
   }
 
-  createIndexes(...args: Array<any>) {
-    let collection = this._connect()
+  createIndexes(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.createIndexes.apply(collection, args)
+    return collection.createIndexes.apply(collection, args);
   }
 
-  deleteMany(...args: Array<any>) {
-    let collection = this._connect()
+  deleteMany(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.deleteMany.apply(collection, args)
+    return collection.deleteMany.apply(collection, args);
   }
 
-  deleteOne(...args: Array<any>) {
-    let collection = this._connect()
+  deleteOne(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.deleteOne.apply(collection, args)
+    return collection.deleteOne.apply(collection, args);
   }
 
-  distinct(...args: Array<any>) {
-    let collection = this._connect()
+  distinct(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.distinct.apply(collection, args)
+    return collection.distinct.apply(collection, args);
   }
 
-  drop(...args: Array<any>) {
-    let collection = this._connect()
+  drop(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.drop.apply(collection, args)
+    return collection.drop.apply(collection, args);
   }
 
-  dropIndex(...args: Array<any>) {
-    let collection = this._connect()
+  dropIndex(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.dropIndex.apply(collection, args)
+    return collection.dropIndex.apply(collection, args);
   }
 
-  dropIndexes(...args: Array<any>) {
-    let collection = this._connect()
+  dropIndexes(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.dropIndexes.apply(collection, args)
+    return collection.dropIndexes.apply(collection, args);
   }
 
-  find(...args: Array<any>): Cursor<TSchema> {
-    let collection = this._connect()
+  find(...args: any[]): Cursor<TSchema> {
+    const collection = this._connect();
 
-    let cursor = collection.find.apply(collection, args)
+    const cursor = collection.find.apply(collection, args);
 
-    return new Cursor(cursor)
+    return new Cursor(cursor);
   }
 
-  findOne(...args: Array<any>) {
-    let collection = this._connect()
+  findOne(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.findOne.apply(collection, args)
+    return collection.findOne.apply(collection, args);
   }
 
-  findOneAndDelete(...args: Array<any>) {
-    let collection = this._connect()
+  findOneAndDelete(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.findOneAndDelete.apply(collection, args)
+    return collection.findOneAndDelete.apply(collection, args);
   }
 
-  findOneAndReplace(filter: Object, replacement: Object, ...rest: Array<any>) {
-    replacement = this._validate(replacement, false)
+  findOneAndReplace(filter: object, replacement: object, ...rest: any[]) {
+    replacement = this._validate(replacement, false);
 
-    let collection = this._connect()
+    const collection = this._connect();
 
-    return collection.findOneAndReplace.apply(collection, [filter, replacement, ...rest])
+    return collection.findOneAndReplace.apply(collection, [filter, replacement, ...rest]);
   }
 
-  findOneAndUpdate(filter: Object, update: OBJ, ...rest: Array<any>) {
-    update.$set = this._validate(update.$set, false)
+  findOneAndUpdate(filter: object, update: OBJ, ...rest: any[]) {
+    update.$set = this._validate(update.$set, false);
 
-    let collection = this._connect()
+    const collection = this._connect();
 
-    return collection.findOneAndUpdate.apply(collection, [filter, update, ...rest])
+    return collection.findOneAndUpdate.apply(collection, [filter, update, ...rest]);
   }
 
-  geoHaystackSearch(...args: Array<any>) {
-    let collection = this._connect()
+  geoHaystackSearch(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.geoHaystackSearch.apply(collection, args)
+    return collection.geoHaystackSearch.apply(collection, args);
   }
 
-  indexes(...args: Array<any>) {
-    let collection = this._connect()
+  indexes(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.indexes.apply(collection, args)
+    return collection.indexes.apply(collection, args);
   }
 
-  indexExists(...args: Array<any>) {
-    let collection = this._connect()
+  indexExists(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.indexExists.apply(collection, args)
+    return collection.indexExists.apply(collection, args);
   }
 
-  indexInformation(...args: Array<any>) {
-    let collection = this._connect()
+  indexInformation(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.indexInformation.apply(collection, args)
+    return collection.indexInformation.apply(collection, args);
   }
 
-  initializeOrderedBulkOp(...args: Array<any>) {
-    let collection = this._connect()
+  initializeOrderedBulkOp(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.initializeOrderedBulkOp.apply(collection, args)
+    return collection.initializeOrderedBulkOp.apply(collection, args);
   }
 
-  initializeUnorderedBulkOp(...args: Array<any>) {
-    let collection = this._connect()
+  initializeUnorderedBulkOp(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.initializeUnorderedBulkOp.apply(collection, args)
+    return collection.initializeUnorderedBulkOp.apply(collection, args);
   }
 
-  insertMany(docs: Array<Object>, ...rest: Array<any>) {
-    docs = docs.map((doc) => this._validate(doc))
+  insertMany(docs: object[], ...rest: any[]) {
+    docs = docs.map((doc) => this._validate(doc));
 
-    let collection = this._connect()
+    const collection = this._connect();
 
-    return collection.insertMany.apply(collection, [docs, ...rest])
+    return collection.insertMany.apply(collection, [docs, ...rest]);
   }
 
-  insertOne(doc: Object, ...rest: Array<any>) {
-    doc = this._validate(doc)
+  insertOne(doc: object, ...rest: any[]) {
+    doc = this._validate(doc);
 
-    let collection = this._connect()
+    const collection = this._connect();
 
-    return collection.insertOne.apply(collection, [doc, ...rest])
+    return collection.insertOne.apply(collection, [doc, ...rest]);
   }
 
-  isCapped(...args: Array<any>) {
-    let collection = this._connect()
+  isCapped(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.isCapped.apply(collection, [args])
+    return collection.isCapped.apply(collection, [args]);
   }
 
-  listIndexes(...args: Array<any>) {
-    let collection = this._connect()
+  listIndexes(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.listIndexes.apply(collection, args)
+    return collection.listIndexes.apply(collection, args);
   }
 
-  mapReduce(...args: Array<any>) {
-    let collection = this._connect()
+  mapReduce(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.mapReduce.apply(collection, args)
+    return collection.mapReduce.apply(collection, args);
   }
 
-  options(...args: Array<any>) {
-    let collection = this._connect()
+  options(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.options.apply(collection, args)
+    return collection.options.apply(collection, args);
   }
 
-  parallelCollectionScan(...args: Array<any>) {
-    let collection = this._connect()
+  parallelCollectionScan(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.parallelCollectionScan.apply(collection, args)
+    return collection.parallelCollectionScan.apply(collection, args);
   }
 
-  reIndex(...args: Array<any>) {
-    let collection = this._connect()
+  reIndex(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.reIndex.apply(collection, args)
+    return collection.reIndex.apply(collection, args);
   }
 
   // rename ?
 
-  replaceOne(filter: Object, doc: Object, ...rest: Array<any>) {
-    doc = this._validate(doc, false)
+  replaceOne(filter: object, doc: object, ...rest: any[]) {
+    doc = this._validate(doc, false);
 
-    let collection = this._connect()
+    const collection = this._connect();
 
-    return collection.replaceOne.apply(collection, [filter, doc, ...rest])
+    return collection.replaceOne.apply(collection, [filter, doc, ...rest]);
   }
 
-  stats(...args: Array<any>) {
-    let collection = this._connect()
+  stats(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.stats.apply(collection, args)
+    return collection.stats.apply(collection, args);
   }
 
-  updateMany(filter: Object, update: OBJ, ...rest: Array<any>) {
-    update.$set = this._validate(update.$set, false)
+  updateMany(filter: object, update: OBJ, ...rest: any[]) {
+    update.$set = this._validate(update.$set, false);
 
-    let collection = this._connect()
+    const collection = this._connect();
 
-    return collection.updateMany.apply(collection, [filter, update, ...rest])
+    return collection.updateMany.apply(collection, [filter, update, ...rest]);
   }
 
-  updateOne(filter: Object, update: OBJ, ...rest: Array<any>) {
-    update.$set = this._validate(update.$set, false)
+  updateOne(filter: object, update: OBJ, ...rest: any[]) {
+    update.$set = this._validate(update.$set, false);
 
-    let collection = this._connect()
+    const collection = this._connect();
 
-    return collection.updateOne.apply(collection, [filter, update, ...rest])
+    return collection.updateOne.apply(collection, [filter, update, ...rest]);
   }
 
-  watch(...args: Array<any>) {
-    let collection = this._connect()
+  watch(...args: any[]) {
+    const collection = this._connect();
 
-    return collection.watch.apply(collection, args)
+    return collection.watch.apply(collection, args);
   }
 }
 
-export = Collection
+export = Collection;
