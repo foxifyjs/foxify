@@ -1,6 +1,6 @@
 {
   "name": "foxify",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "The fast, easy to use & typescript ready web framework for Node.js",
   "author": "Ardalan Amini <ardalanamini22@gmail.com>",
   "contributors": [
@@ -37,12 +37,15 @@
     "framework"
   ],
   "main": "framework/index.js",
+  "types": "framework/index.d.ts",
   "scripts": {
     "prepare": "npm run lint && node scripts/prepare.js",
     "lint": "tslint -p tsconfig.json -c tslint.json --exclude '**/*.d.ts'",
     "build": "tsc"
   },
   "dependencies": {
+    "@types/mongodb": "^3.0.8",
+    "@types/node": "^9.4.7",
     "accepts": "^1.3.5",
     "async": "^2.6.0",
     "content-disposition": "^0.5.2",
@@ -71,7 +74,7 @@
   },
   "devDependencies": {
     "@types/accepts": "^1.3.5",
-    "@types/async": "^2.0.47",
+    "@types/async": "^2.0.48",
     "@types/content-disposition": "^0.5.2",
     "@types/content-type": "^1.1.2",
     "@types/cookie": "^0.3.1",
@@ -81,8 +84,6 @@
     "@types/escape-html": "0.0.20",
     "@types/fresh": "^0.5.0",
     "@types/methods": "^1.1.0",
-    "@types/mongodb": "^3.0.7",
-    "@types/node": "^9.4.7",
     "@types/on-finished": "^2.3.1",
     "@types/parseurl": "^1.3.1",
     "@types/proxy-addr": "^2.0.0",
