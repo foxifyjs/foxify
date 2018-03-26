@@ -1,6 +1,8 @@
 import TypeAny from "./Any";
 
 class TypeBuffer extends TypeAny {
+  protected _type = "Buffer";
+
   protected _base(v: any) {
     if (Buffer.isBuffer(v)) return null;
 

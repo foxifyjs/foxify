@@ -1,6 +1,8 @@
 import TypeAny from "./Any";
 
 class TypeNumber extends TypeAny {
+  protected _type = "Number";
+
   protected _base(v: any) {
     if (Number.isInstance(v)) return null;
 

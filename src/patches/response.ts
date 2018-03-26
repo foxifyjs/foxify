@@ -42,7 +42,7 @@ declare module "http" {
     redirect(code: number, url: string): void;
     vary(field: string | string[]): this;
 
-    render(view: string, options: object, callback: Engine.Callback): void;
+    render(view: string, options?: object, callback?: Engine.Callback): void;
   }
 }
 
@@ -245,7 +245,7 @@ const acceptParams = (str: string, index?: number) => {
   const ret = {
     value: parts[0],
     quality: 1,
-    params: <OBJ>{},
+    params: <{ [key: string]: any }>{},
     originalIndex: index,
   };
 
@@ -609,21 +609,21 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     };
 
     // merge user-provided headers
-    if (opts && (opts as OBJ).headers) {
-      const keys = Object.keys((opts as OBJ).headers);
+    if (opts && (opts as { [key: string]: any }).headers) {
+      const keys = Object.keys((opts as { [key: string]: any }).headers);
 
       let key;
       for (let i = 0; i < keys.length; i++) {
         key = keys[i];
 
         if (key.toLowerCase() !== "content-disposition")
-          (headers as OBJ)[key] = (opts as OBJ).headers[key];
+          (headers as { [key: string]: any })[key] = (opts as { [key: string]: any }).headers[key];
       }
     }
 
     // merge user-provided options
     opts = Object.create(opts)
-      (opts as OBJ).headers = headers;
+      (opts as { [key: string]: any }).headers = headers;
 
     // Resolve the full path for sendFile
     const fullPath = resolve(path);
@@ -711,7 +711,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @return {http.ServerResponse} for chaining
    * @public
    */
-  res.prototype.format = function(obj: OBJ) {
+  res.prototype.format = function(obj: { [key: string]: any }) {
     const req = this.req;
     const next = req.next;
 
@@ -822,7 +822,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
 
       this.setHeader(<string>field, value);
     } else
-      for (const key in <object>field) this.set(key, (field as OBJ)[key]);
+      for (const key in <object>field) this.set(key, (field as { [key: string]: any })[key]);
 
     return this;
   };
@@ -874,7 +874,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.cookie = function(name, value, options) {
-    const opts: OBJ = Object.assign({}, options);
+    const opts: { [key: string]: any } = Object.assign({}, options);
     const secret = this.req.secret;
     const signed = opts.signed;
 

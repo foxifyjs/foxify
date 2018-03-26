@@ -1,10 +1,26 @@
 import TypeAny from "./Any";
 
+interface TypeArray {
+  ofType: TypeAny;
+}
+
 class TypeArray extends TypeAny {
+  protected _type = "Array";
+
   protected _base(v: any): string | null {
     if (Array.isInstance(v)) return null;
 
     return "Must be an array";
+  }
+
+  of(type: TypeAny) {
+    if (!(type instanceof TypeAny))
+      throw new TypeError(`Expected 'type' to be a 'TypeAny' instance, got '${typeof type}' insted`);
+
+    this.ofType = type;
+
+    return this._test((v: any[]) => v.map((item) => type.validate(item).errors).compact().deepFlatten().first())
+      ._cast((v: any[]) => v.map((item) => type.validate(item).value));
   }
 
   min(n: number) {

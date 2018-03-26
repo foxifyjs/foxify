@@ -18,12 +18,12 @@ class Encapsulation {
         (result as Promise<any>).catch((err: Error) => {
           HttpExeption.handle(err, req, res);
 
-          if (process.env.NODE_ENV === "development") console.error(err);
+          if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", err);
         });
     } catch (err) {
       HttpExeption.handle(err, req, res);
 
-      if (process.env.NODE_ENV === "development") console.error(err);
+      if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", err);
     }
   }
 }

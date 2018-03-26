@@ -10,16 +10,19 @@ import * as Fox from "../index";
 declare module Router { }
 
 class Router {
-  protected _routes: Route.Routes = {};
-  protected _safeNext = new Encapsulation(
-    (req, res, url: string, routes: Route.RouteObject[], index = 0) => this._next(req, res, url, routes, index),
-  );
+  protected _routes = {} as Route.Routes;
 
   constructor() {
     httpMethods.map((method) => this._routes[method] = []);
   }
 
-  protected _next(req: IncomingMessage, res: ServerResponse, url: string, routes: Route.RouteObject[], index = 0) {
+  protected _next = (
+    req: IncomingMessage,
+    res: ServerResponse,
+    url: string,
+    routes: Route.RouteObject[],
+    index = 0,
+  ) => {
     const length = routes.length;
     let i = index;
 
@@ -40,6 +43,8 @@ class Router {
     throw new HttpExeption(constants.http.NOT_FOUND);
   }
 
+  protected _safeNext = new Encapsulation(this._next);
+
   initialize(app: Fox) {
     const strict = app.enabled("routing.strict");
     const sensitive = app.enabled("routing.sensitive");
@@ -59,7 +64,7 @@ class Router {
   }
 
   route(req: IncomingMessage, res: ServerResponse) {
-    this._safeNext.run(req, res, req.path, this._routes[<string> req.method]);
+    this._safeNext.run(req, res, req.path, this._routes[<string>req.method]);
   }
 }
 

@@ -26,7 +26,7 @@ class HttpExeption extends Error {
       code = http.INTERNAL_SERVER_ERROR;
       message = undefined;
     } else if (Number.isInstance(message)) {
-      errors = <object>code || {};
+      errors = Object.isInstance(code) ? code : {};
       code = message;
       message = undefined;
     }

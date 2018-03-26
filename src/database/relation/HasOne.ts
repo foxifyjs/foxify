@@ -1,4 +1,4 @@
-import * as Model from "../Model";
+import Model from "../Model";
 import * as Reference from "./Reference";
 
 declare module HasOne { }

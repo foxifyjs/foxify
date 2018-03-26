@@ -1,12 +1,20 @@
 import * as async from "async";
+import * as GraphQLBase from "graphql";
+import GraphQL from "../graphql/Type";
+import { mixins } from "../../utils";
 
-class TypeAny {
+interface TypeAny extends GraphQL { }
+
+@mixins(GraphQL)
+class TypeAny implements GraphQL {
+  protected _type = "Any";
+
   protected _casts: Array<(v: any) => any> = [];
   protected _tests: Array<(v: any) => string | null> = [];
 
   protected _required: boolean = false;
 
-  protected _default?: any;
+  protected _default: () => any = () => undefined;
 
   protected _base(v: any): string | null {
     if (!Function.isInstance(v)) return null;
@@ -33,9 +41,15 @@ class TypeAny {
   }
 
   default(v: any) {
+    if (Function.isInstance(v)) {
+      this._default = v;
+
+      return this;
+    }
+
     if (this._base(v)) throw new TypeError(`The given value must be of "${this.constructor.name}" type`);
 
-    this._default = v;
+    this._default = () => v;
 
     return this;
   }
@@ -44,8 +58,8 @@ class TypeAny {
   // allow(...vs: any[]) {
   // }
 
-  validate(value: any = this._default): { value: any, errors: string[] | null } {
-    if (value === undefined) {
+  validate(value: any = this._default()): { value: any, errors: string[] | null } {
+    if (value === undefined || value === null) {
       if (this._required) return { errors: ["Must be provided"], value };
 
       return { errors: null, value };

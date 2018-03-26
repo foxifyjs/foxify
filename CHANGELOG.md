@@ -1,6 +1,18 @@
 # Changelog
 
 
+## [v0.6.0](https://github.com/foxifyjs/foxify/releases/tag/v0.6.0) *(2018-03-26)*
+
+**Implemented enhancements:**
+- added multiple `controller` support to `route` instance
+- added static method `dotenv` to `Foxify` class to specify `.env` file path
+- added method `of` to database type `Array`
+- added `function` support to default values in database types
+- added `graphql` support to database models
+- improved performance
+- improved `Typescript` usage
+
+
 ## [v0.5.1](https://github.com/foxifyjs/foxify/releases/tag/v0.5.1) *(2018-03-10)*
 
 **Implemented enhancements:**

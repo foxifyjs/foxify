@@ -1,12 +1,12 @@
 import * as mongodb from "mongodb";
 import * as async from "async";
-import * as Model from "../Model";
+import Model from "../Model";
 import * as HasMany from "./HasMany";
 import * as HasOne from "./HasOne";
 import * as Cursor from "../native/Cursor";
 
-declare module Relation {
-  interface FindOneOptions {
+declare module RelationConstructor {
+  export interface FindOneOptions {
     limit?: number;
     sort?: any[] | object;
     projection?: object;
@@ -21,24 +21,24 @@ declare module Relation {
   }
 }
 
-declare interface Relation<TSchema = any> {
-  [key: string]: any;
+declare interface RelationConstructor {
+  with(...relations: string[]): Relation;
+}
 
+export interface Relation<TSchema = any> {
   find<T = TSchema>(query?: object): Cursor<T>;
-  find<T = TSchema>(query: object, options?: Relation.FindOneOptions): Cursor<T>;
+  find<T = TSchema>(query: object, options?: RelationConstructor.FindOneOptions): Cursor<T>;
 
   findOne<T = TSchema>(filter: object, callback: mongodb.MongoCallback<T | null>): void;
-  findOne<T = TSchema>(filter: object, options?: mongodb.FindOneOptions): Promise<T | null>;
+  findOne<T = TSchema>(filter: object, options?: RelationConstructor.FindOneOptions): Promise<T | null>;
   findOne<T = TSchema>(
     filter: object,
-    options: mongodb.FindOneOptions,
+    options: RelationConstructor.FindOneOptions,
     callback: mongodb.MongoCallback<T | null>,
   ): void;
 }
 
-class Relation {
-  protected _relations: any;
-
+export class Relation {
   hasMany(model: typeof Model, localKey?: string, foreignKey?: string, relation?: string | typeof Model) {
     return new HasMany(<any>this, model, localKey, foreignKey, relation);
   }
@@ -52,13 +52,13 @@ class Relation {
 
     const model = new this();
 
-    model._relations = relations;
+    (model as any)._relations = relations;
 
     return model;
   }
 
-  find(query?: object, options: Relation.FindOneOptions = {}) {
-    if (this._relations.length === 0) throw new Error("Function 'find' doesn't exist");
+  find(query?: object, options: RelationConstructor.FindOneOptions = {}) {
+    if ((this as any)._relations.length === 0) throw new Error("Function 'find' doesn't exist");
 
     const pipeline: object[] = [];
 
@@ -70,8 +70,8 @@ class Relation {
     if (options.limit) pipeline.push({ $limit: options.limit });
 
     const that = this;
-    async.map(this._relations, (relation: any, cb) => {
-      relation = that[relation];
+    async.map((this as any)._relations, (relation: any, cb) => {
+      relation = (that as any)[relation];
 
       cb(undefined, {
         name: relation.name,
@@ -80,7 +80,7 @@ class Relation {
     }, (err, relations: any) => {
       if (err) throw err;
 
-      relations.map((r: OBJ) => pipeline.push(...r.relation.stages(r.name)));
+      relations.map((r: { [key: string]: any }) => pipeline.push(...r.relation.stages(r.name)));
     });
 
     let sort = options.sort;
@@ -110,10 +110,10 @@ class Relation {
 
   async findOne(
     filter: object,
-    options: Relation.FindOneOptions | mongodb.MongoCallback<any | null> = {},
+    options: RelationConstructor.FindOneOptions | mongodb.MongoCallback<any | null> = {},
     callback?: mongodb.MongoCallback<any | null>,
   ) {
-    if (this._relations.length === 0) throw new Error("Function 'findOne' doesn't exist");
+    if ((this as any)._relations.length === 0) throw new Error("Function 'findOne' doesn't exist");
 
     if (Function.isInstance(options)) {
       callback = options;
@@ -128,8 +128,8 @@ class Relation {
     if (options.limit) pipeline.push({ $limit: options.limit || 1 });
 
     const that = this;
-    async.map(this._relations, (relation: any, cb) => {
-      relation = that[relation];
+    async.map((this as any)._relations, (relation: any, cb) => {
+      relation = (that as any)[relation];
 
       cb(undefined, {
         name: relation.name,
@@ -138,7 +138,7 @@ class Relation {
     }, (err, relations: any) => {
       if (err) throw err;
 
-      relations.map((r: OBJ) => pipeline.push(...r.relation.stages(r.name)));
+      relations.map((r: { [key: string]: any }) => pipeline.push(...r.relation.stages(r.name)));
     });
 
     let sort = options.sort;
@@ -174,4 +174,13 @@ class Relation {
   }
 }
 
-export = Relation;
+const RelationConstructor: RelationConstructor = Relation as any;
+
+export default RelationConstructor;
+
+/**
+ * FIXME I know this seems ugly but in my defense,
+ * `Typescript` doesn't support static method inside interfaces
+ */
+module.exports = exports.default;
+module.exports.default = exports.default;

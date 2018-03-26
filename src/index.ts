@@ -12,50 +12,112 @@ import { request, response } from "./patches";
 import { Engine } from "./view";
 import { name } from "../package.json";
 
-declare interface Foxify {
-  [key: string]: any;
+module Foxify {
+  export interface Options {
+    "x-powered-by": boolean;
+    routing: {
+      strict: boolean,
+      sensitive: boolean,
+    };
+    json: {
+      escape: boolean,
+    };
+  }
 
-  use(controller: Route | Route.Controller): void;
-  use(path: string, controller: Route.Controller): void;
+  export interface Settings {
+    env: string;
+    url: string;
+    port: number;
+    workers: number;
+    json: {
+      replacer?: (...args: any[]) => any,
+      spaces?: number,
+    };
+    query: {
+      parser?: (...args: any[]) => any,
+    };
+  }
 }
 
-declare module Foxify {
+interface Foxify {
+  get(setting: string): any;
+  get(path: string, ...controllers: Route.Controller[]): this;
+
+  post(path: string, ...controllers: Route.Controller[]): this;
+  put(path: string, ...controllers: Route.Controller[]): this;
+  head(path: string, ...controllers: Route.Controller[]): this;
+  delete(path: string, ...controllers: Route.Controller[]): this;
+  options(path: string, ...controllers: Route.Controller[]): this;
+  trace(path: string, ...controllers: Route.Controller[]): this;
+  copy(path: string, ...controllers: Route.Controller[]): this;
+  lock(path: string, ...controllers: Route.Controller[]): this;
+  mkcol(path: string, ...controllers: Route.Controller[]): this;
+  move(path: string, ...controllers: Route.Controller[]): this;
+  purge(path: string, ...controllers: Route.Controller[]): this;
+  propfind(path: string, ...controllers: Route.Controller[]): this;
+  proppatch(path: string, ...controllers: Route.Controller[]): this;
+  unlock(path: string, ...controllers: Route.Controller[]): this;
+  report(path: string, ...controllers: Route.Controller[]): this;
+  mkactivity(path: string, ...controllers: Route.Controller[]): this;
+  checkout(path: string, ...controllers: Route.Controller[]): this;
+  merge(path: string, ...controllers: Route.Controller[]): this;
+  ["m-search"](path: string, ...controllers: Route.Controller[]): this;
+  notify(path: string, ...controllers: Route.Controller[]): this;
+  subscribe(path: string, ...controllers: Route.Controller[]): this;
+  unsubscribe(path: string, ...controllers: Route.Controller[]): this;
+  patch(path: string, ...controllers: Route.Controller[]): this;
+  search(path: string, ...controllers: Route.Controller[]): this;
+  connect(path: string, ...controllers: Route.Controller[]): this;
+
+  use(route: Route): this;
+  use(...controllers: Route.Controller[]): this;
+  use(path: string, ...controllers: Route.Controller[]): this;
 }
 
 class Foxify {
   static static = serveStatic;
   static constants = constants;
   static DB = DB;
+
   static route = (prefix?: string) => new Route(prefix);
 
-  protected _options = {
-    "x-powered-by": true,
-    "routing": {
+  static dotenv = (dotenv: string) => {
+    if (!String.isInstance(dotenv))
+      throw new TypeError(`Expected 'dotenv' to be an string, got ${typeof dotenv} instead`);
+
+    require("dotenv").config({
+      path: dotenv,
+    });
+  }
+
+  private _options: Foxify.Options = {
+    ["x-powered-by"]: true,
+    routing: {
       strict: false,
       sensitive: true,
     },
-    "json": {
+    json: {
       escape: false,
     },
   };
 
-  protected _settings = {
+  private _settings: Foxify.Settings = {
     env: process.env.NODE_ENV || "production",
     url: process.env.APP_URL || "localhost",
     port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
     workers: process.env.WORKERS ? +process.env.WORKERS : os.cpus().length,
     json: {
-      replacer: null,
-      spaces: null,
+      replacer: undefined,
+      spaces: undefined,
     },
     query: {
-      parser: null,
+      parser: undefined,
     },
   };
 
-  protected _router = new Router();
+  private _router = new Router();
 
-  protected _view?: Engine;
+  private _view?: Engine;
 
   constructor() {
     /* apply default db connection */
@@ -74,11 +136,11 @@ class Foxify {
     httpMethods.map((method) => {
       method = method.toLowerCase();
 
-      if (!this[method])
-        this[method] = (path: string, controller: Route.Controller) => {
+      if (!(this as { [key: string]: any })[method])
+        (this as { [key: string]: any })[method] = (path: string, ...controllers: Route.Controller[]) => {
           const route = new Route();
 
-          route[method](path, controller);
+          route[method](path, ...controllers);
 
           this._router.push(route.routes);
 
@@ -88,7 +150,7 @@ class Foxify {
   }
 
   /* handle options & settings */
-  protected _set(setting: string, value: any, object: OBJ) {
+  private _set(setting: string, value: any, object: { [key: string]: any }) {
     const keys = setting.split(".");
 
     if (keys.length === 1)
@@ -98,16 +160,16 @@ class Foxify {
   }
 
   /* handle built-in middlewares */
-  protected _use(
-    first: Route.Controller | string | Route = () => { },
-    second?: Route.Controller,
+  private _use(
+    path: string | Route | Route.Controller,
+    ...middlewares: Route.Controller[],
   ) {
-    if (first instanceof Route)
-      this._router.push(first.routes);
+    if (path instanceof Route)
+      this._router.push(path.routes);
     else {
       const route = new Route();
 
-      route.use(first, second);
+      route.use(path, ...middlewares);
 
       this._router.prepend(route.routes);
     }
@@ -204,14 +266,9 @@ class Foxify {
     return this;
   }
 
-  get(...args: any[]): any {
-    const length = args.length;
-
-    if (length === 0 || length > 2)
-      throw new TypeError("'args' should be an array of 1 or 2 values");
-
-    if (length === 1) {
-      const setting: string = args.first();
+  get(path: string, ...controllers: Route.Controller[]): any {
+    if (controllers.length === 0) {
+      const setting = path;
 
       if (!String.isInstance(setting))
         throw new TypeError("'setting' should be an string");
@@ -223,23 +280,23 @@ class Foxify {
 
       const keys = setting.split(".");
 
-      let _setting: OBJ | boolean = this._settings;
+      let _setting: { [key: string]: any } | boolean = this._settings;
 
       keys.map((key) => {
         if (!Object.isInstance(_setting)) throw new Error("Unknown setting");
 
-        _setting = (_setting as OBJ)[key];
+        _setting = (_setting as { [key: string]: any })[key];
       });
 
       return _setting;
     }
 
-    const path: string = args.first();
-    const controller: Route.Controller = args.last();
+    if (!String.isInstance(path))
+      throw new TypeError("'path' should be an string");
 
     const route = new Route();
 
-    route.get(path, controller);
+    route.get(path, ...controllers);
 
     this._router.push(route.routes);
 
@@ -255,15 +312,15 @@ class Foxify {
 
   /* handle middlewares */
   use(
-    first: Route.Controller | string | Route = () => { },
-    second?: Route.Controller,
+    path: string | Route | Route.Controller,
+    ...controllers: Route.Controller[],
   ) {
-    if (first instanceof Route)
-      this._router.push(first.routes);
+    if (path instanceof Route)
+      this._router.push(path.routes);
     else {
       const route = new Route();
 
-      route.use(first, second);
+      route.use(path, ...controllers);
 
       this._router.push(route.routes);
     }
@@ -273,14 +330,16 @@ class Foxify {
 
   start(callback?: () => void) {
     if (callback && !Function.isInstance(callback))
-      throw new TypeError("Argument 'callback' must be a function");
+      throw new TypeError(`Expected 'callback' to be a function, got ${typeof callback} instead`);
 
     /* set node env */
     process.env.NODE_ENV = this.get("env");
 
     /* apply built-in middlewares */
-    this._use(init(this))
-      ._use(query(this));
+    this._use(
+      init(this),
+      query(this),
+    );
 
     /* apply http patches */
     request(http.IncomingMessage, this);
@@ -294,8 +353,7 @@ class Foxify {
     const workers = this.get("workers");
     if (workers > 1) {
       if (cluster.isMaster) {
-        for (let i = 0; i < workers; i++)
-          cluster.fork();
+        for (let i = 0; i < workers; i++) cluster.fork();
 
         return;
       }

@@ -22,6 +22,7 @@
       true,
       "ban-keywords",
       "check-format",
+      "allow-pascal-case",
       "allow-leading-underscore"
     ],
     "no-angle-bracket-type-assertion": false,

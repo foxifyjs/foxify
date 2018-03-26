@@ -1,4 +1,4 @@
-import * as Model from "../Model";
+import Model from "../Model";
 import { Collection } from "mongodb";
 
 declare module Reference { }

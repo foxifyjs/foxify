@@ -100,7 +100,7 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 | `http.Server` | 9.5.0 | 54,669 |
 | - | - | - |
 | fastify | 1.0.0-rc.2 | 43,746 |
-| **Foxify (1 cluster)** | **0.4.0** | **38,982** |
+| **Foxify** | **0.5.2** | **42,862** |
 | Restify | 6.3.4 | 37,006 |
 | Express | 4.16.2 | 31,040 |
 | Hapi | 17.2.0 | 29,476 |
@@ -117,6 +117,7 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 - [ ] Database
 	- [ ] MySQL ?
 	- [ ] MongoDB
+		- [x] `graphql` support
 		- [x] `schema` validation
 		- [ ] Relations
 			- [x] `hasOne` relation

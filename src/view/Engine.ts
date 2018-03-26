@@ -16,12 +16,12 @@ class Engine {
     this._handler = handler;
   }
 
-  render(filename: string, opts: object, cb: Engine.Callback) {
+  render(filename: string, opts: object = {}, cb?: Engine.Callback) {
     this._handler(path.join(this._path, `${filename}.${this._ext}`), opts, cb);
   }
 
   static responsePatch(res: typeof http.ServerResponse, engine?: Engine) {
-    res.prototype.render = function(view: string, data: object, callback?: Engine.Callback) {
+    res.prototype.render = function(view: string, data?: object, callback?: Engine.Callback) {
       if (!engine) throw new Error("View engine is not specified");
 
       if (!callback)

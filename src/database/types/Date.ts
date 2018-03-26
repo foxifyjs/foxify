@@ -1,6 +1,8 @@
 import TypeAny from "./Any";
 
 class TypeDate extends TypeAny {
+  protected _type = "Date";
+
   protected _base(v: any) {
     if (Date.isInstance(v)) return null;
 

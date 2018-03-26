@@ -8,7 +8,10 @@ declare module "*/package.json" {
 }
 
 declare module "*.json" {
-  const json: Array<any> | OBJ
+  type OBJECT = { [key: string]: any }
+  type JSON = OBJECT | OBJECT[]
+
+  const json: JSON
 
   export = json
 }
@@ -16,7 +19,3 @@ declare module "*.json" {
 declare module "encodeurl"
 declare module "serve-static"
 declare module "verifications"
-
-declare interface OBJ {
-  [key: string]: any
-}

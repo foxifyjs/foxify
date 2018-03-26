@@ -8,12 +8,12 @@ declare module Schema {
 
 class Schema {
   static validate(schema: Schema.Definition, doc: object) {
-    const value: OBJ = {};
-    let errors: OBJ | null = {};
+    const value: { [key: string]: any } = {};
+    let errors: { [key: string]: any } | null = {};
 
     for (const key in schema) {
       const type = schema[key];
-      let item = (doc as OBJ)[key];
+      let item = (doc as { [key: string]: any })[key];
 
       if (type instanceof TypeAny) {
         // Type

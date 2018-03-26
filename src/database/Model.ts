@@ -1,12 +1,13 @@
 import * as mongodb from "mongodb";
 import * as connect from "./connect";
-import * as Collection from "./native/Collection";
-import * as Relation from "./relation";
 import * as Schema from "./Schema";
 import * as types from "./types";
-import { applyMixins, applyAsStaticMixins } from "../utils";
+import CollectionConstructor, { Collection } from "./native/Collection";
+import GraphQLConstructor, { GraphQL } from "./graphql/Model";
+import RelationConstructor, { Relation } from "./relation";
+import { mixins } from "../utils";
 
-declare module Model {
+module ModelConstructor {
   export interface SchemaDefinition {
     [key: string]: any;
   }
@@ -16,33 +17,36 @@ declare module Model {
   }
 }
 
-// declare interface Model extends Collection, Relation {
-declare interface Model extends Relation {
+interface ModelConstructor extends CollectionConstructor, RelationConstructor, GraphQLConstructor {
+  readonly prototype: Model;
+
+  connection: string;
+  collection: string;
+  datetimes: boolean;
+  schema: ModelConstructor.SchemaDefinition;
+  types: typeof types;
+
+  new(): Model;
 }
 
-/**
- *
- * @abstract
- */
-// abstract class Model implements Collection, Relation {
-abstract class Model implements Relation {
-  protected static connection: string = "default";
+export interface Model extends Collection, Relation, GraphQL { }
 
-  protected static collection: string;
+@mixins(CollectionConstructor, RelationConstructor, GraphQLConstructor)
+export class Model implements Collection, Relation, GraphQL {
+  static connection: string = "default";
 
-  protected static schema: Model.SchemaDefinition = {};
+  static collection: string;
 
-  protected static hidden: string[] = [];
+  static datetimes: boolean = true;
+
+  static schema: ModelConstructor.SchemaDefinition = {};
+
+  // TODO
+  // static hidden: string[] = [];
 
   static types = types;
 
-  protected _relations: string[] = [];
-
-  // constructor(document?: Partial<Model.Schema>) {
-  //   if (document) {
-  //     // TODO
-  //   }
-  // }
+  private _relations: string[] = [];
 
   static toString() {
     return this._collection;
@@ -52,12 +56,21 @@ abstract class Model implements Relation {
     return this.collection || `${this.name.snakeCase()}s`;
   }
 
+  private static get _schema() {
+    if (!this.datetimes) return this.schema;
+
+    return Object.assign({}, this.schema, {
+      created_at: this.types.Date.default(() => new Date()),
+      updated_at: this.types.Date,
+    });
+  }
+
   private static _connect(): mongodb.Collection {
     return __FOX__.db.connections[this.connection].collection(this._collection);
   }
 
-  protected static _validate(document: Partial<Model.Schema>, required: boolean = true) {
-    const validation = Schema.validate(this.schema, document);
+  private static _validate(document: Partial<ModelConstructor.Schema>, required: boolean = true) {
+    const validation = Schema.validate(this._schema, document);
 
     if (validation.errors && !required) {
       validation.errors.map((errors, key) => {
@@ -74,8 +87,13 @@ abstract class Model implements Relation {
   }
 }
 
-applyMixins(Model, [Relation]);
+const ModelConstructor: ModelConstructor = <any>Model;
 
-applyAsStaticMixins(Model, [Collection]);
+export default ModelConstructor;
 
-export = Model;
+/**
+ * FIXME I know this seems ugly but in my defense,
+ * `Typescript` doesn't support static method inside interfaces
+ */
+module.exports = exports.default;
+module.exports.default = exports.default;
