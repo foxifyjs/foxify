@@ -3,9 +3,13 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
+    "lib": [
+      "esnext"
+    ],
     "target": "es6",
     "rootDir": "src",
     "outDir": "framework",
+    "experimentalDecorators": true,
     "declaration": true,
     "strict": true
   },

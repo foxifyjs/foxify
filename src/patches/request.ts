@@ -1,38 +1,40 @@
-import * as http from 'http'
-import { isIP } from 'net'
-import accepts = require('accepts')
-import parseRange = require('range-parser')
-import typeis = require('type-is')
-import proxyaddr = require('proxy-addr')
-import * as parseUrl from 'parseurl'
-import fresh = require('fresh')
-import * as constants from '../constants'
-import * as Fox from '../index'
-import { defineGetter } from '../utils'
+import * as http from "http";
+import { isIP } from "net";
+import accepts = require("accepts");
+import parseRange = require("range-parser");
+import typeis = require("type-is");
+import proxyaddr = require("proxy-addr");
+import * as parseUrl from "parseurl";
+import fresh = require("fresh");
+import * as constants from "../constants";
+import * as Fox from "../index";
+import { defineGetter } from "../utils";
 
 /**
  * @namespace {http.IncomingMessage}
  */
 declare module "http" {
   export interface IncomingMessage {
-    [key: string]: any
+    [key: string]: any;
 
-    res: http.ServerResponse
+    res: http.ServerResponse;
 
-    get(name: string): string | Array<string> | undefined
-    head(name: string): string | Array<string> | undefined
-    accepts(type: Array<string> | ArrayLike<string> | string): string | Array<string> | false
-    acceptsEncodings(encoding?: Array<string> | ArrayLike<string> | string): string | Array<string>
-    acceptsCharsets(charset?: Array<string> | ArrayLike<string> | string): string | Array<string>
-    acceptsLanguages(lang?: Array<string> | ArrayLike<string> | string): string | Array<string>
-    range(size: number, options?: parseRange.Options): parseRange.Result | parseRange.Ranges | undefined
-    is(types?: string | Array<string>): string | false | null
+    path: string;
 
-    next(): void
+    get(name: string): string | string[] | undefined;
+    head(name: string): string | string[] | undefined;
+    accepts(type: string[] | ArrayLike<string> | string): string | string[] | false;
+    acceptsEncodings(encoding?: string[] | ArrayLike<string> | string): string | string[];
+    acceptsCharsets(charset?: string[] | ArrayLike<string> | string): string | string[];
+    acceptsLanguages(lang?: string[] | ArrayLike<string> | string): string | string[];
+    range(size: number, options?: parseRange.Options): parseRange.Result | parseRange.Ranges | undefined;
+    is(types?: string | string[]): string | false | null;
+
+    next(): void;
   }
 }
 
-let req: http.IncomingMessage = Object.create(http.IncomingMessage.prototype)
+// const req: http.IncomingMessage = Object.create(http.IncomingMessage.prototype)
 
 const patch = (req: typeof http.IncomingMessage, app: Fox) => {
   /**
@@ -45,32 +47,32 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String}
    * @example
    *
-   *     req.get('Content-Type');
+   *     req.get("Content-Type");
    *     // => "text/plain"
    *
-   *     req.get('content-type');
+   *     req.get("content-type");
    *     // => "text/plain"
    *
-   *     req.get('Something');
+   *     req.get("Something");
    *     // => undefined
    *
    * // Aliased as `req.header()`.
    */
   req.prototype.get = req.prototype.head = function(name) {
-    if (!name) throw new TypeError('name argument is required to req.get/req.head')
+    if (!name) throw new TypeError("name argument is required to req.get/req.head");
 
-    if (!String.isInstance(name)) throw new TypeError('name must be a string to req.get/req.head')
+    if (!String.isInstance(name)) throw new TypeError("name must be a string to req.get/req.head");
 
-    let header = name.toLowerCase()
+    const header = name.toLowerCase();
 
     switch (header) {
-      case 'referer':
-      case 'referrer':
-        return this.headers.referrer || this.headers.referer
+      case "referer":
+      case "referrer":
+        return this.headers.referrer || this.headers.referer;
       default:
-        return this.headers[header]
+        return this.headers[header];
     }
-  }
+  };
 
   /**
    * TODO: update docs.
@@ -91,35 +93,35 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @example
    *
    *     // Accept: text/html
-   *     req.accepts('html');
+   *     req.accepts("html");
    *     // => "html"
    *
    *     // Accept: text/*, application/json
-   *     req.accepts('html');
+   *     req.accepts("html");
    *     // => "html"
-   *     req.accepts('text/html');
+   *     req.accepts("text/html");
    *     // => "text/html"
-   *     req.accepts('json, text');
+   *     req.accepts("json, text");
    *     // => "json"
-   *     req.accepts('application/json');
+   *     req.accepts("application/json");
    *     // => "application/json"
    *
    *     // Accept: text/*, application/json
-   *     req.accepts('image/png');
-   *     req.accepts('png');
+   *     req.accepts("image/png");
+   *     req.accepts("png");
    *     // => undefined
    *
    *     // Accept: text/*;q=.5, application/json
-   *     req.accepts(['html', 'json']);
-   *     req.accepts('html', 'json');
-   *     req.accepts('html, json');
+   *     req.accepts(["html", "json"]);
+   *     req.accepts("html", "json");
+   *     req.accepts("html, json");
    *     // => "json"
    */
   req.prototype.accepts = function() {
-    let accept = accepts(this)
+    const accept = accepts(this);
 
-    return accept.types.apply(accept, arguments)
-  }
+    return accept.types.apply(accept, arguments);
+  };
 
   /**
    * Check if the given `encoding`s are accepted.
@@ -128,10 +130,10 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String|Array}
    */
   req.prototype.acceptsEncodings = function() {
-    let accept = accepts(this)
+    const accept = accepts(this);
 
-    return accept.encodings.apply(accept, arguments)
-  }
+    return accept.encodings.apply(accept, arguments);
+  };
 
   /**
    * Check if the given `charset`s are acceptable,
@@ -141,10 +143,10 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String|Array}
    */
   req.prototype.acceptsCharsets = function() {
-    let accept = accepts(this)
+    const accept = accepts(this);
 
-    return accept.charsets.apply(accept, arguments)
-  }
+    return accept.charsets.apply(accept, arguments);
+  };
 
   /**
    * Check if the given `lang`s are acceptable,
@@ -154,10 +156,10 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String|Array}
    */
   req.prototype.acceptsLanguages = function() {
-    let accept = accepts(this)
+    const accept = accepts(this);
 
-    return accept.languages.apply(accept, arguments)
-  }
+    return accept.languages.apply(accept, arguments);
+  };
 
   /**
    * Parse Range header field, capping to the given `size`.
@@ -179,14 +181,14 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Number|Array}
    */
   req.prototype.range = function(size, options) {
-    let range = this.get('Range')
+    let range = this.get("Range");
 
     if (!range) return;
 
-    if (Array.isInstance(range)) range = range.join(',')
+    if (Array.isInstance(range)) range = range.join(",");
 
-    return parseRange(size, range, options)
-  }
+    return parseRange(size, range, options);
+  };
 
   /**
    * Check if the incoming request contains the "Content-Type"
@@ -195,18 +197,18 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * Examples:
    *
    *      // With Content-Type: text/html; charset=utf-8
-   *      req.is('html');
-   *      req.is('text/html');
-   *      req.is('text/*');
+   *      req.is("html");
+   *      req.is("text/html");
+   *      req.is("text/*");
    *      // => true
    *
    *      // When Content-Type is application/json
-   *      req.is('json');
-   *      req.is('application/json');
-   *      req.is('application/*');
+   *      req.is("json");
+   *      req.is("application/json");
+   *      req.is("application/*");
    *      // => true
    *
-   *      req.is('html');
+   *      req.is("html");
    *      // => false
    *
    * @param {String|Array} types...
@@ -217,15 +219,15 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
 
     // support flattened arguments
     if (!Array.isInstance(types)) {
-      let arr = new Array(arguments.length)
+      const arr = new Array(arguments.length);
 
-      for (let i = 0; i < arr.length; i++) arr[i] = arguments[i]
+      for (let i = 0; i < arr.length; i++) arr[i] = arguments[i];
 
-      return typeis(this, arr)
+      return typeis(this, arr);
     }
 
-    return typeis(this, types)
-  }
+    return typeis(this, types);
+  };
 
   /**
    * Return the remote address from the trusted proxy.
@@ -236,8 +238,8 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String}
    * @public
    */
-  // defineGetter(req.prototype, 'ip', function(this: http.IncomingMessage) {
-  //   let trust = this.app.get('trust proxy fn')
+  // defineGetter(req.prototype, "ip", function(this: http.IncomingMessage) {
+  //   let trust = this.app.get("trust proxy fn")
   //
   //   return proxyaddr(this, trust)
   // })
@@ -253,15 +255,15 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Array}
    * @public
    */
-  defineGetter(req.prototype, 'ips', function(this: http.IncomingMessage) {
-    // let trust = this.app.get('trust proxy fn')
+  defineGetter(req.prototype, "ips", function(this: http.IncomingMessage) {
+    // let trust = this.app.get("trust proxy fn")
     // let addrs = proxyaddr.all(this, trust)
-    let addrs = proxyaddr.all(this)
+    const addrs = proxyaddr.all(this);
 
     // reverse the order (to farthest -> closest)
     // and remove socket address
-    return addrs.reverse().initial()
-  })
+    return addrs.reverse().initial();
+  });
 
   /**
    * Return subdomains as an array.
@@ -277,17 +279,17 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Array}
    * @public
    */
-  defineGetter(req.prototype, 'subdomains', function(this: http.IncomingMessage) {
-    let hostname = this.hostname
+  defineGetter(req.prototype, "subdomains", function(this: http.IncomingMessage) {
+    const hostname = this.hostname;
 
-    if (!hostname) return []
+    if (!hostname) return [];
 
-    // let offset = this.app.get('subdomain offset')
-    let subdomains = !isIP(hostname) ? hostname.split('.').reverse() : [hostname]
+    // let offset = this.app.get("subdomain offset")
+    const subdomains = !isIP(hostname) ? hostname.split(".").reverse() : [hostname];
 
     // return subdomains.slice(offset)
-    return subdomains
-  })
+    return subdomains;
+  });
 
   /**
    * Short-hand for `url.parseUrl(req.url).pathname`.
@@ -295,11 +297,11 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String}
    * @public
    */
-  defineGetter(req.prototype, 'path', function(this: http.IncomingMessage) {
-    let url = parseUrl(this)
+  defineGetter(req.prototype, "path", function(this: http.IncomingMessage) {
+    const url = parseUrl(this);
 
-    return url ? url.pathname : ''
-  })
+    return url ? url.pathname : "";
+  });
 
   /**
    * Parse the "Host" header field to a hostname.
@@ -311,20 +313,20 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String}
    * @public
    */
-  defineGetter(req.prototype, 'hostname', function(this: http.IncomingMessage) {
-    let host = <string>this.get('X-Forwarded-Host')
+  defineGetter(req.prototype, "hostname", function(this: http.IncomingMessage) {
+    let host = <string>this.get("X-Forwarded-Host");
 
-    if (!host) host = <string>this.get('Host')
+    if (!host) host = <string>this.get("Host");
 
     if (!host) return;
 
     // IPv6 literal support
-    var offset = host[0] === '[' ? host.indexOf(']') + 1 : 0
+    const offset = host[0] === "[" ? host.indexOf("]") + 1 : 0;
 
-    var index = host.indexOf(':', offset)
+    const index = host.indexOf(":", offset);
 
-    return index !== -1 ? host.substring(0, index) : host
-  })
+    return index !== -1 ? host.substring(0, index) : host;
+  });
 
   /**
    * Check if the request is fresh, aka
@@ -334,24 +336,24 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Boolean}
    * @public
    */
-  defineGetter(req.prototype, 'fresh', function(this: http.IncomingMessage) {
-    let method = this.method
-    let res = this.res
-    let status = res.statusCode
+  defineGetter(req.prototype, "fresh", function(this: http.IncomingMessage) {
+    const method = this.method;
+    const res = this.res;
+    const status = res.statusCode;
 
     // GET or HEAD for weak freshness validation only
-    if ('GET' !== method && 'HEAD' !== method) return false
+    if ("GET" !== method && "HEAD" !== method) return false;
 
     // 2xx or 304 as per rfc2616 14.26
-    if ((status >= constants.http.OK && status < constants.http.MULTIPLE_CHOICES) || constants.http.NOT_MODIFIED === status) {
+    if ((status >= constants.http.OK && status < constants.http.MULTIPLE_CHOICES) ||
+      constants.http.NOT_MODIFIED === status)
       return fresh(this.headers, {
-        'etag': res.get('ETag'),
-        'last-modified': res.get('Last-Modified')
-      })
-    }
+        "etag": res.get("ETag"),
+        "last-modified": res.get("Last-Modified"),
+      });
 
-    return false
-  })
+    return false;
+  });
 
   /**
    * Check if the request is stale, aka
@@ -361,9 +363,9 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Boolean}
    * @public
    */
-  defineGetter(req.prototype, 'stale', function(this: http.IncomingMessage) {
-    return !this.fresh
-  })
+  defineGetter(req.prototype, "stale", function(this: http.IncomingMessage) {
+    return !this.fresh;
+  });
 
   /**
    * Check if the request was an _XMLHttpRequest_.
@@ -371,11 +373,11 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Boolean}
    * @public
    */
-  defineGetter(req.prototype, 'xhr', function(this: http.IncomingMessage) {
-    let val = <string>this.get('X-Requested-With') || ''
+  defineGetter(req.prototype, "xhr", function(this: http.IncomingMessage) {
+    const val = <string>this.get("X-Requested-With") || "";
 
-    return val.toLowerCase() === 'xmlhttprequest'
-  })
-}
+    return val.toLowerCase() === "xmlhttprequest";
+  });
+};
 
-export = patch
+export = patch;

@@ -1,252 +1,264 @@
-import * as mongodb from 'mongodb'
-import * as deasync from 'deasync'
+import * as mongodb from "mongodb";
+import * as deasync from "deasync";
 
 declare module Cursor { }
 
 declare interface Cursor<T> {
-  close(): Promise<mongodb.CursorResult>
-  close(callback: mongodb.MongoCallback<mongodb.CursorResult>): void
+  close(): Promise<mongodb.CursorResult>;
+  close(callback: mongodb.MongoCallback<mongodb.CursorResult>): void;
 
-  count(): Promise<number>
-  count(callback: mongodb.MongoCallback<number>): void
-  count(applySkipLimit: boolean): Promise<number>
-  count(applySkipLimit: boolean, callback: mongodb.MongoCallback<number>): void
-  count(options: mongodb.CursorCommentOptions): Promise<number>
-  count(options: mongodb.CursorCommentOptions, callback: mongodb.MongoCallback<number>): void
-  count(applySkipLimit: boolean, options: mongodb.CursorCommentOptions): Promise<number>
-  count(applySkipLimit: boolean, options: mongodb.CursorCommentOptions, callback: mongodb.MongoCallback<number>): void
+  count(): Promise<number>;
+  count(callback: mongodb.MongoCallback<number>): void;
+  count(applySkipLimit: boolean): Promise<number>;
+  count(applySkipLimit: boolean, callback: mongodb.MongoCallback<number>): void;
+  count(options: mongodb.CursorCommentOptions): Promise<number>;
+  count(options: mongodb.CursorCommentOptions, callback: mongodb.MongoCallback<number>): void;
+  count(applySkipLimit: boolean, options: mongodb.CursorCommentOptions): Promise<number>;
+  count(applySkipLimit: boolean, options: mongodb.CursorCommentOptions, callback: mongodb.MongoCallback<number>): void;
 
-  explain(): Promise<mongodb.CursorResult>
-  explain(callback: mongodb.MongoCallback<mongodb.CursorResult>): void
+  explain(): Promise<mongodb.CursorResult>;
+  explain(callback: mongodb.MongoCallback<mongodb.CursorResult>): void;
 
-  hasNext(): Promise<boolean>
-  hasNext(callback: mongodb.MongoCallback<boolean>): void
+  hasNext(): Promise<boolean>;
+  hasNext(callback: mongodb.MongoCallback<boolean>): void;
 
-  next(): Promise<T>
-  next(callback: mongodb.MongoCallback<T>): void
+  next(): Promise<T>;
+  next(callback: mongodb.MongoCallback<T>): void;
 
-  toArray(): Promise<Array<T>>
-  toArray(callback: mongodb.MongoCallback<Array<T>>): void
+  toArray(): Promise<T[]>;
+  toArray(callback: mongodb.MongoCallback<T[]>): void;
 }
 
 class Cursor<T> {
-  protected _cursor: mongodb.Cursor
+  protected _cursor: mongodb.Cursor;
 
   constructor(cursor: mongodb.Cursor) {
-    this._cursor = cursor
+    this._cursor = cursor;
   }
 
   addCursorFlag(flag: string, value: boolean): Cursor<T> {
-    this._cursor = this._cursor.addCursorFlag(flag, value)
+    this._cursor = this._cursor.addCursorFlag(flag, value);
 
-    return this
+    return this;
   }
 
   addQueryModifier(name: string, value: boolean): Cursor<T> {
-    this._cursor = this._cursor.addQueryModifier(name, value)
+    this._cursor = this._cursor.addQueryModifier(name, value);
 
-    return this
+    return this;
   }
 
   batchSize(value: number): Cursor<T> {
-    this._cursor = this._cursor.batchSize(value)
+    this._cursor = this._cursor.batchSize(value);
 
-    return this
+    return this;
   }
 
   clone(): Cursor<T> {
-    return new Cursor(this._cursor.clone())
+    return new Cursor(this._cursor.clone());
   }
 
   close(callback?: mongodb.MongoCallback<mongodb.CursorResult>) {
-    return <Promise<mongodb.CursorResult> | void>this._cursor.close(<mongodb.MongoCallback<mongodb.CursorResult>>callback)
+    return <Promise<mongodb.CursorResult> | void>this._cursor.close(
+      <mongodb.MongoCallback<mongodb.CursorResult>>callback,
+    );
   }
 
   comment(value: string): Cursor<T> {
-    this._cursor = this._cursor.comment(value)
+    this._cursor = this._cursor.comment(value);
 
-    return this
+    return this;
   }
 
-  count(applySkipLimit?: boolean | mongodb.CursorCommentOptions | mongodb.MongoCallback<number>, options?: mongodb.CursorCommentOptions | mongodb.MongoCallback<number>, callback?: mongodb.MongoCallback<number>) {
-    return <Promise<number> | void>this._cursor.count(<boolean>applySkipLimit, <mongodb.CursorCommentOptions>options, <mongodb.MongoCallback<number>>callback)
+  count(
+    applySkipLimit?: boolean | mongodb.CursorCommentOptions | mongodb.MongoCallback<number>,
+    options?: mongodb.CursorCommentOptions | mongodb.MongoCallback<number>,
+    callback?: mongodb.MongoCallback<number>,
+  ) {
+    return <Promise<number> | void>this._cursor.count(
+      <boolean>applySkipLimit,
+      <mongodb.CursorCommentOptions>options,
+      <mongodb.MongoCallback<number>>callback,
+    );
   }
 
   explain(callback?: mongodb.MongoCallback<mongodb.CursorResult>) {
-    return <Promise<mongodb.CursorResult> | void>this._cursor.explain(<mongodb.MongoCallback<mongodb.CursorResult>>callback)
+    return <Promise<mongodb.CursorResult> | void>this._cursor.explain(
+      <mongodb.MongoCallback<mongodb.CursorResult>>callback,
+    );
   }
 
-  filter(filter: Object): Cursor<T> {
-    this._cursor = this._cursor.filter(filter)
+  filter(filter: object): Cursor<T> {
+    this._cursor = this._cursor.filter(filter);
 
-    return this
+    return this;
   }
 
   forEach(iterator: mongodb.IteratorCallback<T>, callback?: mongodb.EndCallback): void {
-    return this._cursor.forEach(iterator, <mongodb.EndCallback>callback)
+    return this._cursor.forEach(iterator, <mongodb.EndCallback>callback);
   }
 
   hasNext(callback?: mongodb.MongoCallback<boolean>) {
-    return <Promise<boolean> | void>this._cursor.hasNext(<mongodb.MongoCallback<boolean>>callback)
+    return <Promise<boolean> | void>this._cursor.hasNext(<mongodb.MongoCallback<boolean>>callback);
   }
 
-  hint(hint: Object): Cursor<T> {
-    this._cursor = this._cursor.hint(hint)
+  hint(hint: object): Cursor<T> {
+    this._cursor = this._cursor.hint(hint);
 
-    return this
+    return this;
   }
 
   isClosed(): boolean {
-    return this._cursor.isClosed()
+    return this._cursor.isClosed();
   }
 
   limit(value: number): Cursor<T> {
-    this._cursor = this._cursor.limit(value)
+    this._cursor = this._cursor.limit(value);
 
-    return this
+    return this;
   }
 
-  map(transform: Function): Cursor<T> {
-    this._cursor = this._cursor.map(transform)
+  map(transform: (...args: any[]) => any): Cursor<T> {
+    this._cursor = this._cursor.map(transform);
 
-    return this
+    return this;
   }
 
   max(max: number): Cursor<T> {
-    this._cursor = this._cursor.max(max)
+    this._cursor = this._cursor.max(max);
 
-    return this
+    return this;
   }
 
   maxAwaitTimeMS(value: number): Cursor<T> {
-    this._cursor = this._cursor.maxAwaitTimeMS(value)
+    this._cursor = this._cursor.maxAwaitTimeMS(value);
 
-    return this
+    return this;
   }
 
-  maxScan(maxScan: Object): Cursor<T> {
-    this._cursor = this._cursor.maxScan(maxScan)
+  maxScan(maxScan: number): Cursor<T> {
+    this._cursor = this._cursor.maxScan(maxScan);
 
-    return this
+    return this;
   }
 
   maxTimeMS(value: number): Cursor<T> {
-    this._cursor = this._cursor.maxTimeMS(value)
+    this._cursor = this._cursor.maxTimeMS(value);
 
-    return this
+    return this;
   }
 
   min(min: number): Cursor<T> {
-    this._cursor = this._cursor.min(min)
+    this._cursor = this._cursor.min(min);
 
-    return this
+    return this;
   }
 
   next(callback?: mongodb.MongoCallback<T>) {
-    return <Promise<T> | void>this._cursor.next(<mongodb.MongoCallback<T>>callback)
+    return <Promise<T> | void>this._cursor.next(<mongodb.MongoCallback<T>>callback);
   }
 
   pause(): Cursor<T> {
-    this._cursor = this._cursor.pause()
+    this._cursor = this._cursor.pause();
 
-    return this
+    return this;
   }
 
   pipe(destination: NodeJS.WritableStream, options?: { end?: boolean; }): NodeJS.WritableStream {
-    return this._cursor.pipe(destination, options)
+    return this._cursor.pipe(destination, options);
   }
 
-  project(value: Object): Cursor<T> {
-    this._cursor = this._cursor.project(value)
+  project(value: object): Cursor<T> {
+    this._cursor = this._cursor.project(value);
 
-    return this
+    return this;
   }
 
   read(size: number): string | Buffer | void {
-    return this._cursor.read(size)
+    return this._cursor.read(size);
   }
 
   resume(): this {
-    this._cursor = this._cursor.resume()
+    this._cursor = this._cursor.resume();
 
-    return this
+    return this;
   }
 
-  returnKey(returnKey: Object): Cursor<T> {
-    this._cursor = this._cursor.returnKey(returnKey)
+  returnKey(returnKey: object): Cursor<T> {
+    this._cursor = this._cursor.returnKey(returnKey);
 
-    return this
+    return this;
   }
 
   rewind(): void {
-    this._cursor.rewind()
+    this._cursor.rewind();
   }
 
-  setCursorOption(field: string, value: Object): this {
-    this._cursor = this._cursor.setCursorOption(field, value)
+  setCursorOption(field: string, value: object): this {
+    this._cursor = this._cursor.setCursorOption(field, value);
 
-    return this
+    return this;
   }
 
   setEncoding(encoding: string): this {
-    this._cursor = this._cursor.setEncoding(encoding)
+    this._cursor = this._cursor.setEncoding(encoding);
 
-    return this
+    return this;
   }
 
   setReadPreference(readPreference: string | mongodb.ReadPreference): this {
-    this._cursor = this._cursor.setReadPreference(readPreference)
+    this._cursor = this._cursor.setReadPreference(readPreference);
 
-    return this
+    return this;
   }
 
-  showRecordId(showRecordId: Object): this {
-    this._cursor = this._cursor.showRecordId(showRecordId)
+  showRecordId(showRecordId: object): this {
+    this._cursor = this._cursor.showRecordId(showRecordId);
 
-    return this
+    return this;
   }
 
   skip(value: number): this {
-    this._cursor = this._cursor.skip(value)
+    this._cursor = this._cursor.skip(value);
 
-    return this
+    return this;
   }
 
-  snapshot(snapshot: Object): this {
-    this._cursor = this._cursor.snapshot(snapshot)
+  snapshot(snapshot: object): this {
+    this._cursor = this._cursor.snapshot(snapshot);
 
-    return this
+    return this;
   }
 
-  sort(keyOrList: string | Array<Object> | Object, direction?: number): this {
-    this._cursor = this._cursor.sort(keyOrList, direction)
+  sort(keyOrList: string | object[] | object, direction?: number): this {
+    this._cursor = this._cursor.sort(keyOrList, direction);
 
-    return this
+    return this;
   }
 
-  stream(options?: { transform?: Function }): this {
-    this._cursor = this._cursor.stream(options)
+  stream(options?: { transform?: (...args: any[]) => any }): this {
+    this._cursor = this._cursor.stream(options);
 
-    return this
+    return this;
   }
 
-  toArray(callback?: mongodb.MongoCallback<Array<T>>) {
-    return <Promise<Array<T>> | void>this._cursor.toArray(<mongodb.MongoCallback<Array<T>>>callback)
+  toArray(callback?: mongodb.MongoCallback<T[]>) {
+    return <Promise<T[]> | void>this._cursor.toArray(<mongodb.MongoCallback<T[]>>callback);
   }
 
   unpipe(destination?: NodeJS.WritableStream): Cursor<T> {
-    return new Cursor(this._cursor.unpipe(destination))
+    return new Cursor(this._cursor.unpipe(destination));
   }
 
   unshift(stream: Buffer | string): void {
-    this._cursor.unshift(stream)
+    this._cursor.unshift(stream);
   }
 
   wrap(stream: NodeJS.ReadableStream): this {
-    this._cursor = this._cursor.wrap(stream)
+    this._cursor = this._cursor.wrap(stream);
 
-    return this
+    return this;
   }
 }
 
-export = Cursor
+export = Cursor;

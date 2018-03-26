@@ -1,27 +1,21 @@
-export function applyMixins(derivedCtor: any, baseCtors: any[]) {
-  baseCtors.forEach((baseCtor) => {
-    // static methods
-    const forbidden = ['length', 'prototype', 'name']
-    Object.getOwnPropertyNames(baseCtor).forEach((name) => {
+export function mixins(...baseCtors: any[]) {
+  return (derivedCtor: any) => {
+    baseCtors.forEach((baseCtor) => {
+      // static methods
+      Object.getOwnPropertyNames(baseCtor).forEach((name) => {
+        if (!["length", "constructor", "prototype", "name"].contains(name) && !derivedCtor[name])
+          derivedCtor[name] = baseCtor[name];
+      });
 
-      if (forbidden.indexOf(name) == -1) derivedCtor[name] = baseCtor[name]
-    })
+      // instance methods
+      Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
+        if (name !== "constructor" && !derivedCtor.prototype[name])
+          derivedCtor.prototype[name] = baseCtor.prototype[name];
+      });
+    });
 
-    // instance methods
-    Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
-
-      if (name !== 'constructor') derivedCtor.prototype[name] = baseCtor.prototype[name]
-    })
-  })
-}
-
-export function applyAsStaticMixins(derivedCtor: any, baseCtors: any[]) {
-  baseCtors.forEach((baseCtor) => {
-    Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
-
-      if (name !== 'constructor') derivedCtor[name] = baseCtor.prototype[name]
-    })
-  })
+    return derivedCtor;
+  };
 }
 
 export function defineGetter(obj: object, name: string, getter: () => any) {
@@ -31,7 +25,7 @@ export function defineGetter(obj: object, name: string, getter: () => any) {
     {
       configurable: true,
       enumerable: true,
-      get: getter
-    }
-  )
+      get: getter,
+    },
+  );
 }

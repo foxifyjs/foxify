@@ -1,23 +1,33 @@
-const path = require('path')
-const morgan = require('morgan')
-const Foxify = require('../framework')
-const users = require('./routes/users')
-const index = require('./routes/index')
+const path = require("path");
+const morgan = require("morgan");
+const graphqlHTTP = require('express-graphql');
+const Foxify = require("../framework");
+const users = require("./routes/users");
+const index = require("./routes/index");
 
-let app = new Foxify()
+Foxify.dotenv(path.join(__dirname, ".env"));
+
+const app = new Foxify();
 
 // template engine support
-app.engine('ejs', path.join(__dirname, 'views'), require('ejs').__express)
+app.engine("ejs", path.join(__dirname, "views"), require("ejs").__express)
 
-// static serve support
-app.use(Foxify.static(path.join(__dirname, 'public')))
+// middlewares
+app.use(
+  Foxify.static(path.join(__dirname, "public")), // static serve support
+  morgan("dev"), // express middleware support
+);
 
-// express middleware support
-app.use(morgan('dev'))
-
-// add routes to app
+// routes
 app.use(index)
-  .use(users)
+  .use(users);
 
-// start the server
-app.start(() => console.log(`Foxify server running at http://localhost:3000 (worker: ${process.pid})`))
+// graphql support
+app.use('/graphql', graphqlHTTP({
+  schema: Foxify.DB.toGraphQL(...require("./models")),
+  graphiql: true,
+}));
+
+// start the app
+app.start(() =>
+  console.log(`Foxify server running at http://${app.get("url")}:${app.get("port")} (worker: ${process.pid})`));

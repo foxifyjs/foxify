@@ -1,51 +1,51 @@
-import Any from './Any'
-import Array from './Array'
-import Boolean from './Boolean'
-import Buffer from './Buffer'
-import Date from './Date'
-import Number from './Number'
-import Object from './Object'
-import ObjectId from './ObjectId'
-import String from './String'
+import TypeAny from "./Any";
+import TypeArray from "./Array";
+import TypeBoolean from "./Boolean";
+import TypeBuffer from "./Buffer";
+import TypeDate from "./Date";
+import TypeNumber from "./Number";
+import TypeObject from "./Object";
+import TypeObjectId from "./ObjectId";
+import TypeString from "./String";
 
 declare module Type {}
 
 class Type {
   static get Any() {
-    return new Any
+    return new TypeAny();
   }
 
   static get Array() {
-    return new Array
+    return new TypeArray();
   }
 
   static get Boolean() {
-    return new Boolean
+    return new TypeBoolean();
   }
 
   static get Buffer() {
-    return new Buffer
+    return new TypeBuffer();
   }
 
   static get Date() {
-    return new Date
+    return new TypeDate();
   }
 
   static get Number() {
-    return new Number
+    return new TypeNumber();
   }
 
   static get Object() {
-    return new Object
+    return new TypeObject();
   }
 
   static get ObjectId() {
-    return new ObjectId
+    return new TypeObjectId();
   }
 
   static get String() {
-    return new String
+    return new TypeString();
   }
 }
 
-export = Type
+export = Type;

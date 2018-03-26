@@ -1,9 +1,11 @@
-import { ObjectId } from 'mongodb'
-import * as Model from './Model'
-import * as connections from './connections'
+import { ObjectId } from "mongodb";
+import Model from "./Model";
+import toGraphQL from "./graphql/DB";
+import * as connections from "./connections";
 
 export {
   ObjectId,
   Model,
-  connections
-}
+  toGraphQL,
+  connections,
+};

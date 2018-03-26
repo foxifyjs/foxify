@@ -1,15 +1,6 @@
-import dotenv = require('dotenv')
-import * as path from 'path'
-import 'prototyped.js/es6'
-
-dotenv.config()
-
-// dotenv.config({
-//   path: path.join(path.dirname((require.main as OBJ).filename), '.env')
-// })
-
-import { HttpExeption as HttpEx } from './exeptions'
-import { Db } from 'mongodb'
+import "prototyped.js/es6";
+import { HttpExeption as HttpEx } from "./exeptions";
+import { Db } from "mongodb";
 
 declare global {
   namespace NodeJS {
@@ -17,30 +8,31 @@ declare global {
       __FOX__: {
         db: {
           connections: {
-            [name: string]: Db
-          }
-        }
-      }
+            [name: string]: Db;
+          },
+        },
+      };
 
-      HttpExeption: typeof HttpEx
+      HttpExeption: typeof HttpEx;
     }
   }
 
   var __FOX__: {
     db: {
       connections: {
-        [name: string]: Db
-      }
-    }
-  }
+        [name: string]: Db,
+      },
+    },
+  };
 
-  var HttpExeption: typeof HttpEx
+  // tslint:disable-next-line:variable-name
+  var HttpExeption: typeof HttpEx;
 }
 
 global.__FOX__ = {
   db: {
-    connections: {}
-  }
-}
+    connections: {},
+  },
+};
 
-global.HttpExeption = HttpEx
+global.HttpExeption = HttpEx;

@@ -1,0 +1,70 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "jsRules": {},
+  "rules": {
+    "ordered-imports": false,
+    "no-namespace": false,
+    "no-internal-module": false,
+    "interface-name": [
+      true,
+      "never-prefix"
+    ],
+    "no-empty-interface": false,
+    "member-access": [
+      true,
+      "no-public"
+    ],
+    "object-literal-sort-keys": false,
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-pascal-case",
+      "allow-leading-underscore"
+    ],
+    "no-angle-bracket-type-assertion": false,
+    "no-shadowed-variable": false,
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "private-static-field",
+          "public-static-field",
+          "private-instance-field",
+          "public-instance-field",
+          "private-constructor",
+          "public-constructor",
+          "protected-instance-method",
+          "private-instance-method",
+          "public-instance-method"
+        ]
+      }
+    ],
+    "no-console": false,
+    "no-empty": false,
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-module",
+      "check-separator",
+      "check-rest-spread",
+      "check-type",
+      "check-type-operator",
+      "check-preblock"
+    ],
+    "forin": false,
+    "curly": [
+      true,
+      "as-needed"
+    ],
+    "unified-signatures": false,
+    "prefer-for-of": false,
+    "no-bitwise": false
+  },
+  "rulesDirectory": []
+}

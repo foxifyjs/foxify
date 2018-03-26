@@ -1,55 +1,55 @@
-import * as http from 'http'
-import * as path from 'path'
-import * as escapeHtml from 'escape-html'
-import * as contentType from 'content-type'
-import * as encodeUrl from 'encodeurl'
-import * as cookie from 'cookie'
-import { sign } from 'cookie-signature'
-import * as onFinished from 'on-finished'
-import * as contentDisposition from 'content-disposition'
-import * as vary from 'vary'
-import send = require('send')
-import * as constants from '../constants'
-import * as Fox from '../index'
-import { Engine } from '../view'
+import * as http from "http";
+import * as path from "path";
+import * as escapeHtml from "escape-html";
+import * as contentType from "content-type";
+import * as encodeUrl from "encodeurl";
+import * as cookie from "cookie";
+import { sign } from "cookie-signature";
+import * as onFinished from "on-finished";
+import * as contentDisposition from "content-disposition";
+import * as vary from "vary";
+import send = require("send");
+import * as constants from "../constants";
+import * as Fox from "../index";
+import { Engine } from "../view";
 
 declare module "http" {
   export interface ServerResponse {
-    [key: string]: any
+    [key: string]: any;
 
-    req: http.IncomingMessage
+    req: http.IncomingMessage;
 
-    status(code: number): this
-    links(links: { [key: string]: string }): this
-    send(body: string | object | Buffer): this
-    json(response: object | Array<any>): this
-    jsonp(response: object | Array<any>): this
-    sendStatus(statusCode: number): this
-    sendFile(path: string, options?: Object, callback?: Function): void
-    download(path: string, filename: string, options?: Object, callback?: Function): void
-    contentType(type: string): this
-    type(type: string): this
-    format(format: Object): this
-    attachment(filename: string): this
-    append(field: string, val: string | Array<string>): this
-    set(field: string | number | Object, value: string | Array<string>): this
-    header(field: string | Object, value: string | Array<string>): this
-    get(field: string): string | number | Array<string> | undefined
-    clearCookie(name: string, options: Object): this
-    cookie(name: string, value: string | Object, options: Object): this
-    location(url: string): this
-    redirect(url: string): void
-    redirect(code: number, url: string): void
-    vary(field: string | Array<string>): this
+    status(code: number): this;
+    links(links: { [key: string]: string }): this;
+    send(body: string | object | Buffer): this;
+    json(response: object | any[]): this;
+    jsonp(response: object | any[]): this;
+    sendStatus(statusCode: number): this;
+    sendFile(path: string, options?: object | ((...args: any[]) => void), callback?: (...args: any[]) => void): void;
+    download(path: string, filename: string, options?: object, callback?: (...args: any[]) => void): void;
+    contentType(type: string): this;
+    type(type: string): this;
+    format(format: object): this;
+    attachment(filename: string): this;
+    append(field: string, val: string | string[]): this;
+    set(field: string | number | object, value: string | string[]): this;
+    header(field: string | object, value: string | string[]): this;
+    get(field: string): string | number | string[] | undefined;
+    clearCookie(name: string, options: object): this;
+    cookie(name: string, value: string | object, options: object): this;
+    location(url: string): this;
+    redirect(url: string): void;
+    redirect(code: number, url: string): void;
+    vary(field: string | string[]): this;
 
-    render(view: string, options: Object, callback: Engine.Callback): void
+    render(view: string, options?: object, callback?: Engine.Callback): void;
   }
 }
 
-const resolve = path.resolve
-const STATUS_CODES = http.STATUS_CODES
+const resolve = path.resolve;
+const STATUS_CODES = http.STATUS_CODES;
 
-const charsetRegExp = /;\s*charset\s*=/
+const charsetRegExp = /;\s*charset\s*=/;
 
 /**
  * Set the charset in a given Content-Type string.
@@ -59,18 +59,18 @@ const charsetRegExp = /;\s*charset\s*=/
  * @return {String}
  * @api private
  */
-const setCharset = function(type?: string, charset?: string) {
-  if (!type || !charset) return type
+const setCharset = (type?: string, charset?: string) => {
+  if (!type || !charset) return type;
 
   // parse type
-  let parsed = contentType.parse(type)
+  const parsed = contentType.parse(type);
 
   // set charset
-  parsed.parameters.charset = charset
+  parsed.parameters.charset = charset;
 
   // format type
-  return contentType.format(parsed)
-}
+  return contentType.format(parsed);
+};
 
 /**
  * Stringify JSON, like JSON.stringify, but v8 optimized, with the
@@ -86,25 +86,24 @@ const setCharset = function(type?: string, charset?: string) {
 const stringify = (value: any, replacer?: (key: string, value: any) => any, spaces?: number, escape?: boolean) => {
   // v8 checks arguments.length for optimizing simple call
   // https://bugs.chromium.org/p/v8/issues/detail?id=4730
-  let json = JSON.stringify(value, replacer, spaces)
+  let json = JSON.stringify(value, replacer, spaces);
 
-  if (escape) {
-    json = json.replace(/[<>&]/g, function(c) {
+  if (escape)
+    json = json.replace(/[<>&]/g, (c) => {
       switch (c.charCodeAt(0)) {
         case 0x3c:
-          return '\\u003c'
+          return "\\u003c";
         case 0x3e:
-          return '\\u003e'
+          return "\\u003e";
         case 0x26:
-          return '\\u0026'
+          return "\\u0026";
         default:
-          return c
+          return c;
       }
-    })
-  }
+    });
 
-  return json
-}
+  return json;
+};
 
 /**
  * Check if `path` looks absolute.
@@ -113,117 +112,123 @@ const stringify = (value: any, replacer?: (key: string, value: any) => any, spac
  * @return {Boolean}
  * @api private
  */
-const isAbsolute = function(path: string) {
-  if ('/' === path[0]) return true
-  if (':' === path[1] && ('\\' === path[2] || '/' === path[2])) return true // Windows device path
-  if ('\\\\' === path.substring(0, 2)) return true // Microsoft Azure absolute path
-}
+const isAbsolute = (path: string) => {
+  if ("/" === path[0]) return true;
+  if (":" === path[1] && ("\\" === path[2] || "/" === path[2])) return true; // Windows device path
+  if ("\\\\" === path.substring(0, 2)) return true; // Microsoft Azure absolute path
+};
 
 /**
  * pipe the send file stream
  */
-const sendfile = (res: http.ServerResponse, file: send.SendStream, options: Object, callback: Function) => {
-  let done = false
-  let streaming: boolean
+const sendfile = (
+  res: http.ServerResponse,
+  file: send.SendStream,
+  options: object,
+  callback: (...args: any[]) => void,
+) => {
+  let done = false;
+  let streaming: boolean;
 
   // request aborted
   function onaborted() {
     if (done) return;
 
-    done = true
+    done = true;
 
-    let err = new Error('Request aborted');
+    const err = new Error("Request aborted");
 
-    (err as any).code = 'ECONNABORTED'
+    (err as any).code = "ECONNABORTED";
 
-    callback(err)
+    callback(err);
   }
 
   // directory
   function ondirectory() {
     if (done) return;
 
-    done = true
+    done = true;
 
-    let err = new Error('EISDIR, read');
+    const err = new Error("EISDIR, read");
 
-    (err as any).code = 'EISDIR'
+    (err as any).code = "EISDIR";
 
-    callback(err)
+    callback(err);
   }
 
   // errors
   function onerror(err: Error) {
     if (done) return;
 
-    done = true
+    done = true;
 
-    callback(err)
+    callback(err);
   }
 
   // ended
   function onend() {
     if (done) return;
 
-    done = true
+    done = true;
 
-    callback()
+    callback();
   }
 
   // file
   function onfile() {
-    streaming = false
+    streaming = false;
   }
 
   // finished
   function onfinish(err: any) {
-    if (err && err.code === 'ECONNRESET') return onaborted()
-    if (err) return onerror(err)
+    if (err && err.code === "ECONNRESET") return onaborted();
+    if (err) return onerror(err);
     if (done) return;
 
-    setImmediate(function() {
+    setImmediate(() => {
       if (streaming !== false && !done) {
-        onaborted()
-        return
+        onaborted();
+        return;
       }
 
       if (done) return;
 
-      done = true
+      done = true;
 
-      callback()
-    })
+      callback();
+    });
   }
 
   // streaming
   function onstream() {
-    streaming = true
+    streaming = true;
   }
 
-  file.on('directory', ondirectory)
-  file.on('end', onend);
-  file.on('error', onerror)
-  file.on('file', onfile)
-  file.on('stream', onstream)
+  file.on("directory", ondirectory);
+  file.on("end", onend);
+  file.on("error", onerror);
+  file.on("file", onfile);
+  file.on("stream", onstream);
 
-  onFinished(res, onfinish)
+  onFinished(res, onfinish);
 
-  if ((options as any).headers) {
+  if ((options as any).headers)
     // set headers on successful transfer
-    file.on('headers', function(res: http.ServerResponse) {
-      let obj = (options as any).headers
-      let keys = Object.keys(obj)
+    file.on("headers", (res: http.ServerResponse) => {
+      const obj = (options as any).headers;
+      const keys = Object.keys(obj);
 
+      let k;
       for (let i = 0; i < keys.length; i++) {
-        let k = keys[i]
-        res.setHeader(k, obj[k])
+        k = keys[i];
+
+        res.setHeader(k, obj[k]);
       }
-    })
-  }
+    });
 
   // pipe
-  file.pipe(res)
-}
+  file.pipe(res);
+};
 
 /**
  * Parse accept params `str` returning an
@@ -235,26 +240,27 @@ const sendfile = (res: http.ServerResponse, file: send.SendStream, options: Obje
  * @api private
  */
 const acceptParams = (str: string, index?: number) => {
-  let parts = str.split(/ *; */)
-  let ret = {
+  const parts = str.split(/ *; */);
+
+  const ret = {
     value: parts[0],
     quality: 1,
-    params: <OBJ>{},
-    originalIndex: index
-  }
+    params: <{ [key: string]: any }>{},
+    originalIndex: index,
+  };
 
+  let pms;
   for (let i = 1; i < parts.length; ++i) {
-    let pms = parts[i].split(/ *= */)
+    pms = parts[i].split(/ *= */);
 
-    if ('q' === pms[0]) {
-      ret.quality = parseFloat(pms[1])
-    } else {
-      ret.params[pms[0]] = pms[1]
-    }
+    if ("q" === pms[0])
+      ret.quality = parseFloat(pms[1]);
+    else
+      ret.params[pms[0]] = pms[1];
   }
 
-  return ret
-}
+  return ret;
+};
 
 /**
  * Normalize the given `type`, for example "html" becomes "text/html".
@@ -263,11 +269,11 @@ const acceptParams = (str: string, index?: number) => {
  * @return {Object}
  * @api private
  */
-const normalizeType = function(type: string) {
-  return ~type.indexOf('/')
+const normalizeType = (type: string) => {
+  return ~type.indexOf("/")
     ? acceptParams(type)
-    : { value: (send.mime as any).lookup(type), params: {} }
-}
+    : { value: (send.mime as any).lookup(type), params: {} };
+};
 
 /**
  * Normalize `types`, for example "html" becomes "text/html".
@@ -276,15 +282,13 @@ const normalizeType = function(type: string) {
  * @return {Array}
  * @api private
  */
-const normalizeTypes = function(types: Array<string>) {
-  let ret = []
+const normalizeTypes = (types: string[]) => {
+  const ret = [];
 
-  for (let i = 0; i < types.length; ++i) {
-    ret.push(exports.normalizeType(types[i]))
-  }
+  for (let i = 0; i < types.length; ++i) ret.push(exports.normalizeType(types[i]));
 
-  return ret
-}
+  return ret;
+};
 
 const patch = (res: typeof http.ServerResponse, app: Fox) => {
   /**
@@ -293,8 +297,8 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * Examples:
    *
    *    res.links({
-   *      next: 'http://api.example.com/users?page=2',
-   *      last: 'http://api.example.com/users?page=5'
+   *      next: "http://api.example.com/users?page=2",
+   *      last: "http://api.example.com/users?page=5"
    *    });
    *
    * @param {Object} links
@@ -302,15 +306,15 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.links = function(links) {
-    let link = `${this.get('Link') || ''}, `;
+    const link = `${this.get("Link") || ""}, `;
 
     return this.set(
-      'Link',
+      "Link",
       link + Object.keys(links)
         .map((rel) => `<${links[rel]}>; rel="${rel}"`)
-        .join(', ')
-    )
-  }
+        .join(", "),
+    );
+  };
 
   /**
    * Set status `code`.
@@ -320,158 +324,157 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.status = function(code) {
-    this.statusCode = code
+    this.statusCode = code;
 
-    return this
-  }
+    return this;
+  };
 
   /**
    * Send a response.
    *
    * Examples:
    *
-   *     res.send(Buffer.from('wahoo'));
-   *     res.send({ some: 'json' });
-   *     res.send('<p>some html</p>');
+   *     res.send(Buffer.from("wahoo"));
+   *     res.send({ some: "json" });
+   *     res.send("<p>some html</p>");
    *
    * @param {string|object|Buffer} body
    * @public
    */
   res.prototype.send = function(body) {
-    let contentType = <string>this.get('Content-Type')
-    let req = this.req
-    let chunk = body
-    let encoding
+    const req = this.req;
+    let contentType = <string>this.get("Content-Type");
+    let chunk = body;
+    let encoding;
 
     // populate Content-Length
-    let len
+    let len;
 
     if (String.isInstance(chunk)) {
-      encoding = 'utf8'
+      encoding = "utf8";
 
-      if ((chunk as any).length < 1000) {
+      if ((chunk as any).length < 1000)
         // just calculate length when no ETag + small chunk
-        len = Buffer.byteLength(<string>chunk, encoding)
-      } else {
+        len = Buffer.byteLength(<string>chunk, encoding);
+      else {
         // convert chunk to Buffer and calculate
-        chunk = Buffer.from(<string>chunk, encoding)
-        encoding = undefined
-        len = (chunk as Buffer).length
+        chunk = Buffer.from(<string>chunk, encoding);
+        encoding = undefined;
+        len = (chunk as Buffer).length;
       }
 
       if (!contentType) {
         // string defaulting to html
-        contentType = 'text/html'
+        contentType = "text/html";
 
         // reflect this in content-type
-        this.setHeader('Content-Type', <string>setCharset(contentType, 'utf-8'))
+        this.setHeader("Content-Type", <string>setCharset(contentType, "utf-8"));
       }
     } else if (Buffer.isBuffer(chunk)) {
-      if (!contentType) this.type('bin')
+      if (!contentType) this.type("bin");
 
       // get length of Buffer
-      len = chunk.length
-    } else {
-      return this.json(<Object>chunk)
-    }
+      len = chunk.length;
+    } else
+      return this.json(<object>chunk);
 
-    this.setHeader('Content-Length', len)
+    this.setHeader("Content-Length", len);
 
     // freshness
-    if (req.fresh) this.statusCode = constants.http.NOT_MODIFIED
+    if (req.fresh) this.statusCode = constants.http.NOT_MODIFIED;
 
     // strip irrelevant headers
     if (constants.http.NO_CONTENT === this.statusCode || constants.http.NOT_MODIFIED === this.statusCode) {
-      this.removeHeader('Content-Type')
-      this.removeHeader('Content-Length')
-      this.removeHeader('Transfer-Encoding')
+      this.removeHeader("Content-Type");
+      this.removeHeader("Content-Length");
+      this.removeHeader("Transfer-Encoding");
 
-      chunk = ''
+      chunk = "";
     }
 
     // skip body for HEAD
-    if (req.method == 'HEAD') this.end()
-    else this.end(chunk, encoding)
+    if (req.method === "HEAD") this.end();
+    else this.end(chunk, encoding);
 
-    return this
-  }
+    return this;
+  };
 
   /* json options*/
   const jsonOptions = {
-    escape: app.enabled('json.escape'),
-    spaces: app.get('json.spaces') || undefined,
-    replacer: app.get('json.replacer') || undefined
-  }
+    escape: app.enabled("json.escape"),
+    spaces: app.get("json.spaces") || undefined,
+    replacer: app.get("json.replacer") || undefined,
+  };
 
   /**
    * Send JSON response.
    *
    * Examples:
    *
-   *     res.json({ user: 'tj' });
+   *     res.json({ user: "tj" });
    *
    * @param {array|object} obj
    * @public
    */
   res.prototype.json = function(obj) {
-    let body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape)
+    const body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape);
     // let body = JSON.stringify(obj)
 
     // content-type
-    // if (!this.get('Content-Type')) this.setHeader('Content-Type', 'application/json')
-    this.setHeader('Content-Type', 'application/json')
+    // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json")
+    this.setHeader("Content-Type", "application/json");
 
-    return this.send(body)
-  }
+    return this.send(body);
+  };
 
   /**
    * Send JSON response with JSONP callback support.
    *
    * Examples:
    *
-   *     res.jsonp({ user: 'tj' });
+   *     res.jsonp({ user: "tj" });
    *
    * @param {array|object} obj
    * @public
    */
   res.prototype.jsonp = function(obj) {
     // settings
-    let app = this.app
-    let escape = true
-    let replacer = (key: string, value: any) => value
-    let spaces = 1
-    let body = stringify(obj, replacer, spaces, escape)
-    let callback = this.req.query[app.get('jsonp callback name')]
+    const app = this.app;
+    const escape = jsonOptions.escape;
+    const replacer = jsonOptions.replacer;
+    const spaces = jsonOptions.spaces;
+    let body = stringify(obj, replacer, spaces, escape);
+    let callback = this.req.query[app.get("jsonp callback name")];
 
     // content-type
-    if (!this.get('Content-Type')) {
-      this.set('X-Content-Type-Options', 'nosniff')
-      this.set('Content-Type', 'application/json')
+    if (!this.get("Content-Type")) {
+      this.set("X-Content-Type-Options", "nosniff");
+      this.set("Content-Type", "application/json");
     }
 
     // fixup callback
-    if (Array.isArray(callback)) callback = callback[0]
+    if (Array.isArray(callback)) callback = callback[0];
 
     // jsonp
     if (String.isInstance(callback) && callback.length !== 0) {
-      this.set('X-Content-Type-Options', 'nosniff')
-      this.set('Content-Type', 'text/javascript')
+      this.set("X-Content-Type-Options", "nosniff");
+      this.set("Content-Type", "text/javascript");
 
       // restrict callback charset
-      callback = callback.replace(/[^\[\]\w$.]/g, '')
+      callback = callback.replace(/[^\[\]\w$.]/g, "");
 
       // replace chars not allowed in JavaScript that are in JSON
       body = body
-        .replace(/\u2028/g, '\\u2028')
-        .replace(/\u2029/g, '\\u2029')
+        .replace(/\u2028/g, "\\u2028")
+        .replace(/\u2029/g, "\\u2029");
 
       // the /**/ is a specific security mitigation for "Rosetta Flash JSONP abuse"
       // the typeof check is just to reduce client error noise
-      body = '/**/ typeof ' + callback + ' === \'function\' && ' + callback + '(' + body + ');'
+      body = "/**/ typeof " + callback + " === 'function' && " + callback + "(" + body + ");";
     }
 
-    return this.send(body)
-  }
+    return this.send(body);
+  };
 
   /**
    * Send given HTTP status code.
@@ -488,13 +491,13 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.sendStatus = function(statusCode) {
-    let body = STATUS_CODES[statusCode] || `${statusCode}`
+    const body = STATUS_CODES[statusCode] || `${statusCode}`;
 
-    this.statusCode = statusCode
-    this.type('txt')
+    this.statusCode = statusCode;
+    this.type("txt");
 
-    return this.send(body)
-  }
+    return this.send(body);
+  };
 
   /**
    * Transfer the file at the given `path`.
@@ -521,15 +524,15 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    *  dynamic situations. The code backing `res.sendFile()` is actually
    *  the same code, so HTTP cache support etc is identical.
    *
-   *     app.get('/user/:uid/photos/:file', function(req, res){
+   *     app.get("/user/:uid/photos/:file", function(req, res){
    *       let uid = req.params.uid
    *         , file = req.params.file;
    *
    *       req.user.mayViewFilesFrom(uid, function(yes){
    *         if (yes) {
-   *           res.sendFile('/uploads/' + uid + '/' + file);
+   *           res.sendFile("/uploads/" + uid + "/" + file);
    *         } else {
-   *           res.send(403, 'Sorry! you cant see that.');
+   *           res.send(403, "Sorry! you cant see that.");
    *         }
    *       });
    *     });
@@ -537,35 +540,36 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.sendFile = function(path, options?, callback?) {
-    let done = callback
-    let req = this.req
-    let res = this
-    let next = req.next
-    let opts = options || {}
+    let done = callback;
+    const req = this.req;
+    const res = this;
+    const next = req.next;
+    let opts = options || {};
 
-    if (!path) throw new TypeError('path argument is required to res.sendFile')
+    if (!path) throw new TypeError("path argument is required to res.sendFile");
 
     // support function as second arg
     if (Function.isInstance(options)) {
-      done = options
-      opts = {}
+      done = options;
+      opts = {};
     }
 
-    if (!(opts as any).root && !isAbsolute(path)) throw new TypeError('path must be absolute or specify root to res.sendFile')
+    if (!(opts as any).root && !isAbsolute(path))
+      throw new TypeError("path must be absolute or specify root to res.sendFile");
 
     // create file stream
-    let pathname = encodeURI(path)
-    let file = send(req, pathname, opts)
+    const pathname = encodeURI(path);
+    const file = send(req, pathname, opts);
 
     // transfer
-    sendfile(res, file, opts, function(err: any) {
-      if (done) return done(err)
-      if (err && err.code === 'EISDIR') return next()
+    sendfile(res, file, opts, (err: any) => {
+      if (done) return done(err);
+      if (err && err.code === "EISDIR") return next();
 
       // next() all but write errors
-      if (err && err.code !== 'ECONNABORTED' && err.syscall !== 'write') throw err
-    })
-  }
+      if (err && err.code !== "ECONNABORTED" && err.syscall !== "write") throw err;
+    });
+  };
 
   /**
    * Transfer the file at the given `path` as an attachment.
@@ -585,46 +589,48 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.download = function(path, filename, options, callback) {
-    let done: any = callback
-    let name: any = filename
-    let opts = options || null
+    let done: any = callback;
+    let name: any = filename;
+    let opts = options || null;
 
     // support function as second or third arg
     if (Function.isInstance(filename)) {
-      done = filename
-      name = null
-      opts = null
+      done = filename;
+      name = null;
+      opts = null;
     } else if (Function.isInstance(options)) {
-      done = options
-      opts = null
+      done = options;
+      opts = null;
     }
 
     // set Content-Disposition when file is sent
-    let headers = {
-      'Content-Disposition': contentDisposition(name || path)
-    }
+    const headers = {
+      "Content-Disposition": contentDisposition(name || path),
+    };
 
     // merge user-provided headers
-    if (opts && (opts as OBJ).headers) {
-      let keys = Object.keys((opts as OBJ).headers)
+    if (opts && (opts as { [key: string]: any }).headers) {
+      const keys = Object.keys((opts as { [key: string]: any }).headers);
+
+      let key;
       for (let i = 0; i < keys.length; i++) {
-        let key = keys[i]
-        if (key.toLowerCase() !== 'content-disposition') {
-          (headers as OBJ)[key] = (opts as OBJ).headers[key]
-        }
+        key = keys[i];
+
+        if (key.toLowerCase() !== "content-disposition")
+          (headers as { [key: string]: any })[key] = (opts as { [key: string]: any }).headers[key];
       }
     }
 
     // merge user-provided options
     opts = Object.create(opts)
-      (opts as OBJ).headers = headers
+      (opts as { [key: string]: any }).headers = headers;
 
     // Resolve the full path for sendFile
-    let fullPath = resolve(path)
+    const fullPath = resolve(path);
 
     // send file
-    return this.sendFile(fullPath, opts, done)
-  }
+    return this.sendFile(fullPath, opts, done);
+  };
 
   /**
    * Set _Content-Type_ response header with `type` through `mime.lookup()`
@@ -632,22 +638,22 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    *
    * Examples:
    *
-   *     res.type('.html');
-   *     res.type('html');
-   *     res.type('json');
-   *     res.type('application/json');
-   *     res.type('png');
+   *     res.type(".html");
+   *     res.type("html");
+   *     res.type("json");
+   *     res.type("application/json");
+   *     res.type("png");
    *
    * @param {String} type
    * @return {http.ServerResponse} for chaining
    * @public
    */
   res.prototype.contentType = res.prototype.type = function(type) {
-    return this.set('Content-Type', type.indexOf('/') === -1
+    return this.set("Content-Type", type.indexOf("/") === -1
       ? (send.mime as any).lookup(type)
-      : type
-    )
-  }
+      : type,
+    );
+  };
 
   /**
    * Respond to the Acceptable formats using an `obj`
@@ -662,19 +668,19 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    *
    * Content-Type is set for you, however if you choose
    * you may alter this within the callback using `res.type()`
-   * or `res.set('Content-Type', ...)`.
+   * or `res.set("Content-Type", ...)`.
    *
    *    res.format({
-   *      'text/plain': function(){
-   *        res.send('hey');
+   *      "text/plain": function(){
+   *        res.send("hey");
    *      },
    *
-   *      'text/html': function(){
-   *        res.send('<p>hey</p>');
+   *      "text/html": function(){
+   *        res.send("<p>hey</p>");
    *      },
    *
-   *      'appliation/json': function(){
-   *        res.send({ message: 'hey' });
+   *      "appliation/json": function(){
+   *        res.send({ message: "hey" });
    *      }
    *    });
    *
@@ -683,15 +689,15 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    *
    *    res.format({
    *      text: function(){
-   *        res.send('hey');
+   *        res.send("hey");
    *      },
    *
    *      html: function(){
-   *        res.send('<p>hey</p>');
+   *        res.send("<p>hey</p>");
    *      },
    *
    *      json: function(){
-   *        res.send({ message: 'hey' });
+   *        res.send({ message: "hey" });
    *      }
    *    });
    *
@@ -705,35 +711,38 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @return {http.ServerResponse} for chaining
    * @public
    */
-  res.prototype.format = function(obj: OBJ) {
-    let req = this.req
-    let next = req.next
+  res.prototype.format = function(obj: { [key: string]: any }) {
+    const req = this.req;
+    const next = req.next;
 
-    let fn = obj.default
-    if (fn) delete obj.default
-    let keys = Object.keys(obj)
+    const fn = obj.default;
 
-    let key = keys.length > 0
+    if (fn) delete obj.default;
+
+    const keys = Object.keys(obj);
+
+    const key = keys.length > 0
       ? <string>req.accepts(keys)
-      : false
+      : false;
 
-    this.vary("Accept")
+    this.vary("Accept");
 
     if (key) {
-      this.set('Content-Type', normalizeType(key).value)
-      obj[key](req, this, next)
-    } else if (fn) {
-      fn()
-    } else {
-      let err: any = new Error('Not Acceptable')
-      err.status = err.statusCode = 406
-      err.types = normalizeTypes(keys).map(function(o) { return o.value })
+      this.set("Content-Type", normalizeType(key).value);
+      obj[key](req, this, next);
+    } else if (fn)
+      fn();
+    else {
+      const err: any = new Error("Not Acceptable");
 
-      throw err
+      err.status = err.statusCode = 406;
+      err.types = normalizeTypes(keys).map((o) => o.value);
+
+      throw err;
     }
 
-    return this
-  }
+    return this;
+  };
 
   /**
    * Set _Content-Disposition_ header to _attachment_ with optional `filename`.
@@ -743,21 +752,21 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.attachment = function(filename) {
-    if (filename) this.type(path.extname(filename))
+    if (filename) this.type(path.extname(filename));
 
-    this.set('Content-Disposition', contentDisposition(filename))
+    this.set("Content-Disposition", contentDisposition(filename));
 
-    return this
-  }
+    return this;
+  };
 
   /**
    * Append additional header `field` with value `val`.
    *
    * Example:
    *
-   *    res.append('Link', ['<http://localhost/>', '<http://localhost:3000/>']);
-   *    res.append('Set-Cookie', 'foo=bar; Path=/; HttpOnly');
-   *    res.append('Warning', '199 Miscellaneous warning');
+   *    res.append("Link", ["<http://localhost/>", "<http://localhost:3000/>"]);
+   *    res.append("Set-Cookie", "foo=bar; Path=/; HttpOnly");
+   *    res.append("Warning", "199 Miscellaneous warning");
    *
    * @param {String} field
    * @param {String|Array} val
@@ -765,18 +774,17 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.append = function(field, val) {
-    let prev = this.get(field)
-    let value: any = val
+    const prev = this.get(field);
+    let value: any = val;
 
-    if (prev) {
+    if (prev)
       // concat the new and prev vals
       value = Array.isArray(prev) ? prev.concat(val)
         : Array.isArray(val) ? [prev].concat(val)
           : [prev, val];
-    }
 
-    return this.set(field, value)
-  }
+    return this.set(field, value);
+  };
 
   /**
    * Set header `field` to `val`, or pass
@@ -784,9 +792,9 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    *
    * Examples:
    *
-   *    res.set('Foo', ['bar', 'baz']);
-   *    res.set('Accept', 'application/json');
-   *    res.set({ Accept: 'text/plain', 'X-API-Key': 'tobi' });
+   *    res.set("Foo", ["bar", "baz"]);
+   *    res.set("Accept", "application/json");
+   *    res.set({ Accept: "text/plain", "X-API-Key": "tobi" });
    *
    * Aliased as `res.header()`.
    *
@@ -799,26 +807,25 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     if (val) {
       let value = Array.isArray(val)
         ? val.map((v) => `${v}`)
-        : `${val}`
+        : `${val}`;
 
       // add charset to content-type
-      if ((field as string).toLowerCase() === 'content-type') {
-        if (Array.isArray(value)) throw new TypeError('Content-Type cannot be set to an Array')
+      if ((field as string).toLowerCase() === "content-type") {
+        if (Array.isArray(value)) throw new TypeError("Content-Type cannot be set to an Array");
 
         if (!charsetRegExp.test(value)) {
-          let charset = (send.mime as any).charsets.lookup(value.split(';')[0])
+          const charset = (send.mime as any).charsets.lookup(value.split(";")[0]);
 
-          if (charset) value += '; charset=' + charset.toLowerCase()
+          if (charset) value += "; charset=" + charset.toLowerCase();
         }
       }
 
-      this.setHeader(<string>field, value)
-    } else {
-      for (let key in <Object>field) this.set(key, (field as OBJ)[key])
-    }
+      this.setHeader(<string>field, value);
+    } else
+      for (const key in <object>field) this.set(key, (field as { [key: string]: any })[key]);
 
-    return this
-  }
+    return this;
+  };
 
   /**
    * Get value for header `field`.
@@ -827,7 +834,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @return {String}
    * @public
    */
-  res.prototype.get = res.prototype.getHeader
+  res.prototype.get = res.prototype.getHeader;
 
   /**
    * Clear cookie `name`.
@@ -838,10 +845,10 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.clearCookie = function(name, options) {
-    let opts = Object.assign({}, { expires: new Date(1), path: '/' }, options)
+    const opts = Object.assign({}, { expires: new Date(1), path: "/" }, options);
 
-    return this.cookie(name, '', opts)
-  }
+    return this.cookie(name, "", opts);
+  };
 
   /**
    * Set cookie `name` to `value`, with the given `options`.
@@ -855,10 +862,10 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * Examples:
    *
    *    // "Remember Me" for 15 minutes
-   *    res.cookie('rememberme', '1', { expires: new Date(Date.now() + 900000), httpOnly: true });
+   *    res.cookie("rememberme", "1", { expires: new Date(Date.now() + 900000), httpOnly: true });
    *
    *    // save as above
-   *    res.cookie('rememberme', '1', { maxAge: 900000, httpOnly: true })
+   *    res.cookie("rememberme", "1", { maxAge: 900000, httpOnly: true })
    *
    * @param {String} name
    * @param {String|Object} value
@@ -867,29 +874,29 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.cookie = function(name, value, options) {
-    let opts: OBJ = Object.assign({}, options)
-    let secret = this.req.secret
-    let signed = opts.signed
+    const opts: { [key: string]: any } = Object.assign({}, options);
+    const secret = this.req.secret;
+    const signed = opts.signed;
 
-    if (signed && !secret) throw new Error('cookieParser("secret") required for signed cookies')
+    if (signed && !secret) throw new Error("cookieParser('secret') required for signed cookies");
 
     let val = Object.isInstance(value)
-      ? 'j:' + JSON.stringify(value)
-      : String(value)
+      ? "j:" + JSON.stringify(value)
+      : String(value);
 
-    if (signed) val = 's:' + sign(val, secret)
+    if (signed) val = "s:" + sign(val, secret);
 
-    if ('maxAge' in opts) {
-      opts.expires = new Date(Date.now() + opts.maxAge)
-      opts.maxAge /= 1000
+    if ("maxAge" in opts) {
+      opts.expires = new Date(Date.now() + opts.maxAge);
+      opts.maxAge /= 1000;
     }
 
-    if (opts.path == null) opts.path = '/'
+    if (opts.path == null) opts.path = "/";
 
-    this.append('Set-Cookie', cookie.serialize(name, String(val), opts))
+    this.append("Set-Cookie", cookie.serialize(name, String(val), opts));
 
-    return this
-  }
+    return this;
+  };
 
   /**
    * Set the location header to `url`.
@@ -899,23 +906,23 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    *
    * Examples:
    *
-   *    res.location('/foo/bar').;
-   *    res.location('http://example.com');
-   *    res.location('../login');
+   *    res.location("/foo/bar").;
+   *    res.location("http://example.com");
+   *    res.location("../login");
    *
    * @param {String} url
    * @return {http.ServerResponse} for chaining
    * @public
    */
   res.prototype.location = function(url) {
-    let loc = url
+    let loc = url;
 
     // "back" is an alias for the referrer
-    if (url === 'back') loc = <string>this.req.get('Referrer') || '/'
+    if (url === "back") loc = <string>this.req.get("Referrer") || "/";
 
     // set location
-    return this.set('Location', encodeUrl(loc))
-  }
+    return this.set("Location", encodeUrl(loc));
+  };
 
   /**
    * Redirect to the given `url` with optional response `status`
@@ -927,53 +934,52 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    *
    * Examples:
    *
-   *    res.redirect('/foo/bar');
-   *    res.redirect('http://example.com');
-   *    res.redirect(301, 'http://example.com');
-   *    res.redirect('../login'); // /blog/post/1 -> /blog/login
+   *    res.redirect("/foo/bar");
+   *    res.redirect("http://example.com");
+   *    res.redirect(301, "http://example.com");
+   *    res.redirect("../login"); // /blog/post/1 -> /blog/login
    *
    * @public
    */
   res.prototype.redirect = function(url: string | number) {
-    let address = <string>url
-    let body: string = ''
-    let status = 302
+    let address = <string>url;
+    let body: string = "";
+    let status = 302;
 
     // allow status / url
     if (arguments.length === 2) {
-      status = arguments[0]
-      address = arguments[1]
+      status = arguments[0];
+      address = arguments[1];
     }
 
     // Set location header
-    address = <string>this.location(address).get('Location')
+    address = <string>this.location(address).get("Location");
 
     // Support text/{plain,html} by default
     this.format({
-      text: function() {
-        body = STATUS_CODES[status] + '. Redirecting to ' + address
+      text: () => {
+        body = STATUS_CODES[status] + ". Redirecting to " + address;
       },
 
-      html: function() {
-        let u = escapeHtml(address)
-        body = '<p>' + STATUS_CODES[status] + '. Redirecting to <a href="' + u + '">' + u + '</a></p>'
+      html: () => {
+        const u = escapeHtml(address);
+        body = "<p>" + STATUS_CODES[status] + ". Redirecting to <a href=\"' + u + '\">' + u + '</a></p>";
       },
 
-      default: function() {
-        body = ''
-      }
-    })
+      default: () => {
+        body = "";
+      },
+    });
 
     // Respond
-    this.statusCode = status
-    this.set('Content-Length', <any>Buffer.byteLength(body))
+    this.statusCode = status;
+    this.set("Content-Length", <any>Buffer.byteLength(body));
 
-    if (this.req.method === 'HEAD') {
-      this.end()
-    } else {
-      this.end(body)
-    }
-  }
+    if (this.req.method === "HEAD")
+      this.end();
+    else
+      this.end(body);
+  };
 
   /**
    * Add `field` to Vary. If already present in the Vary set, then
@@ -984,10 +990,10 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @public
    */
   res.prototype.vary = function(field) {
-    vary(this, field)
+    vary(this, field);
 
-    return this
-  }
-}
+    return this;
+  };
+};
 
-export = patch
+export = patch;
