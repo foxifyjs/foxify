@@ -17,6 +17,9 @@
 	<a href="https://github.com/foxifyjs/foxify/issues?q=is%3Aissue+is%3Aclosed" target="_blank">
 		<img src="https://img.shields.io/github/issues-closed-raw/foxifyjs/foxify.svg" alt="closed issues">
 	</a>
+	<a href="https://github.com/foxifyjs/foxify/pulls" target="_blank">
+		<img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="pull requests">
+	</a>
 	<a href="https://github.com/foxifyjs/foxify/blob/master/LICENSE" target="_blank">
 		<img src="https://img.shields.io/github/license/foxifyjs/foxify.svg" alt="license">
 	</a>
