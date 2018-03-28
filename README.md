@@ -9,6 +9,9 @@
 		<img src="https://img.shields.io/npm/v/foxify.svg" alt="npm version">
 	</a>
 	<a href="https://www.npmjs.com/package/foxify" target="_blank">
+		<img src="https://img.shields.io/npm/dt/foxify.svg" alt="npm downloads">
+	</a>
+	<a href="https://www.npmjs.com/package/foxify" target="_blank">
 		<img src="https://img.shields.io/npm/dm/foxify.svg" alt="npm monthly downloads">
 	</a>
 	<a href="https://github.com/foxifyjs/foxify/issues?q=is%3Aopen+is%3Aissue" target="_blank">
