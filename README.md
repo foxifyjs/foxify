@@ -8,6 +8,9 @@
 	<a href="https://www.npmjs.com/package/foxify" target="_blank">
 		<img src="https://img.shields.io/npm/v/foxify.svg" alt="npm version">
 	</a>
+	<a href="http://packagequality.com/#?package=foxify" target="_blank">
+		<img src="http://npm.packagequality.com/shield/foxify.svg" alt="package quality">
+	</a>
 	<a href="https://www.npmjs.com/package/foxify" target="_blank">
 		<img src="https://img.shields.io/npm/dt/foxify.svg" alt="npm downloads">
 	</a>
