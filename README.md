@@ -58,7 +58,7 @@
 ## Installation
 
 Before installing, [download and install Node.js](https://nodejs.org/en/download).
-Node.js 6.4.0 or higher is required.
+Node.js 8 or higher is required.
 
 ```bash
 npm i -s foxify

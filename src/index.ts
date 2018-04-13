@@ -3,6 +3,7 @@ import * as cluster from "cluster";
 import * as os from "os";
 import * as http from "http";
 import * as path from "path";
+import * as Event from "events";
 import * as serveStatic from "serve-static";
 import * as DB from "./database";
 import * as constants from "./constants";
@@ -75,11 +76,10 @@ interface Foxify {
 }
 
 class Foxify {
-  static static = serveStatic;
   static constants = constants;
   static DB = DB;
-
-  static route = (prefix?: string) => new Route(prefix);
+  static Route = Route;
+  static static = serveStatic;
 
   static dotenv = (dotenv: string) => {
     if (!String.isInstance(dotenv))

@@ -18,14 +18,14 @@ export function mixins(...baseCtors: any[]) {
   };
 }
 
-export function defineGetter(obj: object, name: string, getter: () => any) {
+export function define(obj: object, mothod: "get" | "set", name: string, func: (value?: any) => any) {
   Object.defineProperty(
     obj,
     name,
     {
       configurable: true,
       enumerable: true,
-      get: getter,
+      [mothod]: func,
     },
   );
 }
