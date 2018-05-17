@@ -5,7 +5,6 @@ import * as http from "http";
 import * as path from "path";
 import * as Event from "events";
 import * as serveStatic from "serve-static";
-import * as DB from "./database";
 import * as constants from "./constants";
 import { Router, Route, httpMethods } from "./routing";
 import { init, query } from "./middleware";
@@ -77,7 +76,6 @@ interface Foxify {
 
 class Foxify {
   static constants = constants;
-  static DB = DB;
   static Route = Route;
   static static = serveStatic;
 
@@ -120,18 +118,6 @@ class Foxify {
   private _view?: Engine;
 
   constructor() {
-    /* apply default db connection */
-    if (process.env.DATABASE_NAME)
-      Foxify.DB.connections({
-        default: {
-          host: process.env.DATABASE_HOST,
-          port: process.env.DATABASE_PORT,
-          database: process.env.DATABASE_NAME,
-          user: process.env.DATABASE_USER,
-          password: process.env.DATABASE_PASSWORD,
-        },
-      });
-
     /* apply http routing methods */
     httpMethods.map((method) => {
       method = method.toLowerCase();

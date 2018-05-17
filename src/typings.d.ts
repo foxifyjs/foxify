@@ -18,4 +18,3 @@ declare module "*.json" {
 
 declare module "encodeurl"
 declare module "serve-static"
-declare module "verifications"
