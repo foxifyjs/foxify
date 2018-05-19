@@ -1,6 +1,6 @@
 {
   "name": "foxify",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "The fast, easy to use & typescript ready web framework for Node.js",
   "author": "Ardalan Amini <ardalanamini22@gmail.com>",
   "contributors": [
@@ -13,11 +13,28 @@
     "url": "git+https://github.com/foxifyjs/foxify.git"
   },
   "keywords": [
-    "node", "fast", "speed", "typescript", "api",
-    "web", "app", "application", "route", "router",
-    "routing", "middleware", "cluster", "clustering",
-    "database", "model", "mongodb", "graphql", "relation",
-    "relationships", "framework", "foxify"
+    "node",
+    "fast",
+    "speed",
+    "typescript",
+    "api",
+    "web",
+    "app",
+    "application",
+    "route",
+    "router",
+    "routing",
+    "middleware",
+    "cluster",
+    "clustering",
+    "database",
+    "model",
+    "mongodb",
+    "graphql",
+    "relation",
+    "relationships",
+    "framework",
+    "foxify"
   ],
   "engines": {
     "node": ">=8"
@@ -33,7 +50,7 @@
     "lint": "tslint -p tsconfig.json -c tslint.json --exclude '**/*.d.ts'"
   },
   "dependencies": {
-    "@types/node": "^9.6.17",
+    "@types/node": "^10.1.2",
     "accepts": "^1.3.5",
     "async": "^2.6.0",
     "content-disposition": "^0.5.2",
