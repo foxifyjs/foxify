@@ -58,7 +58,7 @@
 ## Installation
 
 Before installing, [download and install Node.js](https://nodejs.org/en/download).
-Node.js 6.4.0 or higher is required.
+Node.js 8 or higher is required.
 
 ```bash
 npm i -s foxify
@@ -89,7 +89,7 @@ app.get('/404', (req, res) => {
 app.start();
 ```
 
-More detailed [sample](https://github.com/foxifyjs/foxify/tree/master/sample) is available.
+More detailed [sample](https://github.com/foxifyjs/foxify/tree/master/demo) is available.
 
 You can also find all the documents [here](https://foxify.js.org/api.html).
 
@@ -99,7 +99,7 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 - Written in ES6
 - Robust routing (faster than `Express`)
 - `Express` middleware support
-- Robust database modeling (`mongodb`)
+- Robust database modeling ([Odin](https://github.com/foxifyjs/odin))
 - Simple and powerful error handling
 - Focus on high performance
 - HTTP helpers (redirection, etc)
@@ -135,18 +135,7 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 - [x] View engine
 - [x] Options
 - [x] Settings
-- [ ] Database
-	- [ ] MySQL ?
-	- [ ] MongoDB
-		- [x] `graphql` support
-		- [x] `schema` validation
-		- [ ] Relations
-			- [x] `hasOne` relation
-			- [x] `hasMany` relation
-			- [ ] Create operation
-			- [x] Read operation
-			- [ ] Update operation
-			- [ ] Delete operation
+- [x] [Database Model](https://github.com/foxifyjs/odin)
 - [x] Clustering
 - [ ] File storage
 - [ ] Job schedule

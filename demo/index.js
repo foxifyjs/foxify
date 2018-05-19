@@ -1,13 +1,13 @@
 const path = require("path");
 const morgan = require("morgan");
-const graphqlHTTP = require('express-graphql');
 const Foxify = require("../framework");
-const users = require("./routes/users");
-const index = require("./routes/index");
+const index = require("./routes");
 
 Foxify.dotenv(path.join(__dirname, ".env"));
 
 const app = new Foxify();
+
+app.disable("content-length");
 
 // template engine support
 app.engine("ejs", path.join(__dirname, "views"), require("ejs").__express)
@@ -19,14 +19,7 @@ app.use(
 );
 
 // routes
-app.use(index)
-  .use(users);
-
-// graphql support
-app.use('/graphql', graphqlHTTP({
-  schema: Foxify.DB.toGraphQL(...require("./models")),
-  graphiql: true,
-}));
+app.use(index);
 
 // start the app
 app.start(() =>

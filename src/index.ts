@@ -3,8 +3,8 @@ import * as cluster from "cluster";
 import * as os from "os";
 import * as http from "http";
 import * as path from "path";
+import * as Event from "events";
 import * as serveStatic from "serve-static";
-import * as DB from "./database";
 import * as constants from "./constants";
 import { Router, Route, httpMethods } from "./routing";
 import { init, query } from "./middleware";
@@ -15,6 +15,7 @@ import { name } from "../package.json";
 module Foxify {
   export interface Options {
     "x-powered-by": boolean;
+    "content-length": boolean;
     routing: {
       strict: boolean,
       sensitive: boolean,
@@ -75,11 +76,9 @@ interface Foxify {
 }
 
 class Foxify {
-  static static = serveStatic;
   static constants = constants;
-  static DB = DB;
-
-  static route = (prefix?: string) => new Route(prefix);
+  static Route = Route;
+  static static = serveStatic;
 
   static dotenv = (dotenv: string) => {
     if (!String.isInstance(dotenv))
@@ -92,6 +91,7 @@ class Foxify {
 
   private _options: Foxify.Options = {
     ["x-powered-by"]: true,
+    ["content-length"]: true,
     routing: {
       strict: false,
       sensitive: true,
@@ -120,18 +120,6 @@ class Foxify {
   private _view?: Engine;
 
   constructor() {
-    /* apply default db connection */
-    if (process.env.DATABASE_NAME)
-      Foxify.DB.connections({
-        default: {
-          host: process.env.DATABASE_HOST,
-          port: process.env.DATABASE_PORT,
-          database: process.env.DATABASE_NAME,
-          user: process.env.DATABASE_USER,
-          password: process.env.DATABASE_PASSWORD,
-        },
-      });
-
     /* apply http routing methods */
     httpMethods.map((method) => {
       method = method.toLowerCase();
@@ -182,7 +170,7 @@ class Foxify {
     if (!String.isInstance(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!["x-powered-by", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
+    if (!["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, true, this._options);
@@ -194,7 +182,7 @@ class Foxify {
     if (!String.isInstance(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!["x-powered-by", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
+    if (!["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, false, this._options);
@@ -206,7 +194,7 @@ class Foxify {
     if (!String.isInstance(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!["x-powered-by", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
+    if (!["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
       throw new TypeError(`Unknown option '${option}'`);
 
     const keys = option.split(".");

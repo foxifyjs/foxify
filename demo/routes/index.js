@@ -1,6 +1,6 @@
-const Fox = require('../../framework')
+const Foxify = require('../../framework')
 
-let routes = Fox.route()
+let routes = new Foxify.Route()
 
 routes.get('/', (req, res) => {
   res.render('index', {

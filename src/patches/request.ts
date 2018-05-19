@@ -8,7 +8,7 @@ import * as parseUrl from "parseurl";
 import fresh = require("fresh");
 import * as constants from "../constants";
 import * as Fox from "../index";
-import { defineGetter } from "../utils";
+import { define } from "../utils";
 
 /**
  * @namespace {http.IncomingMessage}
@@ -238,7 +238,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String}
    * @public
    */
-  // defineGetter(req.prototype, "ip", function(this: http.IncomingMessage) {
+  // define(req.prototype, "get", "ip", function(this: http.IncomingMessage) {
   //   let trust = this.app.get("trust proxy fn")
   //
   //   return proxyaddr(this, trust)
@@ -255,7 +255,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Array}
    * @public
    */
-  defineGetter(req.prototype, "ips", function(this: http.IncomingMessage) {
+  define(req.prototype, "get", "ips", function(this: http.IncomingMessage) {
     // let trust = this.app.get("trust proxy fn")
     // let addrs = proxyaddr.all(this, trust)
     const addrs = proxyaddr.all(this);
@@ -279,7 +279,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Array}
    * @public
    */
-  defineGetter(req.prototype, "subdomains", function(this: http.IncomingMessage) {
+  define(req.prototype, "get", "subdomains", function(this: http.IncomingMessage) {
     const hostname = this.hostname;
 
     if (!hostname) return [];
@@ -297,7 +297,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String}
    * @public
    */
-  defineGetter(req.prototype, "path", function(this: http.IncomingMessage) {
+  define(req.prototype, "get", "path", function(this: http.IncomingMessage) {
     const url = parseUrl(this);
 
     return url ? url.pathname : "";
@@ -313,7 +313,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String}
    * @public
    */
-  defineGetter(req.prototype, "hostname", function(this: http.IncomingMessage) {
+  define(req.prototype, "get", "hostname", function(this: http.IncomingMessage) {
     let host = <string>this.get("X-Forwarded-Host");
 
     if (!host) host = <string>this.get("Host");
@@ -336,7 +336,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Boolean}
    * @public
    */
-  defineGetter(req.prototype, "fresh", function(this: http.IncomingMessage) {
+  define(req.prototype, "get", "fresh", function(this: http.IncomingMessage) {
     const method = this.method;
     const res = this.res;
     const status = res.statusCode;
@@ -363,7 +363,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Boolean}
    * @public
    */
-  defineGetter(req.prototype, "stale", function(this: http.IncomingMessage) {
+  define(req.prototype, "get", "stale", function(this: http.IncomingMessage) {
     return !this.fresh;
   });
 
@@ -373,7 +373,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Boolean}
    * @public
    */
-  defineGetter(req.prototype, "xhr", function(this: http.IncomingMessage) {
+  define(req.prototype, "get", "xhr", function(this: http.IncomingMessage) {
     const val = <string>this.get("X-Requested-With") || "";
 
     return val.toLowerCase() === "xmlhttprequest";

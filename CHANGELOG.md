@@ -1,6 +1,14 @@
 # Changelog
 
 
+## [v0.7.0](https://github.com/foxifyjs/foxify/releases/tag/v0.7.0) *(2018-05-19)*
+
+**Implemented enhancements:**
+- added `content-length` option
+- moved `Database` to a new repository named [Odin](https://github.com/foxifyjs/odin)
+- improved performance
+
+
 ## [v0.6.0](https://github.com/foxifyjs/foxify/releases/tag/v0.6.0) *(2018-03-26)*
 
 **Implemented enhancements:**
