@@ -15,6 +15,7 @@ import { name } from "../package.json";
 module Foxify {
   export interface Options {
     "x-powered-by": boolean;
+    "content-length": boolean;
     routing: {
       strict: boolean,
       sensitive: boolean,
@@ -90,6 +91,7 @@ class Foxify {
 
   private _options: Foxify.Options = {
     ["x-powered-by"]: true,
+    ["content-length"]: true,
     routing: {
       strict: false,
       sensitive: true,
@@ -168,7 +170,7 @@ class Foxify {
     if (!String.isInstance(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!["x-powered-by", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
+    if (!["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, true, this._options);
@@ -180,7 +182,7 @@ class Foxify {
     if (!String.isInstance(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!["x-powered-by", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
+    if (!["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, false, this._options);
@@ -192,7 +194,7 @@ class Foxify {
     if (!String.isInstance(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!["x-powered-by", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
+    if (!["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
       throw new TypeError(`Unknown option '${option}'`);
 
     const keys = option.split(".");

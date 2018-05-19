@@ -341,63 +341,103 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @param {string|object|Buffer} body
    * @public
    */
-  res.prototype.send = function(body) {
-    const req = this.req;
-    let contentType = <string>this.get("Content-Type");
-    let chunk = body;
-    let encoding;
+  if (app.enabled("content-length"))
+    res.prototype.send = function(body) {
+      const req = this.req;
+      let contentType = <string>this.get("Content-Type");
+      let chunk = body;
+      let encoding;
 
-    // populate Content-Length
-    let len;
+      // populate Content-Length
+      let len;
 
-    if (String.isInstance(chunk)) {
-      encoding = "utf8";
+      if (String.isInstance(chunk)) {
+        encoding = "utf8";
 
-      if ((chunk as any).length < 1000)
-        // just calculate length when no ETag + small chunk
-        len = Buffer.byteLength(<string>chunk, encoding);
-      else {
-        // convert chunk to Buffer and calculate
-        chunk = Buffer.from(<string>chunk, encoding);
-        encoding = undefined;
-        len = (chunk as Buffer).length;
+        if ((chunk as any).length < 1000)
+          // just calculate length when no ETag + small chunk
+          len = Buffer.byteLength(<string>chunk, encoding);
+        else {
+          // convert chunk to Buffer and calculate
+          chunk = Buffer.from(<string>chunk, encoding);
+          encoding = undefined;
+          len = (chunk as Buffer).length;
+        }
+
+        if (!contentType) {
+          // string defaulting to html
+          contentType = "text/html";
+
+          // reflect this in content-type
+          this.setHeader("Content-Type", <string>setCharset(contentType, "utf-8"));
+        }
+      } else if (Buffer.isBuffer(chunk)) {
+        if (!contentType) this.type("bin");
+
+        // get length of Buffer
+        len = chunk.length;
+      } else
+        return this.json(<object>chunk);
+
+      this.setHeader("Content-Length", len);
+
+      // freshness
+      if (req.fresh) this.statusCode = constants.http.NOT_MODIFIED;
+
+      // strip irrelevant headers
+      if (constants.http.NO_CONTENT === this.statusCode || constants.http.NOT_MODIFIED === this.statusCode) {
+        this.removeHeader("Content-Type");
+        this.removeHeader("Content-Length");
+        this.removeHeader("Transfer-Encoding");
+
+        chunk = "";
       }
 
-      if (!contentType) {
-        // string defaulting to html
-        contentType = "text/html";
+      // skip body for HEAD
+      if (req.method === "HEAD") this.end();
+      else this.end(chunk, encoding);
 
-        // reflect this in content-type
-        this.setHeader("Content-Type", <string>setCharset(contentType, "utf-8"));
+      return this;
+    };
+  else
+    res.prototype.send = function(body) {
+      const req = this.req;
+      let contentType = <string>this.get("Content-Type");
+      let chunk = body;
+      let encoding;
+
+      if (String.isInstance(chunk)) {
+        encoding = "utf8";
+
+        if (!contentType) {
+          // string defaulting to html
+          contentType = "text/html";
+
+          // reflect this in content-type
+          this.setHeader("Content-Type", <string>setCharset(contentType, "utf-8"));
+        }
+      } else if (Buffer.isBuffer(chunk)) {
+        if (!contentType) this.type("bin");
+      } else
+        return this.json(<object>chunk);
+
+      // freshness
+      if (req.fresh) this.statusCode = constants.http.NOT_MODIFIED;
+
+      // strip irrelevant headers
+      if (constants.http.NO_CONTENT === this.statusCode || constants.http.NOT_MODIFIED === this.statusCode) {
+        this.removeHeader("Content-Type");
+        this.removeHeader("Transfer-Encoding");
+
+        chunk = "";
       }
-    } else if (Buffer.isBuffer(chunk)) {
-      if (!contentType) this.type("bin");
 
-      // get length of Buffer
-      len = chunk.length;
-    } else
-      return this.json(<object>chunk);
+      // skip body for HEAD
+      if (req.method === "HEAD") this.end();
+      else this.end(chunk, encoding);
 
-    this.setHeader("Content-Length", len);
-
-    // freshness
-    if (req.fresh) this.statusCode = constants.http.NOT_MODIFIED;
-
-    // strip irrelevant headers
-    if (constants.http.NO_CONTENT === this.statusCode || constants.http.NOT_MODIFIED === this.statusCode) {
-      this.removeHeader("Content-Type");
-      this.removeHeader("Content-Length");
-      this.removeHeader("Transfer-Encoding");
-
-      chunk = "";
-    }
-
-    // skip body for HEAD
-    if (req.method === "HEAD") this.end();
-    else this.end(chunk, encoding);
-
-    return this;
-  };
+      return this;
+    };
 
   /* json options*/
   const jsonOptions = {

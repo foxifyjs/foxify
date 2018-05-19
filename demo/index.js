@@ -7,6 +7,8 @@ Foxify.dotenv(path.join(__dirname, ".env"));
 
 const app = new Foxify();
 
+app.disable("content-length");
+
 // template engine support
 app.engine("ejs", path.join(__dirname, "views"), require("ejs").__express)
 
