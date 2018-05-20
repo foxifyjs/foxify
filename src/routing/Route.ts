@@ -80,15 +80,19 @@ declare interface Route {
 }
 
 class Route {
-  routes = {} as Route.Routes;
+  protected _routes = {} as Route.Routes;
 
   protected _prefix: string;
+  
+  get routes() {
+    return this._routes;
+  }
 
   constructor(prefix: string = "") {
     this._prefix = prefix;
 
     httpMethods.map((method) => {
-      this.routes[method] = [];
+      this._routes[method] = [];
 
       this[method.toLowerCase()] =
         (path: string, ...controllers: Route.Controller[]) => this._push(method, path, ...controllers);
@@ -99,7 +103,7 @@ class Route {
     path = `${this._prefix}${path}`.replace(/\/$/, "");
 
     controllers.map((controller) =>
-      this.routes[method].push({
+      this._routes[method].push({
         path,
         controller: new Encapsulation(
           (req, res, next: () => void, ...args: any[],
