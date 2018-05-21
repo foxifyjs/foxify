@@ -14,7 +14,7 @@ declare interface HttpExeption extends Error {
 class HttpExeption extends Error {
   constructor(errors?: object);
   constructor(code: number, errors?: object);
-  constructor(message: string, errors: object);
+  constructor(message: string, errors?: object);
   constructor(message: string, code: number, errors?: object);
   constructor(
     message?: string | number | object,
@@ -43,25 +43,14 @@ class HttpExeption extends Error {
   }
 
   static handle(exeption: any = new HttpExeption(), req: IncomingMessage, res: ServerResponse): void {
-    const message = exeption.message;
-    const errors = exeption.errors;
-    let code = exeption.code;
+    const code = exeption.code || http.INTERNAL_SERVER_ERROR;
+    const message = exeption.message || STATUS_CODES[code] || "";
+    const errors = exeption.errors && exeption.errors.$size() > 0 ? exeption.errors : null;
 
-    let html: string;
-    let json: object;
+    const html = htmlError(code, STATUS_CODES[code], message);
+    const json: { [key: string]: any } = { message };
 
-    switch (code) {
-      case http.NOT_FOUND:
-        html = htmlError(code, STATUS_CODES[code], message);
-        json = { message };
-        break;
-      case http.INTERNAL_SERVER_ERROR:
-      default:
-        code = http.INTERNAL_SERVER_ERROR;
-
-        html = htmlError(code, STATUS_CODES[code], message);
-        json = { message, errors };
-    }
+    if (errors) json.errors = errors;
 
     res.format({
       "text/html": () => res.status(code).send(html),

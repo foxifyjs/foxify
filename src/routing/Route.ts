@@ -83,7 +83,7 @@ class Route {
   protected _routes = {} as Route.Routes;
 
   protected _prefix: string;
-  
+
   get routes() {
     return this._routes;
   }

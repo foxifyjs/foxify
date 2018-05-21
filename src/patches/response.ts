@@ -22,8 +22,8 @@ declare module "http" {
     status(code: number): this;
     links(links: { [key: string]: string }): this;
     send(body: string | object | Buffer): this;
-    json(response: object | any[]): this;
-    jsonp(response: object | any[]): this;
+    json(response: object | any[], status?: number): this;
+    jsonp(response: object | any[], status?: number): this;
     sendStatus(statusCode: number): this;
     sendFile(path: string, options?: object | ((...args: any[]) => void), callback?: (...args: any[]) => void): void;
     download(path: string, filename: string, options?: object, callback?: (...args: any[]) => void): void;
@@ -402,20 +402,13 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
   else
     res.prototype.send = function(body) {
       const req = this.req;
-      let contentType = <string>this.get("Content-Type");
+      const contentType = this.get("Content-Type") as string;
       let chunk = body;
-      let encoding;
 
       if (String.isInstance(chunk)) {
-        encoding = "utf8";
-
-        if (!contentType) {
-          // string defaulting to html
-          contentType = "text/html";
-
+        if (!contentType)
           // reflect this in content-type
-          this.setHeader("Content-Type", <string>setCharset(contentType, "utf-8"));
-        }
+          this.setHeader("Content-Type", setCharset("text/html", "utf-8") as string);
       } else if (Buffer.isBuffer(chunk)) {
         if (!contentType) this.type("bin");
       } else
@@ -427,6 +420,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
       // strip irrelevant headers
       if (constants.http.NO_CONTENT === this.statusCode || constants.http.NOT_MODIFIED === this.statusCode) {
         this.removeHeader("Content-Type");
+        this.removeHeader("Content-Length");
         this.removeHeader("Transfer-Encoding");
 
         chunk = "";
@@ -434,7 +428,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
 
       // skip body for HEAD
       if (req.method === "HEAD") this.end();
-      else this.end(chunk, encoding);
+      else this.end(chunk, "utf8");
 
       return this;
     };
@@ -454,15 +448,18 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    *     res.json({ user: "tj" });
    *
    * @param {array|object} obj
+   * @param {number} [status]
    * @public
    */
-  res.prototype.json = function(obj) {
+  res.prototype.json = function(obj, status) {
     const body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape);
     // let body = JSON.stringify(obj)
 
     // content-type
     // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json")
     this.setHeader("Content-Type", "application/json");
+
+    if (status) this.status(status);
 
     return this.send(body);
   };
@@ -475,9 +472,10 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    *     res.jsonp({ user: "tj" });
    *
    * @param {array|object} obj
+   * @param {number} [status]
    * @public
    */
-  res.prototype.jsonp = function(obj) {
+  res.prototype.jsonp = function(obj, status) {
     // settings
     const app = this.app;
     const escape = jsonOptions.escape;
@@ -485,6 +483,8 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     const spaces = jsonOptions.spaces;
     let body = stringify(obj, replacer, spaces, escape);
     let callback = this.req.query[app.get("jsonp callback name")];
+
+    if (status) this.status(status);
 
     // content-type
     if (!this.get("Content-Type")) {
