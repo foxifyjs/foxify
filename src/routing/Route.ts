@@ -1,15 +1,43 @@
 import * as http from "http";
-import { Encapsulation } from "../exeptions";
+import { Encapsulation } from "../exceptions";
 import httpMethods from "./httpMethods";
+import * as utils from "../utils";
 
-declare module Route {
+module Route {
   export type Controller =
-    (
-      requset: http.IncomingMessage,
-      response: http.ServerResponse,
-      next: () => void,
-      ...rest: any[],
-    ) => any;
+    (request: http.IncomingMessage, response: http.ServerResponse, next: () => void, ...rest: any[]) => any;
+
+  export type MethodFunction<T = Route> =
+    (path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]) => T;
+
+  export interface MethodFunctions<T = Route> {
+    get: Route.MethodFunction<T>;
+    post: Route.MethodFunction<T>;
+    put: Route.MethodFunction<T>;
+    head: Route.MethodFunction<T>;
+    delete: Route.MethodFunction<T>;
+    options: Route.MethodFunction<T>;
+    trace: Route.MethodFunction<T>;
+    copy: Route.MethodFunction<T>;
+    lock: Route.MethodFunction<T>;
+    mkcol: Route.MethodFunction<T>;
+    move: Route.MethodFunction<T>;
+    purge: Route.MethodFunction<T>;
+    propfind: Route.MethodFunction<T>;
+    proppatch: Route.MethodFunction<T>;
+    unlock: Route.MethodFunction<T>;
+    report: Route.MethodFunction<T>;
+    mkactivity: Route.MethodFunction<T>;
+    checkout: Route.MethodFunction<T>;
+    merge: Route.MethodFunction<T>;
+    ["m-search"]: Route.MethodFunction<T>;
+    notify: Route.MethodFunction<T>;
+    subscribe: Route.MethodFunction<T>;
+    unsubscribe: Route.MethodFunction<T>;
+    patch: Route.MethodFunction<T>;
+    search: Route.MethodFunction<T>;
+    connect: Route.MethodFunction<T>;
+  }
 
   export interface Routes {
     [method: string]: RouteObject[];
@@ -44,39 +72,37 @@ declare module Route {
 
   export interface RouteObject {
     path: string | RegExp;
+    options: Route.RouteOptions;
     controller: Encapsulation;
+  }
+
+  export type JsonSchemaType = "string" | "integer" | "number" | "array" | "object" | "boolean" | "null";
+
+  export interface JsonSchemaProperties {
+    [key: string]: {
+      type: JsonSchemaType;
+      default?: any;
+    };
+  }
+
+  export interface JsonSchema {
+    title: string;
+    type: object;
+    properties?: JsonSchemaProperties;
+    patternProperties?: JsonSchemaProperties;
+    additionalProperties?: {
+      type: JsonSchemaType;
+    };
+    required?: string[];
+  }
+
+  export interface RouteOptions {
+    schema?: JsonSchema;
   }
 }
 
-declare interface Route {
-  [key: string]: any;
-
-  get(path: string, ...controllers: Route.Controller[]): this;
-  post(path: string, ...controllers: Route.Controller[]): this;
-  put(path: string, ...controllers: Route.Controller[]): this;
-  head(path: string, ...controllers: Route.Controller[]): this;
-  delete(path: string, ...controllers: Route.Controller[]): this;
-  options(path: string, ...controllers: Route.Controller[]): this;
-  trace(path: string, ...controllers: Route.Controller[]): this;
-  copy(path: string, ...controllers: Route.Controller[]): this;
-  lock(path: string, ...controllers: Route.Controller[]): this;
-  mkcol(path: string, ...controllers: Route.Controller[]): this;
-  move(path: string, ...controllers: Route.Controller[]): this;
-  purge(path: string, ...controllers: Route.Controller[]): this;
-  propfind(path: string, ...controllers: Route.Controller[]): this;
-  proppatch(path: string, ...controllers: Route.Controller[]): this;
-  unlock(path: string, ...controllers: Route.Controller[]): this;
-  report(path: string, ...controllers: Route.Controller[]): this;
-  mkactivity(path: string, ...controllers: Route.Controller[]): this;
-  checkout(path: string, ...controllers: Route.Controller[]): this;
-  merge(path: string, ...controllers: Route.Controller[]): this;
-  ["m-search"](path: string, ...controllers: Route.Controller[]): this;
-  notify(path: string, ...controllers: Route.Controller[]): this;
-  subscribe(path: string, ...controllers: Route.Controller[]): this;
-  unsubscribe(path: string, ...controllers: Route.Controller[]): this;
-  patch(path: string, ...controllers: Route.Controller[]): this;
-  search(path: string, ...controllers: Route.Controller[]): this;
-  connect(path: string, ...controllers: Route.Controller[]): this;
+interface Route extends Route.MethodFunctions {
+  [method: string]: any;
 }
 
 class Route {
@@ -88,6 +114,10 @@ class Route {
     return this._routes;
   }
 
+  /**
+   * Creates a new instance of Route
+   * @param {string} [prefix=""]
+   */
   constructor(prefix: string = "") {
     this._prefix = prefix;
 
@@ -95,33 +125,47 @@ class Route {
       this._routes[method] = [];
 
       this[method.toLowerCase()] =
-        (path: string, ...controllers: Route.Controller[]) => this._push(method, path, ...controllers);
+        (path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]) =>
+          this._push(method, path, options, ...controllers);
     });
   }
 
-  protected _push(method: string, path: string, ...controllers: Route.Controller[]) {
-    path = `${this._prefix}${path}`.replace(/\/$/, "");
+  protected _push = (
+    method: string, path: string, options: Route.RouteOptions | Route.Controller,
+    ...controllers: Route.Controller[]) => {
+    if (utils.function.isFunction(options)) {
+      utils.array.prepend(controllers, options);
+      options = {};
+    }
+
+    if (!options) options = {};
+
+    path = `${this._prefix}${path}`
+      .replace("//", "/")
+      .replace(/\/$/, "");
 
     controllers.map((controller) =>
       this._routes[method].push({
         path,
+        options: options as Route.RouteOptions,
         controller: new Encapsulation(
-          (req, res, next: () => void, ...args: any[],
-          ) => controller(req, res, next, ...args)),
+          (req, res, next: () => void, ...args: any[]) => controller(req, res, next, ...args)),
       }),
     );
 
     return this;
   }
 
-  any(path: string, ...controllers: Route.Controller[]) {
-    httpMethods.map((method) => this._push(method, path, ...controllers));
+  any = (path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]) => {
+    httpMethods.map((method) => this._push(method, path, options, ...controllers));
 
     return this;
   }
 
-  oneOf(methods: string[], path: string, ...controllers: Route.Controller[]) {
-    methods.map((method) => this._push(method.toUpperCase(), path, ...controllers));
+  oneOf = (
+    methods: string[], path: string, options: Route.RouteOptions | Route.Controller,
+    ...controllers: Route.Controller[]) => {
+    methods.map((method) => this._push(method.toUpperCase(), path, options, ...controllers));
 
     return this;
   }
@@ -131,21 +175,24 @@ class Route {
    * @param {String|Route|Function} [path=(function())]
    * @param {Function} [middlewares=(function())[]]
    */
-  use(path: string | Route | Route.Controller, ...middlewares: Route.Controller[]) {
+  use = (
+    path: string | Route | Route.Controller,
+    options: Route.RouteOptions | Route.Controller,
+    ...middlewares: Route.Controller[]) => {
     if (path instanceof Route) {
       const _routes = path.routes;
 
       httpMethods.map((method) => this._routes[method].push(..._routes[method]));
     } else {
       let _path = "(.*)";
-      let _middlewares = <Route.Controller[]>[path, ...middlewares];
+      let _middlewares = [path, ...middlewares] as Route.Controller[];
 
-      if (String.isInstance(path)) {
+      if (utils.string.isString(path)) {
         _path = `${path}${_path}`;
         _middlewares = middlewares;
       }
 
-      this.any(_path, ..._middlewares);
+      this.any(_path, options, ..._middlewares);
     }
 
     return this;

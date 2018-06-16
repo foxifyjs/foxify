@@ -1,15 +1,13 @@
-import "prototyped.js/es6";
-import { HttpExeption as HttpEx } from "./exeptions";
+import { HttpException as HttpEx } from "./exceptions";
 
 declare global {
   namespace NodeJS {
     interface Global {
-      HttpExeption: typeof HttpEx;
+      HttpException: typeof HttpEx;
     }
   }
 
-  // tslint:disable-next-line:variable-name
-  var HttpExeption: typeof HttpEx;
+  const HttpException: typeof HttpEx;
 }
 
-global.HttpExeption = HttpEx;
+global.HttpException = HttpEx;

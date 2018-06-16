@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse } from "http";
-import * as HttpExeption from "./HttpExeption";
+import * as HttpException from "./HttpException";
+import * as utils from "../utils";
 
 declare module Encapsulation { }
 
@@ -14,14 +15,14 @@ class Encapsulation {
     try {
       const result = this._fn(req, res, ...rest);
 
-      if (result && Function.isInstance((result as any).then))
+      if (result && utils.function.isFunction((result as any).then))
         (result as Promise<any>).catch((err: Error) => {
-          HttpExeption.handle(err, req, res);
+          HttpException.handle(err, req, res);
 
           if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", err);
         });
     } catch (err) {
-      HttpExeption.handle(err, req, res);
+      HttpException.handle(err, req, res);
 
       if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", err);
     }

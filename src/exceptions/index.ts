@@ -1,7 +1,7 @@
-import * as HttpExeption from "./HttpExeption";
+import * as HttpException from "./HttpException";
 import * as Encapsulation from "./Encapsulation";
 
 export {
-  HttpExeption,
+  HttpException,
   Encapsulation,
 };

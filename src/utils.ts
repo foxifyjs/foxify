@@ -1,9 +1,11 @@
+export * from "prototyped.js/es6/methods";
+
 export function mixins(...baseCtors: any[]) {
   return (derivedCtor: any) => {
     baseCtors.forEach((baseCtor) => {
       // static methods
       Object.getOwnPropertyNames(baseCtor).forEach((name) => {
-        if (!["length", "constructor", "prototype", "name"].contains(name) && !derivedCtor[name])
+        if (!exports.array.contains(["length", "constructor", "prototype", "name"], name) && !derivedCtor[name])
           derivedCtor[name] = baseCtor[name];
       });
 
@@ -18,14 +20,14 @@ export function mixins(...baseCtors: any[]) {
   };
 }
 
-export function define(obj: object, mothod: "get" | "set", name: string, func: (value?: any) => any) {
+export function define(obj: object, method: "get" | "set", name: string, func: (value?: any) => any) {
   Object.defineProperty(
     obj,
     name,
     {
       configurable: true,
       enumerable: true,
-      [mothod]: func,
+      [method]: func,
     },
   );
 }

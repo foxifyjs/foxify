@@ -1,17 +1,18 @@
 import { IncomingMessage, ServerResponse, STATUS_CODES } from "http";
 import { http } from "../constants";
 import htmlError from "./htmlError";
+import * as utils from "../utils";
 
-declare module HttpExeption { }
+declare module HttpException { }
 
-declare interface HttpExeption extends Error {
+declare interface HttpException extends Error {
   code: number;
   errors: object;
 
-  handle(exeption: any, req: IncomingMessage, res: ServerResponse): void;
+  handle(exception: any, req: IncomingMessage, res: ServerResponse): void;
 }
 
-class HttpExeption extends Error {
+class HttpException extends Error {
   constructor(errors?: object);
   constructor(code: number, errors?: object);
   constructor(message: string, errors?: object);
@@ -21,17 +22,17 @@ class HttpExeption extends Error {
     code: number | object = http.INTERNAL_SERVER_ERROR,
     errors: object = {},
   ) {
-    if (Object.isInstance(message)) {
+    if (utils.object.isObject(message)) {
       errors = message;
       code = http.INTERNAL_SERVER_ERROR;
       message = undefined;
-    } else if (Number.isInstance(message)) {
-      errors = Object.isInstance(code) ? code : {};
+    } else if (utils.number.isNumber(message)) {
+      errors = utils.object.isObject(code) ? code : {};
       code = message;
       message = undefined;
     }
 
-    if (Object.isInstance(code)) {
+    if (utils.object.isObject(code)) {
       errors = code;
       code = http.INTERNAL_SERVER_ERROR;
     }
@@ -42,10 +43,10 @@ class HttpExeption extends Error {
     this.errors = errors;
   }
 
-  static handle(exeption: any = new HttpExeption(), req: IncomingMessage, res: ServerResponse): void {
-    const code = exeption.code || http.INTERNAL_SERVER_ERROR;
-    const message = exeption.message || STATUS_CODES[code] || "";
-    const errors = exeption.errors && exeption.errors.$size() > 0 ? exeption.errors : null;
+  static handle(exception: any = new HttpException(), req: IncomingMessage, res: ServerResponse): void {
+    const code = exception.code || http.INTERNAL_SERVER_ERROR;
+    const message = exception.message || STATUS_CODES[code] || "";
+    const errors = exception.errors && !utils.object.empty(exception.errors) ? exception.errors : null;
 
     const html = htmlError(code, STATUS_CODES[code], message);
     const json: { [key: string]: any } = { message };
@@ -60,4 +61,4 @@ class HttpExeption extends Error {
   }
 }
 
-export = HttpExeption;
+export = HttpException;

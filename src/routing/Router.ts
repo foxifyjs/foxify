@@ -1,13 +1,14 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { HttpExeption } from "../exeptions";
+import { HttpException, Encapsulation } from "../exceptions";
 import httpMethods from "./httpMethods";
 import * as pathToRegExp from "path-to-regexp";
 import * as constants from "../constants";
-import { Encapsulation } from "../exeptions";
+import * as fastStringify from "fast-json-stringify";
 import * as Route from "./Route";
 import * as Fox from "../index";
+import * as utils from "../utils";
 
-declare module Router { }
+module Router { }
 
 class Router {
   protected _routes = {} as Route.Routes;
@@ -36,11 +37,13 @@ class Router {
 
         req.next = next;
 
-        return route.controller.run(req, res, next, ...params.tail());
+        res.stringify = (route.options as any).stringify;
+
+        return route.controller.run(req, res, next, ...utils.array.tail(params));
       }
     }
 
-    throw new HttpExeption(constants.http.NOT_FOUND);
+    throw new HttpException(constants.http.NOT_FOUND);
   }
 
   protected _safeNext = new Encapsulation(this._next);
@@ -50,8 +53,12 @@ class Router {
     const sensitive = app.enabled("routing.sensitive");
 
     httpMethods.map((method) => this._routes[method] = this._routes[method].map((route) => ({
+      ...route,
+      options: {
+        ...route.options,
+        stringify: route.options.schema && fastStringify(route.options.schema),
+      },
       path: pathToRegExp(route.path, [], { strict, sensitive }),
-      controller: route.controller,
     })));
   }
 

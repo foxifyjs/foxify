@@ -11,6 +11,7 @@ import * as vary from "vary";
 import send = require("send");
 import * as constants from "../constants";
 import * as Fox from "../index";
+import * as utils from "../utils";
 import { Engine } from "../view";
 
 declare module "http" {
@@ -351,7 +352,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
       // populate Content-Length
       let len;
 
-      if (String.isInstance(chunk)) {
+      if (utils.string.isString(chunk)) {
         encoding = "utf8";
 
         if ((chunk as any).length < 1000)
@@ -405,7 +406,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
       const contentType = this.get("Content-Type") as string;
       let chunk = body;
 
-      if (String.isInstance(chunk)) {
+      if (utils.string.isString(chunk)) {
         if (!contentType)
           // reflect this in content-type
           this.setHeader("Content-Type", setCharset("text/html", "utf-8") as string);
@@ -451,8 +452,11 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @param {number} [status]
    * @public
    */
-  res.prototype.json = function(obj, status) {
-    const body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape);
+  res.prototype.json = function(obj, status?) {
+    let body;
+
+    if (this.stringify) body = this.stringify(obj);
+    else body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape);
     // let body = JSON.stringify(obj)
 
     // content-type
@@ -496,7 +500,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     if (Array.isArray(callback)) callback = callback[0];
 
     // jsonp
-    if (String.isInstance(callback) && callback.length !== 0) {
+    if (utils.string.isString(callback) && callback.length !== 0) {
       this.set("X-Content-Type-Options", "nosniff");
       this.set("Content-Type", "text/javascript");
 
@@ -589,7 +593,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     if (!path) throw new TypeError("path argument is required to res.sendFile");
 
     // support function as second arg
-    if (Function.isInstance(options)) {
+    if (utils.function.isFunction(options)) {
       done = options;
       opts = {};
     }
@@ -634,11 +638,11 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     let opts = options || null;
 
     // support function as second or third arg
-    if (Function.isInstance(filename)) {
+    if (utils.function.isFunction(filename)) {
       done = filename;
       name = null;
       opts = null;
-    } else if (Function.isInstance(options)) {
+    } else if (utils.function.isFunction(options)) {
       done = options;
       opts = null;
     }
@@ -920,7 +924,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
 
     if (signed && !secret) throw new Error("cookieParser('secret') required for signed cookies");
 
-    let val = Object.isInstance(value)
+    let val = utils.object.isObject(value)
       ? "j:" + JSON.stringify(value)
       : String(value);
 
