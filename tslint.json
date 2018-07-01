@@ -64,7 +64,8 @@
     ],
     "unified-signatures": false,
     "prefer-for-of": false,
-    "no-bitwise": false
+    "no-bitwise": false,
+    "space-before-function-paren": false
   },
   "rulesDirectory": []
 }

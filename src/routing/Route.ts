@@ -101,14 +101,17 @@ module Route {
   }
 }
 
-interface Route extends Route.MethodFunctions {
+interface Route extends Route.MethodFunctions<Route> {
   [method: string]: any;
 }
 
+/**
+ *
+ */
 class Route {
   protected _routes = {} as Route.Routes;
 
-  protected _prefix: string;
+  protected readonly _prefix: string;
 
   get routes() {
     return this._routes;

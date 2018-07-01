@@ -1,8 +1,8 @@
-# Foxify
-
-The **fast**, **easy to use** &amp; **typescript ready** web framework for [Node.js](https://nodejs.org)
+# Foxify [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=The%20fast,%20easy%20to%20use%20&%20typescript%20ready%20web%20framework%20for%20Node.js&url=https://github.com/foxifyjs/foxify&via=foxifyjs&hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast)
 
 > Inspired by [Express](https://expressjs.com)
+
+The **fast**, **easy to use** &amp; **typescript ready** web framework for [Node.js](https://nodejs.org)
 
 [![Npm Version](https://img.shields.io/npm/v/foxify.svg)](https://www.npmjs.com/package/foxify)
 [![Node Version](https://img.shields.io/node/v/foxify.svg)](https://nodejs.org)
@@ -19,8 +19,6 @@ The **fast**, **easy to use** &amp; **typescript ready** web framework for [Node
 [![Github Stars](https://img.shields.io/github/stars/foxifyjs/foxify.svg?style=social&label=Stars)](https://github.com/foxifyjs/foxify)
 [![Github Forks](https://img.shields.io/github/forks/foxifyjs/foxify.svg?style=social&label=Fork)](https://github.com/foxifyjs/foxify)
 
-> NOTE: before the first major version there might be so many major changes; so be warned!
-
 ## Table of Contents <!-- omit in toc -->
 
 - [Installation](#installation)
@@ -28,6 +26,9 @@ The **fast**, **easy to use** &amp; **typescript ready** web framework for [Node
 - [Features](#features)
 - [Benchmarks](#benchmarks)
 - [TODO](#todo)
+- [Versioning](#versioning)
+- [Authors](#authors)
+- [License](#license)
 - [Support](#support)
 
 ## Installation
@@ -111,6 +112,20 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 - [ ] File storage
 - [ ] Job schedule
 - [ ] Logging
+
+## Versioning
+
+We use [SemVer](http://semver.org) for versioning. For the versions available, see the [tags on this repository](https://github.com/foxifyjs/foxify/tags).
+
+## Authors
+
+- **Ardalan Amini** - *Owner/Developer* - [@ardalanamini](https://github.com/ardalanamini)
+
+See also the list of [contributors](https://github.com/foxifyjs/foxify/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Support
 
