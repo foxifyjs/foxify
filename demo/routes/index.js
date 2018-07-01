@@ -9,16 +9,30 @@ routes.get('/', (req, res) => {
   })
 })
 
-routes.get('/greet', (req, res) => {
-  res.json({hello: 'world'})
+routes.get('/greet/', (req, res) => {
+  res.json({ hello: 'world' })
+})
+
+const schema = {
+  title: 'Example Schema',
+  type: 'object',
+  properties: {
+    hello: {
+      type: 'string'
+    }
+  }
+};
+
+routes.get('/greet-fast', { schema }, (req, res) => {
+  res.json({ hello: 'world' })
 })
 
 routes.get('/404', (req, res) => {
-  throw new HttpExeption(404)
+  throw new HttpException(404)
 })
 
 routes.get('/error', async (req, res) => {
-  throw new Error('Ooops!')
+  throw new Error('Oops!')
 })
 
 module.exports = routes

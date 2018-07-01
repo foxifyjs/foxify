@@ -2,24 +2,28 @@ import * as http from "http";
 import { isIP } from "net";
 import accepts = require("accepts");
 import parseRange = require("range-parser");
-import typeis = require("type-is");
-import proxyaddr = require("proxy-addr");
+import typeIs = require("type-is");
+import proxyAddr = require("proxy-addr");
 import * as parseUrl from "parseurl";
 import fresh = require("fresh");
 import * as constants from "../constants";
-import * as Fox from "../index";
-import { define } from "../utils";
+import * as Foxify from "../index";
+import * as utils from "../utils";
 
 /**
- * @namespace {http.IncomingMessage}
+ * @namespace http.IncomingMessage
  */
 declare module "http" {
   export interface IncomingMessage {
-    [key: string]: any;
-
     res: http.ServerResponse;
 
     path: string;
+
+    hostname?: string;
+
+    fresh: boolean;
+
+    query: any;
 
     get(name: string): string | string[] | undefined;
     head(name: string): string | string[] | undefined;
@@ -34,34 +38,30 @@ declare module "http" {
   }
 }
 
-// const req: http.IncomingMessage = Object.create(http.IncomingMessage.prototype)
-
-const patch = (req: typeof http.IncomingMessage, app: Fox) => {
+const patch = (req: typeof http.IncomingMessage, app: Foxify) => {
   /**
    * Return request header.
    *
    * The `Referrer` header field is special-cased,
    * both `Referrer` and `Referer` are interchangeable.
    *
+   * @memberof http.IncomingMessage
+   * @alias header
    * @param {String} name
    * @return {String}
    * @example
+   * req.get("Content-Type"); // => "text/plain"
    *
-   *     req.get("Content-Type");
-   *     // => "text/plain"
+   * req.get("content-type"); // => "text/plain"
    *
-   *     req.get("content-type");
-   *     // => "text/plain"
-   *
-   *     req.get("Something");
-   *     // => undefined
+   * req.get("Something"); // => undefined
    *
    * // Aliased as `req.header()`.
    */
-  req.prototype.get = req.prototype.head = function(name) {
+  req.prototype.get = req.prototype.head = function (name) {
     if (!name) throw new TypeError("name argument is required to req.get/req.head");
 
-    if (!String.isInstance(name)) throw new TypeError("name must be a string to req.get/req.head");
+    if (!utils.string.isString(name)) throw new TypeError("name must be a string to req.get/req.head");
 
     const header = name.toLowerCase();
 
@@ -117,7 +117,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    *     req.accepts("html, json");
    *     // => "json"
    */
-  req.prototype.accepts = function() {
+  req.prototype.accepts = function () {
     const accept = accepts(this);
 
     return accept.types.apply(accept, arguments);
@@ -129,7 +129,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @param {String} ...encoding
    * @return {String|Array}
    */
-  req.prototype.acceptsEncodings = function() {
+  req.prototype.acceptsEncodings = function () {
     const accept = accepts(this);
 
     return accept.encodings.apply(accept, arguments);
@@ -142,7 +142,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @param {String} ...charset
    * @return {String|Array}
    */
-  req.prototype.acceptsCharsets = function() {
+  req.prototype.acceptsCharsets = function () {
     const accept = accepts(this);
 
     return accept.charsets.apply(accept, arguments);
@@ -155,7 +155,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @param {String} ...lang
    * @return {String|Array}
    */
-  req.prototype.acceptsLanguages = function() {
+  req.prototype.acceptsLanguages = function () {
     const accept = accepts(this);
 
     return accept.languages.apply(accept, arguments);
@@ -180,12 +180,12 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @param {Object} [options]
    * @return {Number|Array}
    */
-  req.prototype.range = function(size, options) {
+  req.prototype.range = function (size, options) {
     let range = this.get("Range");
 
     if (!range) return;
 
-    if (Array.isInstance(range)) range = range.join(",");
+    if (Array.isArray(range)) range = range.join(",");
 
     return parseRange(size, range, options);
   };
@@ -215,18 +215,18 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String|false|null}
    * @public
    */
-  req.prototype.is = function(types) {
+  req.prototype.is = function (types) {
 
     // support flattened arguments
-    if (!Array.isInstance(types)) {
+    if (!Array.isArray(types)) {
       const arr = new Array(arguments.length);
 
       for (let i = 0; i < arr.length; i++) arr[i] = arguments[i];
 
-      return typeis(this, arr);
+      return typeIs(this, arr);
     }
 
-    return typeis(this, types);
+    return typeIs(this, types);
   };
 
   /**
@@ -238,10 +238,10 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String}
    * @public
    */
-  // define(req.prototype, "get", "ip", function(this: http.IncomingMessage) {
+  // utils.define(req.prototype, "get", "ip", function(this: http.IncomingMessage) {
   //   let trust = this.app.get("trust proxy fn")
   //
-  //   return proxyaddr(this, trust)
+  //   return proxyAddr(this, trust)
   // })
 
   /**
@@ -255,14 +255,14 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Array}
    * @public
    */
-  define(req.prototype, "get", "ips", function(this: http.IncomingMessage) {
+  utils.define(req.prototype, "get", "ips", function (this: http.IncomingMessage) {
     // let trust = this.app.get("trust proxy fn")
-    // let addrs = proxyaddr.all(this, trust)
-    const addrs = proxyaddr.all(this);
+    // let addrs = proxyAddr.all(this, trust)
+    const addrs = proxyAddr.all(this);
 
     // reverse the order (to farthest -> closest)
     // and remove socket address
-    return addrs.reverse().initial();
+    return utils.array.initial(addrs.reverse());
   });
 
   /**
@@ -279,7 +279,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Array}
    * @public
    */
-  define(req.prototype, "get", "subdomains", function(this: http.IncomingMessage) {
+  utils.define(req.prototype, "get", "subdomains", function (this: http.IncomingMessage) {
     const hostname = this.hostname;
 
     if (!hostname) return [];
@@ -297,7 +297,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String}
    * @public
    */
-  define(req.prototype, "get", "path", function(this: http.IncomingMessage) {
+  utils.define(req.prototype, "get", "path", function (this: http.IncomingMessage) {
     const url = parseUrl(this);
 
     return url ? url.pathname : "";
@@ -313,7 +313,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {String}
    * @public
    */
-  define(req.prototype, "get", "hostname", function(this: http.IncomingMessage) {
+  utils.define(req.prototype, "get", "hostname", function (this: http.IncomingMessage) {
     let host = <string>this.get("X-Forwarded-Host");
 
     if (!host) host = <string>this.get("Host");
@@ -336,7 +336,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Boolean}
    * @public
    */
-  define(req.prototype, "get", "fresh", function(this: http.IncomingMessage) {
+  utils.define(req.prototype, "get", "fresh", function (this: http.IncomingMessage) {
     const method = this.method;
     const res = this.res;
     const status = res.statusCode;
@@ -363,7 +363,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Boolean}
    * @public
    */
-  define(req.prototype, "get", "stale", function(this: http.IncomingMessage) {
+  utils.define(req.prototype, "get", "stale", function (this: http.IncomingMessage) {
     return !this.fresh;
   });
 
@@ -373,7 +373,7 @@ const patch = (req: typeof http.IncomingMessage, app: Fox) => {
    * @return {Boolean}
    * @public
    */
-  define(req.prototype, "get", "xhr", function(this: http.IncomingMessage) {
+  utils.define(req.prototype, "get", "xhr", function (this: http.IncomingMessage) {
     const val = <string>this.get("X-Requested-With") || "";
 
     return val.toLowerCase() === "xmlhttprequest";

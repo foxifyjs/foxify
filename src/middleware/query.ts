@@ -4,10 +4,10 @@ import * as qs from "qs";
 import * as Fox from "../index";
 
 const query = (app: Fox) => {
-  const queryparse: (...args: any[]) => any = app.get("query.parser") || qs.parse;
+  const queryParse: (...args: any[]) => any = app.get("query.parser") || qs.parse;
 
   return (req: http.IncomingMessage, res: http.ServerResponse, next: () => void) => {
-    req.query = req.query || queryparse((parseUrl(req) as any).query, {});
+    req.query = req.query || queryParse((parseUrl(req) as any).query, {});
 
     next();
   };

@@ -10,7 +10,8 @@ import * as contentDisposition from "content-disposition";
 import * as vary from "vary";
 import send = require("send");
 import * as constants from "../constants";
-import * as Fox from "../index";
+import * as Foxify from "../index";
+import * as utils from "../utils";
 import { Engine } from "../view";
 
 declare module "http" {
@@ -19,24 +20,226 @@ declare module "http" {
 
     req: http.IncomingMessage;
 
-    status(code: number): this;
-    links(links: { [key: string]: string }): this;
-    send(body: string | object | Buffer): this;
-    json(response: object | any[], status?: number): this;
-    jsonp(response: object | any[], status?: number): this;
-    sendStatus(statusCode: number): this;
-    sendFile(path: string, options?: object | ((...args: any[]) => void), callback?: (...args: any[]) => void): void;
-    download(path: string, filename: string, options?: object, callback?: (...args: any[]) => void): void;
-    contentType(type: string): this;
-    type(type: string): this;
-    format(format: object): this;
-    attachment(filename: string): this;
+    type: http.ServerResponse["contentType"];
+
+    /**
+     * Append additional header `field` with value `val`.
+     *
+     * @returns for chaining
+     * @example
+     * res.append("Link", ["<http://localhost/>", "<http://localhost:3000/>"]);
+     * @example
+     * res.append("Set-Cookie", "foo=bar; Path=/; HttpOnly");
+     * @example
+     * res.append("Warning", "199 Miscellaneous warning");
+     */
     append(field: string, val: string | string[]): this;
+
+    /**
+     * Set _Content-Disposition_ header to _attachment_ with optional `filename`.
+     */
+    attachment(filename?: string): this;
+
+    /**
+     * Clear cookie `name`.
+     *
+     * @returns for chaining
+     */
+    clearCookie(name: string, options?: object): this;
+
+    /**
+     * Set _Content-Type_ response header with `type` through `mime.lookup()`
+     * when it does not contain "/", or set the Content-Type to `type` otherwise.
+     *
+     * @returns for chaining
+     * @example
+     * res.type(".html");
+     * @example
+     * res.type("html");
+     * @example
+     * res.type("json");
+     * @example
+     * res.type("application/json");
+     * @example
+     * res.type("png");
+     */
+    contentType(type: string): this;
+
+    /**
+     * Set cookie `name` to `value`, with the given `options`.
+     *
+     * Options:
+     *    - `maxAge`   max-age in milliseconds, converted to `expires`
+     *    - `signed`   sign the cookie
+     *    - `path`     defaults to "/"
+     *
+     * @returns for chaining
+     * @example
+     * // "Remember Me" for 15 minutes
+     * res.cookie("rememberme", "1", { expires: new Date(Date.now() + 900000), httpOnly: true });
+     * @example
+     * // save as above
+     * res.cookie("rememberme", "1", { maxAge: 900000, httpOnly: true })
+     */
+    cookie(name: string, value: string | object, options?: object): this;
+
+    /**
+     * Transfer the file at the given `path` as an attachment.
+     *
+     * Optionally providing an alternate attachment `filename`,
+     * and optional callback `callback(err)`. The callback is invoked
+     * when the data transfer is complete, or when an error has
+     * ocurred. Be sure to check `res.headersSent` if you plan to respond.
+     *
+     * Optionally providing an `options` object to use with `res.sendFile()`.
+     * This function will set the `Content-Disposition` header, overriding
+     * any `Content-Disposition` header passed as header options in order
+     * to set the attachment and filename.
+     *
+     * This method uses `res.sendFile()`.
+     */
+    download(path: string, filename: string, options?: object, callback?: (...args: any[]) => void): void;
+
+    /**
+     * Respond to the Acceptable formats using an `obj`
+     * of mime-type callbacks.
+     *
+     * This method uses `req.accepted`, an array of
+     * acceptable types ordered by their quality values.
+     * When "Accept" is not present the _first_ callback
+     * is invoked, otherwise the first match is used. When
+     * no match is performed the server responds with
+     * 406 "Not Acceptable".
+     *
+     * By default Foxify passes an `Error`
+     * with a `.status` of 406 to `next(err)`
+     * if a match is not made. If you provide
+     * a `.default` callback it will be invoked
+     * instead.
+     *
+     * Content-Type is set for you, however if you choose
+     * you may alter this within the callback using `res.type()`
+     * or `res.set("Content-Type", ...)`.
+     *
+     * @returns for chaining
+     * @example
+     * res.format({
+     *   "text/plain": function() {
+     *     res.send("hey");
+     *   },
+     *   "text/html": function() {
+     *     res.send("<p>hey</p>");
+     *   },
+     *   "appliation/json": function() {
+     *     res.send({ message: "hey" });
+     *   }
+     * });
+     * @example
+     * // In addition to canonicalized MIME types you may
+     * // also use extnames mapped to these types:
+     *
+     * res.format({
+     *   text: function() {
+     *     res.send("hey");
+     *   },
+     *   html: function() {
+     *     res.send("<p>hey</p>");
+     *   },
+     *   json: function() {
+     *     res.send({ message: "hey" });
+     *   }
+     * });
+     */
+    format(format: object): this;
+
+    /**
+     * Set Link header field with the given links.
+     *
+     * @example
+     * res.links({
+     *   next: "http://api.example.com/users?page=2",
+     *   last: "http://api.example.com/users?page=5"
+     * });
+     */
+    links(links: object): this;
+
+    /**
+     * Set response status code.
+     *
+     * @example
+     * res.status(500);
+     */
+    status(code: number): this;
+
+    /**
+     * Send a response.
+     *
+     * @example
+     * res.send(Buffer.from("wahoo"));
+     * @example
+     * res.send({ some: "json" });
+     * @example
+     * res.send("<p>some html</p>");
+     */
+    send(body: string | object | Buffer): this;
+
+    /**
+     * Send JSON response.
+     *
+     * @example
+     * res.json({ user: "tj" });
+     */
+    json(response: object, status?: number): this;
+
+    /**
+     * Send JSON response with JSONP callback support.
+     *
+     * @example
+     * res.jsonp({ user: "tj" });
+     */
+    jsonp(response: object, status?: number): this;
+    sendStatus(statusCode: number): this;
+
+    /**
+     * Transfer the file at the given `path`.
+     *
+     * Automatically sets the _Content-Type_ response header field.
+     * The callback `callback(err)` is invoked when the transfer is complete
+     * or when an error occurs. Be sure to check `res.sentHeader`
+     * if you wish to attempt responding, as the header and some data
+     * may have already been transferred.
+     *
+     * Options:
+     *   - `maxAge`   defaulting to 0 (can be string converted by `ms`)
+     *   - `root`     root directory for relative filenames
+     *   - `headers`  object of headers to serve with file
+     *   - `dotfiles` serve dotfiles, defaulting to false; can be `"allow"` to send them
+     *
+     * Other options are passed along to `send`.
+     *
+     * @example
+     * // The following example illustrates how `res.sendFile()` may
+     * // be used as an alternative for the `static()` middleware for
+     * // dynamic situations. The code backing `res.sendFile()` is actually
+     * // the same code, so HTTP cache support etc is identical.
+     *
+     * app.get("/user/:uid/photos/:file", function(req, res) {
+     *   let uid = req.params.uid;
+     *   let file = req.params.file;
+     *
+     *   req.user.mayViewFilesFrom(uid, function(yes) {
+     *     if (yes) {
+     *       res.sendFile("/uploads/" + uid + "/" + file);
+     *     } else {
+     *       res.send(403, "Sorry! you cant see that.");
+     *     }
+     *   });
+     * });
+     */
+    sendFile(path: string, options?: object | ((...args: any[]) => void), callback?: (...args: any[]) => void): void;
     set(field: string | number | object, value: string | string[]): this;
     header(field: string | object, value: string | string[]): this;
     get(field: string): string | number | string[] | undefined;
-    clearCookie(name: string, options: object): this;
-    cookie(name: string, value: string | object, options: object): this;
     location(url: string): this;
     redirect(url: string): void;
     redirect(code: number, url: string): void;
@@ -290,22 +493,145 @@ const normalizeTypes = (types: string[]) => {
   return ret;
 };
 
-const patch = (res: typeof http.ServerResponse, app: Fox) => {
-  /**
-   * Set Link header field with the given `links`.
-   *
-   * Examples:
-   *
-   *    res.links({
-   *      next: "http://api.example.com/users?page=2",
-   *      last: "http://api.example.com/users?page=5"
-   *    });
-   *
-   * @param {Object} links
-   * @return {http.ServerResponse}
-   * @public
-   */
-  res.prototype.links = function(links) {
+const patch = (res: typeof http.ServerResponse, app: Foxify) => {
+
+  res.prototype.append = function (field, val) {
+    const prev = this.get(field);
+    let value: any = val;
+
+    if (prev)
+      // concat the new and prev vals
+      value = Array.isArray(prev) ? prev.concat(val)
+        : Array.isArray(val) ? [prev].concat(val)
+          : [prev, val];
+
+    return this.set(field, value);
+  };
+
+  res.prototype.attachment = function (filename) {
+    if (filename) this.type(path.extname(filename));
+
+    this.set("Content-Disposition", contentDisposition(filename));
+
+    return this;
+  };
+
+  res.prototype.clearCookie = function (name, options = {}) {
+    const opts = Object.assign({}, { expires: new Date(1), path: "/" }, options);
+
+    return this.cookie(name, "", opts);
+  };
+
+  res.prototype.contentType = res.prototype.type = function (type) {
+    return this.set("Content-Type", type.indexOf("/") === -1
+      ? (send.mime as any).lookup(type)
+      : type,
+    );
+  };
+
+  res.prototype.cookie = function (name, value, options = {}) {
+    const opts: { [key: string]: any } = Object.assign({}, options);
+    const secret = (this.req as any).secret;
+    const signed = opts.signed;
+
+    if (signed && !secret) throw new Error("cookieParser('secret') required for signed cookies");
+
+    let val = utils.object.isObject(value)
+      ? "j:" + JSON.stringify(value)
+      : String(value);
+
+    if (signed) val = "s:" + sign(val, secret);
+
+    if ("maxAge" in opts) {
+      opts.expires = new Date(Date.now() + opts.maxAge);
+      opts.maxAge /= 1000;
+    }
+
+    if (opts.path == null) opts.path = "/";
+
+    this.append("Set-Cookie", cookie.serialize(name, String(val), opts));
+
+    return this;
+  };
+
+  res.prototype.download = function (path, filename, options, callback) {
+    let done: any = callback;
+    let name: any = filename;
+    let opts = options || null;
+
+    // support function as second or third arg
+    if (utils.function.isFunction(filename)) {
+      done = filename;
+      name = null;
+      opts = null;
+    } else if (utils.function.isFunction(options)) {
+      done = options;
+      opts = null;
+    }
+
+    // set Content-Disposition when file is sent
+    const headers = {
+      "Content-Disposition": contentDisposition(name || path),
+    };
+
+    // merge user-provided headers
+    if (opts && (opts as { [key: string]: any }).headers) {
+      const keys = Object.keys((opts as { [key: string]: any }).headers);
+
+      let key;
+      for (let i = 0; i < keys.length; i++) {
+        key = keys[i];
+
+        if (key.toLowerCase() !== "content-disposition")
+          (headers as { [key: string]: any })[key] = (opts as { [key: string]: any }).headers[key];
+      }
+    }
+
+    // merge user-provided options
+    opts = Object.create(opts)
+      (opts as { [key: string]: any }).headers = headers;
+
+    // Resolve the full path for sendFile
+    const fullPath = resolve(path);
+
+    // send file
+    return this.sendFile(fullPath, opts, done);
+  };
+
+  res.prototype.format = function (obj: { [key: string]: any }) {
+    const req = this.req;
+    const next = req.next;
+
+    const fn = obj.default;
+
+    if (fn) delete obj.default;
+
+    const keys = Object.keys(obj);
+
+    const key = keys.length > 0
+      ? <string>req.accepts(keys)
+      : false;
+
+    this.vary("Accept");
+
+    if (key) {
+      this.set("Content-Type", normalizeType(key).value);
+      obj[key](req, this, next);
+    } else if (fn)
+      fn();
+    else {
+      const err: any = new Error("Not Acceptable");
+
+      err.status = err.statusCode = 406;
+      err.types = normalizeTypes(keys).map((o) => o.value);
+
+      throw err;
+    }
+
+    return this;
+  };
+
+  res.prototype.links = function (links: { [key: string]: string }) {
     const link = `${this.get("Link") || ""}, `;
 
     return this.set(
@@ -316,33 +642,14 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     );
   };
 
-  /**
-   * Set status `code`.
-   *
-   * @param {Number} code
-   * @return {http.ServerResponse}
-   * @public
-   */
-  res.prototype.status = function(code) {
+  res.prototype.status = function (code) {
     this.statusCode = code;
 
     return this;
   };
 
-  /**
-   * Send a response.
-   *
-   * Examples:
-   *
-   *     res.send(Buffer.from("wahoo"));
-   *     res.send({ some: "json" });
-   *     res.send("<p>some html</p>");
-   *
-   * @param {string|object|Buffer} body
-   * @public
-   */
   if (app.enabled("content-length"))
-    res.prototype.send = function(body) {
+    res.prototype.send = function (body) {
       const req = this.req;
       let contentType = <string>this.get("Content-Type");
       let chunk = body;
@@ -351,7 +658,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
       // populate Content-Length
       let len;
 
-      if (String.isInstance(chunk)) {
+      if (utils.string.isString(chunk)) {
         encoding = "utf8";
 
         if ((chunk as any).length < 1000)
@@ -400,12 +707,12 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
       return this;
     };
   else
-    res.prototype.send = function(body) {
+    res.prototype.send = function (body) {
       const req = this.req;
       const contentType = this.get("Content-Type") as string;
       let chunk = body;
 
-      if (String.isInstance(chunk)) {
+      if (utils.string.isString(chunk)) {
         if (!contentType)
           // reflect this in content-type
           this.setHeader("Content-Type", setCharset("text/html", "utf-8") as string);
@@ -433,27 +740,18 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
       return this;
     };
 
-  /* json options*/
+  /* json options */
   const jsonOptions = {
     escape: app.enabled("json.escape"),
     spaces: app.get("json.spaces") || undefined,
     replacer: app.get("json.replacer") || undefined,
   };
 
-  /**
-   * Send JSON response.
-   *
-   * Examples:
-   *
-   *     res.json({ user: "tj" });
-   *
-   * @param {array|object} obj
-   * @param {number} [status]
-   * @public
-   */
-  res.prototype.json = function(obj, status) {
-    const body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape);
-    // let body = JSON.stringify(obj)
+  res.prototype.json = function (obj, status?) {
+    let body;
+
+    if (this.stringify) body = this.stringify(obj);
+    else body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape);
 
     // content-type
     // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json")
@@ -464,18 +762,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     return this.send(body);
   };
 
-  /**
-   * Send JSON response with JSONP callback support.
-   *
-   * Examples:
-   *
-   *     res.jsonp({ user: "tj" });
-   *
-   * @param {array|object} obj
-   * @param {number} [status]
-   * @public
-   */
-  res.prototype.jsonp = function(obj, status) {
+  res.prototype.jsonp = function (obj, status) {
     // settings
     const app = this.app;
     const escape = jsonOptions.escape;
@@ -496,7 +783,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     if (Array.isArray(callback)) callback = callback[0];
 
     // jsonp
-    if (String.isInstance(callback) && callback.length !== 0) {
+    if (utils.string.isString(callback) && callback.length !== 0) {
       this.set("X-Content-Type-Options", "nosniff");
       this.set("Content-Type", "text/javascript");
 
@@ -516,70 +803,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     return this.send(body);
   };
 
-  /**
-   * Send given HTTP status code.
-   *
-   * Sets the response status to `statusCode` and the body of the
-   * response to the standard description from node's http.STATUS_CODES
-   * or the statusCode number if no description.
-   *
-   * Examples:
-   *
-   *     res.sendStatus(200);
-   *
-   * @param {number} statusCode
-   * @public
-   */
-  res.prototype.sendStatus = function(statusCode) {
-    const body = STATUS_CODES[statusCode] || `${statusCode}`;
-
-    this.statusCode = statusCode;
-    this.type("txt");
-
-    return this.send(body);
-  };
-
-  /**
-   * Transfer the file at the given `path`.
-   *
-   * Automatically sets the _Content-Type_ response header field.
-   * The callback `callback(err)` is invoked when the transfer is complete
-   * or when an error occurs. Be sure to check `res.sentHeader`
-   * if you wish to attempt responding, as the header and some data
-   * may have already been transferred.
-   *
-   * Options:
-   *
-   *   - `maxAge`   defaulting to 0 (can be string converted by `ms`)
-   *   - `root`     root directory for relative filenames
-   *   - `headers`  object of headers to serve with file
-   *   - `dotfiles` serve dotfiles, defaulting to false; can be `"allow"` to send them
-   *
-   * Other options are passed along to `send`.
-   *
-   * Examples:
-   *
-   *  The following example illustrates how `res.sendFile()` may
-   *  be used as an alternative for the `static()` middleware for
-   *  dynamic situations. The code backing `res.sendFile()` is actually
-   *  the same code, so HTTP cache support etc is identical.
-   *
-   *     app.get("/user/:uid/photos/:file", function(req, res){
-   *       let uid = req.params.uid
-   *         , file = req.params.file;
-   *
-   *       req.user.mayViewFilesFrom(uid, function(yes){
-   *         if (yes) {
-   *           res.sendFile("/uploads/" + uid + "/" + file);
-   *         } else {
-   *           res.send(403, "Sorry! you cant see that.");
-   *         }
-   *       });
-   *     });
-   *
-   * @public
-   */
-  res.prototype.sendFile = function(path, options?, callback?) {
+  res.prototype.sendFile = function (path, options?, callback?) {
     let done = callback;
     const req = this.req;
     const res = this;
@@ -589,7 +813,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
     if (!path) throw new TypeError("path argument is required to res.sendFile");
 
     // support function as second arg
-    if (Function.isInstance(options)) {
+    if (utils.function.isFunction(options)) {
       done = options;
       opts = {};
     }
@@ -612,218 +836,26 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
   };
 
   /**
-   * Transfer the file at the given `path` as an attachment.
+   * Send given HTTP status code.
    *
-   * Optionally providing an alternate attachment `filename`,
-   * and optional callback `callback(err)`. The callback is invoked
-   * when the data transfer is complete, or when an error has
-   * ocurred. Be sure to check `res.headersSent` if you plan to respond.
-   *
-   * Optionally providing an `options` object to use with `res.sendFile()`.
-   * This function will set the `Content-Disposition` header, overriding
-   * any `Content-Disposition` header passed as header options in order
-   * to set the attachment and filename.
-   *
-   * This method uses `res.sendFile()`.
-   *
-   * @public
-   */
-  res.prototype.download = function(path, filename, options, callback) {
-    let done: any = callback;
-    let name: any = filename;
-    let opts = options || null;
-
-    // support function as second or third arg
-    if (Function.isInstance(filename)) {
-      done = filename;
-      name = null;
-      opts = null;
-    } else if (Function.isInstance(options)) {
-      done = options;
-      opts = null;
-    }
-
-    // set Content-Disposition when file is sent
-    const headers = {
-      "Content-Disposition": contentDisposition(name || path),
-    };
-
-    // merge user-provided headers
-    if (opts && (opts as { [key: string]: any }).headers) {
-      const keys = Object.keys((opts as { [key: string]: any }).headers);
-
-      let key;
-      for (let i = 0; i < keys.length; i++) {
-        key = keys[i];
-
-        if (key.toLowerCase() !== "content-disposition")
-          (headers as { [key: string]: any })[key] = (opts as { [key: string]: any }).headers[key];
-      }
-    }
-
-    // merge user-provided options
-    opts = Object.create(opts)
-      (opts as { [key: string]: any }).headers = headers;
-
-    // Resolve the full path for sendFile
-    const fullPath = resolve(path);
-
-    // send file
-    return this.sendFile(fullPath, opts, done);
-  };
-
-  /**
-   * Set _Content-Type_ response header with `type` through `mime.lookup()`
-   * when it does not contain "/", or set the Content-Type to `type` otherwise.
+   * Sets the response status to `statusCode` and the body of the
+   * response to the standard description from node's http.STATUS_CODES
+   * or the statusCode number if no description.
    *
    * Examples:
    *
-   *     res.type(".html");
-   *     res.type("html");
-   *     res.type("json");
-   *     res.type("application/json");
-   *     res.type("png");
+   *     res.sendStatus(200);
    *
-   * @param {String} type
-   * @return {http.ServerResponse} for chaining
+   * @param {number} statusCode
    * @public
    */
-  res.prototype.contentType = res.prototype.type = function(type) {
-    return this.set("Content-Type", type.indexOf("/") === -1
-      ? (send.mime as any).lookup(type)
-      : type,
-    );
-  };
+  res.prototype.sendStatus = function (statusCode) {
+    const body = STATUS_CODES[statusCode] || `${statusCode}`;
 
-  /**
-   * Respond to the Acceptable formats using an `obj`
-   * of mime-type callbacks.
-   *
-   * This method uses `req.accepted`, an array of
-   * acceptable types ordered by their quality values.
-   * When "Accept" is not present the _first_ callback
-   * is invoked, otherwise the first match is used. When
-   * no match is performed the server responds with
-   * 406 "Not Acceptable".
-   *
-   * Content-Type is set for you, however if you choose
-   * you may alter this within the callback using `res.type()`
-   * or `res.set("Content-Type", ...)`.
-   *
-   *    res.format({
-   *      "text/plain": function(){
-   *        res.send("hey");
-   *      },
-   *
-   *      "text/html": function(){
-   *        res.send("<p>hey</p>");
-   *      },
-   *
-   *      "appliation/json": function(){
-   *        res.send({ message: "hey" });
-   *      }
-   *    });
-   *
-   * In addition to canonicalized MIME types you may
-   * also use extnames mapped to these types:
-   *
-   *    res.format({
-   *      text: function(){
-   *        res.send("hey");
-   *      },
-   *
-   *      html: function(){
-   *        res.send("<p>hey</p>");
-   *      },
-   *
-   *      json: function(){
-   *        res.send({ message: "hey" });
-   *      }
-   *    });
-   *
-   * By default Express passes an `Error`
-   * with a `.status` of 406 to `next(err)`
-   * if a match is not made. If you provide
-   * a `.default` callback it will be invoked
-   * instead.
-   *
-   * @param {Object} obj
-   * @return {http.ServerResponse} for chaining
-   * @public
-   */
-  res.prototype.format = function(obj: { [key: string]: any }) {
-    const req = this.req;
-    const next = req.next;
+    this.statusCode = statusCode;
+    this.type("txt");
 
-    const fn = obj.default;
-
-    if (fn) delete obj.default;
-
-    const keys = Object.keys(obj);
-
-    const key = keys.length > 0
-      ? <string>req.accepts(keys)
-      : false;
-
-    this.vary("Accept");
-
-    if (key) {
-      this.set("Content-Type", normalizeType(key).value);
-      obj[key](req, this, next);
-    } else if (fn)
-      fn();
-    else {
-      const err: any = new Error("Not Acceptable");
-
-      err.status = err.statusCode = 406;
-      err.types = normalizeTypes(keys).map((o) => o.value);
-
-      throw err;
-    }
-
-    return this;
-  };
-
-  /**
-   * Set _Content-Disposition_ header to _attachment_ with optional `filename`.
-   *
-   * @param {String} filename
-   * @return {http.ServerResponse}
-   * @public
-   */
-  res.prototype.attachment = function(filename) {
-    if (filename) this.type(path.extname(filename));
-
-    this.set("Content-Disposition", contentDisposition(filename));
-
-    return this;
-  };
-
-  /**
-   * Append additional header `field` with value `val`.
-   *
-   * Example:
-   *
-   *    res.append("Link", ["<http://localhost/>", "<http://localhost:3000/>"]);
-   *    res.append("Set-Cookie", "foo=bar; Path=/; HttpOnly");
-   *    res.append("Warning", "199 Miscellaneous warning");
-   *
-   * @param {String} field
-   * @param {String|Array} val
-   * @return {http.ServerResponse} for chaining
-   * @public
-   */
-  res.prototype.append = function(field, val) {
-    const prev = this.get(field);
-    let value: any = val;
-
-    if (prev)
-      // concat the new and prev vals
-      value = Array.isArray(prev) ? prev.concat(val)
-        : Array.isArray(val) ? [prev].concat(val)
-          : [prev, val];
-
-    return this.set(field, value);
+    return this.send(body);
   };
 
   /**
@@ -843,7 +875,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @return {http.ServerResponse} for chaining
    * @public
    */
-  res.prototype.set = res.prototype.header = function(field, val?) {
+  res.prototype.set = res.prototype.header = function (field, val?) {
     if (val) {
       let value = Array.isArray(val)
         ? val.map((v) => `${v}`)
@@ -877,68 +909,6 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
   res.prototype.get = res.prototype.getHeader;
 
   /**
-   * Clear cookie `name`.
-   *
-   * @param {String} name
-   * @param {Object} [options]
-   * @return {http.ServerResponse} for chaining
-   * @public
-   */
-  res.prototype.clearCookie = function(name, options) {
-    const opts = Object.assign({}, { expires: new Date(1), path: "/" }, options);
-
-    return this.cookie(name, "", opts);
-  };
-
-  /**
-   * Set cookie `name` to `value`, with the given `options`.
-   *
-   * Options:
-   *
-   *    - `maxAge`   max-age in milliseconds, converted to `expires`
-   *    - `signed`   sign the cookie
-   *    - `path`     defaults to "/"
-   *
-   * Examples:
-   *
-   *    // "Remember Me" for 15 minutes
-   *    res.cookie("rememberme", "1", { expires: new Date(Date.now() + 900000), httpOnly: true });
-   *
-   *    // save as above
-   *    res.cookie("rememberme", "1", { maxAge: 900000, httpOnly: true })
-   *
-   * @param {String} name
-   * @param {String|Object} value
-   * @param {Object} [options]
-   * @return {http.ServerResponse} for chaining
-   * @public
-   */
-  res.prototype.cookie = function(name, value, options) {
-    const opts: { [key: string]: any } = Object.assign({}, options);
-    const secret = this.req.secret;
-    const signed = opts.signed;
-
-    if (signed && !secret) throw new Error("cookieParser('secret') required for signed cookies");
-
-    let val = Object.isInstance(value)
-      ? "j:" + JSON.stringify(value)
-      : String(value);
-
-    if (signed) val = "s:" + sign(val, secret);
-
-    if ("maxAge" in opts) {
-      opts.expires = new Date(Date.now() + opts.maxAge);
-      opts.maxAge /= 1000;
-    }
-
-    if (opts.path == null) opts.path = "/";
-
-    this.append("Set-Cookie", cookie.serialize(name, String(val), opts));
-
-    return this;
-  };
-
-  /**
    * Set the location header to `url`.
    *
    * The given `url` can also be "back", which redirects
@@ -954,7 +924,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @return {http.ServerResponse} for chaining
    * @public
    */
-  res.prototype.location = function(url) {
+  res.prototype.location = function (url) {
     let loc = url;
 
     // "back" is an alias for the referrer
@@ -981,7 +951,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    *
    * @public
    */
-  res.prototype.redirect = function(url: string | number) {
+  res.prototype.redirect = function (url: string | number) {
     let address = <string>url;
     let body: string = "";
     let status = 302;
@@ -1029,7 +999,7 @@ const patch = (res: typeof http.ServerResponse, app: Fox) => {
    * @return {http.ServerResponse} for chaining
    * @public
    */
-  res.prototype.vary = function(field) {
+  res.prototype.vary = function (field) {
     vary(this, field);
 
     return this;

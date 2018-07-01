@@ -1,16 +1,14 @@
 import "./bootstrap";
 import * as cluster from "cluster";
-import * as os from "os";
 import * as http from "http";
-import * as path from "path";
-import * as Event from "events";
+import * as os from "os";
 import * as serveStatic from "serve-static";
 import * as constants from "./constants";
-import { Router, Route, httpMethods } from "./routing";
 import { init, query } from "./middleware";
 import { request, response } from "./patches";
+import { httpMethods, Route, Router } from "./routing";
+import * as utils from "./utils";
 import { Engine } from "./view";
-import { name } from "../package.json";
 
 module Foxify {
   export interface Options {
@@ -72,7 +70,7 @@ interface Foxify {
 
   use(route: Route): this;
   use(...controllers: Route.Controller[]): this;
-  use(path: string, ...controllers: Route.Controller[]): this;
+  use(path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]): this;
 }
 
 class Foxify {
@@ -81,7 +79,7 @@ class Foxify {
   static static = serveStatic;
 
   static dotenv = (dotenv: string) => {
-    if (!String.isInstance(dotenv))
+    if (!utils.string.isString(dotenv))
       throw new TypeError(`Expected 'dotenv' to be an string, got ${typeof dotenv} instead`);
 
     require("dotenv").config({
@@ -142,22 +140,22 @@ class Foxify {
     const keys = setting.split(".");
 
     if (keys.length === 1)
-      object[keys.first()] = value;
+      object[keys[0]] = value;
     else
-      this._set(keys.tail().join("."), value, object[keys.first()]);
+      this._set(utils.array.tail(keys).join("."), value, object[keys[0]]);
   }
 
   /* handle built-in middlewares */
   private _use(
     path: string | Route | Route.Controller,
-    ...middlewares: Route.Controller[],
-  ) {
+    options: Route.RouteOptions | Route.Controller,
+    ...middlewares: Route.Controller[]) {
     if (path instanceof Route)
       this._router.push(path.routes);
     else {
       const route = new Route();
 
-      route.use(path, ...middlewares);
+      route.use(path, options, ...middlewares);
 
       this._router.prepend(route.routes);
     }
@@ -167,10 +165,11 @@ class Foxify {
 
   /* handle options */
   enable(option: string) {
-    if (!String.isInstance(option))
+    if (!utils.string.isString(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
+    if (!utils.array.contains(
+      ["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, true, this._options);
@@ -179,10 +178,11 @@ class Foxify {
   }
 
   disable(option: string) {
-    if (!String.isInstance(option))
+    if (!utils.string.isString(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
+    if (!utils.array.contains(
+      ["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, false, this._options);
@@ -191,10 +191,11 @@ class Foxify {
   }
 
   enabled(option: string): boolean {
-    if (!String.isInstance(option))
+    if (!utils.string.isString(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"].contains(option))
+    if (!utils.array.contains(
+      ["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
       throw new TypeError(`Unknown option '${option}'`);
 
     const keys = option.split(".");
@@ -202,7 +203,7 @@ class Foxify {
     let _opt: any = this._options;
 
     keys.map((key) => {
-      if (Boolean.isInstance(_opt)) throw new Error("Unknown option");
+      if (utils.boolean.isBoolean(_opt)) throw new Error("Unknown option");
 
       _opt = _opt[key];
     });
@@ -216,25 +217,25 @@ class Foxify {
 
   /* handle settings */
   set(setting: string, value: any) {
-    if (!String.isInstance(setting))
+    if (!utils.string.isString(setting))
       throw new TypeError("Argument 'setting' should be an string");
 
     switch (setting) {
       case "env":
       case "url":
-        if (!String.isInstance(value))
+        if (!utils.string.isString(value))
           throw new TypeError(`setting '${setting}' should be an string`);
         break;
       case "port":
       case "workers":
-        if (!Number.isInstance(value))
+        if (!utils.number.isNumber(value))
           throw new TypeError(`setting '${setting}' should be a number`);
         if (value < 1)
           throw new TypeError(`setting '${setting}' should be a positive number`);
         break;
       case "json.spaces":
         if (value == null) break;
-        if (!Number.isInstance(value))
+        if (!utils.number.isNumber(value))
           throw new TypeError(`setting '${setting}' should be a number`);
         if (value < 0)
           throw new TypeError(`setting '${setting}' should be a positive number or zero`);
@@ -242,7 +243,7 @@ class Foxify {
       case "json.replacer":
       case "query.parser":
         if (value == null) break;
-        if (!Function.isInstance(value))
+        if (!utils.function.isFunction(value))
           throw new TypeError(`setting '${setting}' should be a function`);
         break;
       default:
@@ -254,24 +255,23 @@ class Foxify {
     return this;
   }
 
-  get(path: string, ...controllers: Route.Controller[]): any {
+  get(path: string, options?: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]): any {
     if (controllers.length === 0) {
       const setting = path;
 
-      if (!String.isInstance(setting))
+      if (!utils.string.isString(setting))
         throw new TypeError("'setting' should be an string");
 
-      if (
-        !["env", "url", "port", "workers", "json.spaces", "json.replacer",
-          "query.parser"].contains(setting)
-      ) throw new TypeError(`Unknown setting '${setting}'`);
+      if (!utils.array.contains(
+        ["env", "url", "port", "workers", "json.spaces", "json.replacer", "query.parser"], setting))
+        throw new TypeError(`Unknown setting '${setting}'`);
 
       const keys = setting.split(".");
 
       let _setting: { [key: string]: any } | boolean = this._settings;
 
       keys.map((key) => {
-        if (!Object.isInstance(_setting)) throw new Error("Unknown setting");
+        if (!utils.object.isObject(_setting)) throw new Error("Unknown setting");
 
         _setting = (_setting as { [key: string]: any })[key];
       });
@@ -279,12 +279,12 @@ class Foxify {
       return _setting;
     }
 
-    if (!String.isInstance(path))
+    if (!utils.string.isString(path))
       throw new TypeError("'path' should be an string");
 
     const route = new Route();
 
-    route.get(path, ...controllers);
+    route.get(path, options as Route.RouteOptions | Route.Controller, ...controllers);
 
     this._router.push(route.routes);
 
@@ -292,8 +292,8 @@ class Foxify {
   }
 
   /* handle view */
-  engine(extention: string, path: string, handler: () => void) {
-    this._view = new Engine(path, extention, handler);
+  engine(extension: string, path: string, handler: () => void) {
+    this._view = new Engine(path, extension, handler);
 
     return this;
   }
@@ -301,14 +301,14 @@ class Foxify {
   /* handle middlewares */
   use(
     path: string | Route | Route.Controller,
-    ...controllers: Route.Controller[],
-  ) {
+    options?: Route.RouteOptions | Route.Controller,
+    ...controllers: Route.Controller[]) {
     if (path instanceof Route)
       this._router.push(path.routes);
     else {
       const route = new Route();
 
-      route.use(path, ...controllers);
+      route.use(path, options as Route.RouteOptions | Route.Controller, ...controllers);
 
       this._router.push(route.routes);
     }
@@ -317,7 +317,7 @@ class Foxify {
   }
 
   start(callback?: () => void) {
-    if (callback && !Function.isInstance(callback))
+    if (callback && !utils.function.isFunction(callback))
       throw new TypeError(`Expected 'callback' to be a function, got ${typeof callback} instead`);
 
     /* set node env */

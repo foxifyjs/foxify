@@ -1,7 +1,6 @@
 /**
  * @see https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
  */
-
 const HTTP = {
   // 1xx Informational responses
   CONTINUE: 100 as 100,
