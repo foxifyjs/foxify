@@ -29,10 +29,6 @@
     "clustering",
     "database",
     "model",
-    "mongodb",
-    "graphql",
-    "relation",
-    "relationships",
     "framework",
     "foxify"
   ],
@@ -49,7 +45,7 @@
     "prepare": "npm run lint && node scripts/prepare.js",
     "lint": "tslint -p tsconfig.json -c tslint.json --exclude '**/*.d.ts'",
     "typedoc": "typedoc --out docs/ --mode file --module commonjs --target ES6 --plugin typedoc-plugin-example-tag src/",
-    "doc": "npm run typedoc"
+    "doc": "node scripts/doc.js"
   },
   "dependencies": {
     "@types/node": "^10.5.1",

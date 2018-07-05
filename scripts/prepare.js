@@ -2,7 +2,9 @@
 
 const path = require('path')
 const rimraf = require('rimraf')
-const {spawn} = require('child_process')
+const {
+  spawn
+} = require('child_process')
 const fs = require('fs')
 const readdir = require('fs-readdir-recursive')
 const UglifyEs = require('uglify-es')

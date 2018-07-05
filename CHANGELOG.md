@@ -1,5 +1,15 @@
 # Changelog
 
+## [next](https://github.com/foxifyjs/foxify/releases/tag/next) - *2018-__-__*
+
+**Implemented enhancements:**
+
+- added `https` option
+- added `https.key` setting
+- added `https.cert` setting
+- added `json schema` option to routing
+- improved performance
+
 ## [v0.7.0](https://github.com/foxifyjs/foxify/releases/tag/v0.7.0) - *2018-05-19*
 
 **Implemented enhancements:**
