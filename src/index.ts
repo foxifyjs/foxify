@@ -1,5 +1,4 @@
 import "./bootstrap";
-import * as cluster from "cluster";
 import * as http from "http";
 import * as os from "os";
 import * as serveStatic from "serve-static";
@@ -8,10 +7,12 @@ import { init, query } from "./middleware";
 import { request, response } from "./patches";
 import { httpMethods, Route, Router } from "./routing";
 import * as utils from "./utils";
+import * as Server from "./Server";
 import { Engine } from "./view";
 
 module Foxify {
   export interface Options {
+    https: boolean;
     "x-powered-by": boolean;
     "content-length": boolean;
     routing: {
@@ -28,6 +29,10 @@ module Foxify {
     url: string;
     port: number;
     workers: number;
+    https: {
+      cert?: string,
+      key?: string,
+    };
     json: {
       replacer?: (...args: any[]) => any,
       spaces?: number,
@@ -38,35 +43,8 @@ module Foxify {
   }
 }
 
-interface Foxify {
+interface Foxify extends Route.MethodFunctions<Foxify> {
   get(setting: string): any;
-  get(path: string, ...controllers: Route.Controller[]): this;
-
-  post(path: string, ...controllers: Route.Controller[]): this;
-  put(path: string, ...controllers: Route.Controller[]): this;
-  head(path: string, ...controllers: Route.Controller[]): this;
-  delete(path: string, ...controllers: Route.Controller[]): this;
-  options(path: string, ...controllers: Route.Controller[]): this;
-  trace(path: string, ...controllers: Route.Controller[]): this;
-  copy(path: string, ...controllers: Route.Controller[]): this;
-  lock(path: string, ...controllers: Route.Controller[]): this;
-  mkcol(path: string, ...controllers: Route.Controller[]): this;
-  move(path: string, ...controllers: Route.Controller[]): this;
-  purge(path: string, ...controllers: Route.Controller[]): this;
-  propfind(path: string, ...controllers: Route.Controller[]): this;
-  proppatch(path: string, ...controllers: Route.Controller[]): this;
-  unlock(path: string, ...controllers: Route.Controller[]): this;
-  report(path: string, ...controllers: Route.Controller[]): this;
-  mkactivity(path: string, ...controllers: Route.Controller[]): this;
-  checkout(path: string, ...controllers: Route.Controller[]): this;
-  merge(path: string, ...controllers: Route.Controller[]): this;
-  ["m-search"](path: string, ...controllers: Route.Controller[]): this;
-  notify(path: string, ...controllers: Route.Controller[]): this;
-  subscribe(path: string, ...controllers: Route.Controller[]): this;
-  unsubscribe(path: string, ...controllers: Route.Controller[]): this;
-  patch(path: string, ...controllers: Route.Controller[]): this;
-  search(path: string, ...controllers: Route.Controller[]): this;
-  connect(path: string, ...controllers: Route.Controller[]): this;
 
   use(route: Route): this;
   use(...controllers: Route.Controller[]): this;
@@ -88,6 +66,7 @@ class Foxify {
   }
 
   private _options: Foxify.Options = {
+    https: false,
     ["x-powered-by"]: true,
     ["content-length"]: true,
     routing: {
@@ -104,6 +83,10 @@ class Foxify {
     url: process.env.APP_URL || "localhost",
     port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
     workers: process.env.WORKERS ? +process.env.WORKERS : os.cpus().length,
+    https: {
+      cert: undefined,
+      key: undefined,
+    },
     json: {
       replacer: undefined,
       spaces: undefined,
@@ -169,7 +152,7 @@ class Foxify {
       throw new TypeError("Argument 'option' should be an string");
 
     if (!utils.array.contains(
-      ["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
+      ["https", "x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, true, this._options);
@@ -182,7 +165,7 @@ class Foxify {
       throw new TypeError("Argument 'option' should be an string");
 
     if (!utils.array.contains(
-      ["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
+      ["https", "x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, false, this._options);
@@ -195,7 +178,7 @@ class Foxify {
       throw new TypeError("Argument 'option' should be an string");
 
     if (!utils.array.contains(
-      ["x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
+      ["https", "x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
       throw new TypeError(`Unknown option '${option}'`);
 
     const keys = option.split(".");
@@ -233,6 +216,14 @@ class Foxify {
         if (value < 1)
           throw new TypeError(`setting '${setting}' should be a positive number`);
         break;
+      case "https.cert":
+        if (!utils.string.isString(value))
+          throw new TypeError(`setting '${setting}' should be an string`);
+        break;
+      case "https.key":
+        if (!utils.string.isString(value))
+          throw new TypeError(`setting '${setting}' should be an string`);
+        break;
       case "json.spaces":
         if (value == null) break;
         if (!utils.number.isNumber(value))
@@ -263,7 +254,8 @@ class Foxify {
         throw new TypeError("'setting' should be an string");
 
       if (!utils.array.contains(
-        ["env", "url", "port", "workers", "json.spaces", "json.replacer", "query.parser"], setting))
+        ["env", "url", "port", "workers", "https.cert", "https.key",
+          "json.spaces", "json.replacer", "query.parser"], setting))
         throw new TypeError(`Unknown setting '${setting}'`);
 
       const keys = setting.split(".");
@@ -291,7 +283,11 @@ class Foxify {
     return this;
   }
 
-  /* handle view */
+  /**
+   * handle view
+   * @param extension view template file extension
+   * @param path the directory containing view templates
+   */
   engine(extension: string, path: string, handler: () => void) {
     this._view = new Engine(path, extension, handler);
 
@@ -337,31 +333,19 @@ class Foxify {
     /* initialize the router with provided options and settings */
     this._router.initialize(this);
 
-    /* apply workers */
-    const workers = this.get("workers");
-    if (workers > 1) {
-      if (cluster.isMaster) {
-        for (let i = 0; i < workers; i++) cluster.fork();
+    const server = new Server(
+      {
+        protocol: this.enabled("https") ? "https" : "http",
+        host: this.get("url"),
+        port: this.get("port"),
+        workers: this.get("workers"),
+        cert: this.get("https.cert"),
+        key: this.get("https.key"),
+      },
+      (req, res) => this._router.route(req, res),
+    );
 
-        return;
-      }
-
-      /* no server fail at any cost ;) */
-      process.on("uncaughtException", (err) => console.error(`Caught exception (worker pid: ${process.pid}): `, err))
-        .on("unhandledRejection", (err) => console.warn(`Caught rejection (worker pid: ${process.pid}): `, err));
-
-      http.createServer((req, res) => this._router.route(req, res))
-        .listen(this.get("port"), this.get("url"), callback);
-
-      return;
-    }
-
-    /* no server fail at any cost ;) */
-    process.on("uncaughtException", (err) => console.error("Caught exception: ", err))
-      .on("unhandledRejection", (err) => console.warn("Caught rejection: ", err));
-
-    http.createServer((req, res) => this._router.route(req, res))
-      .listen(this.get("port"), this.get("url"), callback);
+    server.start(callback);
   }
 }
 

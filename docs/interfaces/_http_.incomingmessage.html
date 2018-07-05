@@ -85,10 +85,13 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#fresh" class="tsd-kind-icon">fresh</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#head" class="tsd-kind-icon">head</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#hostname" class="tsd-kind-icon">hostname</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#path" class="tsd-kind-icon">path</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#query" class="tsd-kind-icon">query</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#res" class="tsd-kind-icon">res</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#stale" class="tsd-kind-icon">stale</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#xhr" class="tsd-kind-icon">xhr</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -99,7 +102,6 @@
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#acceptsencodings" class="tsd-kind-icon">accepts<wbr>Encodings</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#acceptslanguages" class="tsd-kind-icon">accepts<wbr>Languages</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#get" class="tsd-kind-icon">get</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#head" class="tsd-kind-icon">head</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#is" class="tsd-kind-icon">is</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#next" class="tsd-kind-icon">next</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_http_.incomingmessage.html#range" class="tsd-kind-icon">range</a></li>
@@ -116,7 +118,24 @@
 					<div class="tsd-signature tsd-kind-icon">fresh<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L24">patches/request.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L25">patches/request.ts:25</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Check if the request is fresh, aka
+								Last-Modified and/or the ETag
+							still match.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="head" class="tsd-anchor"></a>
+					<h3>head</h3>
+					<div class="tsd-signature tsd-kind-icon">head<span class="tsd-signature-symbol">:</span> <a href="_http_.incomingmessage.html#get" class="tsd-signature-type">get</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L55">patches/request.ts:55</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -126,9 +145,17 @@
 					<div class="tsd-signature tsd-kind-icon">hostname<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L22">patches/request.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L34">patches/request.ts:34</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Parse the &quot;Host&quot; header field to a hostname.</p>
+						</div>
+						<p>When the &quot;trust proxy&quot; setting trusts the socket
+							address, the &quot;X-Forwarded-Host&quot; header field will
+						be trusted.</p>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="path" class="tsd-anchor"></a>
@@ -136,9 +163,14 @@
 					<div class="tsd-signature tsd-kind-icon">path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L20">patches/request.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L39">patches/request.ts:39</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Short-hand for <code>url.parseUrl(req.url).pathname</code>.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="query" class="tsd-anchor"></a>
@@ -146,7 +178,7 @@
 					<div class="tsd-signature tsd-kind-icon">query<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L26">patches/request.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L41">patches/request.ts:41</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -156,9 +188,41 @@
 					<div class="tsd-signature tsd-kind-icon">res<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ServerResponse</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L18">patches/request.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L18">patches/request.ts:18</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="stale" class="tsd-anchor"></a>
+					<h3>stale</h3>
+					<div class="tsd-signature tsd-kind-icon">stale<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L48">patches/request.ts:48</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Check if the request is stale, aka
+								&quot;Last-Modified&quot; and / or the &quot;ETag&quot; for the
+							resource has changed.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="xhr" class="tsd-anchor"></a>
+					<h3>xhr</h3>
+					<div class="tsd-signature tsd-kind-icon">xhr<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L53">patches/request.ts:53</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Check if the request was an <code>_XMLHttpRequest_</code>.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -173,9 +237,52 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L30">patches/request.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L97">patches/request.ts:97</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>TODO: update docs.</p>
+								</div>
+								<p>Check if the given <code>type(s)</code> is acceptable, returning
+									the best match when true, otherwise <code>undefined</code>, in which
+								case you should respond with 406 &quot;Not Acceptable&quot;.</p>
+								<p>The <code>type</code> value may be a single MIME type string
+									such as &quot;application/json&quot;, an extension name
+									such as &quot;json&quot;, a comma-delimited list such as &quot;json, html, text/plain&quot;,
+									an argument list such as <code>&quot;json&quot;, &quot;html&quot;, &quot;text/plain&quot;</code>,
+									or an array <code>[&quot;json&quot;, &quot;html&quot;, &quot;text/plain&quot;]</code>. When a list
+								or array is given, the <em>best</em> match, if any is returned.</p>
+								<h4 id="example-1">Example 1</h4>
+								<pre><code class="lang-typescript"><span class="hljs-comment">// Accept: text/html</span>
+req.accepts(<span class="hljs-string">"html"</span>);
+<span class="hljs-comment">// =&gt; "html"</span>
+</code></pre>
+								<h4 id="example-2">Example 2</h4>
+								<pre><code class="lang-typescript"><span class="hljs-comment">// Accept: text/*, application/json</span>
+req.accepts(<span class="hljs-string">"html"</span>);
+<span class="hljs-comment">// =&gt; "html"</span>
+req.accepts(<span class="hljs-string">"text/html"</span>);
+<span class="hljs-comment">// =&gt; "text/html"</span>
+req.accepts(<span class="hljs-string">"json, text"</span>);
+<span class="hljs-comment">// =&gt; "json"</span>
+req.accepts(<span class="hljs-string">"application/json"</span>);
+<span class="hljs-comment">// =&gt; "application/json"</span>
+</code></pre>
+								<h4 id="example-3">Example 3</h4>
+								<pre><code class="lang-typescript"><span class="hljs-comment">// Accept: text/*, application/json</span>
+req.accepts(<span class="hljs-string">"image/png"</span>);
+req.accepts(<span class="hljs-string">"png"</span>);
+<span class="hljs-comment">// =&gt; undefined</span>
+</code></pre>
+								<h4 id="example-4">Example 4</h4>
+								<pre><code class="lang-typescript"><span class="hljs-comment">// Accept: text/*;q=.5, application/json</span>
+req.accepts([<span class="hljs-string">"html"</span>, <span class="hljs-string">"json"</span>]);
+req.accepts(<span class="hljs-string">"html"</span>, <span class="hljs-string">"json"</span>);
+req.accepts(<span class="hljs-string">"html, json"</span>);
+<span class="hljs-comment">// =&gt; "json"</span>
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -201,9 +308,15 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L32">patches/request.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L103">patches/request.ts:103</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check if the given <code>charset</code>s are acceptable,
+									otherwise you should respond with 406 &quot;Not Acceptable&quot;.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -227,9 +340,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L31">patches/request.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L108">patches/request.ts:108</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check if the given <code>encoding</code>s are accepted.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -253,9 +371,15 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L33">patches/request.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L114">patches/request.ts:114</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check if the given <code>lang</code>s are acceptable,
+									otherwise you should respond with 406 &quot;Not Acceptable&quot;.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -279,37 +403,25 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L28">patches/request.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L129">patches/request.ts:129</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">undefined</span>
-							</h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="head" class="tsd-anchor"></a>
-					<h3>head</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">head<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L29">patches/request.ts:29</a></li>
-								</ul>
-							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Return request header.</p>
+								</div>
+								<p>The <code>Referrer</code> header field is special-cased,
+								both <code>Referrer</code> and <code>Referer</code> are interchangeable.</p>
+								<h4 id="example-1">Example 1</h4>
+								<pre><code class="lang-typescript">req.get(<span class="hljs-string">"Content-Type"</span>); <span class="hljs-comment">// =&gt; "text/plain"</span>
+</code></pre>
+								<h4 id="example-2">Example 2</h4>
+								<pre><code class="lang-typescript">req.get(<span class="hljs-string">"content-type"</span>); <span class="hljs-comment">// =&gt; "text/plain"</span>
+</code></pre>
+								<h4 id="example-3">Example 3</h4>
+								<pre><code class="lang-typescript">req.get(<span class="hljs-string">"Something"</span>); <span class="hljs-comment">// =&gt; undefined</span>
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -335,9 +447,33 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L35">patches/request.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L151">patches/request.ts:151</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check if the incoming request contains the &quot;Content-Type&quot;
+									header field, and it contains the give mime <code>type</code>.</p>
+								</div>
+								<h4 id="example-1">Example 1</h4>
+								<pre><code class="lang-typescript"><span class="hljs-comment">// With Content-Type: text/html; charset=utf-8</span>
+req.is(<span class="hljs-string">"html"</span>);
+req.is(<span class="hljs-string">"text/html"</span>);
+req.is(<span class="hljs-string">"text/*"</span>);
+<span class="hljs-comment">// =&gt; true</span>
+</code></pre>
+								<h4 id="example-2">Example 2</h4>
+								<pre><code class="lang-typescript"><span class="hljs-comment">// When Content-Type is application/json</span>
+req.is(<span class="hljs-string">"json"</span>);
+req.is(<span class="hljs-string">"application/json"</span>);
+req.is(<span class="hljs-string">"application/*"</span>);
+<span class="hljs-comment">// =&gt; true</span>
+</code></pre>
+								<h4 id="example-3">Example 3</h4>
+								<pre><code class="lang-typescript">req.is(<span class="hljs-string">"html"</span>);
+<span class="hljs-comment">// =&gt; false</span>
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -363,7 +499,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L37">patches/request.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L153">patches/request.ts:153</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -380,9 +516,23 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/e963317/src/patches/request.ts#L34">patches/request.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/c2e5e8e/src/patches/request.ts#L170">patches/request.ts:170</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Parse Range header field, capping to the given <code>size</code>.</p>
+								</div>
+								<p>Unspecified ranges such as &quot;0-&quot; require knowledge of your resource length. In
+									the case of a byte range this is of course the total number of bytes. If the
+									Range header field is not given <code>undefined</code> is returned, <code>-1</code> when unsatisfiable,
+								and <code>-2</code> when syntactically invalid.</p>
+								<p>When ranges are returned, the array has a &quot;type&quot; property which is the type of
+									range that is required (most commonly, &quot;bytes&quot;). Each array element is an object
+								with a &quot;start&quot; and &quot;end&quot; property for the portion of the range.</p>
+								<p>NOTE: remember that ranges are inclusive, so for example &quot;Range: users=0-3&quot;
+								should respond with 4 users when available, not 3.</p>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -431,6 +581,9 @@
 								<a href="_http_.incomingmessage.html#fresh" class="tsd-kind-icon">fresh</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_http_.incomingmessage.html#head" class="tsd-kind-icon">head</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_http_.incomingmessage.html#hostname" class="tsd-kind-icon">hostname</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
@@ -441,6 +594,12 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_http_.incomingmessage.html#res" class="tsd-kind-icon">res</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_http_.incomingmessage.html#stale" class="tsd-kind-icon">stale</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_http_.incomingmessage.html#xhr" class="tsd-kind-icon">xhr</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_http_.incomingmessage.html#accepts" class="tsd-kind-icon">accepts</a>
@@ -456,9 +615,6 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_http_.incomingmessage.html#get" class="tsd-kind-icon">get</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_http_.incomingmessage.html#head" class="tsd-kind-icon">head</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_http_.incomingmessage.html#is" class="tsd-kind-icon">is</a>

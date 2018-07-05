@@ -16,11 +16,15 @@ import { Engine } from "../view";
 
 declare module "http" {
   export interface ServerResponse {
-    [key: string]: any;
-
     req: http.IncomingMessage;
 
+    set: http.ServerResponse["header"];
     type: http.ServerResponse["contentType"];
+
+    /**
+     * @hidden
+     */
+    stringify?: any;
 
     /**
      * Append additional header `field` with value `val`.
@@ -153,35 +157,23 @@ declare module "http" {
     format(format: object): this;
 
     /**
-     * Set Link header field with the given links.
-     *
-     * @example
-     * res.links({
-     *   next: "http://api.example.com/users?page=2",
-     *   last: "http://api.example.com/users?page=5"
-     * });
+     * Get value for header `field`.
      */
-    links(links: object): this;
+    get(field: string): string | number | string[] | undefined;
 
     /**
-     * Set response status code.
+     * Set header `field` to `val`, or pass
+     * an object of header fields.
      *
+     * @returns for chaining
      * @example
-     * res.status(500);
+     * res.set("Foo", ["bar", "baz"]);
+     * @example
+     * res.set("Accept", "application/json");
+     * @example
+     * res.set({ Accept: "text/plain", "X-API-Key": "tobi" });
      */
-    status(code: number): this;
-
-    /**
-     * Send a response.
-     *
-     * @example
-     * res.send(Buffer.from("wahoo"));
-     * @example
-     * res.send({ some: "json" });
-     * @example
-     * res.send("<p>some html</p>");
-     */
-    send(body: string | object | Buffer): this;
+    header(field: string | object, value: string | string[]): this;
 
     /**
      * Send JSON response.
@@ -198,7 +190,67 @@ declare module "http" {
      * res.jsonp({ user: "tj" });
      */
     jsonp(response: object, status?: number): this;
-    sendStatus(statusCode: number): this;
+
+    /**
+     * Set Link header field with the given links.
+     *
+     * @example
+     * res.links({
+     *   next: "http://api.example.com/users?page=2",
+     *   last: "http://api.example.com/users?page=5"
+     * });
+     */
+    links(links: object): this;
+
+    /**
+     * Set the location header to `url`.
+     *
+     * The given `url` can also be "back", which redirects
+     * to the _Referrer_ or _Referer_ headers or "/".
+     *
+     * @returns for chaining
+     * @example
+     * res.location("/foo/bar").;
+     * @example
+     * res.location("http://example.com");
+     * @example
+     * res.location("../login");
+     */
+    location(url: string): this;
+
+    /**
+     * Redirect to the given `url` with optional response `status`
+     * defaulting to 302.
+     *
+     * The resulting `url` is determined by `res.location()`, so
+     * it will play nicely with mounted apps, relative paths,
+     * `"back"` etc.
+     *
+     * @example
+     * res.redirect("/foo/bar");
+     * @example
+     * res.redirect("http://example.com");
+     * @example
+     * res.redirect(301, "http://example.com");
+     * @example
+     * res.redirect("../login"); // /blog/post/1 -> /blog/login
+     */
+    redirect(url: string): void;
+    redirect(code: number, url: string): void;
+
+    render(view: string, options?: object, callback?: Engine.Callback): void;
+
+    /**
+     * Send a response.
+     *
+     * @example
+     * res.send(Buffer.from("wahoo"));
+     * @example
+     * res.send({ some: "json" });
+     * @example
+     * res.send("<p>some html</p>");
+     */
+    send(body: string | object | Buffer): this;
 
     /**
      * Transfer the file at the given `path`.
@@ -237,15 +289,34 @@ declare module "http" {
      * });
      */
     sendFile(path: string, options?: object | ((...args: any[]) => void), callback?: (...args: any[]) => void): void;
-    set(field: string | number | object, value: string | string[]): this;
-    header(field: string | object, value: string | string[]): this;
-    get(field: string): string | number | string[] | undefined;
-    location(url: string): this;
-    redirect(url: string): void;
-    redirect(code: number, url: string): void;
-    vary(field: string | string[]): this;
 
-    render(view: string, options?: object, callback?: Engine.Callback): void;
+    /**
+     * Send given HTTP status code.
+     *
+     * Sets the response status to `statusCode` and the body of the
+     * response to the standard description from node's http.STATUS_CODES
+     * or the statusCode number if no description.
+     *
+     * @example
+     * res.sendStatus(200);
+     */
+    sendStatus(statusCode: number): this;
+
+    /**
+     * Set response status code.
+     *
+     * @example
+     * res.status(500);
+     */
+    status(code: number): this;
+
+    /**
+     * Add `field` to Vary. If already present in the Vary set, then
+     * this call is simply ignored.
+     *
+     * @returns for chaining
+     */
+    vary(field: string | string[]): this;
   }
 }
 
@@ -631,6 +702,95 @@ const patch = (res: typeof http.ServerResponse, app: Foxify) => {
     return this;
   };
 
+  res.prototype.get = res.prototype.getHeader;
+
+  res.prototype.header = res.prototype.set = function (field, val?) {
+    if (val) {
+      let value = Array.isArray(val)
+        ? val.map((v) => `${v}`)
+        : `${val}`;
+
+      // add charset to content-type
+      if ((field as string).toLowerCase() === "content-type") {
+        if (Array.isArray(value)) throw new TypeError("Content-Type cannot be set to an Array");
+
+        if (!charsetRegExp.test(value)) {
+          const charset = (send.mime as any).charsets.lookup(value.split(";")[0]);
+
+          if (charset) value += "; charset=" + charset.toLowerCase();
+        }
+      }
+
+      this.setHeader(<string>field, value);
+    } else
+      for (const key in <object>field) this.set(key, (field as { [key: string]: any })[key]);
+
+    return this;
+  };
+
+  /* json options */
+  const jsonOptions = {
+    escape: app.enabled("json.escape"),
+    spaces: app.get("json.spaces") || undefined,
+    replacer: app.get("json.replacer") || undefined,
+  };
+
+  res.prototype.json = function (obj, status?) {
+    let body;
+
+    if (this.stringify) body = this.stringify(obj);
+    else body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape);
+
+    // content-type
+    // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json")
+    this.setHeader("Content-Type", "application/json");
+
+    if (status) this.status(status);
+
+    return this.send(body);
+  };
+
+  res.prototype.jsonp = function (obj, status) {
+    // settings
+    const app = (this as any).app;
+    const escape = jsonOptions.escape;
+    const replacer = jsonOptions.replacer;
+    const spaces = jsonOptions.spaces;
+    let body = stringify(obj, replacer, spaces, escape);
+    let callback = this.req.query[app.get("jsonp callback name")];
+
+    if (status) this.status(status);
+
+    // content-type
+    if (!this.get("Content-Type")) {
+      this.set("X-Content-Type-Options", "nosniff");
+      this.set("Content-Type", "application/json");
+    }
+
+    // fixup callback
+    if (Array.isArray(callback)) callback = callback[0];
+
+    // jsonp
+    if (utils.string.isString(callback) && callback.length !== 0) {
+      this.set("X-Content-Type-Options", "nosniff");
+      this.set("Content-Type", "text/javascript");
+
+      // restrict callback charset
+      callback = callback.replace(/[^\[\]\w$.]/g, "");
+
+      // replace chars not allowed in JavaScript that are in JSON
+      body = body
+        .replace(/\u2028/g, "\\u2028")
+        .replace(/\u2029/g, "\\u2029");
+
+      // the /**/ is a specific security mitigation for "Rosetta Flash JSONP abuse"
+      // the typeof check is just to reduce client error noise
+      body = "/**/ typeof " + callback + " === 'function' && " + callback + "(" + body + ");";
+    }
+
+    return this.send(body);
+  };
+
   res.prototype.links = function (links: { [key: string]: string }) {
     const link = `${this.get("Link") || ""}, `;
 
@@ -642,10 +802,54 @@ const patch = (res: typeof http.ServerResponse, app: Foxify) => {
     );
   };
 
-  res.prototype.status = function (code) {
-    this.statusCode = code;
+  res.prototype.location = function (url) {
+    let loc = url;
 
-    return this;
+    // "back" is an alias for the referrer
+    if (url === "back") loc = <string>this.req.get("Referrer") || "/";
+
+    // set location
+    return this.set("Location", encodeUrl(loc));
+  };
+
+  res.prototype.redirect = function (url: string | number) {
+    let address = <string>url;
+    let body: string = "";
+    let status = 302;
+
+    // allow status / url
+    if (arguments.length === 2) {
+      status = arguments[0];
+      address = arguments[1];
+    }
+
+    // Set location header
+    address = <string>this.location(address).get("Location");
+
+    // Support text/{plain,html} by default
+    this.format({
+      text: () => {
+        body = STATUS_CODES[status] + ". Redirecting to " + address;
+      },
+
+      html: () => {
+        const u = escapeHtml(address);
+        body = "<p>" + STATUS_CODES[status] + ". Redirecting to <a href=\"' + u + '\">' + u + '</a></p>";
+      },
+
+      default: () => {
+        body = "";
+      },
+    });
+
+    // Respond
+    this.statusCode = status;
+    this.set("Content-Length", <any>Buffer.byteLength(body));
+
+    if (this.req.method === "HEAD")
+      this.end();
+    else
+      this.end(body);
   };
 
   if (app.enabled("content-length"))
@@ -740,69 +944,6 @@ const patch = (res: typeof http.ServerResponse, app: Foxify) => {
       return this;
     };
 
-  /* json options */
-  const jsonOptions = {
-    escape: app.enabled("json.escape"),
-    spaces: app.get("json.spaces") || undefined,
-    replacer: app.get("json.replacer") || undefined,
-  };
-
-  res.prototype.json = function (obj, status?) {
-    let body;
-
-    if (this.stringify) body = this.stringify(obj);
-    else body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape);
-
-    // content-type
-    // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json")
-    this.setHeader("Content-Type", "application/json");
-
-    if (status) this.status(status);
-
-    return this.send(body);
-  };
-
-  res.prototype.jsonp = function (obj, status) {
-    // settings
-    const app = this.app;
-    const escape = jsonOptions.escape;
-    const replacer = jsonOptions.replacer;
-    const spaces = jsonOptions.spaces;
-    let body = stringify(obj, replacer, spaces, escape);
-    let callback = this.req.query[app.get("jsonp callback name")];
-
-    if (status) this.status(status);
-
-    // content-type
-    if (!this.get("Content-Type")) {
-      this.set("X-Content-Type-Options", "nosniff");
-      this.set("Content-Type", "application/json");
-    }
-
-    // fixup callback
-    if (Array.isArray(callback)) callback = callback[0];
-
-    // jsonp
-    if (utils.string.isString(callback) && callback.length !== 0) {
-      this.set("X-Content-Type-Options", "nosniff");
-      this.set("Content-Type", "text/javascript");
-
-      // restrict callback charset
-      callback = callback.replace(/[^\[\]\w$.]/g, "");
-
-      // replace chars not allowed in JavaScript that are in JSON
-      body = body
-        .replace(/\u2028/g, "\\u2028")
-        .replace(/\u2029/g, "\\u2029");
-
-      // the /**/ is a specific security mitigation for "Rosetta Flash JSONP abuse"
-      // the typeof check is just to reduce client error noise
-      body = "/**/ typeof " + callback + " === 'function' && " + callback + "(" + body + ");";
-    }
-
-    return this.send(body);
-  };
-
   res.prototype.sendFile = function (path, options?, callback?) {
     let done = callback;
     const req = this.req;
@@ -835,20 +976,6 @@ const patch = (res: typeof http.ServerResponse, app: Foxify) => {
     });
   };
 
-  /**
-   * Send given HTTP status code.
-   *
-   * Sets the response status to `statusCode` and the body of the
-   * response to the standard description from node's http.STATUS_CODES
-   * or the statusCode number if no description.
-   *
-   * Examples:
-   *
-   *     res.sendStatus(200);
-   *
-   * @param {number} statusCode
-   * @public
-   */
   res.prototype.sendStatus = function (statusCode) {
     const body = STATUS_CODES[statusCode] || `${statusCode}`;
 
@@ -858,152 +985,18 @@ const patch = (res: typeof http.ServerResponse, app: Foxify) => {
     return this.send(body);
   };
 
-  /**
-   * Set header `field` to `val`, or pass
-   * an object of header fields.
-   *
-   * Examples:
-   *
-   *    res.set("Foo", ["bar", "baz"]);
-   *    res.set("Accept", "application/json");
-   *    res.set({ Accept: "text/plain", "X-API-Key": "tobi" });
-   *
-   * Aliased as `res.header()`.
-   *
-   * @param {String|Object} field
-   * @param {String|Array} val
-   * @return {http.ServerResponse} for chaining
-   * @public
-   */
-  res.prototype.set = res.prototype.header = function (field, val?) {
-    if (val) {
-      let value = Array.isArray(val)
-        ? val.map((v) => `${v}`)
-        : `${val}`;
-
-      // add charset to content-type
-      if ((field as string).toLowerCase() === "content-type") {
-        if (Array.isArray(value)) throw new TypeError("Content-Type cannot be set to an Array");
-
-        if (!charsetRegExp.test(value)) {
-          const charset = (send.mime as any).charsets.lookup(value.split(";")[0]);
-
-          if (charset) value += "; charset=" + charset.toLowerCase();
-        }
-      }
-
-      this.setHeader(<string>field, value);
-    } else
-      for (const key in <object>field) this.set(key, (field as { [key: string]: any })[key]);
+  res.prototype.status = function (code) {
+    this.statusCode = code;
 
     return this;
   };
 
-  /**
-   * Get value for header `field`.
-   *
-   * @param {String} field
-   * @return {String}
-   * @public
-   */
-  res.prototype.get = res.prototype.getHeader;
-
-  /**
-   * Set the location header to `url`.
-   *
-   * The given `url` can also be "back", which redirects
-   * to the _Referrer_ or _Referer_ headers or "/".
-   *
-   * Examples:
-   *
-   *    res.location("/foo/bar").;
-   *    res.location("http://example.com");
-   *    res.location("../login");
-   *
-   * @param {String} url
-   * @return {http.ServerResponse} for chaining
-   * @public
-   */
-  res.prototype.location = function (url) {
-    let loc = url;
-
-    // "back" is an alias for the referrer
-    if (url === "back") loc = <string>this.req.get("Referrer") || "/";
-
-    // set location
-    return this.set("Location", encodeUrl(loc));
-  };
-
-  /**
-   * Redirect to the given `url` with optional response `status`
-   * defaulting to 302.
-   *
-   * The resulting `url` is determined by `res.location()`, so
-   * it will play nicely with mounted apps, relative paths,
-   * `"back"` etc.
-   *
-   * Examples:
-   *
-   *    res.redirect("/foo/bar");
-   *    res.redirect("http://example.com");
-   *    res.redirect(301, "http://example.com");
-   *    res.redirect("../login"); // /blog/post/1 -> /blog/login
-   *
-   * @public
-   */
-  res.prototype.redirect = function (url: string | number) {
-    let address = <string>url;
-    let body: string = "";
-    let status = 302;
-
-    // allow status / url
-    if (arguments.length === 2) {
-      status = arguments[0];
-      address = arguments[1];
-    }
-
-    // Set location header
-    address = <string>this.location(address).get("Location");
-
-    // Support text/{plain,html} by default
-    this.format({
-      text: () => {
-        body = STATUS_CODES[status] + ". Redirecting to " + address;
-      },
-
-      html: () => {
-        const u = escapeHtml(address);
-        body = "<p>" + STATUS_CODES[status] + ". Redirecting to <a href=\"' + u + '\">' + u + '</a></p>";
-      },
-
-      default: () => {
-        body = "";
-      },
-    });
-
-    // Respond
-    this.statusCode = status;
-    this.set("Content-Length", <any>Buffer.byteLength(body));
-
-    if (this.req.method === "HEAD")
-      this.end();
-    else
-      this.end(body);
-  };
-
-  /**
-   * Add `field` to Vary. If already present in the Vary set, then
-   * this call is simply ignored.
-   *
-   * @param {Array|String} field
-   * @return {http.ServerResponse} for chaining
-   * @public
-   */
   res.prototype.vary = function (field) {
     vary(this, field);
 
     return this;
   };
+
 };
 
 export = patch;
