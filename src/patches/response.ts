@@ -173,7 +173,7 @@ declare module "http" {
      * @example
      * res.set({ Accept: "text/plain", "X-API-Key": "tobi" });
      */
-    header(field: string | object, value: string | string[]): this;
+    header(field: string | object, value?: string | string[]): this;
 
     /**
      * Send JSON response.
@@ -564,296 +564,358 @@ const normalizeTypes = (types: string[]) => {
   return ret;
 };
 
-const patch = (res: typeof http.ServerResponse, app: Foxify) => {
-
-  res.prototype.append = function (field, val) {
-    const prev = this.get(field);
-    let value: any = val;
-
-    if (prev)
-      // concat the new and prev vals
-      value = Array.isArray(prev) ? prev.concat(val)
-        : Array.isArray(val) ? [prev].concat(val)
-          : [prev, val];
-
-    return this.set(field, value);
-  };
-
-  res.prototype.attachment = function (filename) {
-    if (filename) this.type(path.extname(filename));
-
-    this.set("Content-Disposition", contentDisposition(filename));
-
-    return this;
-  };
-
-  res.prototype.clearCookie = function (name, options = {}) {
-    const opts = Object.assign({}, { expires: new Date(1), path: "/" }, options);
-
-    return this.cookie(name, "", opts);
-  };
-
-  res.prototype.contentType = res.prototype.type = function (type) {
-    return this.set("Content-Type", type.indexOf("/") === -1
-      ? (send.mime as any).lookup(type)
-      : type,
-    );
-  };
-
-  res.prototype.cookie = function (name, value, options = {}) {
-    const opts: { [key: string]: any } = Object.assign({}, options);
-    const secret = (this.req as any).secret;
-    const signed = opts.signed;
-
-    if (signed && !secret) throw new Error("cookieParser('secret') required for signed cookies");
-
-    let val = utils.object.isObject(value)
-      ? "j:" + JSON.stringify(value)
-      : String(value);
-
-    if (signed) val = "s:" + sign(val, secret);
-
-    if ("maxAge" in opts) {
-      opts.expires = new Date(Date.now() + opts.maxAge);
-      opts.maxAge /= 1000;
-    }
-
-    if (opts.path == null) opts.path = "/";
-
-    this.append("Set-Cookie", cookie.serialize(name, String(val), opts));
-
-    return this;
-  };
-
-  res.prototype.download = function (path, filename, options, callback) {
-    let done: any = callback;
-    let name: any = filename;
-    let opts = options || null;
-
-    // support function as second or third arg
-    if (utils.function.isFunction(filename)) {
-      done = filename;
-      name = null;
-      opts = null;
-    } else if (utils.function.isFunction(options)) {
-      done = options;
-      opts = null;
-    }
-
-    // set Content-Disposition when file is sent
-    const headers = {
-      "Content-Disposition": contentDisposition(name || path),
-    };
-
-    // merge user-provided headers
-    if (opts && (opts as { [key: string]: any }).headers) {
-      const keys = Object.keys((opts as { [key: string]: any }).headers);
-
-      let key;
-      for (let i = 0; i < keys.length; i++) {
-        key = keys[i];
-
-        if (key.toLowerCase() !== "content-disposition")
-          (headers as { [key: string]: any })[key] = (opts as { [key: string]: any }).headers[key];
-      }
-    }
-
-    // merge user-provided options
-    opts = Object.create(opts)
-      (opts as { [key: string]: any }).headers = headers;
-
-    // Resolve the full path for sendFile
-    const fullPath = resolve(path);
-
-    // send file
-    return this.sendFile(fullPath, opts, done);
-  };
-
-  res.prototype.format = function (obj: { [key: string]: any }) {
-    const req = this.req;
-    const next = req.next;
-
-    const fn = obj.default;
-
-    if (fn) delete obj.default;
-
-    const keys = Object.keys(obj);
-
-    const key = keys.length > 0
-      ? <string>req.accepts(keys)
-      : false;
-
-    this.vary("Accept");
-
-    if (key) {
-      this.set("Content-Type", normalizeType(key).value);
-      obj[key](req, this, next);
-    } else if (fn)
-      fn();
-    else {
-      const err: any = new Error("Not Acceptable");
-
-      err.status = err.statusCode = 406;
-      err.types = normalizeTypes(keys).map((o) => o.value);
-
-      throw err;
-    }
-
-    return this;
-  };
-
-  res.prototype.get = res.prototype.getHeader;
-
-  res.prototype.header = res.prototype.set = function (field, val?) {
-    if (val) {
-      let value = Array.isArray(val)
-        ? val.map((v) => `${v}`)
-        : `${val}`;
-
-      // add charset to content-type
-      if ((field as string).toLowerCase() === "content-type") {
-        if (Array.isArray(value)) throw new TypeError("Content-Type cannot be set to an Array");
-
-        if (!charsetRegExp.test(value)) {
-          const charset = (send.mime as any).charsets.lookup(value.split(";")[0]);
-
-          if (charset) value += "; charset=" + charset.toLowerCase();
-        }
-      }
-
-      this.setHeader(<string>field, value);
-    } else
-      for (const key in <object>field) this.set(key, (field as { [key: string]: any })[key]);
-
-    return this;
-  };
+const patch = (res: typeof http.ServerResponse, options: Foxify.Options, settings: Foxify.Settings): any => {
 
   /* json options */
   const jsonOptions = {
-    escape: app.enabled("json.escape"),
-    spaces: app.get("json.spaces") || undefined,
-    replacer: app.get("json.replacer") || undefined,
+    escape: options.json.escape,
+    spaces: settings.json.spaces,
+    replacer: settings.json.replacer,
   };
 
-  res.prototype.json = function (obj, status?) {
-    let body;
+  class ServerResponse extends res {
+    append(field: string, val: string | string[]) {
+      const prev = this.get(field);
+      let value: any = val;
 
-    if (this.stringify) body = this.stringify(obj);
-    else body = stringify(obj, jsonOptions.replacer, jsonOptions.spaces, jsonOptions.escape);
+      if (prev)
+        // concat the new and prev vals
+        value = Array.isArray(prev) ? prev.concat(val)
+          : Array.isArray(val) ? [prev].concat(val)
+            : [prev, val];
 
-    // content-type
-    // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json")
-    this.setHeader("Content-Type", "application/json");
-
-    if (status) this.status(status);
-
-    return this.send(body);
-  };
-
-  res.prototype.jsonp = function (obj, status) {
-    // settings
-    const app = (this as any).app;
-    const escape = jsonOptions.escape;
-    const replacer = jsonOptions.replacer;
-    const spaces = jsonOptions.spaces;
-    let body = stringify(obj, replacer, spaces, escape);
-    let callback = this.req.query[app.get("jsonp callback name")];
-
-    if (status) this.status(status);
-
-    // content-type
-    if (!this.get("Content-Type")) {
-      this.set("X-Content-Type-Options", "nosniff");
-      this.set("Content-Type", "application/json");
+      return this.set(field, value) as any;
     }
 
-    // fixup callback
-    if (Array.isArray(callback)) callback = callback[0];
+    attachment(filename?: string) {
+      if (filename) this.type(path.extname(filename));
 
-    // jsonp
-    if (utils.string.isString(callback) && callback.length !== 0) {
-      this.set("X-Content-Type-Options", "nosniff");
-      this.set("Content-Type", "text/javascript");
+      this.set("Content-Disposition", contentDisposition(filename));
 
-      // restrict callback charset
-      callback = callback.replace(/[^\[\]\w$.]/g, "");
-
-      // replace chars not allowed in JavaScript that are in JSON
-      body = body
-        .replace(/\u2028/g, "\\u2028")
-        .replace(/\u2029/g, "\\u2029");
-
-      // the /**/ is a specific security mitigation for "Rosetta Flash JSONP abuse"
-      // the typeof check is just to reduce client error noise
-      body = "/**/ typeof " + callback + " === 'function' && " + callback + "(" + body + ");";
+      return this;
     }
 
-    return this.send(body);
-  };
+    clearCookie(name: string, options: object = {}) {
+      const opts = Object.assign({}, { expires: new Date(1), path: "/" }, options);
 
-  res.prototype.links = function (links: { [key: string]: string }) {
-    const link = `${this.get("Link") || ""}, `;
-
-    return this.set(
-      "Link",
-      link + Object.keys(links)
-        .map((rel) => `<${links[rel]}>; rel="${rel}"`)
-        .join(", "),
-    );
-  };
-
-  res.prototype.location = function (url) {
-    let loc = url;
-
-    // "back" is an alias for the referrer
-    if (url === "back") loc = <string>this.req.get("Referrer") || "/";
-
-    // set location
-    return this.set("Location", encodeUrl(loc));
-  };
-
-  res.prototype.redirect = function (url: string | number) {
-    let address = <string>url;
-    let body: string = "";
-    let status = 302;
-
-    // allow status / url
-    if (arguments.length === 2) {
-      status = arguments[0];
-      address = arguments[1];
+      return this.cookie(name, "", opts);
     }
 
-    // Set location header
-    address = <string>this.location(address).get("Location");
+    contentType(type: string) {
+      return this.set("Content-Type", type.indexOf("/") === -1
+        ? (send.mime as any).lookup(type)
+        : type,
+      ) as any;
+    }
 
-    // Support text/{plain,html} by default
-    this.format({
-      text: () => {
-        body = STATUS_CODES[status] + ". Redirecting to " + address;
-      },
+    cookie(name: string, value: string | object, options: object = {}) {
+      const opts: { [key: string]: any } = Object.assign({}, options);
+      const secret = (this.req as any).secret;
+      const signed = opts.signed;
 
-      html: () => {
-        const u = escapeHtml(address);
-        body = "<p>" + STATUS_CODES[status] + ". Redirecting to <a href=\"' + u + '\">' + u + '</a></p>";
-      },
+      if (signed && !secret) throw new Error("cookieParser('secret') required for signed cookies");
 
-      default: () => {
-        body = "";
-      },
-    });
+      let val = utils.object.isObject(value)
+        ? "j:" + JSON.stringify(value)
+        : String(value);
 
-    // Respond
-    this.statusCode = status;
-    this.set("Content-Length", <any>Buffer.byteLength(body));
+      if (signed) val = "s:" + sign(val, secret);
 
-    if (this.req.method === "HEAD")
-      this.end();
-    else
-      this.end(body);
-  };
+      if ("maxAge" in opts) {
+        opts.expires = new Date(Date.now() + opts.maxAge);
+        opts.maxAge /= 1000;
+      }
 
-  if (app.enabled("content-length"))
-    res.prototype.send = function (body) {
+      if (opts.path == null) opts.path = "/";
+
+      this.append("Set-Cookie", cookie.serialize(name, String(val), opts));
+
+      return this;
+    }
+
+    download(path: string, filename: string, options?: object, callback?: (...args: any[]) => void) {
+      let done: any = callback;
+      let name: any = filename;
+      let opts = options || null;
+
+      // support function as second or third arg
+      if (utils.function.isFunction(filename)) {
+        done = filename;
+        name = null;
+        opts = null;
+      } else if (utils.function.isFunction(options)) {
+        done = options;
+        opts = null;
+      }
+
+      // set Content-Disposition when file is sent
+      const headers = {
+        "Content-Disposition": contentDisposition(name || path),
+      };
+
+      // merge user-provided headers
+      if (opts && (opts as { [key: string]: any }).headers) {
+        const keys = Object.keys((opts as { [key: string]: any }).headers);
+
+        let key;
+        for (let i = 0; i < keys.length; i++) {
+          key = keys[i];
+
+          if (key.toLowerCase() !== "content-disposition")
+            (headers as { [key: string]: any })[key] = (opts as { [key: string]: any }).headers[key];
+        }
+      }
+
+      // merge user-provided options
+      opts = Object.create(opts)
+        (opts as { [key: string]: any }).headers = headers;
+
+      // Resolve the full path for sendFile
+      const fullPath = resolve(path);
+
+      // send file
+      return this.sendFile(fullPath, opts, done);
+    }
+
+    format(obj: { [key: string]: any }) {
+      const req = this.req;
+      const next = req.next;
+
+      const fn = obj.default;
+
+      if (fn) delete obj.default;
+
+      const keys = Object.keys(obj);
+
+      const key = keys.length > 0
+        ? <string>req.accepts(keys)
+        : false;
+
+      this.vary("Accept");
+
+      if (key) {
+        this.set("Content-Type", normalizeType(key).value);
+        obj[key](req, this, next);
+      } else if (fn)
+        fn();
+      else {
+        const err: any = new Error("Not Acceptable");
+
+        err.status = err.statusCode = 406;
+        err.types = normalizeTypes(keys).map((o) => o.value);
+
+        throw err;
+      }
+
+      return this;
+    }
+
+    header(field: string | object, val?: string | string[]) {
+      if (val) {
+        let value = Array.isArray(val)
+          ? val.map((v) => `${v}`)
+          : `${val}`;
+
+        // add charset to content-type
+        if ((field as string).toLowerCase() === "content-type") {
+          if (Array.isArray(value)) throw new TypeError("Content-Type cannot be set to an Array");
+
+          if (!charsetRegExp.test(value)) {
+            const charset = (send.mime as any).charsets.lookup(value.split(";")[0]);
+
+            if (charset) value += "; charset=" + charset.toLowerCase();
+          }
+        }
+
+        this.setHeader(<string>field, value);
+      } else
+        for (const key in <object>field) this.set(key, (field as { [key: string]: any })[key]);
+
+      return this;
+    }
+
+    json(obj: object, status?: number) {
+      const _stringify = this.stringify || stringify;
+
+      // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json");
+      this.setHeader("Content-Type", "application/json");
+
+      if (status) this.status(status);
+
+      return this.send(
+        _stringify(
+          obj,
+          jsonOptions.replacer,
+          jsonOptions.spaces,
+          jsonOptions.escape,
+        ),
+      );
+    }
+
+    jsonp(obj: object, status?: number) {
+      // settings
+      const app = (this as any).app;
+      const escape = jsonOptions.escape;
+      const replacer = jsonOptions.replacer;
+      const spaces = jsonOptions.spaces;
+      let body = stringify(obj, replacer, spaces, escape);
+      let callback = this.req.query[app.get("jsonp callback name")];
+
+      if (status) this.status(status);
+
+      // content-type
+      if (!this.get("Content-Type")) {
+        this.set("X-Content-Type-Options", "nosniff");
+        this.set("Content-Type", "application/json");
+      }
+
+      // fixup callback
+      if (Array.isArray(callback)) callback = callback[0];
+
+      // jsonp
+      if (utils.string.isString(callback) && callback.length !== 0) {
+        this.set("X-Content-Type-Options", "nosniff");
+        this.set("Content-Type", "text/javascript");
+
+        // restrict callback charset
+        callback = callback.replace(/[^\[\]\w$.]/g, "");
+
+        // replace chars not allowed in JavaScript that are in JSON
+        body = body
+          .replace(/\u2028/g, "\\u2028")
+          .replace(/\u2029/g, "\\u2029");
+
+        // the /**/ is a specific security mitigation for "Rosetta Flash JSONP abuse"
+        // the typeof check is just to reduce client error noise
+        body = "/**/ typeof " + callback + " === 'function' && " + callback + "(" + body + ");";
+      }
+
+      return this.send(body);
+    }
+
+    links(links: { [key: string]: string }) {
+      const link = `${this.get("Link") || ""}, `;
+
+      return this.set(
+        "Link",
+        link + Object.keys(links)
+          .map((rel) => `<${links[rel]}>; rel="${rel}"`)
+          .join(", "),
+      ) as any;
+    }
+
+    location(url: string) {
+      // set location
+      return this.set(
+        "Location",
+        encodeUrl(
+          // "back" is an alias for the referrer
+          url === "back" ?
+            this.req.get("Referrer") || "/" :
+            url,
+        ),
+      ) as any;
+    }
+
+    redirect(url: string | number) {
+      let address = <string>url;
+      let body: string = "";
+      let status = 302;
+
+      // allow status / url
+      if (arguments.length === 2) {
+        status = arguments[0];
+        address = arguments[1];
+      }
+
+      // Set location header
+      address = <string>this.location(address).get("Location");
+
+      // Support text/{plain,html} by default
+      this.format({
+        text: () => {
+          body = STATUS_CODES[status] + ". Redirecting to " + address;
+        },
+
+        html: () => {
+          const u = escapeHtml(address);
+          body = "<p>" + STATUS_CODES[status] + ". Redirecting to <a href=\"' + u + '\">' + u + '</a></p>";
+        },
+
+        default: () => {
+          body = "";
+        },
+      });
+
+      // Respond
+      this.statusCode = status;
+      this.set("Content-Length", <any>Buffer.byteLength(body));
+
+      if (this.req.method === "HEAD")
+        this.end();
+      else
+        this.end(body);
+    }
+
+    sendFile(path: string, options?: object | ((...args: any[]) => void), callback?: (...args: any[]) => void) {
+      let done = callback;
+      const req = this.req;
+      const res = this;
+      const next = req.next;
+      let opts = options || {};
+
+      if (!path) throw new TypeError("path argument is required to res.sendFile");
+
+      // support function as second arg
+      if (utils.function.isFunction(options)) {
+        done = options;
+        opts = {};
+      }
+
+      if (!(opts as any).root && !isAbsolute(path))
+        throw new TypeError("path must be absolute or specify root to res.sendFile");
+
+      // create file stream
+      const pathname = encodeURI(path);
+      const file = send(req, pathname, opts);
+
+      // transfer
+      sendfile(res, file, opts, (err: any) => {
+        if (done) return done(err);
+        if (err && err.code === "EISDIR") return next();
+
+        // next() all but write errors
+        if (err && err.code !== "ECONNABORTED" && err.syscall !== "write") throw err;
+      });
+    }
+
+    sendStatus(statusCode: number) {
+      this.statusCode = statusCode;
+
+      this.type("txt");
+
+      return this.send(STATUS_CODES[statusCode] || `${statusCode}`);
+    }
+
+    status(code: number) {
+      this.statusCode = code;
+
+      return this;
+    }
+
+    vary(field: string | string[]) {
+      vary(this, field);
+
+      return this;
+    }
+  }
+
+  ServerResponse.prototype.type = ServerResponse.prototype.contentType;
+  ServerResponse.prototype.set = ServerResponse.prototype.header;
+  ServerResponse.prototype.get = ServerResponse.prototype.getHeader;
+
+  if (options["content-length"])
+    ServerResponse.prototype.send = function (body) {
       const req = this.req;
       let contentType = <string>this.get("Content-Type");
       let chunk = body;
@@ -911,7 +973,7 @@ const patch = (res: typeof http.ServerResponse, app: Foxify) => {
       return this;
     };
   else
-    res.prototype.send = function (body) {
+    ServerResponse.prototype.send = function (body) {
       const req = this.req;
       const contentType = this.get("Content-Type") as string;
       let chunk = body;
@@ -944,59 +1006,7 @@ const patch = (res: typeof http.ServerResponse, app: Foxify) => {
       return this;
     };
 
-  res.prototype.sendFile = function (path, options?, callback?) {
-    let done = callback;
-    const req = this.req;
-    const res = this;
-    const next = req.next;
-    let opts = options || {};
-
-    if (!path) throw new TypeError("path argument is required to res.sendFile");
-
-    // support function as second arg
-    if (utils.function.isFunction(options)) {
-      done = options;
-      opts = {};
-    }
-
-    if (!(opts as any).root && !isAbsolute(path))
-      throw new TypeError("path must be absolute or specify root to res.sendFile");
-
-    // create file stream
-    const pathname = encodeURI(path);
-    const file = send(req, pathname, opts);
-
-    // transfer
-    sendfile(res, file, opts, (err: any) => {
-      if (done) return done(err);
-      if (err && err.code === "EISDIR") return next();
-
-      // next() all but write errors
-      if (err && err.code !== "ECONNABORTED" && err.syscall !== "write") throw err;
-    });
-  };
-
-  res.prototype.sendStatus = function (statusCode) {
-    const body = STATUS_CODES[statusCode] || `${statusCode}`;
-
-    this.statusCode = statusCode;
-    this.type("txt");
-
-    return this.send(body);
-  };
-
-  res.prototype.status = function (code) {
-    this.statusCode = code;
-
-    return this;
-  };
-
-  res.prototype.vary = function (field) {
-    vary(this, field);
-
-    return this;
-  };
-
+  return ServerResponse;
 };
 
 export = patch;

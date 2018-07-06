@@ -171,121 +171,126 @@ declare module "http" {
   }
 }
 
-const patch = (req: typeof http.IncomingMessage, app: Foxify) => {
+const patch = (req: typeof http.IncomingMessage, options: Foxify.Options, settings: Foxify.Settings): any => {
 
-  utils.define(req.prototype, "get", "fresh", function (this: http.IncomingMessage) {
-    const method = this.method;
-    const res = this.res;
-    const status = res.statusCode;
+  class IncomingMessage extends req {
+    get fresh() {
+      const method = this.method;
+      const res = this.res;
+      const status = res.statusCode;
 
-    // GET or HEAD for weak freshness validation only
-    if ("GET" !== method && "HEAD" !== method) return false;
+      // GET or HEAD for weak freshness validation only
+      if ("GET" !== method && "HEAD" !== method) return false;
 
-    // 2xx or 304 as per rfc2616 14.26
-    if ((status >= constants.http.OK && status < constants.http.MULTIPLE_CHOICES) ||
-      constants.http.NOT_MODIFIED === status)
-      return fresh(this.headers, {
-        "etag": res.get("ETag"),
-        "last-modified": res.get("Last-Modified"),
-      });
+      // 2xx or 304 as per rfc2616 14.26
+      if ((status >= constants.http.OK && status < constants.http.MULTIPLE_CHOICES) ||
+        constants.http.NOT_MODIFIED === status)
+        return fresh(this.headers, {
+          "etag": res.get("ETag"),
+          "last-modified": res.get("Last-Modified"),
+        });
 
-    return false;
-  });
-
-  utils.define(req.prototype, "get", "hostname", function (this: http.IncomingMessage) {
-    let host = <string>this.get("X-Forwarded-Host");
-
-    if (!host) host = <string>this.get("Host");
-
-    if (!host) return;
-
-    // IPv6 literal support
-    const offset = host[0] === "[" ? host.indexOf("]") + 1 : 0;
-
-    const index = host.indexOf(":", offset);
-
-    return index !== -1 ? host.substring(0, index) : host;
-  });
-
-  utils.define(req.prototype, "get", "path", function (this: http.IncomingMessage) {
-    const url = parseUrl(this);
-
-    return url ? url.pathname : "";
-  });
-
-  utils.define(req.prototype, "get", "stale", function (this: http.IncomingMessage) {
-    return !this.fresh;
-  });
-
-  utils.define(req.prototype, "get", "xhr", function (this: http.IncomingMessage) {
-    const val = <string>this.get("X-Requested-With") || "";
-
-    return val.toLowerCase() === "xmlhttprequest";
-  });
-
-  req.prototype.accepts = function () {
-    const accept = accepts(this);
-
-    return accept.types.apply(accept, arguments);
-  };
-
-  req.prototype.acceptsCharsets = function () {
-    const accept = accepts(this);
-
-    return accept.charsets.apply(accept, arguments);
-  };
-
-  req.prototype.acceptsEncodings = function () {
-    const accept = accepts(this);
-
-    return accept.encodings.apply(accept, arguments);
-  };
-
-  req.prototype.acceptsLanguages = function () {
-    const accept = accepts(this);
-
-    return accept.languages.apply(accept, arguments);
-  };
-
-  req.prototype.get = req.prototype.head = function (name) {
-    if (!name) throw new TypeError("name argument is required to req.get/req.head");
-
-    if (!utils.string.isString(name)) throw new TypeError("name must be a string to req.get/req.head");
-
-    const header = name.toLowerCase();
-
-    switch (header) {
-      case "referer":
-      case "referrer":
-        return this.headers.referrer || this.headers.referer;
-      default:
-        return this.headers[header];
-    }
-  };
-
-  req.prototype.is = function (types) {
-
-    // support flattened arguments
-    if (!Array.isArray(types)) {
-      const arr = new Array(arguments.length);
-
-      for (let i = 0; i < arr.length; i++) arr[i] = arguments[i];
-
-      return typeIs(this, arr);
+      return false;
     }
 
-    return typeIs(this, types);
-  };
+    get hostname() {
+      let host = <string>this.get("X-Forwarded-Host");
 
-  req.prototype.range = function (size, options) {
-    let range = this.get("Range");
+      if (!host) host = <string>this.get("Host");
 
-    if (!range) return;
+      if (!host) return;
 
-    if (Array.isArray(range)) range = range.join(",");
+      // IPv6 literal support
+      const offset = host[0] === "[" ? host.indexOf("]") + 1 : 0;
 
-    return parseRange(size, range, options);
-  };
+      const index = host.indexOf(":", offset);
+
+      return index !== -1 ? host.substring(0, index) : host;
+    }
+
+    get path() {
+      const url: any = parseUrl(this);
+
+      return url ? url.pathname : "";
+    }
+
+    get stale() {
+      return !this.fresh;
+    }
+
+    get xhr() {
+      const val = <string>this.get("X-Requested-With") || "";
+
+      return val.toLowerCase() === "xmlhttprequest";
+    }
+
+    accepts() {
+      const accept = accepts(this);
+
+      return accept.types.apply(accept, arguments);
+    }
+
+    acceptsCharsets() {
+      const accept = accepts(this);
+
+      return accept.charsets.apply(accept, arguments);
+    }
+
+    acceptsEncodings() {
+      const accept = accepts(this);
+
+      return accept.encodings.apply(accept, arguments);
+    }
+
+    acceptsLanguages() {
+      const accept = accepts(this);
+
+      return accept.languages.apply(accept, arguments);
+    }
+
+    get(name: string) {
+      if (!name) throw new TypeError("name argument is required to req.get/req.head");
+
+      if (!utils.string.isString(name)) throw new TypeError("name must be a string to req.get/req.head");
+
+      const header = name.toLowerCase();
+
+      switch (header) {
+        case "referer":
+        case "referrer":
+          return this.headers.referrer || this.headers.referer;
+        default:
+          return this.headers[header];
+      }
+    }
+
+    is(types?: string | string[]): string | false | null {
+      // support flattened arguments
+      if (!Array.isArray(types)) {
+        const arr = new Array(arguments.length);
+
+        for (let i = 0; i < arr.length; i++) arr[i] = arguments[i];
+
+        return typeIs(this, arr);
+      }
+
+      return typeIs(this, types);
+    }
+
+    range(size: number, options?: parseRange.Options) {
+      let range = this.get("Range");
+
+      if (!range) return;
+
+      if (Array.isArray(range)) range = range.join(",");
+
+      return parseRange(size, range, options);
+    }
+  }
+
+  IncomingMessage.prototype.head = IncomingMessage.prototype.get;
+
+  return IncomingMessage;
 
   // /**
   //  * Return the remote address from the trusted proxy.

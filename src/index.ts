@@ -4,7 +4,6 @@ import * as os from "os";
 import * as serveStatic from "serve-static";
 import * as constants from "./constants";
 import { init, query } from "./middleware";
-import { request, response } from "./patches";
 import { httpMethods, Route, Router } from "./routing";
 import * as utils from "./utils";
 import * as Server from "./Server";
@@ -45,6 +44,7 @@ module Foxify {
 
 interface Foxify extends Route.MethodFunctions<Foxify> {
   get(setting: string): any;
+  get(path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]): this;
 
   use(route: Route): this;
   use(...controllers: Route.Controller[]): this;
@@ -247,7 +247,7 @@ class Foxify {
   }
 
   get(path: string, options?: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]): any {
-    if (controllers.length === 0) {
+    if (!options) {
       const setting = path;
 
       if (!utils.string.isString(setting))
@@ -326,22 +326,14 @@ class Foxify {
     );
 
     /* apply http patches */
-    request(http.IncomingMessage, this);
-    response(http.ServerResponse, this);
     Engine.responsePatch(http.ServerResponse, this._view);
 
     /* initialize the router with provided options and settings */
     this._router.initialize(this);
 
     const server = new Server(
-      {
-        protocol: this.enabled("https") ? "https" : "http",
-        host: this.get("url"),
-        port: this.get("port"),
-        workers: this.get("workers"),
-        cert: this.get("https.cert"),
-        key: this.get("https.key"),
-      },
+      this._options,
+      this._settings,
       (req, res) => this._router.route(req, res),
     );
 

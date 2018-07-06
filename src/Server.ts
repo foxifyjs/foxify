@@ -1,7 +1,8 @@
 import * as http from "http";
 import * as https from "https";
 import * as cluster from "cluster";
-import * as async from "async";
+import { request, response } from "./patches";
+import * as Foxify from "./index";
 
 module Server {
   export interface Options {
@@ -22,20 +23,30 @@ class Server {
   protected _host: string;
   protected _port: number;
 
-  constructor(options: Server.Options, listener: Server.Listener) {
-    this._host = options.host;
-    this._port = options.port;
+  constructor(options: Foxify.Options, settings: Foxify.Settings, listener: Server.Listener) {
+    const isHttps = options.https;
 
-    const SERVER: any = options.protocol === "https" ? https : http;
+    this._host = settings.url;
+    this._port = settings.port;
 
-    const OPTIONS: any = {};
+    const SERVER: any = isHttps ? https : http;
 
-    if (options.protocol === "https") {
-      OPTIONS.cert = options.cert;
-      OPTIONS.key = options.key;
+    const IncomingMessage = request(http.IncomingMessage, options, settings);
+    const ServerResponse = response(http.ServerResponse, options, settings);
+
+    const OPTIONS: any = {
+      IncomingMessage,
+      ServerResponse,
+    };
+
+    if (isHttps) {
+      const httpsSettings = settings.https;
+
+      OPTIONS.cert = httpsSettings.cert;
+      OPTIONS.key = httpsSettings.key;
     }
 
-    const workers = options.workers;
+    const workers = settings.workers;
 
     if (workers > 1) {
       if (cluster.isMaster) {
