@@ -1,8 +1,8 @@
-# Foxify [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=The%20fast,%20easy%20to%20use%20&%20typescript%20ready%20web%20framework%20for%20Node.js&url=https://github.com/foxifyjs/foxify&via=foxifyjs&hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast)
+# Foxify [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Foxify,%20The%20fast,%20easy%20to%20use%20%26%20typescript%20ready%20web%20framework%20for%20Node.js&url=https://github.com/foxifyjs/foxify&via=foxifyjs&hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast)
+
+The **fast**, **easy to use** & **typescript ready** web framework for [Node.js](https://nodejs.org)
 
 > Inspired by [Express](https://expressjs.com)
-
-The **fast**, **easy to use** &amp; **typescript ready** web framework for [Node.js](https://nodejs.org)
 
 [![Npm Version](https://img.shields.io/npm/v/foxify.svg)](https://www.npmjs.com/package/foxify)
 [![Node Version](https://img.shields.io/node/v/foxify.svg)](https://nodejs.org)
@@ -21,8 +21,10 @@ The **fast**, **easy to use** &amp; **typescript ready** web framework for [Node
 
 ## Table of Contents <!-- omit in toc -->
 
-- [Installation](#installation)
-- [Usage](#usage)
+- [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+    - [Usage](#usage)
 - [Features](#features)
 - [Benchmarks](#benchmarks)
 - [TODO](#todo)
@@ -31,16 +33,19 @@ The **fast**, **easy to use** &amp; **typescript ready** web framework for [Node
 - [License](#license)
 - [Support](#support)
 
-## Installation
+## Getting Started
 
-Before installing, [download and install Node.js](https://nodejs.org/en/download).
-Node.js 8 or higher is required.
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/download) 8 or higher is required.
+
+### Installation
 
 ```bash
 npm i -s foxify
 ```
 
-## Usage
+### Usage
 
 ```javascript
 const Foxify = require('foxify');
@@ -66,14 +71,14 @@ app.start();
 
 More detailed [sample](https://github.com/foxifyjs/foxify/tree/master/demo) is available.
 
-You can also find all the documents [here](https://foxify.js.org/api.html).
+You can also find all the documents [here](https://foxify.js.org).
 
 ## Features
 
 - Written in ES6
 - Robust routing (faster than `Express`)
 - `Express` middleware support
-- Robust database modeling ([Odin](https://github.com/foxifyjs/odin))
+- Robust database modeling ([`Odin`](https://github.com/foxifyjs/odin))
 - Simple and powerful error handling
 - Focus on high performance
 - HTTP helpers (redirection, etc)
@@ -83,7 +88,7 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 
 ## Benchmarks
 
-**Machine**: Intel Virtual CPU (2 cores), 2GiB (DDR4)
+**Machine**: Ubuntu 18.04 64-bit, Intel Core i7 (8 cores), 8GiB (DDR4)
 
 **Method**: `autocannon -c 100 -d 40 -p 10 localhost:3000` * 2, taking the second average
 
@@ -91,13 +96,12 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 
 | Framework | Version | R/S |
 |:---------:|:-------:|:---:|
-| `http.Server` | **10.1.0** | **71,892** |
-| - | - | - |
-| fastify | 1.4.0 | 70,793 |
-| **Foxify** | **0.7.0** | **61,370** |
-| restify | 6.4.0 | 50,616 |
-| hapi | 17.4.0 | 42,384 |
-| express | 4.16.3 | 41,146 |
+| fastify | 1.7.0 | 26,819.6 |
+| **bare** | **10.3.0** | **26,410** |
+| **Foxify** | **0.8.0** | **23,928.4** |
+| restify | 7.2.1 | 14,919.2 |
+| hapi | 17.5.2 | 18756.6 |
+| express | 4.16.3 | 18,454 |
 
 ## TODO
 
@@ -107,7 +111,7 @@ You can also find all the documents [here](https://foxify.js.org/api.html).
 - [x] View engine
 - [x] Options
 - [x] Settings
-- [x] [Database Model](https://github.com/foxifyjs/odin)
+- [x] Database Model ([`Odin`](https://github.com/foxifyjs/odin))
 - [x] Clustering
 - [ ] File storage
 - [ ] Job schedule

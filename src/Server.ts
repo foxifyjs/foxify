@@ -1,19 +1,21 @@
 import * as http from "http";
 import * as https from "https";
 import * as cluster from "cluster";
-import * as async from "async";
+import { request, response } from "./patches";
+import * as Foxify from "./index";
+import { Engine } from "./view";
 
 module Server {
-  export interface Options {
-    protocol: "http" | "https";
-    host: string;
-    port: number;
-    workers: number;
-    key?: string;
-    cert?: string;
+  export interface Options extends Foxify.Options {
+  }
+
+  export interface Settings extends Foxify.Settings {
+    view?: Engine;
   }
 
   export type Listener = (request: http.IncomingMessage, response: http.ServerResponse) => void;
+
+  export type Callback = (server: Server) => void;
 }
 
 class Server {
@@ -22,20 +24,32 @@ class Server {
   protected _host: string;
   protected _port: number;
 
-  constructor(options: Server.Options, listener: Server.Listener) {
-    this._host = options.host;
-    this._port = options.port;
+  protected _listening = false;
 
-    const SERVER: any = options.protocol === "https" ? https : http;
+  constructor(options: Server.Options, settings: Server.Settings, listener: Server.Listener) {
+    const isHttps = options.https;
 
-    const OPTIONS: any = {};
+    this._host = settings.url;
+    this._port = settings.port;
 
-    if (options.protocol === "https") {
-      OPTIONS.cert = options.cert;
-      OPTIONS.key = options.key;
+    const SERVER: any = isHttps ? https : http;
+
+    const IncomingMessage = request(http.IncomingMessage, options, settings);
+    const ServerResponse = response(http.ServerResponse, options, settings);
+
+    const OPTIONS: any = {
+      IncomingMessage,
+      ServerResponse,
+    };
+
+    if (isHttps) {
+      const httpsSettings = settings.https;
+
+      OPTIONS.cert = httpsSettings.cert;
+      OPTIONS.key = httpsSettings.key;
     }
 
-    const workers = options.workers;
+    const workers = settings.workers;
 
     if (workers > 1) {
       if (cluster.isMaster) {
@@ -61,20 +75,35 @@ class Server {
     this._instance = SERVER.createServer(OPTIONS, listener);
   }
 
-  start(callback?: () => void) {
-    const instance = this._instance;
-
-    if (instance) instance.listen(this._port, this._host, callback);
+  get listening() {
+    return this._listening;
   }
 
-  stop(callback?: () => void) {
+  start(callback?: Server.Callback) {
+    this._listening = true;
+
     const instance = this._instance;
 
-    if (instance) instance.close(callback);
+    if (instance) instance.listen(this._port, this._host, callback && (() => callback(this)));
+
+    return this;
   }
 
-  reload(callback?: () => void) {
-    this.stop(() => this.start(callback));
+  stop(callback?: Server.Callback) {
+    this._listening = false;
+
+    const instance = this._instance;
+
+    if (instance) instance.close(callback && (() => callback(this)));
+
+    return this;
+  }
+
+  reload(callback?: Server.Callback) {
+    if (this._listening)
+      return this.stop((server) => server.start(callback));
+
+    return this.start(callback);
   }
 }
 

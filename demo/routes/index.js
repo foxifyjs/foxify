@@ -10,21 +10,30 @@ routes.get('/', (req, res) => {
 })
 
 routes.get('/greet/', (req, res) => {
-  res.json({ hello: 'world' })
+  res.json({
+    hello: 'world'
+  })
 })
 
 const schema = {
-  title: 'Example Schema',
-  type: 'object',
-  properties: {
-    hello: {
-      type: 'string'
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        hello: {
+          type: 'string'
+        }
+      }
     }
   }
 };
 
-routes.get('/greet-fast', { schema }, (req, res) => {
-  res.json({ hello: 'world' })
+routes.get('/greet-fast', {
+  schema
+}, (req, res) => {
+  res.json({
+    hello: 'world'
+  })
 })
 
 routes.get('/404', (req, res) => {
