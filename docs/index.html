@@ -64,11 +64,11 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<h1 id="foxify-tweet">Foxify <a href="https://twitter.com/intent/tweet?text=The%20fast,%20easy%20to%20use%20&amp;%20typescript%20ready%20web%20framework%20for%20Node.js&amp;url=https://github.com/foxifyjs/foxify&amp;via=foxifyjs&amp;hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social" alt="Tweet"></a></h1>
+				<h1 id="foxify-tweet">Foxify <a href="https://twitter.com/intent/tweet?text=Foxify,%20The%20fast,%20easy%20to%20use%20%26%20typescript%20ready%20web%20framework%20for%20Node.js&amp;url=https://github.com/foxifyjs/foxify&amp;via=foxifyjs&amp;hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social" alt="Tweet"></a></h1>
+				<p>The <strong>fast</strong>, <strong>easy to use</strong> &amp; <strong>typescript ready</strong> web framework for <a href="https://nodejs.org">Node.js</a></p>
 				<blockquote>
 					<p>Inspired by <a href="https://expressjs.com">Express</a></p>
 				</blockquote>
-				<p>The <strong>fast</strong>, <strong>easy to use</strong> &amp; <strong>typescript ready</strong> web framework for <a href="https://nodejs.org">Node.js</a></p>
 				<p><a href="https://www.npmjs.com/package/foxify"><img src="https://img.shields.io/npm/v/foxify.svg" alt="Npm Version"></a>
 					<a href="https://nodejs.org"><img src="https://img.shields.io/node/v/foxify.svg" alt="Node Version"></a>
 					<a href="https://www.typescriptlang.org"><img src="https://img.shields.io/npm/types/foxify.svg" alt="TypeScript Version"></a>
@@ -85,8 +85,12 @@
 				<a href="https://github.com/foxifyjs/foxify"><img src="https://img.shields.io/github/forks/foxifyjs/foxify.svg?style=social&amp;label=Fork" alt="Github Forks"></a></p>
 				<h2 id="table-of-contents-omit-in-toc-">Table of Contents <!-- omit in toc --></h2>
 				<ul>
-					<li><a href="#installation">Installation</a></li>
-					<li><a href="#usage">Usage</a></li>
+					<li><a href="#getting-started">Getting Started</a><ul>
+							<li><a href="#prerequisites">Prerequisites</a></li>
+							<li><a href="#installation">Installation</a></li>
+							<li><a href="#usage">Usage</a></li>
+						</ul>
+					</li>
 					<li><a href="#features">Features</a></li>
 					<li><a href="#benchmarks">Benchmarks</a></li>
 					<li><a href="#todo">TODO</a></li>
@@ -95,12 +99,15 @@
 					<li><a href="#license">License</a></li>
 					<li><a href="#support">Support</a></li>
 				</ul>
-				<h2 id="installation">Installation</h2>
-				<p>Before installing, <a href="https://nodejs.org/en/download">download and install Node.js</a>.
-				Node.js 8 or higher is required.</p>
+				<h2 id="getting-started">Getting Started</h2>
+				<h3 id="prerequisites">Prerequisites</h3>
+				<ul>
+					<li><a href="https://nodejs.org/en/download">Node.js</a> 8 or higher is required.</li>
+				</ul>
+				<h3 id="installation">Installation</h3>
 				<pre><code class="lang-bash">npm i -s foxify
 </code></pre>
-				<h2 id="usage">Usage</h2>
+				<h3 id="usage">Usage</h3>
 				<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> Foxify = <span class="hljs-built_in">require</span>(<span class="hljs-string">'foxify'</span>);
 
 <span class="hljs-keyword">let</span> app = <span class="hljs-keyword">new</span> Foxify();
@@ -122,13 +129,13 @@ app.get(<span class="hljs-string">'/404'</span>, (req, res) =&gt; {
 app.start();
 </code></pre>
 				<p>More detailed <a href="https://github.com/foxifyjs/foxify/tree/master/demo">sample</a> is available.</p>
-				<p>You can also find all the documents <a href="https://foxify.js.org/api.html">here</a>.</p>
+				<p>You can also find all the documents <a href="https://foxify.js.org">here</a>.</p>
 				<h2 id="features">Features</h2>
 				<ul>
 					<li>Written in ES6</li>
 					<li>Robust routing (faster than <code>Express</code>)</li>
 					<li><code>Express</code> middleware support</li>
-					<li>Robust database modeling (<a href="https://github.com/foxifyjs/odin">Odin</a>)</li>
+					<li>Robust database modeling (<a href="https://github.com/foxifyjs/odin"><code>Odin</code></a>)</li>
 					<li>Simple and powerful error handling</li>
 					<li>Focus on high performance</li>
 					<li>HTTP helpers (redirection, etc)</li>
@@ -137,7 +144,7 @@ app.start();
 					<li>Executable for generating applications quickly</li>
 				</ul>
 				<h2 id="benchmarks">Benchmarks</h2>
-				<p><strong>Machine</strong>: Intel Virtual CPU (2 cores), 2GiB (DDR4)</p>
+				<p><strong>Machine</strong>: Ubuntu 18.04 64-bit, Intel Core i7 (8 cores), 8GiB (DDR4)</p>
 				<p><strong>Method</strong>: <code>autocannon -c 100 -d 40 -p 10 localhost:3000</code> * 2, taking the second average</p>
 				<p><strong>sort</strong>: R/S</p>
 				<table>
@@ -150,39 +157,34 @@ app.start();
 					</thead>
 					<tbody>
 						<tr>
-							<td style="text-align:center"><code>http.Server</code></td>
-							<td style="text-align:center"><strong>10.1.0</strong></td>
-							<td style="text-align:center"><strong>71,892</strong></td>
-						</tr>
-						<tr>
-							<td style="text-align:center">-</td>
-							<td style="text-align:center">-</td>
-							<td style="text-align:center">-</td>
-						</tr>
-						<tr>
 							<td style="text-align:center">fastify</td>
-							<td style="text-align:center">1.4.0</td>
-							<td style="text-align:center">70,793</td>
+							<td style="text-align:center">1.7.0</td>
+							<td style="text-align:center">26,819.6</td>
+						</tr>
+						<tr>
+							<td style="text-align:center"><strong>bare</strong></td>
+							<td style="text-align:center"><strong>10.3.0</strong></td>
+							<td style="text-align:center"><strong>26,410</strong></td>
 						</tr>
 						<tr>
 							<td style="text-align:center"><strong>Foxify</strong></td>
-							<td style="text-align:center"><strong>0.7.0</strong></td>
-							<td style="text-align:center"><strong>61,370</strong></td>
+							<td style="text-align:center"><strong>0.8.0</strong></td>
+							<td style="text-align:center"><strong>23,928.4</strong></td>
 						</tr>
 						<tr>
 							<td style="text-align:center">restify</td>
-							<td style="text-align:center">6.4.0</td>
-							<td style="text-align:center">50,616</td>
+							<td style="text-align:center">7.2.1</td>
+							<td style="text-align:center">14,919.2</td>
 						</tr>
 						<tr>
 							<td style="text-align:center">hapi</td>
-							<td style="text-align:center">17.4.0</td>
-							<td style="text-align:center">42,384</td>
+							<td style="text-align:center">17.5.2</td>
+							<td style="text-align:center">18756.6</td>
 						</tr>
 						<tr>
 							<td style="text-align:center">express</td>
 							<td style="text-align:center">4.16.3</td>
-							<td style="text-align:center">41,146</td>
+							<td style="text-align:center">18,454</td>
 						</tr>
 					</tbody>
 				</table>
@@ -194,7 +196,7 @@ app.start();
 					<li>[x] View engine</li>
 					<li>[x] Options</li>
 					<li>[x] Settings</li>
-					<li>[x] <a href="https://github.com/foxifyjs/odin">Database Model</a></li>
+					<li>[x] Database Model (<a href="https://github.com/foxifyjs/odin"><code>Odin</code></a>)</li>
 					<li>[x] Clustering</li>
 					<li>[ ] File storage</li>
 					<li>[ ] Job schedule</li>
