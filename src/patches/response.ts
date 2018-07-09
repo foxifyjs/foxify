@@ -10,7 +10,7 @@ import * as contentDisposition from "content-disposition";
 import * as vary from "vary";
 import send = require("send");
 import * as constants from "../constants";
-import * as Foxify from "../index";
+import * as Server from "../Server";
 import * as utils from "../utils";
 import { Engine } from "../view";
 
@@ -24,7 +24,7 @@ declare module "http" {
     /**
      * @hidden
      */
-    stringify?: any;
+    stringify?: { [statusCode: number]: any };
 
     /**
      * Append additional header `field` with value `val`.
@@ -564,7 +564,9 @@ const normalizeTypes = (types: string[]) => {
   return ret;
 };
 
-const patch = (res: typeof http.ServerResponse, options: Foxify.Options, settings: Foxify.Settings): any => {
+const patch = (res: typeof http.ServerResponse, options: Server.Options, settings: Server.Settings): any => {
+
+  const engine = settings.view;
 
   /* json options */
   const jsonOptions = {
@@ -735,12 +737,12 @@ const patch = (res: typeof http.ServerResponse, options: Foxify.Options, setting
     }
 
     json(obj: object, status?: number) {
-      const _stringify = this.stringify || stringify;
+      if (status) this.status(status);
+
+      const _stringify = (this.stringify && this.stringify[this.statusCode]) || stringify;
 
       // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json");
       this.setHeader("Content-Type", "application/json");
-
-      if (status) this.status(status);
 
       return this.send(
         _stringify(
@@ -855,6 +857,19 @@ const patch = (res: typeof http.ServerResponse, options: Foxify.Options, setting
         this.end();
       else
         this.end(body);
+    }
+
+    render(view: string, data?: object, callback?: Engine.Callback) {
+      if (!engine) throw new Error("View engine is not specified");
+
+      if (!callback)
+        callback = (err, str) => {
+          if (err) throw err;
+
+          this.send(str);
+        };
+
+      engine.render(view, data, callback);
     }
 
     sendFile(path: string, options?: object | ((...args: any[]) => void), callback?: (...args: any[]) => void) {

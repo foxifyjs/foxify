@@ -79,14 +79,14 @@ module Route {
   export type JsonSchemaType = "string" | "integer" | "number" | "array" | "object" | "boolean" | "null";
 
   export interface JsonSchemaProperties {
-    [key: string]: {
+    [property: string]: {
       type: JsonSchemaType;
       default?: any;
     };
   }
 
   export interface JsonSchema {
-    title: string;
+    title?: string;
     type: object;
     properties?: JsonSchemaProperties;
     patternProperties?: JsonSchemaProperties;
@@ -96,8 +96,12 @@ module Route {
     required?: string[];
   }
 
+  export interface Schema {
+    response: { [statusCode: number]: JsonSchema };
+  }
+
   export interface RouteOptions {
-    schema?: JsonSchema;
+    schema?: Schema;
   }
 }
 

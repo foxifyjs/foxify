@@ -1,5 +1,4 @@
 import "./bootstrap";
-import * as http from "http";
 import * as os from "os";
 import * as serveStatic from "serve-static";
 import * as constants from "./constants";
@@ -56,13 +55,11 @@ class Foxify {
   static Route = Route;
   static static = serveStatic;
 
-  static dotenv = (dotenv: string) => {
-    if (!utils.string.isString(dotenv))
-      throw new TypeError(`Expected 'dotenv' to be an string, got ${typeof dotenv} instead`);
+  static dotenv = (path: string) => {
+    if (!utils.string.isString(path))
+      throw new TypeError(`Expected 'dotenv' to be an string, got ${typeof path} instead`);
 
-    require("dotenv").config({
-      path: dotenv,
-    });
+    require("dotenv").config({ path });
   }
 
   private _options: Foxify.Options = {
@@ -325,19 +322,19 @@ class Foxify {
       query(this),
     );
 
-    /* apply http patches */
-    Engine.responsePatch(http.ServerResponse, this._view);
-
     /* initialize the router with provided options and settings */
     this._router.initialize(this);
 
     const server = new Server(
       this._options,
-      this._settings,
+      {
+        ...this._settings,
+        view: this._view,
+      },
       (req, res) => this._router.route(req, res),
     );
 
-    server.start(callback);
+    return server.start(callback);
   }
 }
 

@@ -3,18 +3,19 @@ import * as https from "https";
 import * as cluster from "cluster";
 import { request, response } from "./patches";
 import * as Foxify from "./index";
+import { Engine } from "./view";
 
 module Server {
-  export interface Options {
-    protocol: "http" | "https";
-    host: string;
-    port: number;
-    workers: number;
-    key?: string;
-    cert?: string;
+  export interface Options extends Foxify.Options {
+  }
+
+  export interface Settings extends Foxify.Settings {
+    view?: Engine;
   }
 
   export type Listener = (request: http.IncomingMessage, response: http.ServerResponse) => void;
+
+  export type Callback = (server: Server) => void;
 }
 
 class Server {
@@ -23,7 +24,9 @@ class Server {
   protected _host: string;
   protected _port: number;
 
-  constructor(options: Foxify.Options, settings: Foxify.Settings, listener: Server.Listener) {
+  protected _listening = false;
+
+  constructor(options: Server.Options, settings: Server.Settings, listener: Server.Listener) {
     const isHttps = options.https;
 
     this._host = settings.url;
@@ -72,20 +75,35 @@ class Server {
     this._instance = SERVER.createServer(OPTIONS, listener);
   }
 
-  start(callback?: () => void) {
-    const instance = this._instance;
-
-    if (instance) instance.listen(this._port, this._host, callback);
+  get listening() {
+    return this._listening;
   }
 
-  stop(callback?: () => void) {
+  start(callback?: Server.Callback) {
+    this._listening = true;
+
     const instance = this._instance;
 
-    if (instance) instance.close(callback);
+    if (instance) instance.listen(this._port, this._host, callback && (() => callback(this)));
+
+    return this;
   }
 
-  reload(callback?: () => void) {
-    this.stop(() => this.start(callback));
+  stop(callback?: Server.Callback) {
+    this._listening = false;
+
+    const instance = this._instance;
+
+    if (instance) instance.close(callback && (() => callback(this)));
+
+    return this;
+  }
+
+  reload(callback?: Server.Callback) {
+    if (this._listening)
+      return this.stop((server) => server.start(callback));
+
+    return this.start(callback);
   }
 }
 

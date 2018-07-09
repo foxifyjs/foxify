@@ -28,18 +28,18 @@ class Router {
     let i = index;
 
     for (; i < length; i++) {
-      const route = routes[i];
+      const { path, controller, options: { schema } } = routes[i];
 
-      const params = (route.path as RegExp).exec(url);
+      const params = (path as RegExp).exec(url);
 
       if (params) {
         const next = () => this._safeNext.run(req, res, url, routes, i + 1);
 
         req.next = next;
 
-        res.stringify = (route.options as any).stringify;
+        res.stringify = schema && schema.response;
 
-        return route.controller.run(req, res, next, ...utils.array.tail(params));
+        return controller.run(req, res, next, ...utils.array.tail(params));
       }
     }
 
@@ -52,14 +52,23 @@ class Router {
     const strict = app.enabled("routing.strict");
     const sensitive = app.enabled("routing.sensitive");
 
-    httpMethods.map((method) => this._routes[method] = this._routes[method].map((route) => ({
-      ...route,
-      options: {
-        ...route.options,
-        stringify: route.options.schema && fastStringify(route.options.schema),
-      },
-      path: pathToRegExp(route.path, [], { strict, sensitive }),
-    })));
+    httpMethods.map((method) => this._routes[method] = this._routes[method].map((route) => {
+      const options = route.options;
+
+      const schema: { response: { [statusCode: number]: any } } | undefined = options.schema;
+
+      if (schema)
+        schema.response = utils.object.map(schema.response, (value) => fastStringify(value));
+
+      return {
+        ...route,
+        options: {
+          ...options,
+          schema,
+        },
+        path: pathToRegExp(route.path, [], { strict, sensitive }),
+      };
+    }));
   }
 
   prepend(routes: Route.Routes) {

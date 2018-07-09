@@ -7,7 +7,7 @@ import proxyAddr = require("proxy-addr");
 import * as parseUrl from "parseurl";
 import fresh = require("fresh");
 import * as constants from "../constants";
-import * as Foxify from "../index";
+import * as Server from "../Server";
 import * as utils from "../utils";
 
 /**
@@ -171,7 +171,7 @@ declare module "http" {
   }
 }
 
-const patch = (req: typeof http.IncomingMessage, options: Foxify.Options, settings: Foxify.Settings): any => {
+const patch = (req: typeof http.IncomingMessage, options: Server.Options, settings: Server.Settings): any => {
 
   class IncomingMessage extends req {
     get fresh() {
