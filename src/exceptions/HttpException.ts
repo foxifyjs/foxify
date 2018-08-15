@@ -3,9 +3,9 @@ import { http } from "../constants";
 import htmlError from "./htmlError";
 import * as utils from "../utils";
 
-declare module HttpException { }
+module HttpException { }
 
-declare interface HttpException extends Error {
+interface HttpException extends Error {
   code: number;
   errors: object;
 
@@ -37,6 +37,8 @@ class HttpException extends Error {
       code = http.INTERNAL_SERVER_ERROR;
     }
 
+    if (!message) message = STATUS_CODES[code];
+
     super(message);
 
     this.code = code;
@@ -46,17 +48,19 @@ class HttpException extends Error {
   static handle(exception: any = new HttpException(), req: IncomingMessage, res: ServerResponse): void {
     const code = exception.code || http.INTERNAL_SERVER_ERROR;
     const message = exception.message || STATUS_CODES[code] || "";
-    const errors = exception.errors && !utils.object.empty(exception.errors) ? exception.errors : null;
 
-    const html = htmlError(code, STATUS_CODES[code], message);
-    const json: { [key: string]: any } = { message };
+    res.status(code).format({
+      "text/html": () => res.send(htmlError(code, STATUS_CODES[code], message)),
+      "application/json": () => {
+        const json: { [key: string]: any } = { message };
 
-    if (errors) json.errors = errors;
+        const errors = exception.errors;
 
-    res.format({
-      "text/html": () => res.status(code).send(html),
-      "application/json": () => res.status(code).json(json),
-      "default": () => res.status(code).send(message),
+        if (errors && !utils.object.empty(errors)) json.errors = errors;
+
+        res.json(json);
+      },
+      "default": () => res.send(message),
     });
   }
 }

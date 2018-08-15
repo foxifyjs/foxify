@@ -22,18 +22,16 @@ class Router {
     res: ServerResponse,
     url: string,
     routes: Route.RouteObject[],
+    length = routes.length,
     index = 0,
   ) => {
-    const length = routes.length;
-    let i = index;
-
-    for (; i < length; i++) {
+    for (let i = index; i < length; i++) {
       const { path, controller, options: { schema } } = routes[i];
 
       const params = (path as RegExp).exec(url);
 
       if (params) {
-        const next = () => this._safeNext.run(req, res, url, routes, i + 1);
+        const next = () => this._safeNext.run(req, res, url, routes, length, i + 1);
 
         req.next = next;
 
@@ -80,7 +78,7 @@ class Router {
   }
 
   route(req: IncomingMessage, res: ServerResponse) {
-    this._safeNext.run(req, res, req.path, this._routes[<string>req.method]);
+    this._safeNext.run(req, res, req.path, this._routes[req.method as string]);
   }
 }
 

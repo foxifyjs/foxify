@@ -184,7 +184,7 @@ class Route {
    */
   use = (
     path: string | Route | Route.Controller,
-    options: Route.RouteOptions | Route.Controller,
+    options?: Route.RouteOptions | Route.Controller,
     ...middlewares: Route.Controller[]) => {
     if (path instanceof Route) {
       const _routes = path.routes;
@@ -199,7 +199,7 @@ class Route {
         _middlewares = middlewares;
       }
 
-      this.any(_path, options, ..._middlewares);
+      this.any(_path, options || {}, ..._middlewares);
     }
 
     return this;
