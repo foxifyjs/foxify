@@ -28,6 +28,6 @@ export function define(obj: object, method: "get" | "set", name: string, func: (
       configurable: true,
       enumerable: true,
       [method]: func,
-    },
+    }
   );
 }

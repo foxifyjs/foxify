@@ -1,6 +1,8 @@
-import { IncomingMessage, ServerResponse, STATUS_CODES } from "http";
+import { STATUS_CODES } from "http";
 import { http } from "../constants";
 import htmlError from "./htmlError";
+import * as Request from "../Request";
+import * as Response from "../Response";
 import * as utils from "../utils";
 
 module HttpException { }
@@ -9,7 +11,7 @@ interface HttpException extends Error {
   code: number;
   errors: object;
 
-  handle(exception: any, req: IncomingMessage, res: ServerResponse): void;
+  handle(exception: any, req: Request, res: Response): void;
 }
 
 class HttpException extends Error {
@@ -20,7 +22,7 @@ class HttpException extends Error {
   constructor(
     message?: string | number | object,
     code: number | object = http.INTERNAL_SERVER_ERROR,
-    errors: object = {},
+    errors: object = {}
   ) {
     if (utils.object.isObject(message)) {
       errors = message;
@@ -45,7 +47,7 @@ class HttpException extends Error {
     this.errors = errors;
   }
 
-  static handle(exception: any = new HttpException(), req: IncomingMessage, res: ServerResponse): void {
+  static handle(exception: any = new HttpException(), req: Request, res: Response): void {
     const code = exception.code || http.INTERNAL_SERVER_ERROR;
     const message = exception.message || STATUS_CODES[code] || "";
 
@@ -56,7 +58,7 @@ class HttpException extends Error {
 
         const errors = exception.errors;
 
-        if (errors && !utils.object.empty(errors)) json.errors = errors;
+        if (errors && !utils.object.isEmpty(errors)) json.errors = errors;
 
         res.json(json);
       },

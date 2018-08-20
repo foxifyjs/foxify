@@ -1,17 +1,18 @@
-import { IncomingMessage, ServerResponse } from "http";
 import * as HttpException from "./HttpException";
+import * as Request from "../Request";
+import * as Response from "../Response";
 import * as utils from "../utils";
 
 declare module Encapsulation { }
 
 class Encapsulation {
-  protected _fn: (req: IncomingMessage, res: ServerResponse, ...rest: any[]) => any;
+  protected _fn: (req: Request, res: Response, ...rest: any[]) => any;
 
-  constructor(fn: (req: IncomingMessage, res: ServerResponse, ...rest: any[]) => any) {
+  constructor(fn: (req: Request, res: Response, ...rest: any[]) => any) {
     this._fn = fn;
   }
 
-  run(req: IncomingMessage, res: ServerResponse, ...rest: any[]) {
+  run(req: Request, res: Response, ...rest: any[]) {
     try {
       const result = this._fn(req, res, ...rest);
 

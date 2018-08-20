@@ -2,17 +2,18 @@ import "./bootstrap";
 import * as os from "os";
 import * as serveStatic from "serve-static";
 import * as constants from "./constants";
-import { init, query } from "./middleware";
+import { init } from "./middlewares";
 import { httpMethods, Route, Router } from "./routing";
 import * as utils from "./utils";
 import * as Server from "./Server";
+import * as IncomingRequest from "./Request";
+import * as ServerResponse from "./Response";
 import { Engine } from "./view";
 
 module Foxify {
   export interface Options {
     https: boolean;
     "x-powered-by": boolean;
-    "content-length": boolean;
     routing: {
       strict: boolean,
       sensitive: boolean,
@@ -27,6 +28,9 @@ module Foxify {
     url: string;
     port: number;
     workers: number;
+    subdomain: {
+      offset?: number,
+    };
     https: {
       cert?: string,
       key?: string,
@@ -39,6 +43,9 @@ module Foxify {
       parser?: (...args: any[]) => any,
     };
   }
+
+  export type Request = IncomingRequest;
+  export type Response = ServerResponse;
 }
 
 interface Foxify extends Route.MethodFunctions<Foxify> {
@@ -65,7 +72,6 @@ class Foxify {
   private _options: Foxify.Options = {
     https: false,
     ["x-powered-by"]: true,
-    ["content-length"]: true,
     routing: {
       strict: false,
       sensitive: true,
@@ -80,6 +86,9 @@ class Foxify {
     url: process.env.APP_URL || "localhost",
     port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
     workers: process.env.WORKERS ? +process.env.WORKERS : os.cpus().length,
+    subdomain: {
+      offset: 2,
+    },
     https: {
       cert: undefined,
       key: undefined,
@@ -128,7 +137,7 @@ class Foxify {
   /* handle built-in middlewares */
   private _use(
     path: string | Route | Route.Controller,
-    options: Route.RouteOptions | Route.Controller,
+    options?: Route.RouteOptions | Route.Controller,
     ...middlewares: Route.Controller[]) {
     if (path instanceof Route)
       this._router.push(path.routes);
@@ -149,7 +158,7 @@ class Foxify {
       throw new TypeError("Argument 'option' should be an string");
 
     if (!utils.array.contains(
-      ["https", "x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
+      ["https", "x-powered-by", "routing.strict", "routing.sensitive", "json.escape"], option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, true, this._options);
@@ -162,7 +171,7 @@ class Foxify {
       throw new TypeError("Argument 'option' should be an string");
 
     if (!utils.array.contains(
-      ["https", "x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
+      ["https", "x-powered-by", "routing.strict", "routing.sensitive", "json.escape"], option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, false, this._options);
@@ -175,14 +184,14 @@ class Foxify {
       throw new TypeError("Argument 'option' should be an string");
 
     if (!utils.array.contains(
-      ["https", "x-powered-by", "content-length", "routing.strict", "routing.sensitive", "json.escape"], option))
+      ["https", "x-powered-by", "routing.strict", "routing.sensitive", "json.escape"], option))
       throw new TypeError(`Unknown option '${option}'`);
 
     const keys = option.split(".");
 
     let _opt: any = this._options;
 
-    keys.map((key) => {
+    keys.forEach((key) => {
       if (utils.boolean.isBoolean(_opt)) throw new Error("Unknown option");
 
       _opt = _opt[key];
@@ -317,10 +326,7 @@ class Foxify {
     process.env.NODE_ENV = this.get("env");
 
     /* apply built-in middlewares */
-    this._use(
-      init(this),
-      query(this),
-    );
+    this._use(init(this));
 
     /* initialize the router with provided options and settings */
     this._router.initialize(this);
@@ -331,7 +337,7 @@ class Foxify {
         ...this._settings,
         view: this._view,
       },
-      (req, res) => this._router.route(req, res),
+      (req, res) => this._router.route(req, res)
     );
 
     return server.start(callback);

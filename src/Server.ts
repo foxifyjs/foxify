@@ -1,7 +1,8 @@
 import * as http from "http";
 import * as https from "https";
 import * as cluster from "cluster";
-import { request, response } from "./patches";
+import * as Request from "./Request";
+import * as Response from "./Response";
 import * as Foxify from "./index";
 import { Engine } from "./view";
 
@@ -13,7 +14,7 @@ module Server {
     view?: Engine;
   }
 
-  export type Listener = (request: http.IncomingMessage, response: http.ServerResponse) => void;
+  export type Listener = (request: Request, response: Response) => void;
 
   export type Callback = (server: Server) => void;
 }
@@ -27,20 +28,30 @@ class Server {
   protected _listening = false;
 
   constructor(options: Server.Options, settings: Server.Settings, listener: Server.Listener) {
-    const isHttps = options.https;
-
     this._host = settings.url;
     this._port = settings.port;
 
+    const isHttps = options.https;
     const SERVER: any = isHttps ? https : http;
 
-    const IncomingMessage = request(http.IncomingMessage, options, settings);
-    const ServerResponse = response(http.ServerResponse, options, settings);
-
-    const OPTIONS: any = {
-      IncomingMessage,
-      ServerResponse,
+    const IncomingMessage = Request;
+    IncomingMessage.prototype.settings = {
+      subdomain: {
+        ...settings.subdomain,
+      },
     };
+
+    const ServerResponse = Response;
+    ServerResponse.prototype.settings = {
+      engine: settings.view,
+      json: {
+        escape: options.json.escape,
+        spaces: settings.json.spaces,
+        replacer: settings.json.replacer,
+      },
+    };
+
+    const OPTIONS: any = { IncomingMessage, ServerResponse };
 
     if (isHttps) {
       const httpsSettings = settings.https;

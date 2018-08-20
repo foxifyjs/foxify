@@ -64,7 +64,7 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<h1 id="foxify-tweet">Foxify <a href="https://twitter.com/intent/tweet?text=Foxify,%20The%20fast,%20easy%20to%20use%20%26%20typescript%20ready%20web%20framework%20for%20Node.js&amp;url=https://github.com/foxifyjs/foxify&amp;via=foxifyjs&amp;hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social" alt="Tweet"></a></h1>
+				<h1 id="foxify-tweet-twitter-follow">Foxify <a href="https://twitter.com/intent/tweet?text=Foxify,%20The%20fast,%20easy%20to%20use%20%26%20typescript%20ready%20web%20framework%20for%20Node.js&amp;url=https://github.com/foxifyjs/foxify&amp;via=foxifyjs&amp;hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social" alt="Tweet"></a> <a href="https://twitter.com/foxifyjs"><img src="https://img.shields.io/twitter/follow/foxifyjs.svg?style=social&label=Follow" alt="Twitter Follow"></a></h1>
 				<p>The <strong>fast</strong>, <strong>easy to use</strong> &amp; <strong>typescript ready</strong> web framework for <a href="https://nodejs.org">Node.js</a></p>
 				<blockquote>
 					<p>Inspired by <a href="https://expressjs.com">Express</a></p>
@@ -81,8 +81,8 @@
 					<a href="https://david-dm.org/foxifyjs/foxify"><img src="https://david-dm.org/foxifyjs/foxify.svg" alt="Dependencies Status"></a>
 					<a href="https://github.com/foxifyjs/foxify/pulls"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="Pull Requests"></a>
 					<a href="https://github.com/foxifyjs/foxify/blob/master/LICENSE"><img src="https://img.shields.io/github/license/foxifyjs/foxify.svg" alt="License"></a>
-					<a href="https://github.com/foxifyjs/foxify"><img src="https://img.shields.io/github/stars/foxifyjs/foxify.svg?style=social&amp;label=Stars" alt="Github Stars"></a>
-				<a href="https://github.com/foxifyjs/foxify"><img src="https://img.shields.io/github/forks/foxifyjs/foxify.svg?style=social&amp;label=Fork" alt="Github Forks"></a></p>
+					<a href="https://github.com/foxifyjs/foxify"><img src="https://img.shields.io/github/stars/foxifyjs/foxify.svg?style=social&label=Stars" alt="Github Stars"></a>
+				<a href="https://github.com/foxifyjs/foxify"><img src="https://img.shields.io/github/forks/foxifyjs/foxify.svg?style=social&label=Fork" alt="Github Forks"></a></p>
 				<h2 id="table-of-contents-omit-in-toc-">Table of Contents <!-- omit in toc --></h2>
 				<ul>
 					<li><a href="#getting-started">Getting Started</a><ul>
@@ -105,10 +105,9 @@
 					<li><a href="https://nodejs.org/en/download">Node.js</a> 8 or higher is required.</li>
 				</ul>
 				<h3 id="installation">Installation</h3>
-				<pre><code class="lang-bash">npm i -s foxify
-</code></pre>
+				<pre><code class="language-bash">npm i -s foxify</code></pre>
 				<h3 id="usage">Usage</h3>
-				<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> Foxify = <span class="hljs-built_in">require</span>(<span class="hljs-string">'foxify'</span>);
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> Foxify = <span class="hljs-built_in">require</span>(<span class="hljs-string">'foxify'</span>);
 
 <span class="hljs-keyword">let</span> app = <span class="hljs-keyword">new</span> Foxify();
 
@@ -126,8 +125,7 @@ app.get(<span class="hljs-string">'/404'</span>, (req, res) =&gt; {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> HttpException(<span class="hljs-string">'Not Found'</span>, <span class="hljs-number">404</span>);
 });
 
-app.start();
-</code></pre>
+app.start();</code></pre>
 				<p>More detailed <a href="https://github.com/foxifyjs/foxify/tree/master/demo">sample</a> is available.</p>
 				<p>You can also find all the documents <a href="https://foxify.js.org">here</a>.</p>
 				<h2 id="features">Features</h2>
@@ -150,57 +148,55 @@ app.start();
 				<table>
 					<thead>
 						<tr>
-							<th style="text-align:center">Framework</th>
-							<th style="text-align:center">Version</th>
-							<th style="text-align:center">R/S</th>
+							<th align="center">Framework</th>
+							<th align="center">Version</th>
+							<th align="center">R/S</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td style="text-align:center">fastify</td>
-							<td style="text-align:center">1.7.0</td>
-							<td style="text-align:center">26,819.6</td>
+					<tbody><tr>
+							<td align="center">fastify</td>
+							<td align="center">1.7.0</td>
+							<td align="center">26,819.6</td>
 						</tr>
 						<tr>
-							<td style="text-align:center"><strong>bare</strong></td>
-							<td style="text-align:center"><strong>10.3.0</strong></td>
-							<td style="text-align:center"><strong>26,410</strong></td>
+							<td align="center"><strong>bare</strong></td>
+							<td align="center"><strong>10.3.0</strong></td>
+							<td align="center"><strong>26,410</strong></td>
 						</tr>
 						<tr>
-							<td style="text-align:center"><strong>Foxify</strong></td>
-							<td style="text-align:center"><strong>0.8.0</strong></td>
-							<td style="text-align:center"><strong>23,928.4</strong></td>
+							<td align="center"><strong>Foxify</strong></td>
+							<td align="center"><strong>0.8.0</strong></td>
+							<td align="center"><strong>23,928.4</strong></td>
 						</tr>
 						<tr>
-							<td style="text-align:center">restify</td>
-							<td style="text-align:center">7.2.1</td>
-							<td style="text-align:center">14,919.2</td>
+							<td align="center">restify</td>
+							<td align="center">7.2.1</td>
+							<td align="center">14,919.2</td>
 						</tr>
 						<tr>
-							<td style="text-align:center">hapi</td>
-							<td style="text-align:center">17.5.2</td>
-							<td style="text-align:center">18756.6</td>
+							<td align="center">hapi</td>
+							<td align="center">17.5.2</td>
+							<td align="center">18756.6</td>
 						</tr>
 						<tr>
-							<td style="text-align:center">express</td>
-							<td style="text-align:center">4.16.3</td>
-							<td style="text-align:center">18,454</td>
+							<td align="center">express</td>
+							<td align="center">4.16.3</td>
+							<td align="center">18,454</td>
 						</tr>
-					</tbody>
-				</table>
+				</tbody></table>
 				<h2 id="todo">TODO</h2>
 				<ul>
-					<li>[x] Routing</li>
-					<li>[x] Middleware support</li>
-					<li>[x] Error handling</li>
-					<li>[x] View engine</li>
-					<li>[x] Options</li>
-					<li>[x] Settings</li>
-					<li>[x] Database Model (<a href="https://github.com/foxifyjs/odin"><code>Odin</code></a>)</li>
-					<li>[x] Clustering</li>
-					<li>[ ] File storage</li>
-					<li>[ ] Job schedule</li>
-					<li>[ ] Logging</li>
+					<li><input checked="" disabled="" type="checkbox"> Routing</li>
+					<li><input checked="" disabled="" type="checkbox"> Middleware support</li>
+					<li><input checked="" disabled="" type="checkbox"> Error handling</li>
+					<li><input checked="" disabled="" type="checkbox"> View engine</li>
+					<li><input checked="" disabled="" type="checkbox"> Options</li>
+					<li><input checked="" disabled="" type="checkbox"> Settings</li>
+					<li><input checked="" disabled="" type="checkbox"> Database Model (<a href="https://github.com/foxifyjs/odin"><code>Odin</code></a>)</li>
+					<li><input checked="" disabled="" type="checkbox"> Clustering</li>
+					<li><input disabled="" type="checkbox"> File storage</li>
+					<li><input disabled="" type="checkbox"> Job schedule</li>
+					<li><input disabled="" type="checkbox"> Logging</li>
 				</ul>
 				<h2 id="versioning">Versioning</h2>
 				<p>We use <a href="http://semver.org">SemVer</a> for versioning. For the versions available, see the <a href="https://github.com/foxifyjs/foxify/tags">tags on this repository</a>.</p>
@@ -224,9 +220,6 @@ app.start();
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-not-exported">
-						<a href="modules/_http_.html">"http"</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-not-exported">
 						<a href="modules/__global.html">__global</a>
 					</li>
 					<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
@@ -247,6 +240,12 @@ app.start();
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/httpexception.html" class="tsd-kind-icon">Http<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/request.html" class="tsd-kind-icon">Request</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/response.html" class="tsd-kind-icon">Response</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/route.html" class="tsd-kind-icon">Route</a>
@@ -286,12 +285,6 @@ app.start();
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#normalizetypes" class="tsd-kind-icon">normalize<wbr>Types</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#patch" class="tsd-kind-icon">patch</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#query" class="tsd-kind-icon">query</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#sendfile" class="tsd-kind-icon">sendfile</a>

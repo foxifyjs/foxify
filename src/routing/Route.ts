@@ -1,11 +1,12 @@
-import * as http from "http";
-import { Encapsulation } from "../exceptions";
 import httpMethods from "./httpMethods";
+import * as Request from "../Request";
+import * as Response from "../Response";
+import { Encapsulation } from "../exceptions";
 import * as utils from "../utils";
 
 module Route {
   export type Controller =
-    (request: http.IncomingMessage, response: http.ServerResponse, next: () => void, ...rest: any[]) => any;
+    (request: Request, response: Response, next: () => void, ...rest: any[]) => any;
 
   export type MethodFunction<T = Route> =
     (path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]) => T;
@@ -113,6 +114,8 @@ interface Route extends Route.MethodFunctions<Route> {
  *
  */
 class Route {
+  static isRoute = (arg: any): arg is Route => arg instanceof Route;
+
   protected _routes = {} as Route.Routes;
 
   protected readonly _prefix: string;
@@ -128,7 +131,7 @@ class Route {
   constructor(prefix: string = "") {
     this._prefix = prefix;
 
-    httpMethods.map((method) => {
+    httpMethods.forEach((method) => {
       this._routes[method] = [];
 
       this[method.toLowerCase()] =
@@ -151,20 +154,20 @@ class Route {
       .replace("//", "/")
       .replace(/\/$/, "");
 
-    controllers.map((controller) =>
+    controllers.forEach((controller) =>
       this._routes[method].push({
         path,
         options: options as Route.RouteOptions,
         controller: new Encapsulation(
           (req, res, next: () => void, ...args: any[]) => controller(req, res, next, ...args)),
-      }),
+      })
     );
 
     return this;
   }
 
   any = (path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]) => {
-    httpMethods.map((method) => this._push(method, path, options, ...controllers));
+    httpMethods.forEach((method) => this._push(method, path, options, ...controllers));
 
     return this;
   }
@@ -172,7 +175,7 @@ class Route {
   oneOf = (
     methods: string[], path: string, options: Route.RouteOptions | Route.Controller,
     ...controllers: Route.Controller[]) => {
-    methods.map((method) => this._push(method.toUpperCase(), path, options, ...controllers));
+    methods.forEach((method) => this._push(method.toUpperCase(), path, options, ...controllers));
 
     return this;
   }
@@ -185,22 +188,28 @@ class Route {
   use = (
     path: string | Route | Route.Controller,
     options?: Route.RouteOptions | Route.Controller,
-    ...middlewares: Route.Controller[]) => {
-    if (path instanceof Route) {
-      const _routes = path.routes;
+    ...middlewares: Route.Controller[]
+  ) => {
+    if (Route.isRoute(path)) {
+      utils.object.forEach(
+        path.routes,
+        (routes: Route.RouteObject[], method) =>
+          this._routes[method].push(...routes
+            .map((route) => ({ ...route, path: `${this._prefix}${route.path}` })))
+      );
 
-      httpMethods.map((method) => this._routes[method].push(..._routes[method]));
-    } else {
-      let _path = "(.*)";
-      let _middlewares = [path, ...middlewares] as Route.Controller[];
-
-      if (utils.string.isString(path)) {
-        _path = `${path}${_path}`;
-        _middlewares = middlewares;
-      }
-
-      this.any(_path, options || {}, ..._middlewares);
+      return this;
     }
+
+    let _path = "(.*)";
+    let _middlewares = [path, ...middlewares] as Route.Controller[];
+
+    if (utils.string.isString(path)) {
+      _path = `${path}${_path}`;
+      _middlewares = middlewares;
+    }
+
+    this.any(_path, options || {}, ..._middlewares);
 
     return this;
   }

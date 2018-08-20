@@ -1,10 +1,10 @@
-import { IncomingMessage, ServerResponse } from "http";
-import { HttpException, Encapsulation } from "../exceptions";
-import httpMethods from "./httpMethods";
 import * as pathToRegExp from "path-to-regexp";
-import * as constants from "../constants";
 import * as fastStringify from "fast-json-stringify";
+import httpMethods from "./httpMethods";
 import * as Route from "./Route";
+import * as Request from "../Request";
+import * as Response from "../Response";
+import { Encapsulation } from "../exceptions";
 import * as Fox from "../index";
 import * as utils from "../utils";
 
@@ -18,12 +18,12 @@ class Router {
   }
 
   protected _next = (
-    req: IncomingMessage,
-    res: ServerResponse,
+    req: Request,
+    res: Response,
     url: string,
     routes: Route.RouteObject[],
     length = routes.length,
-    index = 0,
+    index = 0
   ) => {
     for (let i = index; i < length; i++) {
       const { path, controller, options: { schema } } = routes[i];
@@ -41,7 +41,7 @@ class Router {
       }
     }
 
-    throw new HttpException(constants.http.NOT_FOUND);
+    throw new HttpException(HTTP.NOT_FOUND);
   }
 
   protected _safeNext = new Encapsulation(this._next);
@@ -50,7 +50,7 @@ class Router {
     const strict = app.enabled("routing.strict");
     const sensitive = app.enabled("routing.sensitive");
 
-    httpMethods.map((method) => this._routes[method] = this._routes[method].map((route) => {
+    httpMethods.forEach((method) => this._routes[method] = this._routes[method].map((route) => {
       const options = route.options;
 
       const schema: { response: { [statusCode: number]: any } } | undefined = options.schema;
@@ -70,14 +70,14 @@ class Router {
   }
 
   prepend(routes: Route.Routes) {
-    httpMethods.map((method) => this._routes[method] = [...routes[method], ...this._routes[method]]);
+    httpMethods.forEach((method) => this._routes[method] = [...routes[method], ...this._routes[method]]);
   }
 
   push(routes: Route.Routes) {
-    httpMethods.map((method) => this._routes[method].push(...routes[method]));
+    httpMethods.forEach((method) => this._routes[method].push(...routes[method]));
   }
 
-  route(req: IncomingMessage, res: ServerResponse) {
+  route(req: Request, res: Response) {
     this._safeNext.run(req, res, req.path, this._routes[req.method as string]);
   }
 }
