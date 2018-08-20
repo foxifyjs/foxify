@@ -1,103 +1,97 @@
 # Changelog
 
-## [v0.8.0](https://github.com/foxifyjs/foxify/releases/tag/v0.8.0) - *2018-07-09*
+## Emojis
 
-**Implemented enhancements:**
+- New Features -> :zap:
+- Enhancements -> :star2:
+- Breaking Changes -> :boom:
+- Bugs -> :beetle:
+- Pull Requests -> :book:
+- Documents -> :mortar_board:
+- Tests -> :eyeglasses:
 
-- added `https` option
-- added `https.key` setting
-- added `https.cert` setting
-- added `json schema` option to routing
-- added `stop` ability
-- added `reload` ability
-- improved performance
+---
 
-## [v0.7.0](https://github.com/foxifyjs/foxify/releases/tag/v0.7.0) - *2018-05-19*
+## [v0.9.0](https://github.com/foxifyjs/foxify/releases/tag/v0.9.0) - *(2018-08-21)*
 
-**Implemented enhancements:**
+- :zap: Added `subdomain.offset` setting
+- :zap: Added `subdomains` getter to `http.IncomingMessage`
+- :star2: Made `http` constants global by `HTTP` name
+- :star2: Improved performance
+- :boom: Removed `content-length` option (and content-length calculation)
+- :beetle: Fixed route with prefix `use` not applying prefix bug
+- :beetle: Fixed typescript usage
 
-- added `content-length` option
-- moved `Database` to a new repository named [Odin](https://github.com/foxifyjs/odin)
-- improved performance
+## [v0.8.0](https://github.com/foxifyjs/foxify/releases/tag/v0.8.0) - *(2018-07-09)*
 
-## [v0.6.0](https://github.com/foxifyjs/foxify/releases/tag/v0.6.0) - *2018-03-26*
+- :zap: Added `https` option
+- :zap: Added `https.key` setting
+- :zap: Added `https.cert` setting
+- :zap: Added json schema validation option to routing
+- :zap: Added `stop` ability to server
+- :zap: Added `reload` ability to server
+- :star2: Improved performance
 
-**Implemented enhancements:**
+## [v0.7.0](https://github.com/foxifyjs/foxify/releases/tag/v0.7.0) - *(2018-05-19)*
 
-- added multiple `controller` support to `route` instance
-- added static method `dotenv` to `Foxify` class to specify `.env` file path
-- added method `of` to database type `Array`
-- added `function` support to default values in database types
-- added `graphql` support to database models
-- improved performance
-- improved `Typescript` usage
+- :zap: Added `content-length` option
+- :boom: Moved `Database` to a new repository named [Odin](https://github.com/foxifyjs/odin)
+- :star2: Improved performance
 
-## [v0.5.1](https://github.com/foxifyjs/foxify/releases/tag/v0.5.1) - *2018-03-10*
+## [v0.6.0](https://github.com/foxifyjs/foxify/releases/tag/v0.6.0) - *(2018-03-26)*
 
-**Implemented enhancements:**
+- :zap: Added multiple `controller` support to `route` instance
+- :zap: Added static method `dotenv` to `Foxify` class to specify `.env` file path
+- :zap: Added method `of` to database type `Array`
+- :zap: Added `function` support to default values in database types
+- :zap: Added `graphql` support to database models
+- :star2: Improved `Typescript` usage
+- :star2: Improved performance
 
-- renamed `clusters` setting into `workers`
+## [v0.5.1](https://github.com/foxifyjs/foxify/releases/tag/v0.5.1) - *(2018-03-10)*
 
-## [v0.5.0](https://github.com/foxifyjs/foxify/releases/tag/v0.5.0) - *2018-03-08*
+- :boom: Renamed `clusters` setting into `workers`
 
-**Implemented enhancements:**
+## [v0.5.0](https://github.com/foxifyjs/foxify/releases/tag/v0.5.0) - *(2018-03-08)*
 
-- added clustering
-- added multiple model relations [`hasOne`, `hasMany`]
-- added multiple options [`x-powered-by`, `routing.strict`, `routing.sensitive`, `json.escape`]
-- added multiple settings [`env`, `url`, `port`, `clusters`, `json.replacer`, `json.spaces`, `query.parser`]
-- improved usage
+- :zap: Added clustering
+- :zap: Added multiple model relations [`hasOne`, `hasMany`]
+- :zap: Added multiple options [`x-powered-by`, `routing.strict`, `routing.sensitive`, `json.escape`]
+- :zap: Added multiple settings [`env`, `url`, `port`, `clusters`, `json.replacer`, `json.spaces`, `query.parser`]
+- :star2: Improved usage
 
-## [v0.4.0](https://github.com/foxifyjs/foxify/releases/tag/v0.4.0) - *2018-02-22*
+## [v0.4.0](https://github.com/foxifyjs/foxify/releases/tag/v0.4.0) - *(2018-02-22)*
 
-**Implemented enhancements:**
+- :zap: Logging errors when `NODE_ENV` is set to `debug`
+- :star2: Improved performance
+- :star2: Improved error responses
+- :star2: Improved database schema validation
+- :beetle: Wrong database name according to model name
 
-- improved performance
-- improved error responses
-- improved database schema validation
-- logging errors when `NODE_ENV` is set to `debug`
+## [v0.3.2](https://github.com/foxifyjs/foxify/releases/tag/v0.3.2) - *(2018-02-20)*
 
-**Fixed bugs:**
+- :star2: Improved database model schema validation
+- :beetle: Database model schema validation instance
+- :beetle: Default database connection when there is no `.env` file
 
-- wrong database name according to model name
+## [v0.3.0](https://github.com/foxifyjs/foxify/releases/tag/v0.3.0) - *(2018-02-18)*
 
-## [v0.3.2](https://github.com/foxifyjs/foxify/releases/tag/v0.3.2) - *2018-02-20*
+- :zap: Added simple database model schema validation
+- :star2: Default database connection will be set according to `.env` file
 
-**Implemented enhancements:**
+## [v0.2.1](https://github.com/foxifyjs/foxify/releases/tag/v0.2.1) - *(2018-02-14)*
 
-- improved database model schema validation
+- :beetle: Encapsulation
 
-**Fixed bugs:**
+## [v0.2.0](https://github.com/foxifyjs/foxify/releases/tag/v0.2.0) - *(2018-02-10)*
 
-- database model schema validation instance
-- default database connection when there is no `.env` file
+- :star2: Routing speed got doubled
+- :star2: Http routing methods are accessible from app too
 
-## [v0.3.0](https://github.com/foxifyjs/foxify/releases/tag/v0.3.0) - *2018-02-18*
+## [v0.1.1](https://github.com/foxifyjs/foxify/releases/tag/v0.1.1) - *(2018-02-10)*
 
-**Implemented enhancements:**
+- :beetle: Fixed #1
 
-- added simple database model schema validation
-- Default database connection will be set according to `.env` file
+## [v0.1.0](https://github.com/foxifyjs/foxify/releases/tag/v0.1.0) - *(2018-02-09)*
 
-## [v0.2.1](https://github.com/foxifyjs/foxify/releases/tag/v0.2.1) - *2018-02-14*
-
-**Fixed bugs:**
-
-- Encapsulation
-
-## [v0.2.0](https://github.com/foxifyjs/foxify/releases/tag/v0.2.0) - *2018-02-10*
-
-**Implemented enhancements:**
-
-- routing speed got doubled
-- http routing methods are accessible from app too
-
-## [v0.1.1](https://github.com/foxifyjs/foxify/releases/tag/v0.1.1) - *2018-02-10*
-
-**Closed issues:**
-
-- Fixed #1
-
-## [v0.1.0](https://github.com/foxifyjs/foxify/releases/tag/v0.1.0) - *2018-02-09*
-
-First Release
+- :tada: First Release

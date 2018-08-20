@@ -116,7 +116,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/aea6939/src/routing/Router.ts#L14">routing/Router.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/5c2b943/src/routing/Router.ts#L14">routing/Router.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="router.html" class="tsd-signature-type">Router</a></h4>
@@ -132,7 +132,7 @@
 					<div class="tsd-signature tsd-kind-icon">_routes<span class="tsd-signature-symbol">:</span> <a href="../interfaces/route.routes.html" class="tsd-signature-type">Routes</a><span class="tsd-signature-symbol"> =&nbsp;{} as Route.Routes</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/aea6939/src/routing/Router.ts#L14">routing/Router.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/5c2b943/src/routing/Router.ts#L14">routing/Router.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -142,7 +142,7 @@
 					<div class="tsd-signature tsd-kind-icon">_safe<wbr>Next<span class="tsd-signature-symbol">:</span> <a href="encapsulation.html" class="tsd-signature-type">Encapsulation</a><span class="tsd-signature-symbol"> =&nbsp;new Encapsulation(this._next)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/aea6939/src/routing/Router.ts#L49">routing/Router.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/5c2b943/src/routing/Router.ts#L47">routing/Router.ts:47</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -153,28 +153,31 @@
 					<a name="_next" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _next</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">_next<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IncomingMessage</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ServerResponse</span>, url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, routes<span class="tsd-signature-symbol">: </span><a href="../interfaces/route.routeobject.html" class="tsd-signature-type">RouteObject</a><span class="tsd-signature-symbol">[]</span>, index<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">_next<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="request.html" class="tsd-signature-type">Request</a>, res<span class="tsd-signature-symbol">: </span><a href="response.html" class="tsd-signature-type">Response</a>, url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, routes<span class="tsd-signature-symbol">: </span><a href="../interfaces/route.routeobject.html" class="tsd-signature-type">RouteObject</a><span class="tsd-signature-symbol">[]</span>, length<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, index<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/aea6939/src/routing/Router.ts#L20">routing/Router.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/5c2b943/src/routing/Router.ts#L20">routing/Router.ts:20</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>req: <span class="tsd-signature-type">IncomingMessage</span></h5>
+									<h5>req: <a href="request.html" class="tsd-signature-type">Request</a></h5>
 								</li>
 								<li>
-									<h5>res: <span class="tsd-signature-type">ServerResponse</span></h5>
+									<h5>res: <a href="response.html" class="tsd-signature-type">Response</a></h5>
 								</li>
 								<li>
 									<h5>url: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
 									<h5>routes: <a href="../interfaces/route.routeobject.html" class="tsd-signature-type">RouteObject</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> length: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;routes.length</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> index: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></h5>
@@ -194,7 +197,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/aea6939/src/routing/Router.ts#L51">routing/Router.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/5c2b943/src/routing/Router.ts#L49">routing/Router.ts:49</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -217,7 +220,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/aea6939/src/routing/Router.ts#L74">routing/Router.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/5c2b943/src/routing/Router.ts#L72">routing/Router.ts:72</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -240,7 +243,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/aea6939/src/routing/Router.ts#L78">routing/Router.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/5c2b943/src/routing/Router.ts#L76">routing/Router.ts:76</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -257,22 +260,22 @@
 					<a name="route" class="tsd-anchor"></a>
 					<h3>route</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">route<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IncomingMessage</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ServerResponse</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">route<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="request.html" class="tsd-signature-type">Request</a>, res<span class="tsd-signature-symbol">: </span><a href="response.html" class="tsd-signature-type">Response</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/aea6939/src/routing/Router.ts#L82">routing/Router.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/5c2b943/src/routing/Router.ts#L80">routing/Router.ts:80</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>req: <span class="tsd-signature-type">IncomingMessage</span></h5>
+									<h5>req: <a href="request.html" class="tsd-signature-type">Request</a></h5>
 								</li>
 								<li>
-									<h5>res: <span class="tsd-signature-type">ServerResponse</span></h5>
+									<h5>res: <a href="response.html" class="tsd-signature-type">Response</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -302,6 +305,12 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="httpexception.html" class="tsd-kind-icon">Http<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="request.html" class="tsd-kind-icon">Request</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="response.html" class="tsd-kind-icon">Response</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="route.html" class="tsd-kind-icon">Route</a>
@@ -351,9 +360,6 @@
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="../globals.html#resolve" class="tsd-kind-icon">resolve</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-is-not-exported">
-						<a href="../globals.html#template" class="tsd-kind-icon">template</a>
-					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="../globals.html#acceptparams" class="tsd-kind-icon">accept<wbr>Params</a>
 					</li>
@@ -374,12 +380,6 @@
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="../globals.html#normalizetypes" class="tsd-kind-icon">normalize<wbr>Types</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../globals.html#patch" class="tsd-kind-icon">patch</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../globals.html#query" class="tsd-kind-icon">query</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="../globals.html#sendfile" class="tsd-kind-icon">sendfile</a>

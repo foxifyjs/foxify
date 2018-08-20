@@ -1,4 +1,5 @@
-# Foxify [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Foxify,%20The%20fast,%20easy%20to%20use%20%26%20typescript%20ready%20web%20framework%20for%20Node.js&url=https://github.com/foxifyjs/foxify&via=foxifyjs&hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast)
+# Foxify [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Foxify,%20The%20fast,%20easy%20to%20use%20%26%20typescript%20ready%20web%20framework%20for%20Node.js&url=https://github.com/foxifyjs/foxify&via=foxifyjs&hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast) [![Twitter Follow](https://img.shields.io/twitter/follow/foxifyjs.svg?style=social&label=Follow)](https://twitter.com/foxifyjs)
+
 
 The **fast**, **easy to use** & **typescript ready** web framework for [Node.js](https://nodejs.org)
 

@@ -1,15 +1,17 @@
-import { IncomingMessage, ServerResponse, STATUS_CODES } from "http";
+import { STATUS_CODES } from "http";
 import { http } from "../constants";
 import htmlError from "./htmlError";
+import * as Request from "../Request";
+import * as Response from "../Response";
 import * as utils from "../utils";
 
-declare module HttpException { }
+module HttpException { }
 
-declare interface HttpException extends Error {
+interface HttpException extends Error {
   code: number;
   errors: object;
 
-  handle(exception: any, req: IncomingMessage, res: ServerResponse): void;
+  handle(exception: any, req: Request, res: Response): void;
 }
 
 class HttpException extends Error {
@@ -20,7 +22,7 @@ class HttpException extends Error {
   constructor(
     message?: string | number | object,
     code: number | object = http.INTERNAL_SERVER_ERROR,
-    errors: object = {},
+    errors: object = {}
   ) {
     if (utils.object.isObject(message)) {
       errors = message;
@@ -37,26 +39,30 @@ class HttpException extends Error {
       code = http.INTERNAL_SERVER_ERROR;
     }
 
+    if (!message) message = STATUS_CODES[code];
+
     super(message);
 
     this.code = code;
     this.errors = errors;
   }
 
-  static handle(exception: any = new HttpException(), req: IncomingMessage, res: ServerResponse): void {
+  static handle(exception: any = new HttpException(), req: Request, res: Response): void {
     const code = exception.code || http.INTERNAL_SERVER_ERROR;
     const message = exception.message || STATUS_CODES[code] || "";
-    const errors = exception.errors && !utils.object.empty(exception.errors) ? exception.errors : null;
 
-    const html = htmlError(code, STATUS_CODES[code], message);
-    const json: { [key: string]: any } = { message };
+    res.status(code).format({
+      "text/html": () => res.send(htmlError(code, STATUS_CODES[code], message)),
+      "application/json": () => {
+        const json: { [key: string]: any } = { message };
 
-    if (errors) json.errors = errors;
+        const errors = exception.errors;
 
-    res.format({
-      "text/html": () => res.status(code).send(html),
-      "application/json": () => res.status(code).json(json),
-      "default": () => res.status(code).send(message),
+        if (errors && !utils.object.isEmpty(errors)) json.errors = errors;
+
+        res.json(json);
+      },
+      "default": () => res.send(message),
     });
   }
 }
