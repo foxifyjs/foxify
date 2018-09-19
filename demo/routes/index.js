@@ -37,7 +37,7 @@ routes.get('/greet-fast', {
 })
 
 routes.get('/404', (req, res) => {
-  throw new HttpException(404)
+  throw new HttpException("This is a demo", 404)
 })
 
 routes.get('/error', async (req, res) => {

@@ -1,7 +1,13 @@
-import * as HttpException from "./HttpException";
+import { http } from "../constants";
 import * as Request from "../Request";
 import * as Response from "../Response";
-import * as utils from "../utils";
+import * as events from "../events";
+
+const handle = (error: any, req: Request, res: Response) => {
+  events.emit(`error-${error.code || http.INTERNAL_SERVER_ERROR}` as any, error, req, res);
+
+  if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", error);
+};
 
 declare module Encapsulation { }
 
@@ -16,16 +22,9 @@ class Encapsulation {
     try {
       const result = this._fn(req, res, ...rest);
 
-      if (result && utils.function.isFunction((result as any).then))
-        (result as Promise<any>).catch((err: Error) => {
-          HttpException.handle(err, req, res);
-
-          if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", err);
-        });
+      if (result instanceof Promise) result.catch((err) => handle(err, req, res));
     } catch (err) {
-      HttpException.handle(err, req, res);
-
-      if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", err);
+      handle(err, req, res);
     }
   }
 }

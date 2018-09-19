@@ -209,9 +209,7 @@ class Route {
       _middlewares = middlewares;
     }
 
-    this.any(_path, options || {}, ..._middlewares);
-
-    return this;
+    return this.any(_path, options || {}, ..._middlewares);
   }
 }
 

@@ -1,6 +1,5 @@
 # Foxify [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Foxify,%20The%20fast,%20easy%20to%20use%20%26%20typescript%20ready%20web%20framework%20for%20Node.js&url=https://github.com/foxifyjs/foxify&via=foxifyjs&hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast) [![Twitter Follow](https://img.shields.io/twitter/follow/foxifyjs.svg?style=social&label=Follow)](https://twitter.com/foxifyjs)
 
-
 The **fast**, **easy to use** & **typescript ready** web framework for [Node.js](https://nodejs.org)
 
 > Inspired by [Express](https://expressjs.com)
@@ -23,9 +22,9 @@ The **fast**, **easy to use** & **typescript ready** web framework for [Node.js]
 ## Table of Contents <!-- omit in toc -->
 
 - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-    - [Usage](#usage)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Usage](#usage)
 - [Features](#features)
 - [Benchmarks](#benchmarks)
 - [TODO](#todo)
@@ -95,14 +94,14 @@ You can also find all the documents [here](https://foxify.js.org).
 
 **sort**: R/S
 
-| Framework | Version | R/S |
-|:---------:|:-------:|:---:|
-| fastify | 1.7.0 | 26,819.6 |
-| **bare** | **10.3.0** | **26,410** |
-| **Foxify** | **0.8.0** | **23,928.4** |
-| restify | 7.2.1 | 14,919.2 |
-| hapi | 17.5.2 | 18756.6 |
-| express | 4.16.3 | 18,454 |
+| Framework  | Version    | R/S          |
+| :--------: | :--------: | :----------: |
+| fastify    | 1.7.0      | 26,819.6     |
+| **bare**   | **10.3.0** | **26,410**   |
+| **Foxify** | **0.8.0**  | **23,928.4** |
+| hapi       | 17.5.2     | 18,756.6     |
+| restify    | 7.2.1      | 14,919.2     |
+| express    | 4.16.3     | 18,454       |
 
 ## TODO
 

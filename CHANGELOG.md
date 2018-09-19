@@ -12,6 +12,10 @@
 
 ---
 
+## [next](https://github.com/foxifyjs/foxify/releases/tag/next) - *(2018-__-__)*
+
+- :zap: Added event listening ability to `Server`
+
 ## [v0.9.0](https://github.com/foxifyjs/foxify/releases/tag/v0.9.0) - *(2018-08-21)*
 
 - :zap: Added `subdomain.offset` setting

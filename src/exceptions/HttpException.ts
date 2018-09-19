@@ -7,14 +7,13 @@ import * as utils from "../utils";
 
 module HttpException { }
 
-interface HttpException extends Error {
+class HttpException extends Error {
+  static isHttpException = (arg: any): arg is HttpException => arg instanceof HttpException;
+
   code: number;
+
   errors: object;
 
-  handle(exception: any, req: Request, res: Response): void;
-}
-
-class HttpException extends Error {
   constructor(errors?: object);
   constructor(code: number, errors?: object);
   constructor(message: string, errors?: object);
