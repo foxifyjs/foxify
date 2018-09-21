@@ -2,9 +2,9 @@
   "name": "foxify",
   "version": "0.9.0",
   "description": "The fast, easy to use & typescript ready web framework for Node.js",
-  "author": "Ardalan Amini <ardalanamini22@gmail.com>",
+  "author": "Ardalan Amini <ardalanamini22@gmail.com> [https://github.com/ardalanamini]",
   "contributors": [
-    "Ardalan Amini <ardalanamini22@gmail.com>"
+    "Ardalan Amini <ardalanamini22@gmail.com> [https://github.com/ardalanamini]"
   ],
   "license": "MIT",
   "homepage": "https://foxify.js.org",
@@ -59,6 +59,7 @@
     "dotenv": "^6.0.0",
     "encodeurl": "^1.0.2",
     "escape-html": "^1.0.3",
+    "fast-decode-uri-component": "^1.0.0",
     "fast-json-stringify": "^1.8.0",
     "fresh": "^0.5.2",
     "methods": "^1.1.2",
@@ -69,6 +70,7 @@
     "proxy-addr": "^2.0.4",
     "qs": "^6.5.2",
     "range-parser": "^1.2.0",
+    "safe-regex": "^1.1.0",
     "send": "^0.16.2",
     "serve-static": "^1.13.2",
     "type-is": "^1.6.16",
@@ -89,6 +91,7 @@
     "@types/parseurl": "^1.3.1",
     "@types/proxy-addr": "^2.0.0",
     "@types/qs": "^6.5.1",
+    "@types/safe-regex": "^1.1.1",
     "@types/send": "^0.14.4",
     "@types/type-is": "^1.6.2",
     "@types/vary": "^1.1.0",

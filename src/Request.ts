@@ -45,6 +45,8 @@ class Request extends http.IncomingMessage {
    */
   head = this.get;
 
+  params: object = {};
+
   /**
    * Check if the request is fresh, aka
    * Last-Modified and/or the ETag

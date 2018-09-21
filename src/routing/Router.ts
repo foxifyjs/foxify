@@ -14,7 +14,7 @@ class Router {
   protected _routes = {} as Route.Routes;
 
   constructor() {
-    httpMethods.map((method) => this._routes[method] = []);
+    httpMethods.forEach((method) => this._routes[method] = []);
   }
 
   protected _next = (
@@ -56,7 +56,7 @@ class Router {
       const schema: { response: { [statusCode: number]: any } } | undefined = options.schema;
 
       if (schema)
-        schema.response = utils.object.map(schema.response, (value) => fastStringify(value));
+        schema.response = utils.object.mapValues(schema.response, (value) => fastStringify(value));
 
       return {
         ...route,

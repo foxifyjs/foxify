@@ -108,14 +108,16 @@ class Foxify {
 
   constructor() {
     /* apply http routing methods */
-    httpMethods.map((method) => {
+    httpMethods.forEach((method) => {
       method = method.toLowerCase();
 
-      if (!(this as { [key: string]: any })[method])
-        (this as { [key: string]: any })[method] = (path: string, ...controllers: Route.Controller[]) => {
+      if ((this as any)[method]) return;
+
+      (this as any)[method] =
+        (path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]) => {
           const route = new Route();
 
-          route[method](path, ...controllers);
+          route[method](path, options, ...controllers);
 
           this._router.push(route.routes);
 
