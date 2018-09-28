@@ -10,13 +10,19 @@ import * as IncomingRequest from "./Request";
 import * as ServerResponse from "./Response";
 import { Engine } from "./view";
 
+const OPTIONS = ["https", "x-powered-by", "routing.case-sensitive", "routing.ignore-trailing-slash",
+  "routing.allow-unsafe-regex", "json.escape"];
+const SETTINGS = ["env", "url", "port", "workers", "https.cert", "https.key", "json.spaces",
+  "json.replacer", "query.parser", "routing.max-param-length"];
+
 module Foxify {
   export interface Options {
     https: boolean;
     "x-powered-by": boolean;
     routing: {
-      strict: boolean,
-      sensitive: boolean,
+      "case-sensitive": boolean,
+      "ignore-trailing-slash": boolean,
+      "allow-unsafe-regex": boolean,
     };
     json: {
       escape: boolean,
@@ -41,6 +47,9 @@ module Foxify {
     };
     query: {
       parser?: (...args: any[]) => any,
+    };
+    routing: {
+      "max-param-length": number,
     };
   }
 
@@ -73,8 +82,9 @@ class Foxify {
     https: false,
     ["x-powered-by"]: true,
     routing: {
-      strict: false,
-      sensitive: true,
+      "case-sensitive": true,
+      "ignore-trailing-slash": false,
+      "allow-unsafe-regex": false,
     },
     json: {
       escape: false,
@@ -99,6 +109,9 @@ class Foxify {
     },
     query: {
       parser: undefined,
+    },
+    routing: {
+      "max-param-length": 100,
     },
   };
 
@@ -159,8 +172,7 @@ class Foxify {
     if (!utils.string.isString(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!utils.array.contains(
-      ["https", "x-powered-by", "routing.strict", "routing.sensitive", "json.escape"], option))
+    if (!utils.array.contains(OPTIONS, option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, true, this._options);
@@ -172,8 +184,7 @@ class Foxify {
     if (!utils.string.isString(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!utils.array.contains(
-      ["https", "x-powered-by", "routing.strict", "routing.sensitive", "json.escape"], option))
+    if (!utils.array.contains(OPTIONS, option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, false, this._options);
@@ -185,8 +196,7 @@ class Foxify {
     if (!utils.string.isString(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!utils.array.contains(
-      ["https", "x-powered-by", "routing.strict", "routing.sensitive", "json.escape"], option))
+    if (!utils.array.contains(OPTIONS, option))
       throw new TypeError(`Unknown option '${option}'`);
 
     const keys = option.split(".");
@@ -233,6 +243,7 @@ class Foxify {
           throw new TypeError(`setting '${setting}' should be an string`);
         break;
       case "json.spaces":
+      case "routing.max-param-length":
         if (value == null) break;
         if (!utils.number.isNumber(value))
           throw new TypeError(`setting '${setting}' should be a number`);
@@ -261,9 +272,7 @@ class Foxify {
       if (!utils.string.isString(setting))
         throw new TypeError("'setting' should be an string");
 
-      if (!utils.array.contains(
-        ["env", "url", "port", "workers", "https.cert", "https.key",
-          "json.spaces", "json.replacer", "query.parser"], setting))
+      if (!utils.array.contains(SETTINGS, setting))
         throw new TypeError(`Unknown setting '${setting}'`);
 
       const keys = setting.split(".");

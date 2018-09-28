@@ -92,7 +92,7 @@ module Layer {
 
   export interface JsonSchema {
     title?: string;
-    type: object;
+    type: JsonSchemaType;
     properties?: JsonSchemaProperties;
     patternProperties?: JsonSchemaProperties;
     additionalProperties?: {
@@ -258,14 +258,14 @@ class Layer {
       methods.forEach((method, index) => {
         if (methods.length > 1) {
           if (index === 0) {
-            paramName += param + ` (${method}`;
+            paramName += `${param} (${method}`;
             return;
           }
 
           paramName += `|${method}`;
           paramName += (index === methods.length - 1 ? ")" : "");
         } else
-          paramName = param + ` (${method})`;
+          paramName = `${param} (${method})`;
       });
     } else if (methods.length)
       paramName = ` (${methods.join("|")})`;
