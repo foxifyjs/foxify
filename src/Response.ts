@@ -8,7 +8,9 @@ import { sign } from "cookie-signature";
 import * as onFinished from "on-finished";
 import * as contentDisposition from "content-disposition";
 import * as vary from "vary";
+import fresh = require("fresh");
 import send = require("send");
+import * as constants from "./constants";
 import * as Request from "./Request";
 import * as utils from "./utils";
 import { Engine } from "./view";
@@ -309,6 +311,38 @@ class Response extends http.ServerResponse {
   stringify?: { [statusCode: number]: any };
 
   /**
+   * Check if the request is fresh, aka
+   * Last-Modified and/or the ETag
+   * still match.
+   */
+  get fresh() {
+    const req = this.req;
+    const method = req.method;
+    const status = this.statusCode;
+
+    // GET or HEAD for weak freshness validation only
+    if ("GET" !== method && "HEAD" !== method) return false;
+
+    // 2xx or 304 as per rfc2616 14.26
+    if ((status >= constants.http.OK && status < constants.http.MULTIPLE_CHOICES) ||
+      constants.http.NOT_MODIFIED === status)
+      return fresh(req.headers, {
+        "last-modified": this.get("Last-Modified"),
+      });
+
+    return false;
+  }
+
+  /**
+   * Check if the request is stale, aka
+   * "Last-Modified" and / or the "ETag" for the
+   * resource has changed.
+   */
+  get stale() {
+    return !this.fresh;
+  }
+
+  /**
    * Append additional header `field` with value `val`.
    *
    * @returns for chaining
@@ -603,12 +637,12 @@ class Response extends http.ServerResponse {
    * res.json({ user: "tj" });
    */
   json(obj: object, status?: number) {
-    if (status) this.status(status);
+    if (status !== undefined) this.status(status);
 
     const _stringify = (this.stringify && this.stringify[this.statusCode]) || stringify;
 
     // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json");
-    this.setHeader("Content-Type", "application/json");
+    this.setHeader("content-type", "application/json");
 
     const options = this.settings.json;
 
@@ -793,34 +827,32 @@ class Response extends http.ServerResponse {
    * res.send("<p>some html</p>");
    */
   send(body: string | object | Buffer): this {
-    const req = this.req;
-    const contentType = this.get("Content-Type") as string;
-    let chunk = body;
-
-    if (utils.string.isString(chunk)) {
-      if (!contentType)
+    if (utils.string.isString(body)) {
+      if (!this.get("content-type"))
         // reflect this in content-type
         this.setHeader("Content-Type", setCharset("text/html", "utf-8") as string);
-    } else if (Buffer.isBuffer(chunk)) {
-      if (!contentType) this.type("bin");
+    } else if (Buffer.isBuffer(body)) {
+      if (!this.get("content-type")) this.type("bin");
     } else
-      return this.json(<object>chunk);
+      return this.json(body);
 
     // freshness
-    if (req.fresh) this.statusCode = HTTP.NOT_MODIFIED;
+    if (this.fresh) this.statusCode = HTTP.NOT_MODIFIED;
+
+    const statusCode = this.statusCode;
 
     // strip irrelevant headers
-    if (HTTP.NO_CONTENT === this.statusCode || HTTP.NOT_MODIFIED === this.statusCode) {
+    if (HTTP.NO_CONTENT === statusCode || HTTP.NOT_MODIFIED === statusCode) {
       this.removeHeader("Content-Type");
       this.removeHeader("Content-Length");
       this.removeHeader("Transfer-Encoding");
 
-      chunk = "";
+      body = "";
     }
 
     // skip body for HEAD
-    if (req.method === "HEAD") this.end();
-    else this.end(chunk, "utf8");
+    if (this.req.method === "HEAD") this.end();
+    else this.end(body, "utf8");
 
     return this;
   }

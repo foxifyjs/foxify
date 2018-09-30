@@ -277,7 +277,7 @@ class Layer {
 
     this.handlers[method].push(...handlers.map((handler) => new Encapsulation(handler)));
 
-    this.options[method] = Object.assign({}, OPTIONS, options);
+    this.options[method] = Object.assign({}, OPTIONS, options, { schema: options.schema || {} });
 
     return this;
   }
@@ -287,7 +287,7 @@ class Layer {
 
     return {
       handlers,
-      options: this.options[method] || {} as Layer.RouteOptions,
+      options: this.options[method] || { schema: {} },
       params: this.params,
       handlersLength: handlers.length,
       paramsLength: this.paramsLength,

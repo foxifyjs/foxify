@@ -1,6 +1,8 @@
 import * as http from "http";
 import * as https from "https";
 import * as cluster from "cluster";
+import * as parseUrl from "parseurl";
+import * as qs from "qs";
 import * as EventEmitter from "./events/EventEmitter";
 import * as events from "./events";
 import * as Request from "./Request";
@@ -48,6 +50,13 @@ class Server {
         ...settings.subdomain,
       },
     };
+
+    const queryParse: (...args: any[]) => any = settings.query.parser || qs.parse;
+    Object.defineProperty(IncomingMessage.prototype, "query", {
+      get() {
+        return queryParse((parseUrl(this) as any).query, {});
+      },
+    });
 
     const ServerResponse = Response;
     ServerResponse.prototype.settings = {

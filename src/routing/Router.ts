@@ -576,7 +576,6 @@ class Router {
 
   lookup(req: Request, res: Response) {
     const handle = this.find(req.method as Method, req.path);
-    // const handle = this.find(req.method as Method, sanitizeUrl(req.url));
 
     res.stringify = handle.options.schema.response;
 
