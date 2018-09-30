@@ -6,7 +6,7 @@ import * as events from "../events";
 const handle = (error: any, req: Request, res: Response) => {
   events.emit(`error-${error.code || http.INTERNAL_SERVER_ERROR}` as any, error, req, res);
 
-  if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", error);
+  // if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", error);
 };
 
 declare module Encapsulation { }

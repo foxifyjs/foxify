@@ -271,6 +271,27 @@ module Response {
   }
 }
 
+interface Response {
+  /**
+   *
+   * @alias contentType
+   */
+  type(type: string): this;
+
+  /**
+   *
+   * @alias header
+   */
+  set(field: string | object, val?: string | string[]): this;
+
+  /**
+   * Get value for header `field`.
+   *
+   * @alias getHeader
+   */
+  get(name: string): number | string | string[] | undefined;
+}
+
 class Response extends http.ServerResponse {
   /**
    * @hidden
@@ -286,25 +307,6 @@ class Response extends http.ServerResponse {
    * @hidden
    */
   stringify?: { [statusCode: number]: any };
-
-  /**
-   *
-   * @alias contentType
-   */
-  type = this.contentType;
-
-  /**
-   *
-   * @alias header
-   */
-  set = this.header;
-
-  /**
-   * Get value for header `field`.
-   *
-   * @alias getHeader
-   */
-  get = this.getHeader;
 
   /**
    * Append additional header `field` with value `val`.
@@ -933,5 +935,24 @@ class Response extends http.ServerResponse {
     return this;
   }
 }
+
+/**
+ *
+ * @alias contentType
+ */
+Response.prototype.type = Response.prototype.contentType;
+
+/**
+ *
+ * @alias header
+ */
+Response.prototype.set = Response.prototype.header;
+
+/**
+ * Get value for header `field`.
+ *
+ * @alias getHeader
+ */
+Response.prototype.get = Response.prototype.getHeader;
 
 export = Response;

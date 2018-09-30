@@ -21,6 +21,14 @@ module Request {
   }
 }
 
+interface Request {
+  /**
+   *
+   * @alias get
+   */
+  head(name: string): string | string[] | undefined;
+}
+
 class Request extends http.IncomingMessage {
   /**
    * @hidden
@@ -38,12 +46,6 @@ class Request extends http.IncomingMessage {
   res!: Response;
 
   query!: any;
-
-  /**
-   *
-   * @alias get
-   */
-  head = this.get;
 
   params: object = {};
 
@@ -302,6 +304,12 @@ class Request extends http.IncomingMessage {
     return parseRange(size, range, options);
   }
 }
+
+/**
+ *
+ * @alias get
+ */
+Request.prototype.head = Request.prototype.get;
 
 export = Request;
 

@@ -1,6 +1,6 @@
 const Foxify = require('../../framework')
 
-let routes = new Foxify.Route()
+const routes = new Foxify.Router()
 
 routes.get('/', (req, res) => {
   res.render('index', {
@@ -9,7 +9,7 @@ routes.get('/', (req, res) => {
   })
 })
 
-routes.get('/greet/', (req, res) => {
+routes.get('/greet', (req, res) => {
   res.json({
     hello: 'world'
   })

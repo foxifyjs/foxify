@@ -2,8 +2,7 @@ import "./bootstrap";
 import * as os from "os";
 import * as serveStatic from "serve-static";
 import * as constants from "./constants";
-import { init } from "./middlewares";
-import { httpMethods, Route, Router } from "./routing";
+import { httpMethods, Layer, Router } from "./routing";
 import * as utils from "./utils";
 import * as Server from "./Server";
 import * as IncomingRequest from "./Request";
@@ -57,18 +56,18 @@ module Foxify {
   export type Response = ServerResponse;
 }
 
-interface Foxify extends Route.MethodFunctions<Foxify> {
+interface Foxify extends Router.MethodFunctions<Foxify> {
   get(setting: string): any;
-  get(path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]): this;
+  get(path: string, options: Layer.RouteOptions | Layer.Handler, ...controllers: Layer.Handler[]): this;
 
-  use(route: Route): this;
-  use(...controllers: Route.Controller[]): this;
-  use(path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]): this;
+  use(path: string | Layer.Handler | Router, ...handlers: Array<Layer.Handler | Router>): this;
+
+  param(param: string, handler: Layer.Handler): this;
 }
 
 class Foxify {
   static constants = constants;
-  static Route = Route;
+  static Router = Router;
   static static = serveStatic;
 
   static dotenv = (path: string) => {
@@ -121,21 +120,16 @@ class Foxify {
 
   constructor() {
     /* apply http routing methods */
-    httpMethods.forEach((method) => {
+    ["route", "use", "all"].concat(httpMethods).forEach((method) => {
       method = method.toLowerCase();
 
       if ((this as any)[method]) return;
 
-      (this as any)[method] =
-        (path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]) => {
-          const route = new Route();
+      (this as any)[method] = (...args: any[]) => {
+        (this._router as any)[method](...args);
 
-          route[method](path, options, ...controllers);
-
-          this._router.push(route.routes);
-
-          return this;
-        };
+        return this;
+      };
     });
   }
 
@@ -147,24 +141,6 @@ class Foxify {
       object[keys[0]] = value;
     else
       this._set(utils.array.tail(keys).join("."), value, object[keys[0]]);
-  }
-
-  /* handle built-in middlewares */
-  private _use(
-    path: string | Route | Route.Controller,
-    options?: Route.RouteOptions | Route.Controller,
-    ...middlewares: Route.Controller[]) {
-    if (path instanceof Route)
-      this._router.push(path.routes);
-    else {
-      const route = new Route();
-
-      route.use(path, options, ...middlewares);
-
-      this._router.prepend(route.routes);
-    }
-
-    return this;
   }
 
   /* handle options */
@@ -265,7 +241,7 @@ class Foxify {
     return this;
   }
 
-  get(path: string, options?: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]): any {
+  get(path: string, options?: Layer.RouteOptions | Layer.Handler, ...controllers: Layer.Handler[]): any {
     if (!options) {
       const setting = path;
 
@@ -288,16 +264,11 @@ class Foxify {
       return _setting;
     }
 
-    if (!utils.string.isString(path))
-      throw new TypeError("'path' should be an string");
+    return this.use(new Router().get(path, options, ...controllers));
+  }
 
-    const route = new Route();
-
-    route.get(path, options as Route.RouteOptions | Route.Controller, ...controllers);
-
-    this._router.push(route.routes);
-
-    return this;
+  prettyPrint() {
+    return this._router.prettyPrint();
   }
 
   /**
@@ -311,33 +282,12 @@ class Foxify {
     return this;
   }
 
-  /* handle middlewares */
-  use(
-    path: string | Route | Route.Controller,
-    options?: Route.RouteOptions | Route.Controller,
-    ...controllers: Route.Controller[]) {
-    if (path instanceof Route)
-      this._router.push(path.routes);
-    else {
-      const route = new Route();
-
-      route.use(path, options as Route.RouteOptions | Route.Controller, ...controllers);
-
-      this._router.push(route.routes);
-    }
-
-    return this;
-  }
-
   start(callback?: () => void) {
     if (callback && !utils.function.isFunction(callback))
       throw new TypeError(`Expected 'callback' to be a function, got ${typeof callback} instead`);
 
     /* set node env */
     process.env.NODE_ENV = this.get("env");
-
-    /* apply built-in middlewares */
-    this._use(init(this));
 
     /* initialize the router with provided options and settings */
     this._router.initialize(this);
@@ -348,7 +298,7 @@ class Foxify {
         ...this._settings,
         view: this._view,
       },
-      (req, res) => this._router.route(req, res)
+      this._router.lookup.bind(this._router)
     );
 
     return server.start(callback);

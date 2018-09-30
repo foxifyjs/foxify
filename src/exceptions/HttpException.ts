@@ -50,6 +50,9 @@ class HttpException extends Error {
     const code = exception.code || http.INTERNAL_SERVER_ERROR;
     const message = exception.message || STATUS_CODES[code] || "";
 
+    exception.path = req.path;
+    if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", exception);
+
     res.status(code).format({
       "text/html": () => res.send(htmlError(code, STATUS_CODES[code], message)),
       "application/json": () => {
