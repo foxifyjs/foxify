@@ -7,14 +7,13 @@ import * as utils from "../utils";
 
 module HttpException { }
 
-interface HttpException extends Error {
+class HttpException extends Error {
+  static isHttpException = (arg: any): arg is HttpException => arg instanceof HttpException;
+
   code: number;
+
   errors: object;
 
-  handle(exception: any, req: Request, res: Response): void;
-}
-
-class HttpException extends Error {
   constructor(errors?: object);
   constructor(code: number, errors?: object);
   constructor(message: string, errors?: object);
@@ -50,6 +49,9 @@ class HttpException extends Error {
   static handle(exception: any = new HttpException(), req: Request, res: Response): void {
     const code = exception.code || http.INTERNAL_SERVER_ERROR;
     const message = exception.message || STATUS_CODES[code] || "";
+
+    exception.path = req.path;
+    if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", exception);
 
     res.status(code).format({
       "text/html": () => res.send(htmlError(code, STATUS_CODES[code], message)),

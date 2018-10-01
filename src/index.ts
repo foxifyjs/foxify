@@ -2,21 +2,26 @@ import "./bootstrap";
 import * as os from "os";
 import * as serveStatic from "serve-static";
 import * as constants from "./constants";
-import { init } from "./middlewares";
-import { httpMethods, Route, Router } from "./routing";
+import { httpMethods, Layer, Router } from "./routing";
 import * as utils from "./utils";
 import * as Server from "./Server";
 import * as IncomingRequest from "./Request";
 import * as ServerResponse from "./Response";
 import { Engine } from "./view";
 
+const OPTIONS = ["https", "x-powered-by", "routing.case-sensitive", "routing.ignore-trailing-slash",
+  "routing.allow-unsafe-regex", "json.escape"];
+const SETTINGS = ["env", "url", "port", "workers", "https.cert", "https.key", "json.spaces",
+  "json.replacer", "query.parser", "routing.max-param-length"];
+
 module Foxify {
   export interface Options {
     https: boolean;
     "x-powered-by": boolean;
     routing: {
-      strict: boolean,
-      sensitive: boolean,
+      "case-sensitive": boolean,
+      "ignore-trailing-slash": boolean,
+      "allow-unsafe-regex": boolean,
     };
     json: {
       escape: boolean,
@@ -42,24 +47,27 @@ module Foxify {
     query: {
       parser?: (...args: any[]) => any,
     };
+    routing: {
+      "max-param-length": number,
+    };
   }
 
   export type Request = IncomingRequest;
   export type Response = ServerResponse;
 }
 
-interface Foxify extends Route.MethodFunctions<Foxify> {
+interface Foxify extends Router.MethodFunctions<Foxify> {
   get(setting: string): any;
-  get(path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]): this;
+  get(path: string, options: Layer.RouteOptions | Layer.Handler, ...controllers: Layer.Handler[]): this;
 
-  use(route: Route): this;
-  use(...controllers: Route.Controller[]): this;
-  use(path: string, options: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]): this;
+  use(path: string | Layer.Handler | Router, ...handlers: Array<Layer.Handler | Router>): this;
+
+  param(param: string, handler: Layer.Handler): this;
 }
 
 class Foxify {
   static constants = constants;
-  static Route = Route;
+  static Router = Router;
   static static = serveStatic;
 
   static dotenv = (path: string) => {
@@ -73,8 +81,9 @@ class Foxify {
     https: false,
     ["x-powered-by"]: true,
     routing: {
-      strict: false,
-      sensitive: true,
+      "case-sensitive": true,
+      "ignore-trailing-slash": false,
+      "allow-unsafe-regex": false,
     },
     json: {
       escape: false,
@@ -100,6 +109,9 @@ class Foxify {
     query: {
       parser: undefined,
     },
+    routing: {
+      "max-param-length": 100,
+    },
   };
 
   private _router = new Router();
@@ -108,19 +120,16 @@ class Foxify {
 
   constructor() {
     /* apply http routing methods */
-    httpMethods.map((method) => {
+    ["route", "use", "all"].concat(httpMethods).forEach((method) => {
       method = method.toLowerCase();
 
-      if (!(this as { [key: string]: any })[method])
-        (this as { [key: string]: any })[method] = (path: string, ...controllers: Route.Controller[]) => {
-          const route = new Route();
+      if ((this as any)[method]) return;
 
-          route[method](path, ...controllers);
+      (this as any)[method] = (...args: any[]) => {
+        (this._router as any)[method](...args);
 
-          this._router.push(route.routes);
-
-          return this;
-        };
+        return this;
+      };
     });
   }
 
@@ -134,31 +143,12 @@ class Foxify {
       this._set(utils.array.tail(keys).join("."), value, object[keys[0]]);
   }
 
-  /* handle built-in middlewares */
-  private _use(
-    path: string | Route | Route.Controller,
-    options?: Route.RouteOptions | Route.Controller,
-    ...middlewares: Route.Controller[]) {
-    if (path instanceof Route)
-      this._router.push(path.routes);
-    else {
-      const route = new Route();
-
-      route.use(path, options, ...middlewares);
-
-      this._router.prepend(route.routes);
-    }
-
-    return this;
-  }
-
   /* handle options */
   enable(option: string) {
     if (!utils.string.isString(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!utils.array.contains(
-      ["https", "x-powered-by", "routing.strict", "routing.sensitive", "json.escape"], option))
+    if (!utils.array.contains(OPTIONS, option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, true, this._options);
@@ -170,8 +160,7 @@ class Foxify {
     if (!utils.string.isString(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!utils.array.contains(
-      ["https", "x-powered-by", "routing.strict", "routing.sensitive", "json.escape"], option))
+    if (!utils.array.contains(OPTIONS, option))
       throw new TypeError(`Unknown option '${option}'`);
 
     this._set(option, false, this._options);
@@ -183,8 +172,7 @@ class Foxify {
     if (!utils.string.isString(option))
       throw new TypeError("Argument 'option' should be an string");
 
-    if (!utils.array.contains(
-      ["https", "x-powered-by", "routing.strict", "routing.sensitive", "json.escape"], option))
+    if (!utils.array.contains(OPTIONS, option))
       throw new TypeError(`Unknown option '${option}'`);
 
     const keys = option.split(".");
@@ -231,6 +219,7 @@ class Foxify {
           throw new TypeError(`setting '${setting}' should be an string`);
         break;
       case "json.spaces":
+      case "routing.max-param-length":
         if (value == null) break;
         if (!utils.number.isNumber(value))
           throw new TypeError(`setting '${setting}' should be a number`);
@@ -252,16 +241,14 @@ class Foxify {
     return this;
   }
 
-  get(path: string, options?: Route.RouteOptions | Route.Controller, ...controllers: Route.Controller[]): any {
+  get(path: string, options?: Layer.RouteOptions | Layer.Handler, ...controllers: Layer.Handler[]): any {
     if (!options) {
       const setting = path;
 
       if (!utils.string.isString(setting))
         throw new TypeError("'setting' should be an string");
 
-      if (!utils.array.contains(
-        ["env", "url", "port", "workers", "https.cert", "https.key",
-          "json.spaces", "json.replacer", "query.parser"], setting))
+      if (!utils.array.contains(SETTINGS, setting))
         throw new TypeError(`Unknown setting '${setting}'`);
 
       const keys = setting.split(".");
@@ -277,16 +264,11 @@ class Foxify {
       return _setting;
     }
 
-    if (!utils.string.isString(path))
-      throw new TypeError("'path' should be an string");
+    return this.use(new Router().get(path, options, ...controllers));
+  }
 
-    const route = new Route();
-
-    route.get(path, options as Route.RouteOptions | Route.Controller, ...controllers);
-
-    this._router.push(route.routes);
-
-    return this;
+  prettyPrint() {
+    return this._router.prettyPrint();
   }
 
   /**
@@ -300,33 +282,12 @@ class Foxify {
     return this;
   }
 
-  /* handle middlewares */
-  use(
-    path: string | Route | Route.Controller,
-    options?: Route.RouteOptions | Route.Controller,
-    ...controllers: Route.Controller[]) {
-    if (path instanceof Route)
-      this._router.push(path.routes);
-    else {
-      const route = new Route();
-
-      route.use(path, options as Route.RouteOptions | Route.Controller, ...controllers);
-
-      this._router.push(route.routes);
-    }
-
-    return this;
-  }
-
   start(callback?: () => void) {
     if (callback && !utils.function.isFunction(callback))
       throw new TypeError(`Expected 'callback' to be a function, got ${typeof callback} instead`);
 
     /* set node env */
     process.env.NODE_ENV = this.get("env");
-
-    /* apply built-in middlewares */
-    this._use(init(this));
 
     /* initialize the router with provided options and settings */
     this._router.initialize(this);
@@ -337,7 +298,7 @@ class Foxify {
         ...this._settings,
         view: this._view,
       },
-      (req, res) => this._router.route(req, res)
+      this._router.lookup.bind(this._router)
     );
 
     return server.start(callback);

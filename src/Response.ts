@@ -8,7 +8,9 @@ import { sign } from "cookie-signature";
 import * as onFinished from "on-finished";
 import * as contentDisposition from "content-disposition";
 import * as vary from "vary";
+import fresh = require("fresh");
 import send = require("send");
+import * as constants from "./constants";
 import * as Request from "./Request";
 import * as utils from "./utils";
 import { Engine } from "./view";
@@ -271,6 +273,27 @@ module Response {
   }
 }
 
+interface Response {
+  /**
+   *
+   * @alias contentType
+   */
+  type(type: string): this;
+
+  /**
+   *
+   * @alias header
+   */
+  set(field: string | object, val?: string | string[]): this;
+
+  /**
+   * Get value for header `field`.
+   *
+   * @alias getHeader
+   */
+  get(name: string): number | string | string[] | undefined;
+}
+
 class Response extends http.ServerResponse {
   /**
    * @hidden
@@ -288,23 +311,36 @@ class Response extends http.ServerResponse {
   stringify?: { [statusCode: number]: any };
 
   /**
-   *
-   * @alias contentType
+   * Check if the request is fresh, aka
+   * Last-Modified and/or the ETag
+   * still match.
    */
-  type = this.contentType;
+  get fresh() {
+    const req = this.req;
+    const method = req.method;
+    const status = this.statusCode;
+
+    // GET or HEAD for weak freshness validation only
+    if ("GET" !== method && "HEAD" !== method) return false;
+
+    // 2xx or 304 as per rfc2616 14.26
+    if ((status >= constants.http.OK && status < constants.http.MULTIPLE_CHOICES) ||
+      constants.http.NOT_MODIFIED === status)
+      return fresh(req.headers, {
+        "last-modified": this.get("Last-Modified"),
+      });
+
+    return false;
+  }
 
   /**
-   *
-   * @alias header
+   * Check if the request is stale, aka
+   * "Last-Modified" and / or the "ETag" for the
+   * resource has changed.
    */
-  set = this.header;
-
-  /**
-   * Get value for header `field`.
-   *
-   * @alias getHeader
-   */
-  get = this.getHeader;
+  get stale() {
+    return !this.fresh;
+  }
 
   /**
    * Append additional header `field` with value `val`.
@@ -601,17 +637,15 @@ class Response extends http.ServerResponse {
    * res.json({ user: "tj" });
    */
   json(obj: object, status?: number) {
-    if (status) this.status(status);
-
-    const _stringify = (this.stringify && this.stringify[this.statusCode]) || stringify;
+    if (status !== undefined) this.status(status);
 
     // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json");
-    this.setHeader("Content-Type", "application/json");
+    this.setHeader("content-type", "application/json");
 
     const options = this.settings.json;
 
     return this.send(
-      _stringify(
+      ((this.stringify && this.stringify[this.statusCode]) || stringify)(
         obj,
         options.replacer,
         options.spaces,
@@ -791,34 +825,32 @@ class Response extends http.ServerResponse {
    * res.send("<p>some html</p>");
    */
   send(body: string | object | Buffer): this {
-    const req = this.req;
-    const contentType = this.get("Content-Type") as string;
-    let chunk = body;
-
-    if (utils.string.isString(chunk)) {
-      if (!contentType)
-        // reflect this in content-type
-        this.setHeader("Content-Type", setCharset("text/html", "utf-8") as string);
-    } else if (Buffer.isBuffer(chunk)) {
-      if (!contentType) this.type("bin");
+    if (utils.string.isString(body)) {
+      // reflect this in content-type
+      if (!this.get("content-type"))
+        this.setHeader("content-type", setCharset("text/html", "utf-8") as string);
+    } else if (Buffer.isBuffer(body)) {
+      if (!this.get("content-type")) this.type("bin");
     } else
-      return this.json(<object>chunk);
+      return this.json(body);
 
     // freshness
-    if (req.fresh) this.statusCode = HTTP.NOT_MODIFIED;
+    if (this.fresh) this.statusCode = HTTP.NOT_MODIFIED;
+
+    const statusCode = this.statusCode;
 
     // strip irrelevant headers
-    if (HTTP.NO_CONTENT === this.statusCode || HTTP.NOT_MODIFIED === this.statusCode) {
-      this.removeHeader("Content-Type");
+    if (HTTP.NO_CONTENT === statusCode || HTTP.NOT_MODIFIED === statusCode) {
+      this.removeHeader("content-type");
       this.removeHeader("Content-Length");
       this.removeHeader("Transfer-Encoding");
 
-      chunk = "";
+      body = "";
     }
 
     // skip body for HEAD
-    if (req.method === "HEAD") this.end();
-    else this.end(chunk, "utf8");
+    if (this.req.method === "HEAD") this.end();
+    else this.end(body, "utf8");
 
     return this;
   }
@@ -933,5 +965,24 @@ class Response extends http.ServerResponse {
     return this;
   }
 }
+
+/**
+ *
+ * @alias contentType
+ */
+Response.prototype.type = Response.prototype.contentType;
+
+/**
+ *
+ * @alias header
+ */
+Response.prototype.set = Response.prototype.header;
+
+/**
+ * Get value for header `field`.
+ *
+ * @alias getHeader
+ */
+Response.prototype.get = Response.prototype.getHeader;
 
 export = Response;

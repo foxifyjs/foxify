@@ -1,10 +1,10 @@
 {
   "name": "foxify",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "The fast, easy to use & typescript ready web framework for Node.js",
-  "author": "Ardalan Amini <ardalanamini22@gmail.com>",
+  "author": "Ardalan Amini <ardalanamini22@gmail.com> [https://github.com/ardalanamini]",
   "contributors": [
-    "Ardalan Amini <ardalanamini22@gmail.com>"
+    "Ardalan Amini <ardalanamini22@gmail.com> [https://github.com/ardalanamini]"
   ],
   "license": "MIT",
   "homepage": "https://foxify.js.org",
@@ -48,7 +48,7 @@
     "doc": "node scripts/doc.js"
   },
   "dependencies": {
-    "@types/node": "^10.7.1",
+    "@types/node": "^10.11.3",
     "@types/range-parser": "^1.2.2",
     "accepts": "^1.3.5",
     "async": "^2.6.1",
@@ -59,16 +59,18 @@
     "dotenv": "^6.0.0",
     "encodeurl": "^1.0.2",
     "escape-html": "^1.0.3",
-    "fast-json-stringify": "^1.7.1",
+    "fast-decode-uri-component": "^1.0.0",
+    "fast-json-stringify": "^1.9.0",
     "fresh": "^0.5.2",
     "methods": "^1.1.2",
     "on-finished": "^2.3.0",
     "parseurl": "^1.3.2",
-    "path-to-regexp": "^2.3.0",
-    "prototyped.js": "^0.18.1",
+    "path-to-regexp": "^2.4.0",
+    "prototyped.js": "^0.20.0",
     "proxy-addr": "^2.0.4",
     "qs": "^6.5.2",
     "range-parser": "^1.2.0",
+    "safe-regex": "^1.1.0",
     "send": "^0.16.2",
     "serve-static": "^1.13.2",
     "type-is": "^1.6.16",
@@ -89,6 +91,7 @@
     "@types/parseurl": "^1.3.1",
     "@types/proxy-addr": "^2.0.0",
     "@types/qs": "^6.5.1",
+    "@types/safe-regex": "^1.1.1",
     "@types/send": "^0.14.4",
     "@types/type-is": "^1.6.2",
     "@types/vary": "^1.1.0",
@@ -96,12 +99,12 @@
     "ejs": "^2.6.1",
     "esdoc-typescript-plugin": "^1.0.1",
     "fs-readdir-recursive": "^1.1.0",
-    "morgan": "^1.9.0",
+    "morgan": "^1.9.1",
     "rimraf": "^2.6.2",
     "tslint": "^5.11.0",
     "typedoc": "^0.12.0",
     "typedoc-plugin-example-tag": "^1.0.2",
-    "typescript": "^3.0.1",
+    "typescript": "^3.1.1",
     "uglify-es": "^3.3.9"
   }
 }

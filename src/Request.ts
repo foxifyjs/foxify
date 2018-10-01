@@ -5,9 +5,7 @@ import parseRange = require("range-parser");
 import typeIs = require("type-is");
 // import proxyAddr = require("proxy-addr");
 import * as parseUrl from "parseurl";
-import fresh = require("fresh");
 import * as Response from "./Response";
-import * as constants from "./constants";
 import * as utils from "./utils";
 
 module Request {
@@ -19,6 +17,14 @@ module Request {
       offset?: number,
     };
   }
+}
+
+interface Request {
+  /**
+   *
+   * @alias get
+   */
+  head(name: string): string | string[] | undefined;
 }
 
 class Request extends http.IncomingMessage {
@@ -39,35 +45,7 @@ class Request extends http.IncomingMessage {
 
   query!: any;
 
-  /**
-   *
-   * @alias get
-   */
-  head = this.get;
-
-  /**
-   * Check if the request is fresh, aka
-   * Last-Modified and/or the ETag
-   * still match.
-   */
-  get fresh() {
-    const method = this.method;
-    const res = this.res;
-    const status = res.statusCode;
-
-    // GET or HEAD for weak freshness validation only
-    if ("GET" !== method && "HEAD" !== method) return false;
-
-    // 2xx or 304 as per rfc2616 14.26
-    if ((status >= constants.http.OK && status < constants.http.MULTIPLE_CHOICES) ||
-      constants.http.NOT_MODIFIED === status)
-      return fresh(this.headers, {
-        "etag": res.get("ETag"),
-        "last-modified": res.get("Last-Modified"),
-      });
-
-    return false;
-  }
+  params: object = {};
 
   /**
    * Parse the "Host" header field to a hostname.
@@ -98,15 +76,6 @@ class Request extends http.IncomingMessage {
     const url: any = parseUrl(this);
 
     return url ? url.pathname : "";
-  }
-
-  /**
-   * Check if the request is stale, aka
-   * "Last-Modified" and / or the "ETag" for the
-   * resource has changed.
-   */
-  get stale() {
-    return !this.fresh;
   }
 
   /**
@@ -300,6 +269,12 @@ class Request extends http.IncomingMessage {
     return parseRange(size, range, options);
   }
 }
+
+/**
+ *
+ * @alias get
+ */
+Request.prototype.head = Request.prototype.get;
 
 export = Request;
 

@@ -1,6 +1,10 @@
 import * as http from "http";
 import * as https from "https";
 import * as cluster from "cluster";
+import * as parseUrl from "parseurl";
+import * as qs from "qs";
+import * as EventEmitter from "./events/EventEmitter";
+import * as events from "./events";
 import * as Request from "./Request";
 import * as Response from "./Response";
 import * as Foxify from "./index";
@@ -17,6 +21,12 @@ module Server {
   export type Listener = (request: Request, response: Response) => void;
 
   export type Callback = (server: Server) => void;
+}
+
+interface Server {
+  on(event: EventEmitter.ErrorEvent, listener: EventEmitter.ErrorListener): this;
+  on(event: "uncaughtException", listener: EventEmitter.ExceptionListener): this;
+  on(event: "unhandledRejection", listener: EventEmitter.RejectionListener): this;
 }
 
 class Server {
@@ -41,6 +51,13 @@ class Server {
       },
     };
 
+    const queryParse: (...args: any[]) => any = settings.query.parser || qs.parse;
+    Object.defineProperty(IncomingMessage.prototype, "query", {
+      get() {
+        return queryParse((parseUrl(this) as any).query, {});
+      },
+    });
+
     const ServerResponse = Response;
     ServerResponse.prototype.settings = {
       engine: settings.view,
@@ -60,6 +77,8 @@ class Server {
       OPTIONS.key = httpsSettings.key;
     }
 
+    this.on("error", HttpException.handle);
+
     const workers = settings.workers;
 
     if (workers > 1) {
@@ -70,18 +89,10 @@ class Server {
         return this;
       }
 
-      /* no server fail at any cost ;) */
-      process.on("uncaughtException", (err) => console.error("Caught exception: ", err))
-        .on("unhandledRejection", (err) => console.warn("Caught rejection: ", err));
-
       this._instance = SERVER.createServer(OPTIONS, listener);
 
       return this;
     }
-
-    /* no server fail at any cost ;) */
-    process.on("uncaughtException", (err) => console.error("Caught exception: ", err))
-      .on("unhandledRejection", (err) => console.warn("Caught rejection: ", err));
 
     this._instance = SERVER.createServer(OPTIONS, listener);
   }
@@ -115,6 +126,12 @@ class Server {
       return this.stop((server) => server.start(callback));
 
     return this.start(callback);
+  }
+
+  on(event: EventEmitter.Event, listener: (...args: any[]) => void) {
+    events.on(event, listener);
+
+    return this;
   }
 }
 
