@@ -12,9 +12,12 @@
 
 ---
 
-## [next](https://github.com/foxifyjs/foxify/releases/tag/next) - *(2018-__-__)*
+## [v0.10.0](https://github.com/foxifyjs/foxify/releases/tag/v0.10.0) - *(2018-10-02)*
 
-- :zap: Added event listening ability to `Server`
+- :zap: Added event listening ability to `Server` for custom error handlers
+- :zap: Added `route` handler to `Router`
+- :zap: Added param handler to `Router`
+- :star2: Improved `Routing` performance (about 30% faster)
 
 ## [v0.9.0](https://github.com/foxifyjs/foxify/releases/tag/v0.9.0) - *(2018-08-21)*
 

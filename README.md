@@ -76,7 +76,7 @@ You can also find all the documents [here](https://foxify.js.org).
 ## Features
 
 - Written in ES6
-- Robust routing (faster than `Express`)
+- Robust routing (about 60% faster than `Express`)
 - `Express` middleware support
 - Robust database modeling ([`Odin`](https://github.com/foxifyjs/odin))
 - Simple and powerful error handling
@@ -85,6 +85,7 @@ You can also find all the documents [here](https://foxify.js.org).
 - View system supporting lots of template engines
 - Content negotiation
 - Executable for generating applications quickly
+- Error handling
 
 ## Benchmarks
 
