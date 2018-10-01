@@ -212,15 +212,17 @@ class Router {
 
   allowUnsafeRegex = false;
 
-  constructor() {
+  constructor(public prefix = "") {
+    assert(typeof prefix === "string", "Prefix should be a string");
+
     httpMethods.forEach((method) => {
       const methodName = method.toLowerCase();
 
       if ((this as any)[methodName]) throw new Error(`Method already exists: ${methodName}`);
 
       (this as any)[methodName] =
-        (path: string, opts: Layer.RouteOptions | Layer.Handler, ...handler: Layer.Handler[]) =>
-          this.on(method, path, opts, ...handler);
+        (path: string, opts: Layer.RouteOptions | Layer.Handler, ...handlers: Layer.Handler[]) =>
+          this.on(method, path, opts, ...handlers);
     });
   }
 
@@ -238,7 +240,7 @@ class Router {
     assert(typeof method === "string", "Method should be a string");
     assert(httpMethods.indexOf(method) !== -1, `Method "${method}" is not an http method.`);
 
-    this.routes.push({ method, path, opts, handlers });
+    this.routes.push({ method, path: `${this.prefix}${path}`, opts, handlers });
 
     return this;
   }
@@ -337,8 +339,6 @@ class Router {
   protected _next = (req: Request, res: Response, handlers: Encapsulation[], index = 0) => {
     const handler = handlers[index];
 
-    if (!handler) throw new HttpException(HTTP.NOT_FOUND);
-
     const next = () => this._safeNext.run(req, res, handlers, index + 1);
 
     req.next = next;
@@ -409,6 +409,14 @@ class Router {
 
     const middleware = middlewares.filter((middleware) => middleware.path === "*");
     if (middleware) routes = middleware.concat(routes);
+
+    routes = routes.map((route) => {
+      route.handlers.push(() => {
+        throw new HttpException(HTTP.NOT_FOUND);
+      });
+
+      return route;
+    });
 
     routes.forEach(({ method, path, opts, handlers }) => {
       const params = [];
@@ -528,9 +536,11 @@ class Router {
     }
 
     if (utils.function.isFunction(path)) {
-      handlers = [path].concat(handlers.filter((handler) => !Router.isRouter(handler)) as Layer.Handler[]);
+      handlers = [path].concat(handlers as Layer.Handler[]);
       path = "*";
     }
+
+    handlers = handlers.filter((handler) => !Router.isRouter(handler));
 
     // path validation
     assert(typeof path === "string", "Path should be a string");
@@ -543,9 +553,10 @@ class Router {
     if (index === -1) this.middlewares.push({ path, handlers: handlers as Layer.Handler[] });
     else this.middlewares[index].handlers.push(...handlers as Layer.Handler[]);
 
+    const prefix = `${this.prefix}${path === "*" ? "" : path}`;
     routers.forEach((router) => {
-      router.middlewares.forEach((middleware) => this.use(middleware.path, ...middleware.handlers));
-      this.routes = this.routes.concat(router.routes);
+      router.middlewares.forEach((middleware) => this.use(`${prefix}${middleware.path}`, ...middleware.handlers));
+      this.routes = this.routes.concat(router.routes.map((route) => ({ ...route, path: `${prefix}${route.path}` })));
       this.params = Object.assign({}, this.params, router.params);
     });
 

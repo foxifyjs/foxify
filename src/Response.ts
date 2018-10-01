@@ -639,15 +639,13 @@ class Response extends http.ServerResponse {
   json(obj: object, status?: number) {
     if (status !== undefined) this.status(status);
 
-    const _stringify = (this.stringify && this.stringify[this.statusCode]) || stringify;
-
     // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json");
     this.setHeader("content-type", "application/json");
 
     const options = this.settings.json;
 
     return this.send(
-      _stringify(
+      ((this.stringify && this.stringify[this.statusCode]) || stringify)(
         obj,
         options.replacer,
         options.spaces,
@@ -828,9 +826,9 @@ class Response extends http.ServerResponse {
    */
   send(body: string | object | Buffer): this {
     if (utils.string.isString(body)) {
+      // reflect this in content-type
       if (!this.get("content-type"))
-        // reflect this in content-type
-        this.setHeader("Content-Type", setCharset("text/html", "utf-8") as string);
+        this.setHeader("content-type", setCharset("text/html", "utf-8") as string);
     } else if (Buffer.isBuffer(body)) {
       if (!this.get("content-type")) this.type("bin");
     } else
@@ -843,7 +841,7 @@ class Response extends http.ServerResponse {
 
     // strip irrelevant headers
     if (HTTP.NO_CONTENT === statusCode || HTTP.NOT_MODIFIED === statusCode) {
-      this.removeHeader("Content-Type");
+      this.removeHeader("content-type");
       this.removeHeader("Content-Length");
       this.removeHeader("Transfer-Encoding");
 
