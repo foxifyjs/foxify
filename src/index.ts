@@ -1,11 +1,12 @@
 import "./bootstrap";
 import * as os from "os";
 import * as serveStatic from "serve-static";
+import * as inject from "@foxify/inject";
 import * as constants from "./constants";
 import { httpMethods, Layer, Router } from "./routing";
 import * as utils from "./utils";
 import * as Server from "./Server";
-import * as IncomingRequest from "./Request";
+import * as IncomingMessage from "./Request";
 import * as ServerResponse from "./Response";
 import { Engine } from "./view";
 
@@ -14,7 +15,7 @@ const OPTIONS = ["https", "x-powered-by", "routing.case-sensitive", "routing.ign
 const SETTINGS = ["env", "url", "port", "workers", "https.cert", "https.key", "json.spaces",
   "json.replacer", "query.parser", "routing.max-param-length"];
 
-module Foxify {
+namespace Foxify {
   export interface Options {
     https: boolean;
     "x-powered-by": boolean;
@@ -52,8 +53,9 @@ module Foxify {
     };
   }
 
-  export type Request = IncomingRequest;
+  export type Request = IncomingMessage;
   export type Response = ServerResponse;
+  export type Handler = Layer.Handler;
 }
 
 interface Foxify extends Router.MethodFunctions<Foxify> {
@@ -282,7 +284,23 @@ class Foxify {
     return this;
   }
 
-  start(callback?: () => void) {
+  inject(options: inject.Options, callback?: inject.Callback) {
+    if (this.get("env") !== "test") throw new Error(`"inject" only works on testing environment`);
+
+    this._router.initialize(this);
+
+    return inject(
+      this._router.lookup.bind(this._router),
+      {
+        ...options,
+        ServerResponse,
+        IncomingMessage,
+      },
+      callback
+    );
+  }
+
+  start(callback?: Server.Callback) {
     if (callback && !utils.function.isFunction(callback))
       throw new TypeError(`Expected 'callback' to be a function, got ${typeof callback} instead`);
 

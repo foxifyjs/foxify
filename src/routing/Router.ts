@@ -603,21 +603,21 @@ class Router {
     if (!this.caseSensitive) path = path.toLowerCase();
 
     const maxParamLength = this.maxParamLength;
+    const originalPath = path;
+    const params = [];
     let currentNode = this.tree;
     let wildcardNode = null;
     let pathLenWildcard = 0;
-    const originalPath = path;
     let decoded = null;
     let pindex = 0;
-    const params = [];
     let i = 0;
 
     while (true) {
-      let pathLen = path.length;
       const prefix = currentNode.prefix;
       const prefixLen = prefix.length;
-      let len = 0;
       const previousPath = path;
+      let pathLen = path.length;
+      let len = 0;
 
       // found the route
       if (pathLen === 0 || path === prefix) {
