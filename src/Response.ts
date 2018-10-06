@@ -308,7 +308,7 @@ class Response extends http.ServerResponse {
   /**
    * @hidden
    */
-  stringify?: { [statusCode: number]: any };
+  stringify!: { [statusCode: number]: any };
 
   /**
    * Check if the request is fresh, aka
@@ -645,7 +645,7 @@ class Response extends http.ServerResponse {
     const options = this.settings.json;
 
     return this.send(
-      ((this.stringify && this.stringify[this.statusCode]) || stringify)(
+      (this.stringify[this.statusCode] || stringify)(
         obj,
         options.replacer,
         options.spaces,

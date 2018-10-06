@@ -8,7 +8,7 @@ import * as parseUrl from "parseurl";
 import * as Response from "./Response";
 import * as utils from "./utils";
 
-module Request {
+namespace Request {
   /**
    * @hidden
    */
