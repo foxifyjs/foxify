@@ -8,6 +8,7 @@ import * as utils from "./utils";
 import * as Server from "./Server";
 import * as IncomingMessage from "./Request";
 import * as ServerResponse from "./Response";
+import * as events from "./events";
 import { Engine } from "./view";
 
 const OPTIONS = ["https", "x-powered-by", "routing.case-sensitive", "routing.ignore-trailing-slash",
@@ -290,6 +291,8 @@ class Foxify {
     this._router.initialize(this);
 
     if (typeof options === "string") options = { url: options };
+
+    events.on("error", HttpException.handle);
 
     return inject(
       this._router.lookup.bind(this._router),

@@ -3,12 +3,6 @@ import * as Request from "../Request";
 import * as Response from "../Response";
 import * as events from "../events";
 
-const handle = (error: any, req: Request, res: Response) => {
-  events.emit(`error-${error.code || http.INTERNAL_SERVER_ERROR}` as any, error, req, res);
-
-  // if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", error);
-};
-
 declare module Encapsulation { }
 
 class Encapsulation {
@@ -18,13 +12,13 @@ class Encapsulation {
     this._fn = fn;
   }
 
-  run(req: Request, res: Response, ...rest: any[]) {
+  async run(req: Request, res: Response, ...rest: any[]) {
     try {
-      const result = this._fn(req, res, ...rest);
-
-      if (result instanceof Promise) result.catch((err) => handle(err, req, res));
+      await this._fn(req, res, ...rest);
     } catch (err) {
-      handle(err, req, res);
+      events.emit(`error-${err.code || http.INTERNAL_SERVER_ERROR}` as any, err, req, res);
+
+      // if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", err);
     }
   }
 }
