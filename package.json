@@ -46,7 +46,9 @@
     "lint": "tslint -p tsconfig.json -c tslint.json --exclude '**/*.d.ts'",
     "typedoc": "typedoc --out docs/ --mode file --module commonjs --target ES6 --plugin typedoc-plugin-example-tag src/",
     "doc": "node scripts/doc.js",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "npm test -- --coverage",
+    "codecov": "npm run coverage -- --runInBand && codecov"
   },
   "dependencies": {
     "@foxify/inject": "^1.0.0",
@@ -100,6 +102,7 @@
     "@types/type-is": "^1.6.2",
     "@types/vary": "^1.1.0",
     "body-parser": "^1.18.3",
+    "codecov": "^3.1.0",
     "ejs": "^2.6.1",
     "esdoc-typescript-plugin": "^1.0.1",
     "fs-readdir-recursive": "^1.1.0",

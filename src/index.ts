@@ -284,10 +284,12 @@ class Foxify {
     return this;
   }
 
-  inject(options: inject.Options, callback?: inject.Callback) {
+  inject(options: inject.Options | string, callback?: inject.Callback) {
     if (this.get("env") !== "test") throw new Error(`"inject" only works on testing environment`);
 
     this._router.initialize(this);
+
+    if (typeof options === "string") options = { url: options };
 
     return inject(
       this._router.lookup.bind(this._router),
