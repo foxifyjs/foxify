@@ -24,7 +24,15 @@ import * as Foxify from "..";
 
 const NODE_TYPES = Layer.TYPES;
 
-const EMPTY_HANDLE = { handlers: [], options: { schema: { response: {} } }, params: {} };
+const EMPTY_HANDLE = {
+  handlers: [
+    new Encapsulation(() => {
+      throw new HttpException(HTTP.NOT_FOUND);
+    }),
+  ],
+  options: { schema: { response: {} } },
+  params: {},
+};
 
 const pathMatchesMiddleware = (path: string, middleware: string) => {
   const middlewares = middleware.replace(/(^\/|\/$)/g, "").split("/");
