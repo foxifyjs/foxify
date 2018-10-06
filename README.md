@@ -2,7 +2,7 @@
 
 The **fast**, **easy to use** & **typescript ready** web framework for [Node.js](https://nodejs.org)
 
-> Inspired by [Express](https://expressjs.com)
+> Inspired by [Express](https://expressjs.com) & [Fastify](https://www.fastify.io/)
 
 [![Npm Version](https://img.shields.io/npm/v/foxify.svg)](https://www.npmjs.com/package/foxify)
 [![Node Version](https://img.shields.io/node/v/foxify.svg)](https://nodejs.org)
@@ -20,6 +20,10 @@ The **fast**, **easy to use** & **typescript ready** web framework for [Node.js]
 [![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/master/graph/badge.svg)](https://codecov.io/gh/foxifyjs/foxify)
 [![Github Stars](https://img.shields.io/github/stars/foxifyjs/foxify.svg?style=social&label=Stars)](https://github.com/foxifyjs/foxify)
 [![Github Forks](https://img.shields.io/github/forks/foxifyjs/foxify.svg?style=social&label=Fork)](https://github.com/foxifyjs/foxify)
+
+An efficient server implies a lower cost of the infrastructure, a better responsiveness under load and happy users. How can you efficiently handle the resources of your server, knowing that you are serving the highest number of requests as possible, without sacrificing security validations and handy development?
+
+Enter Foxify. Foxify is a web framework highly focused on providing the best developer experience with the least overhead and a powerful plugin architecture. It is inspired by Fastify and Express and as far as we know, it is one of the fastest web frameworks in town.
 
 ## Table of Contents <!-- omit in toc -->
 
@@ -78,7 +82,7 @@ You can also find all the documents [here](https://foxify.js.org).
 ## Features
 
 - Written in ES6
-- Robust routing (about 60% faster than `Express`)
+- Robust routing (about 60% faster than `Express`, almost as fast as `Fastify`)
 - `Express` middleware support
 - Robust database modeling ([`Odin`](https://github.com/foxifyjs/odin))
 - Simple and powerful error handling

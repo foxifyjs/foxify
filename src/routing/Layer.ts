@@ -20,7 +20,7 @@ const buildHandlers = (handlers?: any) => {
 
 const Handlers = buildHandlers();
 
-const OPTIONS = { schema: {} };
+const OPTIONS = { schema: { response: {} } };
 
 const TYPES = {
   STATIC: 0,
@@ -143,7 +143,7 @@ module Layer {
   }
 
   export interface Schema {
-    response?: { [statusCode: number]: JsonSchema };
+    response: { [statusCode: number]: JsonSchema };
   }
 
   export interface RouteOptions {
@@ -277,7 +277,7 @@ class Layer {
 
     this.handlers[method].push(...handlers.map((handler) => new Encapsulation(handler)));
 
-    this.options[method] = Object.assign({}, OPTIONS, options, { schema: options.schema || {} });
+    this.options[method] = Object.assign({}, OPTIONS, options, { schema: options.schema || { response: {} } });
 
     return this;
   }
@@ -287,7 +287,7 @@ class Layer {
 
     return {
       handlers,
-      options: this.options[method] || { schema: {} },
+      options: this.options[method] || { schema: { response: {} } },
       params: this.params,
       handlersLength: handlers.length,
       paramsLength: this.paramsLength,

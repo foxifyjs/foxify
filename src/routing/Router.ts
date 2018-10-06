@@ -24,7 +24,7 @@ import * as Foxify from "..";
 
 const NODE_TYPES = Layer.TYPES;
 
-const EMPTY_HANDLE = { handlers: [], options: { schema: {} }, params: {} };
+const EMPTY_HANDLE = { handlers: [], options: { schema: { response: {} } }, params: {} };
 
 const pathMatchesMiddleware = (path: string, middleware: string) => {
   const middlewares = middleware.replace(/(^\/|\/$)/g, "").split("/");
@@ -47,22 +47,6 @@ const pathMatchesMiddleware = (path: string, middleware: string) => {
   }
 
   return false;
-};
-
-const sanitizeUrl = (url: string = "") => {
-  const len = url.length;
-
-  for (let i = 0; i < len; i++) {
-    const charCode = url.charCodeAt(i);
-
-    // Some systems do not follow RFC and separate the path and query
-    // string with a `;` character (code 59), e.g. `/foo;jsessionid=123456`.
-    // Thus, we need to split on `;` as well as `?` and `#`.
-    if (charCode === 63 || charCode === 59 || charCode === 35)
-      return url.slice(0, i);
-  }
-
-  return url;
 };
 
 const getWildcardNode = (layer: Layer | null, method: Method, path: string, len: number) => {
@@ -228,7 +212,7 @@ class Router {
 
   protected _on(
     method: Method | Method[], path: string,
-    opts: Layer.RouteOptions = { schema: {} }, handlers: Layer.Handler[]
+    opts: Layer.RouteOptions = { schema: { response: {} } }, handlers: Layer.Handler[]
   ) {
     if (Array.isArray(method)) {
       method.forEach((m) => this._on(m, path, opts, handlers));
@@ -246,7 +230,7 @@ class Router {
   }
 
   protected _insert(
-    method: Method, path: string, kind: number, options: Layer.RouteOptions = { schema: {} },
+    method: Method, path: string, kind: number, options: Layer.RouteOptions = { schema: { response: {} } },
     params: string[] | undefined, handlers: Layer.Handler[] = [], regex: RegExp | null
   ) {
     handlers = (params || []).filter((param) => this.params[param] !== undefined)
@@ -350,6 +334,8 @@ class Router {
 
   /* handle built-in middlewares */
   private _use(...handlers: Layer.Handler[]) {
+    handlers = utils.array.compact(handlers);
+
     // handler validation
     handlers.forEach((handler) => assert(typeof handler === "function", "Handler should be a function"));
 
@@ -369,10 +355,10 @@ class Router {
     this.maxParamLength = app.get("routing.max-param-length");
 
     /* apply built-in middlewares */
-    this._use(init(app));
+    this._use(init(app) as any);
 
     const middlewares = this.middlewares.reduce((prev, middleware) => {
-      httpMethods.forEach((method) => prev.push({ ...middleware, opts: { schema: {} }, method }));
+      httpMethods.forEach((method) => prev.push({ ...middleware, opts: { schema: { response: {} } }, method }));
 
       return prev;
     }, [] as Router.Route[]);
@@ -528,6 +514,8 @@ class Router {
   }
 
   use(path: string | Layer.Handler | Router, ...handlers: Array<Layer.Handler | Router>) {
+    handlers = utils.array.compact(handlers);
+
     let routers = handlers.filter(Router.isRouter);
 
     if (Router.isRouter(path)) {
@@ -587,6 +575,8 @@ class Router {
 
   lookup(req: Request, res: Response) {
     const handle = this.find(req.method as Method, req.path);
+
+    res.req = req;
 
     res.stringify = handle.options.schema.response;
 
