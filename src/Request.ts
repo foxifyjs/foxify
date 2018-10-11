@@ -1,10 +1,11 @@
 import * as http from "http";
 import { isIP } from "net";
-import accepts = require("accepts");
-import parseRange = require("range-parser");
-import typeIs = require("type-is");
-// import proxyAddr = require("proxy-addr");
+import { Url } from "url";
+import * as accepts from "accepts";
+import * as parseRange from "range-parser";
+import * as typeIs from "type-is";
 import * as parseUrl from "parseurl";
+// import proxyAddr = require("proxy-addr");
 import * as Response from "./Response";
 import * as utils from "./utils";
 
@@ -45,7 +46,7 @@ class Request extends http.IncomingMessage {
 
   query!: any;
 
-  params: object = {};
+  params: { [key: string]: any } = {};
 
   /**
    * Parse the "Host" header field to a hostname.
@@ -73,9 +74,7 @@ class Request extends http.IncomingMessage {
    * Short-hand for `url.parseUrl(req.url).pathname`.
    */
   get path() {
-    const url: any = parseUrl(this);
-
-    return url ? url.pathname : "";
+    return (parseUrl(this) as Url).pathname as string;
   }
 
   /**

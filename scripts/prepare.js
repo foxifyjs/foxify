@@ -31,6 +31,10 @@ tsc.on('close', (code) => {
 
     content = UglifyEs.minify(content, {
       toplevel: true,
+      output: {
+        beautify: true,
+        comments: true,
+      },
     })
 
     if (content.error) throw new Error(content.error)

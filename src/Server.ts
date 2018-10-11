@@ -3,6 +3,7 @@ import * as https from "https";
 import * as cluster from "cluster";
 import * as parseUrl from "parseurl";
 import * as qs from "qs";
+import { Url } from "url";
 import * as EventEmitter from "./events/EventEmitter";
 import * as events from "./events";
 import * as Request from "./Request";
@@ -54,7 +55,7 @@ class Server {
     const queryParse: (...args: any[]) => any = settings.query.parser || qs.parse;
     Object.defineProperty(IncomingMessage.prototype, "query", {
       get() {
-        return queryParse((parseUrl(this) as any).query, {});
+        return queryParse((parseUrl(this) as Url).query, { allowDots: true });
       },
     });
 

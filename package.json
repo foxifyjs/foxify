@@ -41,8 +41,9 @@
   "main": "framework/index.js",
   "types": "framework/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "prepublishOnly": "npm run lint && npm test && node scripts/prepare.js",
+    "build": "node scripts/prepare.js",
+    "build:tsc": "tsc",
+    "prepublishOnly": "npm run lint && npm test && npm run build",
     "lint": "tslint -p tsconfig.json -c tslint.json --exclude '**/*.d.ts'",
     "typedoc": "typedoc --out docs/ --mode file --module commonjs --target ES6 --plugin typedoc-plugin-example-tag src/",
     "doc": "node scripts/doc.js",

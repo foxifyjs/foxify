@@ -2,19 +2,23 @@ import "./bootstrap";
 import * as os from "os";
 import * as serveStatic from "serve-static";
 import * as inject from "@foxify/inject";
+import * as parseUrl from "parseurl";
+import * as qs from "qs";
+import { Url } from "url";
 import * as constants from "./constants";
 import { httpMethods, Layer, Router } from "./routing";
 import * as utils from "./utils";
 import * as Server from "./Server";
-import * as IncomingMessage from "./Request";
-import * as ServerResponse from "./Response";
+import * as RequestClass from "./Request";
+import * as ResponseClass from "./Response";
 import * as events from "./events";
 import { Engine } from "./view";
+import { object } from "prototyped.js/es6/methods";
 
 const OPTIONS = ["https", "x-powered-by", "routing.case-sensitive", "routing.ignore-trailing-slash",
   "routing.allow-unsafe-regex", "json.escape"];
 const SETTINGS = ["env", "url", "port", "workers", "https.cert", "https.key", "json.spaces",
-  "json.replacer", "query.parser", "routing.max-param-length"];
+  "json.replacer", "query.parser", "routing.max-param-length", "subdomain.offset"];
 
 namespace Foxify {
   export interface Options {
@@ -54,8 +58,8 @@ namespace Foxify {
     };
   }
 
-  export type Request = IncomingMessage;
-  export type Response = ServerResponse;
+  export type Request = RequestClass;
+  export type Response = ResponseClass;
   export type Handler = Layer.Handler;
 }
 
@@ -223,6 +227,7 @@ class Foxify {
         break;
       case "json.spaces":
       case "routing.max-param-length":
+      case "subdomain.offset":
         if (value == null) break;
         if (!utils.number.isNumber(value))
           throw new TypeError(`setting '${setting}' should be a number`);
@@ -293,6 +298,38 @@ class Foxify {
     if (typeof options === "string") options = { url: options };
 
     events.on("error", HttpException.handle);
+
+    const opts = this._options;
+    const settings = {
+      ...this._settings,
+      view: this._view,
+    };
+
+    const IncomingMessage = RequestClass;
+    IncomingMessage.prototype.settings = {
+      subdomain: {
+        ...settings.subdomain,
+      },
+    };
+
+    if (Object.getOwnPropertyNames(IncomingMessage.prototype).indexOf("query") === -1) {
+      const queryParse: (...args: any[]) => any = settings.query.parser || qs.parse;
+      Object.defineProperty(IncomingMessage.prototype, "query", {
+        get() {
+          return queryParse((parseUrl(this) as Url).query, { allowDots: true });
+        },
+      });
+    }
+
+    const ServerResponse = ResponseClass;
+    ServerResponse.prototype.settings = {
+      engine: settings.view,
+      json: {
+        escape: opts.json.escape,
+        spaces: settings.json.spaces,
+        replacer: settings.json.replacer,
+      },
+    };
 
     return inject(
       this._router.lookup.bind(this._router),

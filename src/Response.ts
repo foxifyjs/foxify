@@ -636,7 +636,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.json({ user: "tj" });
    */
-  json(obj: object, status?: number) {
+  json(obj: object | any[], status?: number) {
     if (status !== undefined) this.status(status);
 
     // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json");
@@ -824,7 +824,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.send("<p>some html</p>");
    */
-  send(body: string | object | Buffer): this {
+  send(body: string | object | any[] | Buffer): this {
     if (utils.string.isString(body)) {
       // reflect this in content-type
       if (!this.get("content-type"))

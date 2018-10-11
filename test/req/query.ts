@@ -1,0 +1,48 @@
+import * as Foxify from "../../src";
+
+describe(".query", () => {
+  it("should default to {}", async () => {
+    expect.assertions(2);
+
+    const app = new Foxify();
+
+    app.use((req, res) => {
+      res.send(req.query);
+    });
+
+    const result = await app.inject("/");
+
+    expect(result.statusCode).toBe(200);
+    expect(result.body).toBe("{}");
+  });
+
+  it("should default to parse complex keys", async () => {
+    expect.assertions(2);
+
+    const app = new Foxify();
+
+    app.use((req, res) => {
+      res.send(req.query);
+    });
+
+    const result = await app.inject("/?user[name]=tj");
+
+    expect(result.statusCode).toBe(200);
+    expect(result.body).toBe("{\"user\":{\"name\":\"tj\"}}");
+  });
+
+  it("should default to parse parameters with dots", async () => {
+    expect.assertions(2);
+
+    const app = new Foxify();
+
+    app.use((req, res) => {
+      res.send(req.query);
+    });
+
+    const result = await app.inject("/?user.name=tj");
+
+    expect(result.statusCode).toBe(200);
+    expect(result.body).toBe("{\"user\":{\"name\":\"tj\"}}");
+  });
+});

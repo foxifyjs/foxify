@@ -12,6 +12,11 @@
 
 ---
 
+## [next](https://github.com/foxifyjs/foxify/releases/tag/next) - *(2018-__-__)*
+
+- :beetle: Fixed `subdomain.offset` setting
+- :eyeglasses: Added tests
+
 ## [v0.10.0](https://github.com/foxifyjs/foxify/releases/tag/v0.10.0) - *(2018-10-02)*
 
 - :zap: Added event listening ability to `Server` for custom error handlers
