@@ -37,11 +37,6 @@ class Request extends http.IncomingMessage {
   /**
    * @hidden
    */
-  next!: () => void;
-
-  /**
-   * @hidden
-   */
   res!: Response;
 
   query!: any;

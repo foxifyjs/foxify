@@ -333,7 +333,7 @@ class Router {
 
     const next = () => this._safeNext.run(req, res, handlers, index + 1);
 
-    req.next = next;
+    res.next = next;
 
     handler.run(req, res, next);
   }
@@ -583,8 +583,6 @@ class Router {
 
   lookup(req: Request, res: Response) {
     const handle = this.find(req.method as Method, req.path);
-
-    res.req = req;
 
     res.stringify = handle.options.schema.response;
 

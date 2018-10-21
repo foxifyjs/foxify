@@ -303,12 +303,27 @@ class Response extends http.ServerResponse {
   /**
    * @hidden
    */
-  req!: Request;
+  stringify!: { [statusCode: number]: any };
 
   /**
    * @hidden
    */
-  stringify!: { [statusCode: number]: any };
+  next!: () => void;
+
+  /**
+   * @hidden
+   */
+  req: Request;
+
+  /**
+   *
+   * @param req request
+   */
+  constructor(req: Request) {
+    super(req);
+
+    this.req = req;
+  }
 
   /**
    * Check if the request is fresh, aka
@@ -563,7 +578,7 @@ class Response extends http.ServerResponse {
    */
   format(obj: object) {
     const req = this.req;
-    const next = req.next;
+    const next = this.next;
 
     const fn = (obj as { [key: string]: any }).default;
 
@@ -894,8 +909,7 @@ class Response extends http.ServerResponse {
   sendFile(path: string, options?: object | ((...args: any[]) => void), callback?: (...args: any[]) => void) {
     let done = callback;
     const req = this.req;
-    const res = this;
-    const next = req.next;
+    const next = this.next;
     let opts = options || {};
 
     if (!path) throw new TypeError("path argument is required to res.sendFile");
@@ -914,7 +928,7 @@ class Response extends http.ServerResponse {
     const file = send(req, pathname, opts);
 
     // transfer
-    sendfile(res, file, opts, (err: any) => {
+    sendfile(this, file, opts, (err: any) => {
       if (done) return done(err);
       if (err && err.code === "EISDIR") return next();
 
