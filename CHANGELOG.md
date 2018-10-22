@@ -12,8 +12,9 @@
 
 ---
 
-## [next](https://github.com/foxifyjs/foxify/releases/tag/next) - *(2018-__-__)*
+## [v0.10.3](https://github.com/foxifyjs/foxify/releases/tag/v0.10.3) - *(2018-10-22)*
 
+- :star2: Improved performance
 - :beetle: Fixed `subdomain.offset` setting
 - :eyeglasses: Added tests
 
