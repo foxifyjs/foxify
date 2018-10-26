@@ -545,10 +545,8 @@ class Router {
     // handler validation
     handlers.forEach((handler) => assert(typeof handler === "function", "Handler should be a function"));
 
-    const index = this.middlewares
-      .findIndex((middleware) => `${this.prefix}${path === "*" ? "/*" : path}` === middleware.path);
-    if (index === -1) this.middlewares
-      .push({ path: `${this.prefix}${path === "*" ? "/*" : path}`, handlers: handlers as Layer.Handler[] });
+    const index = this.middlewares.findIndex((middleware) => `${this.prefix}${path}` === middleware.path);
+    if (index === -1) this.middlewares.push({ path: `${this.prefix}${path}`, handlers: handlers as Layer.Handler[] });
     else this.middlewares[index].handlers.push(...handlers as Layer.Handler[]);
 
     const prefix = `${this.prefix}${path === "*" ? "" : path}`;
