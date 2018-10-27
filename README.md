@@ -99,16 +99,16 @@ You can also find all the documents [here](https://foxify.js.org).
 
 **Method**: `autocannon -c 100 -d 40 -p 10 localhost:3000` * 2, taking the second average
 
-**sort**: R/S
+**sort**: Request / Second
 
 | Framework  | Version     | R/S          |
 | :--------: | :---------: | :----------: |
-| fastify    | 1.11.2      | 27,112       |
-| **Foxify** | **0.10.0**  | **26,702.4** |
-| **bare**   | **10.10.0** | **21,476.8** |
-| hapi       | 17.5.4      | 19,755.2     |
-| express    | 4.16.3      | 16,408.8     |
-| restify    | 7.2.1       | 15,474.4     |
+| **Foxify** | **0.10.6**  | **26,331.2** |
+| fastify    | 1.12.1      | 25,675.2     |
+| **bare**   | **10.12.0** | **21,931.2** |
+| hapi       | 17.6.0      | 18801.6      |
+| express    | 4.16.4      | 16,200       |
+| restify    | 7.2.1       | 15,207.2     |
 
 ## TODO
 
