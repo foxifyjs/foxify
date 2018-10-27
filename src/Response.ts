@@ -333,16 +333,17 @@ class Response extends http.ServerResponse {
   get fresh() {
     const req = this.req;
     const method = req.method;
-    const status = this.statusCode;
 
     // GET or HEAD for weak freshness validation only
     if ("GET" !== method && "HEAD" !== method) return false;
+
+    const status = this.statusCode;
 
     // 2xx or 304 as per rfc2616 14.26
     if ((status >= constants.http.OK && status < constants.http.MULTIPLE_CHOICES) ||
       constants.http.NOT_MODIFIED === status)
       return fresh(req.headers, {
-        "last-modified": this.get("Last-Modified"),
+        "last-modified": this.get("last-modified"),
       });
 
     return false;
@@ -499,7 +500,7 @@ class Response extends http.ServerResponse {
 
     // set Content-Disposition when file is sent
     const headers = {
-      "Content-Disposition": contentDisposition(name || path),
+      "content-disposition": contentDisposition(name || path),
     };
 
     // merge user-provided headers
@@ -755,7 +756,7 @@ class Response extends http.ServerResponse {
       encodeUrl(
         // "back" is an alias for the referrer
         url === "back" ?
-          this.req.get("Referrer") || "/" :
+          this.req.get("referrer") || "/" :
           url
       )
     );
@@ -857,8 +858,8 @@ class Response extends http.ServerResponse {
     // strip irrelevant headers
     if (HTTP.NO_CONTENT === statusCode || HTTP.NOT_MODIFIED === statusCode) {
       this.removeHeader("content-type");
-      this.removeHeader("Content-Length");
-      this.removeHeader("Transfer-Encoding");
+      this.removeHeader("content-length");
+      this.removeHeader("transfer-encoding");
 
       body = "";
     }
