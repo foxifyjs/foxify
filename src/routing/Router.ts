@@ -612,10 +612,7 @@ class Router {
 
     while (true) {
       const prefix = currentNode.prefix;
-      const prefixLen = prefix.length;
-      const previousPath = path;
       let pathLen = path.length;
-      let len = 0;
 
       // found the route
       if (pathLen === 0 || path === prefix) {
@@ -627,8 +624,7 @@ class Router {
           if (handle.paramsLength > 0) {
             const paramNames = handle.params;
 
-            for (i = 0; i < handle.paramsLength; i++)
-              paramsObj[paramNames[i]] = params[i];
+            for (i = 0; i < handle.paramsLength; i++) paramsObj[paramNames[i]] = params[i];
           }
 
           return {
@@ -639,9 +635,14 @@ class Router {
         }
       }
 
+      const prefixLen = prefix.length;
+      let len = 0;
+
       // search for the longest common prefix
       i = pathLen < prefixLen ? pathLen : prefixLen;
       while (len < i && path.charCodeAt(len) === prefix.charCodeAt(len)) len++;
+
+      const previousPath = path;
 
       if (len === prefixLen) {
         path = path.slice(len);

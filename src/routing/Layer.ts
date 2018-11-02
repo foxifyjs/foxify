@@ -167,6 +167,8 @@ class Layer {
 
   paramsLength: number;
 
+  numberOfChildren = 0;
+
   constructor(
     public prefix = "/",
     public children: Layer.Children = {},
@@ -187,9 +189,9 @@ class Layer {
     return this.prefix[0];
   }
 
-  get numberOfChildren() {
-    return Object.keys(this.children).length;
-  }
+  // get numberOfChildren() {
+  //   return Object.keys(this.children).length;
+  // }
 
   addChild(layer: Layer) {
     let label = "";
@@ -217,6 +219,8 @@ class Layer {
     );
 
     this.children[label] = layer;
+
+    this.numberOfChildren++;
 
     const labels = Object.keys(this.children);
     let parametricBrother = null;
@@ -257,13 +261,13 @@ class Layer {
   findChild(path: string, method: Method) {
     let child = this.children[path[0]];
 
-    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method] !== null))
+    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method].length !== 0))
       if (path.slice(0, child.prefix.length) === child.prefix)
         return child;
 
     child = this.children[":"] || this.children["*"];
 
-    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method] !== null))
+    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method].length !== 0))
       return child;
 
     return null;
