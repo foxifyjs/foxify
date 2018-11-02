@@ -1,10 +1,9 @@
 import * as assert from "assert";
-import * as fastDecode from "fast-decode-uri-component";
 import * as fastStringify from "fast-json-stringify";
 import isRegexSafe = require("safe-regex");
 import * as Request from "../Request";
 import * as Response from "../Response";
-import * as utils from "../utils";
+import { array, object, function as func, decodeURIComponent as fastDecode } from "../utils";
 import { Encapsulation } from "../exceptions";
 import { init } from "../middlewares";
 import httpMethods, { Method } from "./httpMethods";
@@ -329,20 +328,18 @@ class Router {
   }
 
   protected _next = (req: Request, res: Response, handlers: Encapsulation[], index = 0) => {
-    const handler = handlers[index];
-
     const next = () => this._safeNext.run(req, res, handlers, index + 1);
 
     res.next = next;
 
-    handler.run(req, res, next);
+    handlers[index].run(req, res, next);
   }
 
   protected _safeNext = new Encapsulation(this._next);
 
   /* handle built-in middlewares */
   private _use(...handlers: Layer.Handler[]) {
-    handlers = utils.array.compact(handlers);
+    handlers = array.compact(handlers);
 
     // handler validation
     handlers.forEach((handler) => assert(typeof handler === "function", "Handler should be a function"));
@@ -376,7 +373,7 @@ class Router {
 
       const schema = options.schema;
 
-      if (schema) schema.response = utils.object.mapValues(
+      if (schema) schema.response = object.mapValues(
         schema.response || {},
         (value) => fastStringify(value)
       ) as any;
@@ -488,7 +485,7 @@ class Router {
     method: Method | Method[], path: string, opts: Layer.RouteOptions | Layer.Handler,
     ...handlers: Layer.Handler[]
   ) {
-    if (utils.function.isFunction(opts)) {
+    if (func.isFunction(opts)) {
       handlers = [opts].concat(handlers);
       opts = {} as Layer.RouteOptions;
     }
@@ -522,7 +519,7 @@ class Router {
   }
 
   use(path: string | Layer.Handler | Router, ...handlers: Array<Layer.Handler | Router>) {
-    handlers = utils.array.compact(handlers);
+    handlers = array.compact(handlers);
 
     let routers = handlers.filter(Router.isRouter);
 
@@ -531,7 +528,7 @@ class Router {
       path = "*";
     }
 
-    if (utils.function.isFunction(path)) {
+    if (func.isFunction(path)) {
       handlers = [path].concat(handlers as Layer.Handler[]);
       path = "*";
     }
@@ -589,9 +586,9 @@ class Router {
   lookup(req: Request, res: Response) {
     const handle = this.find(req.method as Method, req.path);
 
-    res.stringify = handle.options.schema.response;
-
     req.params = handle.params;
+
+    res.stringify = handle.options.schema.response;
 
     this._safeNext.run(req, res, handle.handlers);
   }

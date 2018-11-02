@@ -43,7 +43,7 @@ Enter Foxify. Foxify is a web framework highly focused on providing the best dev
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/download) 8 or higher is required.
+- [Node.js](https://nodejs.org/en/download) 8.12 or higher is required.
 
 ### Installation
 
@@ -110,14 +110,15 @@ You can also find all the documents [here](https://foxify.js.org).
 | express    | 4.16.4      | 16,200       |
 | restify    | 7.2.1       | 15,207.2     |
 
+> More detailed benchmarks available [here](https://github.com/foxifyjs/benchmarks)
+
 ## TODO
 
 - [x] Routing
 - [x] Middleware support
 - [x] Error handling
 - [x] View engine
-- [x] Options
-- [x] Settings
+- [x] Options & Settings
 - [x] Database Model ([`Odin`](https://github.com/foxifyjs/odin))
 - [x] Clustering
 - [ ] File storage

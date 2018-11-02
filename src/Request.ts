@@ -1,13 +1,9 @@
 import * as http from "http";
 import { isIP } from "net";
 import { Url } from "url";
-import * as accepts from "accepts";
-import * as parseRange from "range-parser";
 import * as typeIs from "type-is";
-import * as parseUrl from "parseurl";
+import { string, parseUrl, Accepts, rangeParser } from "./utils";
 // import proxyAddr = require("proxy-addr");
-import * as Response from "./Response";
-import * as utils from "./utils";
 
 namespace Request {
   /**
@@ -34,14 +30,9 @@ class Request extends http.IncomingMessage {
    */
   settings!: Request.Settings;
 
-  /**
-   * @hidden
-   */
-  res!: Response;
-
   query!: any;
 
-  params: { [key: string]: any } = {};
+  params!: { [key: string]: any };
 
   /**
    * Parse the "Host" header field to a hostname.
@@ -51,9 +42,9 @@ class Request extends http.IncomingMessage {
    * be trusted.
    */
   get hostname() {
-    let host = <string>this.get("X-Forwarded-Host");
+    let host = this.get("x-forwarded-host") as string;
 
-    if (!host) host = <string>this.get("Host");
+    if (!host) host = this.get("host") as string;
 
     if (!host) return;
 
@@ -96,9 +87,7 @@ class Request extends http.IncomingMessage {
    * Check if the request was an `_XMLHttpRequest_`.
    */
   get xhr() {
-    const val = <string>this.get("X-Requested-With") || "";
-
-    return val.toLowerCase() === "xmlhttprequest";
+    return (<string>this.get("x-requested-with") || "").toLowerCase() === "xmlhttprequest";
   }
 
   /**
@@ -142,9 +131,7 @@ class Request extends http.IncomingMessage {
    * // => "json"
    */
   accepts(...types: string[]): string | string[] | false {
-    const accept = accepts(this);
-
-    return accept.types.apply(accept, types);
+    return new Accepts(this).types(types);
   }
 
   /**
@@ -152,18 +139,14 @@ class Request extends http.IncomingMessage {
    * otherwise you should respond with 406 "Not Acceptable".
    */
   acceptsCharsets(...charsets: string[]): string | string[] | false {
-    const accept = accepts(this);
-
-    return accept.charsets.apply(accept, charsets);
+    return new Accepts(this).charsets(charsets);
   }
 
   /**
    * Check if the given `encoding`s are accepted.
    */
   acceptsEncodings(...encodings: string[]): string | string[] | false {
-    const accept = accepts(this);
-
-    return accept.encodings.apply(accept, encodings);
+    return new Accepts(this).encodings(encodings);
   }
 
   /**
@@ -171,9 +154,7 @@ class Request extends http.IncomingMessage {
    * otherwise you should respond with 406 "Not Acceptable".
    */
   acceptsLanguages(...langs: string[]): string | string[] | false {
-    const accept = accepts(this);
-
-    return accept.languages.apply(accept, langs);
+    return new Accepts(this).languages(langs);
   }
 
   /**
@@ -192,12 +173,13 @@ class Request extends http.IncomingMessage {
   get(name: string) {
     if (!name) throw new TypeError("name argument is required to req.get/req.head");
 
-    if (!utils.string.isString(name)) throw new TypeError("name must be a string to req.get/req.head");
+    if (!string.isString(name)) throw new TypeError("name must be a string to req.get/req.head");
 
     const header = name.toLowerCase();
 
     switch (header) {
       case "referer":
+        return this.headers.referer || this.headers.referrer;
       case "referrer":
         return this.headers.referrer || this.headers.referer;
       default:
@@ -253,14 +235,14 @@ class Request extends http.IncomingMessage {
    * NOTE: remember that ranges are inclusive, so for example "Range: users=0-3"
    * should respond with 4 users when available, not 3.
    */
-  range(size: number, options?: parseRange.Options) {
-    let range = this.get("Range");
+  range(size: number, combine?: boolean) {
+    let range = this.get("range");
 
     if (!range) return;
 
     if (Array.isArray(range)) range = range.join(",");
 
-    return parseRange(size, range, options);
+    return rangeParser(size, range, combine);
   }
 }
 
@@ -269,6 +251,7 @@ class Request extends http.IncomingMessage {
  * @alias get
  */
 Request.prototype.head = Request.prototype.get;
+Request.prototype.params = {};
 
 export = Request;
 

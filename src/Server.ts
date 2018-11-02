@@ -1,7 +1,6 @@
 import * as http from "http";
 import * as https from "https";
 import * as cluster from "cluster";
-import * as parseUrl from "parseurl";
 import * as qs from "qs";
 import { Url } from "url";
 import * as EventEmitter from "./events/EventEmitter";
@@ -10,6 +9,7 @@ import * as Request from "./Request";
 import * as Response from "./Response";
 import * as Foxify from "./index";
 import { Engine } from "./view";
+import { parseUrl } from "./utils";
 
 module Server {
   export interface Options extends Foxify.Options {

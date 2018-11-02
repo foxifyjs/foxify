@@ -1,5 +1,13 @@
 export * from "prototyped.js/es6/methods";
 
+export { default as Accepts } from "./accepts";
+export { default as encodeUrl } from "./encode-url";
+export { default as decodeURIComponent } from "./fast-decode-uri-component";
+export { default as fresh } from "./fresh";
+export { default as parseUrl } from "./parse-url";
+export { default as rangeParser } from "./range-parser";
+export { default as vary } from "./vary";
+
 export function mixins(...baseCtors: any[]) {
   return (derivedCtor: any) => {
     baseCtors.forEach((baseCtor) => {

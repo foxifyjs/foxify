@@ -80,42 +80,40 @@ module Layer {
   }
 
   export interface Options {
-    [method: string]: RouteOptions | undefined;
-
-    ACL?: RouteOptions;
-    BIND?: RouteOptions;
-    CHECKOUT?: RouteOptions;
-    CONNECT?: RouteOptions;
-    COPY?: RouteOptions;
-    DELETE?: RouteOptions;
-    GET?: RouteOptions;
-    HEAD?: RouteOptions;
-    LINK?: RouteOptions;
-    LOCK?: RouteOptions;
-    "M-SEARCH"?: RouteOptions;
-    MERGE?: RouteOptions;
-    MKACTIVITY?: RouteOptions;
-    MKCALENDAR?: RouteOptions;
-    MKCOL?: RouteOptions;
-    MOVE?: RouteOptions;
-    NOTIFY?: RouteOptions;
-    OPTIONS?: RouteOptions;
-    PATCH?: RouteOptions;
-    POST?: RouteOptions;
-    PROPFIND?: RouteOptions;
-    PROPPATCH?: RouteOptions;
-    PURGE?: RouteOptions;
-    PUT?: RouteOptions;
-    REBIND?: RouteOptions;
-    REPORT?: RouteOptions;
-    SEARCH?: RouteOptions;
-    SOURCE?: RouteOptions;
-    SUBSCRIBE?: RouteOptions;
-    TRACE?: RouteOptions;
-    UNBIND?: RouteOptions;
-    UNLINK?: RouteOptions;
-    UNLOCK?: RouteOptions;
-    UNSUBSCRIBE?: RouteOptions;
+    ACL: RouteOptions;
+    BIND: RouteOptions;
+    CHECKOUT: RouteOptions;
+    CONNECT: RouteOptions;
+    COPY: RouteOptions;
+    DELETE: RouteOptions;
+    GET: RouteOptions;
+    HEAD: RouteOptions;
+    LINK: RouteOptions;
+    LOCK: RouteOptions;
+    "M-SEARCH": RouteOptions;
+    MERGE: RouteOptions;
+    MKACTIVITY: RouteOptions;
+    MKCALENDAR: RouteOptions;
+    MKCOL: RouteOptions;
+    MOVE: RouteOptions;
+    NOTIFY: RouteOptions;
+    OPTIONS: RouteOptions;
+    PATCH: RouteOptions;
+    POST: RouteOptions;
+    PROPFIND: RouteOptions;
+    PROPPATCH: RouteOptions;
+    PURGE: RouteOptions;
+    PUT: RouteOptions;
+    REBIND: RouteOptions;
+    REPORT: RouteOptions;
+    SEARCH: RouteOptions;
+    SOURCE: RouteOptions;
+    SUBSCRIBE: RouteOptions;
+    TRACE: RouteOptions;
+    UNBIND: RouteOptions;
+    UNLINK: RouteOptions;
+    UNLOCK: RouteOptions;
+    UNSUBSCRIBE: RouteOptions;
   }
 
   export interface Children {
@@ -161,7 +159,7 @@ class Layer {
 
   handlers: Layer.Handlers;
 
-  options: Layer.Options = {};
+  options: Layer.Options = {} as any;
 
   wildcardChild: Layer | null = null;
 
@@ -179,6 +177,10 @@ class Layer {
   ) {
     this.handlers = new (Handlers as any)(handlers);
     this.paramsLength = params.length;
+
+    httpMethods.forEach((method) => {
+      this.options[method] = { schema: { response: {} } };
+    });
   }
 
   get label() {
@@ -287,7 +289,7 @@ class Layer {
 
     return {
       handlers,
-      options: this.options[method] || { schema: { response: {} } },
+      options: this.options[method],
       params: this.params,
       handlersLength: handlers.length,
       paramsLength: this.paramsLength,

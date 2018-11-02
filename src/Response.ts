@@ -2,17 +2,14 @@ import * as http from "http";
 import * as path from "path";
 import * as escapeHtml from "escape-html";
 import * as contentType from "content-type";
-import * as encodeUrl from "encodeurl";
 import * as cookie from "cookie";
 import { sign } from "cookie-signature";
 import * as onFinished from "on-finished";
 import * as contentDisposition from "content-disposition";
-import * as vary from "vary";
-import fresh = require("fresh");
+// import * as vary from "vary";
 import send = require("send");
-import * as constants from "./constants";
 import * as Request from "./Request";
-import * as utils from "./utils";
+import { object, string, function as func, fresh, encodeUrl, vary } from "./utils";
 import { Engine } from "./view";
 
 const resolve = path.resolve;
@@ -55,10 +52,9 @@ const setCharset = (type?: string, charset?: string) => {
 const stringify = (value: any, replacer?: (key: string, value: any) => any, spaces?: number, escape?: boolean) => {
   // v8 checks arguments.length for optimizing simple call
   // https://bugs.chromium.org/p/v8/issues/detail?id=4730
-  let json = JSON.stringify(value, replacer, spaces);
 
   if (escape)
-    json = json.replace(/[<>&]/g, (c) => {
+    return JSON.stringify(value, replacer, spaces).replace(/[<>&]/g, (c) => {
       switch (c.charCodeAt(0)) {
         case 0x3c:
           return "\\u003c";
@@ -71,7 +67,7 @@ const stringify = (value: any, replacer?: (key: string, value: any) => any, spac
       }
     });
 
-  return json;
+  return JSON.stringify(value, replacer, spaces);
 };
 
 /**
@@ -340,11 +336,9 @@ class Response extends http.ServerResponse {
     const status = this.statusCode;
 
     // 2xx or 304 as per rfc2616 14.26
-    if ((status >= constants.http.OK && status < constants.http.MULTIPLE_CHOICES) ||
-      constants.http.NOT_MODIFIED === status)
-      return fresh(req.headers, {
-        "last-modified": this.get("last-modified"),
-      });
+    if ((status >= HTTP.OK && status < HTTP.MULTIPLE_CHOICES) ||
+      HTTP.NOT_MODIFIED === status)
+      return fresh(req.headers, this.get("last-modified") as string);
 
     return false;
   }
@@ -388,7 +382,7 @@ class Response extends http.ServerResponse {
   attachment(filename?: string) {
     if (filename) this.type(path.extname(filename));
 
-    this.set("Content-Disposition", contentDisposition(filename));
+    this.set("content-disposition", contentDisposition(filename));
 
     return this;
   }
@@ -421,7 +415,7 @@ class Response extends http.ServerResponse {
    * res.type("png");
    */
   contentType(type: string) {
-    return this.set("Content-Type", type.indexOf("/") === -1
+    return this.set("content-type", type.indexOf("/") === -1
       ? (send.mime as any).lookup(type)
       : type
     );
@@ -450,7 +444,7 @@ class Response extends http.ServerResponse {
 
     if (signed && !secret) throw new Error("cookieParser('secret') required for signed cookies");
 
-    let val = utils.object.isObject(value)
+    let val = object.isObject(value)
       ? "j:" + JSON.stringify(value)
       : String(value);
 
@@ -489,11 +483,11 @@ class Response extends http.ServerResponse {
     let opts = options || null;
 
     // support function as second or third arg
-    if (utils.function.isFunction(filename)) {
+    if (func.isFunction(filename)) {
       done = filename;
       name = null;
       opts = null;
-    } else if (utils.function.isFunction(options)) {
+    } else if (func.isFunction(options)) {
       done = options;
       opts = null;
     }
@@ -594,7 +588,7 @@ class Response extends http.ServerResponse {
     this.vary("Accept");
 
     if (key) {
-      this.set("Content-Type", normalizeType(key).value);
+      this.set("content-type", normalizeType(key).value);
       (obj as { [key: string]: any })[key](req, this, next);
     } else if (fn)
       fn();
@@ -655,7 +649,6 @@ class Response extends http.ServerResponse {
   json(obj: object | any[], status?: number) {
     if (status !== undefined) this.status(status);
 
-    // if (!this.get("Content-Type")) this.setHeader("Content-Type", "application/json");
     this.setHeader("content-type", "application/json");
 
     const options = this.settings.json;
@@ -689,18 +682,18 @@ class Response extends http.ServerResponse {
     if (status) this.status(status);
 
     // content-type
-    if (!this.get("Content-Type")) {
-      this.set("X-Content-Type-Options", "nosniff");
-      this.set("Content-Type", "application/json");
+    if (!this.get("content-type")) {
+      this.set("x-content-type-options", "nosniff");
+      this.set("content-type", "application/json");
     }
 
     // fixup callback
     if (Array.isArray(callback)) callback = callback[0];
 
     // jsonp
-    if (utils.string.isString(callback) && callback.length !== 0) {
-      this.set("X-Content-Type-Options", "nosniff");
-      this.set("Content-Type", "text/javascript");
+    if (string.isString(callback) && callback.length !== 0) {
+      this.set("x-content-type-options", "nosniff");
+      this.set("content-type", "text/javascript");
 
       // restrict callback charset
       callback = callback.replace(/[^\[\]\w$.]/g, "");
@@ -729,8 +722,8 @@ class Response extends http.ServerResponse {
    */
   links(links: object) {
     return this.set(
-      "Link",
-      `${this.get("Link") || ""}, ` + Object.keys(links)
+      "link",
+      `${this.get("link") || ""}, ` + Object.keys(links)
         .map((rel) => `<${(links as { [key: string]: string })[rel]}>; rel="${rel}"`)
         .join(", ")
     );
@@ -752,11 +745,11 @@ class Response extends http.ServerResponse {
    */
   location(url: string) {
     return this.set(
-      "Location",
+      "location",
       encodeUrl(
         // "back" is an alias for the referrer
         url === "back" ?
-          this.req.get("referrer") || "/" :
+          this.req.get("referrer") as string || "/" :
           url
       )
     );
@@ -802,7 +795,7 @@ class Response extends http.ServerResponse {
 
     // Respond
     this.statusCode = status;
-    this.set("Content-Length", <any>Buffer.byteLength(body));
+    this.set("content-length", <any>Buffer.byteLength(body));
 
     if (this.req.method === "HEAD")
       this.end();
@@ -815,7 +808,7 @@ class Response extends http.ServerResponse {
 
     if (!engine) throw new Error("View engine is not specified");
 
-    if (utils.function.isFunction(data)) {
+    if (func.isFunction(data)) {
       callback = data;
       data = undefined;
     }
@@ -841,14 +834,13 @@ class Response extends http.ServerResponse {
    * res.send("<p>some html</p>");
    */
   send(body: string | object | any[] | Buffer): this {
-    if (utils.string.isString(body)) {
+    if (string.isString(body)) {
       // reflect this in content-type
       if (!this.get("content-type"))
-        this.setHeader("content-type", setCharset("text/html", "utf-8") as string);
+        this.setHeader("Content-Type", setCharset("text/html", "utf-8") as string);
     } else if (Buffer.isBuffer(body)) {
       if (!this.get("content-type")) this.type("bin");
-    } else
-      return this.json(body);
+    } else return this.json(body);
 
     // freshness
     if (this.fresh) this.statusCode = HTTP.NOT_MODIFIED;
@@ -916,7 +908,7 @@ class Response extends http.ServerResponse {
     if (!path) throw new TypeError("path argument is required to res.sendFile");
 
     // support function as second arg
-    if (utils.function.isFunction(options)) {
+    if (func.isFunction(options)) {
       done = options;
       opts = {};
     }
@@ -975,9 +967,7 @@ class Response extends http.ServerResponse {
    * @returns for chaining
    */
   vary(field: string | string[]) {
-    vary(this, field);
-
-    return this;
+    return vary(this, field);
   }
 }
 

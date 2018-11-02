@@ -2,7 +2,6 @@ import "./bootstrap";
 import * as os from "os";
 import * as serveStatic from "serve-static";
 import * as inject from "@foxify/inject";
-import * as parseUrl from "parseurl";
 import * as qs from "qs";
 import { Url } from "url";
 import * as constants from "./constants";
@@ -13,7 +12,6 @@ import * as RequestClass from "./Request";
 import * as ResponseClass from "./Response";
 import * as events from "./events";
 import { Engine } from "./view";
-import { object } from "prototyped.js/es6/methods";
 
 const OPTIONS = ["https", "x-powered-by", "routing.case-sensitive", "routing.ignore-trailing-slash",
   "routing.allow-unsafe-regex", "json.escape"];
@@ -316,7 +314,7 @@ class Foxify {
       const queryParse: (...args: any[]) => any = settings.query.parser || qs.parse;
       Object.defineProperty(IncomingMessage.prototype, "query", {
         get() {
-          return queryParse((parseUrl(this) as Url).query, { allowDots: true });
+          return queryParse((utils.parseUrl(this) as Url).query, { allowDots: true });
         },
       });
     }

@@ -16,7 +16,5 @@ declare module "*.json" {
   export = json
 }
 
-declare module "encodeurl"
 declare module "serve-static"
 declare module "fast-json-stringify"
-declare module "fast-decode-uri-component"
