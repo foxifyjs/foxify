@@ -87,7 +87,6 @@
     "@types/on-finished": "^2.3.1",
     "@types/proxy-addr": "^2.0.0",
     "@types/qs": "^6.5.1",
-    "@types/request": "^2.48.0",
     "@types/safe-regex": "^1.1.1",
     "@types/send": "^0.14.4",
     "@types/type-is": "^1.6.2",

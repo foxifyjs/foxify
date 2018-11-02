@@ -125,9 +125,7 @@ describe(".range(size, options)", () => {
       const app = new Foxify();
 
       app.use((req, res) => {
-        res.json(req.range(120, {
-          combine: true,
-        }) as any);
+        res.json(req.range(120, true) as any);
       });
 
       const result = await app.inject({
