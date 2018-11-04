@@ -49,14 +49,24 @@ class HttpException extends Error {
   static handle(exception: any = new HttpException(), req: Request, res: Response): void {
     const code = exception.code || http.INTERNAL_SERVER_ERROR;
     const message = exception.message || STATUS_CODES[code] || "";
+    let stack: string[];
 
     exception.path = req.path;
-    if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", exception);
+
+    if (process.env.NODE_ENV === "development") {
+      console.error(exception);
+
+      stack = utils.string.lines(exception.stack)
+        .map((line) => line.replace(/^ */, ""));
+
+      stack.shift();
+    }
 
     res.status(code).format({
-      "text/html": () => res.send(htmlError(code, STATUS_CODES[code], message)),
+      "text/html": () =>
+        res.send(htmlError(code, STATUS_CODES[code], message, stack && stack.join("<br>").replace(/ /g, "&nbsp;"))),
       "application/json": () => {
-        const json: { [key: string]: any } = { message };
+        const json: { [key: string]: any } = { message, stack };
 
         const errors = exception.errors;
 
