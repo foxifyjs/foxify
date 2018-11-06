@@ -5,12 +5,27 @@
 - New Features -> :zap:
 - Enhancements -> :star2:
 - Breaking Changes -> :boom:
+- Dependency Changes -> :package:
 - Bugs -> :beetle:
 - Pull Requests -> :book:
 - Documents -> :mortar_board:
 - Tests -> :eyeglasses:
 
 ---
+
+## [v0.10.7](https://github.com/foxifyjs/foxify/releases/tag/v0.10.7) - *(2018-11-07)*
+
+- :star2: Improved performance
+- :star2: Better error responses
+- :package: Removed [accept](https://npmjs.com/package/accept)
+- :package: Removed [encodeurl](https://npmjs.com/package/encodeurl)
+- :package: Removed [fast-decode-uri-component](https://npmjs.com/package/fast-decode-uri-component)
+- :package: Removed [fresh](https://npmjs.com/package/fresh)
+- :package: Removed [methods](https://npmjs.com/package/methods)
+- :package: Removed [parseurl](https://npmjs.com/package/parseurl)
+- :package: Removed [path-to-regex](https://npmjs.com/package/path-to-regex)
+- :package: Removed [range-parser](https://npmjs.com/package/range-parser)
+- :package: Removed [vary](https://npmjs.com/package/vary)
 
 ## [v0.10.3](https://github.com/foxifyjs/foxify/releases/tag/v0.10.3) - *(2018-10-22)*
 

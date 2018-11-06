@@ -106,7 +106,7 @@
 				<h2 id="getting-started">Getting Started</h2>
 				<h3 id="prerequisites">Prerequisites</h3>
 				<ul>
-					<li><a href="https://nodejs.org/en/download">Node.js</a> 8 or higher is required.</li>
+					<li><a href="https://nodejs.org/en/download">Node.js</a> 8.12 or higher is required.</li>
 				</ul>
 				<h3 id="installation">Installation</h3>
 				<pre><code class="language-bash">npm i -s foxify</code></pre>
@@ -189,14 +189,16 @@ app.start();</code></pre>
 							<td align="center">15,207.2</td>
 						</tr>
 				</tbody></table>
+				<blockquote>
+					<p>More detailed benchmarks available <a href="https://github.com/foxifyjs/benchmarks">here</a></p>
+				</blockquote>
 				<h2 id="todo">TODO</h2>
 				<ul>
 					<li><input checked="" disabled="" type="checkbox"> Routing</li>
 					<li><input checked="" disabled="" type="checkbox"> Middleware support</li>
 					<li><input checked="" disabled="" type="checkbox"> Error handling</li>
 					<li><input checked="" disabled="" type="checkbox"> View engine</li>
-					<li><input checked="" disabled="" type="checkbox"> Options</li>
-					<li><input checked="" disabled="" type="checkbox"> Settings</li>
+					<li><input checked="" disabled="" type="checkbox"> Options &amp; Settings</li>
 					<li><input checked="" disabled="" type="checkbox"> Database Model (<a href="https://github.com/foxifyjs/odin"><code>Odin</code></a>)</li>
 					<li><input checked="" disabled="" type="checkbox"> Clustering</li>
 					<li><input disabled="" type="checkbox"> File storage</li>
@@ -227,6 +229,9 @@ app.start();</code></pre>
 					<li class=" tsd-kind-module tsd-parent-kind-class">
 						<a href="modules/eventemitter.internal.html">Event<wbr>Emitter.internal</a>
 					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/rangeparser.html">Range<wbr>Parser</a>
+					</li>
 					<li class=" tsd-kind-module tsd-is-not-exported">
 						<a href="modules/__global.html">__global</a>
 					</li>
@@ -237,6 +242,9 @@ app.start();</code></pre>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/accepts.html" class="tsd-kind-icon">Accepts</a>
+					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/encapsulation.html" class="tsd-kind-icon">Encapsulation</a>
 					</li>
@@ -270,11 +278,20 @@ app.start();</code></pre>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#method" class="tsd-kind-icon">Method</a>
 					</li>
+					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#cache_control_no_cache_regexp" class="tsd-kind-icon">CACHE_<wbr>CONTROL_<wbr>NO_<wbr>CACHE_<wbr>REGEXP</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#encode_chars_regexp" class="tsd-kind-icon">ENCODE_<wbr>CHARS_<wbr>REGEXP</a>
+					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#errors" class="tsd-kind-icon">ERRORS</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#events" class="tsd-kind-icon">EVENTS</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#field_name_regexp" class="tsd-kind-icon">FIELD_<wbr>NAME_<wbr>REGEXP</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#handlers" class="tsd-kind-icon">Handlers</a>
@@ -291,6 +308,21 @@ app.start();</code></pre>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#status_codes" class="tsd-kind-icon">STATUS_<wbr>CODES</a>
 					</li>
+					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#unmatched_surrogate_pair_regexp" class="tsd-kind-icon">UNMATCHED_<wbr>SURROGATE_<wbr>PAIR_<wbr>REGEXP</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#unmatched_surrogate_pair_replace" class="tsd-kind-icon">UNMATCHED_<wbr>SURROGATE_<wbr>PAIR_<wbr>REPLACE</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#utf8_accept" class="tsd-kind-icon">UTF8_<wbr>ACCEPT</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#utf8_data" class="tsd-kind-icon">UTF8_<wbr>DATA</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#utf8_reject" class="tsd-kind-icon">UTF8_<wbr>REJECT</a>
+					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#charsetregexp" class="tsd-kind-icon">charset<wbr>Reg<wbr>Exp</a>
 					</li>
@@ -304,10 +336,31 @@ app.start();</code></pre>
 						<a href="globals.html#acceptparams" class="tsd-kind-icon">accept<wbr>Params</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#append" class="tsd-kind-icon">append</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#buildhandlers" class="tsd-kind-icon">build<wbr>Handlers</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#combineranges" class="tsd-kind-icon">combine<wbr>Ranges</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#decodeuricomponent" class="tsd-kind-icon">decodeURIComponent</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#define" class="tsd-kind-icon">define</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#encodeurl" class="tsd-kind-icon">encode<wbr>Url</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#exttomime" class="tsd-kind-icon">ext<wbr>ToMime</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#fastparse" class="tsd-kind-icon">fast<wbr>Parse</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#fresh" class="tsd-kind-icon">fresh</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#getclosingparenthenseposition" class="tsd-kind-icon">get<wbr>Closing<wbr>Parenthense<wbr>Position</a>
@@ -318,11 +371,20 @@ app.start();</code></pre>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#handle" class="tsd-kind-icon">handle</a>
 					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#hexcodetoint" class="tsd-kind-icon">hex<wbr>Code<wbr>ToInt</a>
+					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#init" class="tsd-kind-icon">init</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#isabsolute" class="tsd-kind-icon">is<wbr>Absolute</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#mapwithindex" class="tsd-kind-icon">map<wbr>With<wbr>Index</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#mapwithoutindex" class="tsd-kind-icon">map<wbr>Without<wbr>Index</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#mixins" class="tsd-kind-icon">mixins</a>
@@ -333,8 +395,23 @@ app.start();</code></pre>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#normalizetypes" class="tsd-kind-icon">normalize<wbr>Types</a>
 					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#parse" class="tsd-kind-icon">parse</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#parsehttpdate" class="tsd-kind-icon">parse<wbr>Http<wbr>Date</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#parsetokenlist" class="tsd-kind-icon">parse<wbr>Token<wbr>List</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#parseurl" class="tsd-kind-icon">parse<wbr>Url</a>
+					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#pathmatchesmiddleware" class="tsd-kind-icon">path<wbr>Matches<wbr>Middleware</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#rangeparser" class="tsd-kind-icon">range<wbr>Parser</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#sendfile" class="tsd-kind-icon">sendfile</a>
@@ -343,10 +420,25 @@ app.start();</code></pre>
 						<a href="globals.html#setcharset" class="tsd-kind-icon">set<wbr>Charset</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#sortbyrangeindex" class="tsd-kind-icon">sort<wbr>ByRange<wbr>Index</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#sortbyrangestart" class="tsd-kind-icon">sort<wbr>ByRange<wbr>Start</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
 						<a href="globals.html#stringify" class="tsd-kind-icon">stringify</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private tsd-is-not-exported">
+						<a href="globals.html#validmime" class="tsd-kind-icon">valid<wbr>Mime</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#vary" class="tsd-kind-icon">vary</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-is-not-exported">
 						<a href="globals.html#empty_handle" class="tsd-kind-icon">EMPTY_<wbr>HANDLE</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-is-not-exported">
+						<a href="globals.html#hex" class="tsd-kind-icon">HEX</a>
 					</li>
 					<li class=" tsd-kind-object-literal">
 						<a href="globals.html#http" class="tsd-kind-icon">HTTP</a>
