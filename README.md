@@ -103,12 +103,12 @@ You can also find all the documents [here](https://foxify.js.org).
 
 | Framework  | Version     | R/S          |
 | :--------: | :---------: | :----------: |
-| **Foxify** | **0.10.6**  | **26,331.2** |
-| fastify    | 1.12.1      | 25,675.2     |
-| **bare**   | **10.12.0** | **21,931.2** |
-| hapi       | 17.6.0      | 18801.6      |
-| express    | 4.16.4      | 16,200       |
-| restify    | 7.2.1       | 15,207.2     |
+| **Foxify** | **0.10.7**  | **27,716.8** |
+| fastify    | 1.13.0      | 26,654.4     |
+| **bare**   | **10.13.0** | **22,366.4** |
+| hapi       | 17.7.0      | 19,662.41    |
+| express    | 4.16.4      | 17,468       |
+| restify    | 7.2.2       | 14,660       |
 
 > More detailed benchmarks available [here](https://github.com/foxifyjs/benchmarks)
 
