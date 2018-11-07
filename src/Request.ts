@@ -2,7 +2,8 @@ import * as http from "http";
 import { isIP } from "net";
 import { Url } from "url";
 import * as typeIs from "type-is";
-import { string, parseUrl, Accepts, rangeParser } from "./utils";
+import { string, parseUrl, Accepts } from "./utils";
+import { default as rangeParser, RangeParser } from "./utils/range-parser";
 // import proxyAddr = require("proxy-addr");
 
 namespace Request {
@@ -17,6 +18,8 @@ namespace Request {
 }
 
 interface Request {
+  [key: string]: any;
+
   /**
    *
    * @alias get
@@ -242,7 +245,7 @@ class Request extends http.IncomingMessage {
 
     if (Array.isArray(range)) range = range.join(",");
 
-    return rangeParser(size, range, combine);
+    return rangeParser(size, range, combine) as RangeParser.Result | RangeParser.Ranges;
   }
 }
 

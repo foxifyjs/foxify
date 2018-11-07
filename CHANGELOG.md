@@ -23,7 +23,7 @@
 - :package: Removed [fresh](https://npmjs.com/package/fresh)
 - :package: Removed [methods](https://npmjs.com/package/methods)
 - :package: Removed [parseurl](https://npmjs.com/package/parseurl)
-- :package: Removed [path-to-regex](https://npmjs.com/package/path-to-regex)
+- :package: Removed [path-to-regexp](https://npmjs.com/package/path-to-regexp)
 - :package: Removed [range-parser](https://npmjs.com/package/range-parser)
 - :package: Removed [vary](https://npmjs.com/package/vary)
 
