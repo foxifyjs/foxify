@@ -4,6 +4,8 @@ import * as Request from "../Request";
 import * as Response from "../Response";
 import { Encapsulation } from "../exceptions";
 
+const OPTIONS = { schema: { response: {} } };
+
 const buildHandlers = (handlers?: any) => {
   let code = `handlers = handlers || {}
   `;
@@ -11,7 +13,14 @@ const buildHandlers = (handlers?: any) => {
   for (let i = 0; i < httpMethods.length; i++) {
     const m = httpMethods[i];
 
-    code += `this["${m}"] = handlers["${m}"] || []
+    code += `this["${m}"] = handlers["${m}"] || {
+      handlers: [],
+      handlersLength: 0,
+      params: [],
+      paramsLength: 0,
+      options: ${JSON.stringify(OPTIONS)},
+      prettyPrint: false
+    }
     `;
   }
 
@@ -19,8 +28,6 @@ const buildHandlers = (handlers?: any) => {
 };
 
 const Handlers = buildHandlers();
-
-const OPTIONS = { schema: { response: {} } };
 
 const TYPES = {
   STATIC: 0,
@@ -35,48 +42,51 @@ module Layer {
   export type Handler = (request: Request, response: Response, next: () => void) => void;
 
   export interface HandlerObject {
-    handler: Encapsulation;
+    handlers: Encapsulation[];
+    handlersLength: number;
     params: string[];
     paramsLength: number;
+    options: RouteOptions;
+    prettyPrint: boolean;
   }
 
   export interface Handlers {
-    [method: string]: Encapsulation[];
+    [method: string]: HandlerObject;
 
-    ACL: Encapsulation[];
-    BIND: Encapsulation[];
-    CHECKOUT: Encapsulation[];
-    CONNECT: Encapsulation[];
-    COPY: Encapsulation[];
-    DELETE: Encapsulation[];
-    GET: Encapsulation[];
-    HEAD: Encapsulation[];
-    LINK: Encapsulation[];
-    LOCK: Encapsulation[];
-    "M-SEARCH": Encapsulation[];
-    MERGE: Encapsulation[];
-    MKACTIVITY: Encapsulation[];
-    MKCALENDAR: Encapsulation[];
-    MKCOL: Encapsulation[];
-    MOVE: Encapsulation[];
-    NOTIFY: Encapsulation[];
-    OPTIONS: Encapsulation[];
-    PATCH: Encapsulation[];
-    POST: Encapsulation[];
-    PROPFIND: Encapsulation[];
-    PROPPATCH: Encapsulation[];
-    PURGE: Encapsulation[];
-    PUT: Encapsulation[];
-    REBIND: Encapsulation[];
-    REPORT: Encapsulation[];
-    SEARCH: Encapsulation[];
-    SOURCE: Encapsulation[];
-    SUBSCRIBE: Encapsulation[];
-    TRACE: Encapsulation[];
-    UNBIND: Encapsulation[];
-    UNLINK: Encapsulation[];
-    UNLOCK: Encapsulation[];
-    UNSUBSCRIBE: Encapsulation[];
+    ACL: HandlerObject;
+    BIND: HandlerObject;
+    CHECKOUT: HandlerObject;
+    CONNECT: HandlerObject;
+    COPY: HandlerObject;
+    DELETE: HandlerObject;
+    GET: HandlerObject;
+    HEAD: HandlerObject;
+    LINK: HandlerObject;
+    LOCK: HandlerObject;
+    "M-SEARCH": HandlerObject;
+    MERGE: HandlerObject;
+    MKACTIVITY: HandlerObject;
+    MKCALENDAR: HandlerObject;
+    MKCOL: HandlerObject;
+    MOVE: HandlerObject;
+    NOTIFY: HandlerObject;
+    OPTIONS: HandlerObject;
+    PATCH: HandlerObject;
+    POST: HandlerObject;
+    PROPFIND: HandlerObject;
+    PROPPATCH: HandlerObject;
+    PURGE: HandlerObject;
+    PUT: HandlerObject;
+    REBIND: HandlerObject;
+    REPORT: HandlerObject;
+    SEARCH: HandlerObject;
+    SOURCE: HandlerObject;
+    SUBSCRIBE: HandlerObject;
+    TRACE: HandlerObject;
+    UNBIND: HandlerObject;
+    UNLINK: HandlerObject;
+    UNLOCK: HandlerObject;
+    UNSUBSCRIBE: HandlerObject;
   }
 
   export interface Options {
@@ -159,13 +169,9 @@ class Layer {
 
   handlers: Layer.Handlers;
 
-  options: Layer.Options = {} as any;
-
   wildcardChild: Layer | null = null;
 
   parametricBrother: Layer | null = null;
-
-  paramsLength: number;
 
   numberOfChildren = 0;
 
@@ -173,25 +179,22 @@ class Layer {
     public prefix = "/",
     public children: Layer.Children = {},
     public kind = TYPES.STATIC,
-    handlers?: Layer.Handlers,
     public regex: RegExp | null = null,
-    public params: string[] = []
+    public params: string[] = [],
+    handlers?: Layer.Handlers
   ) {
     this.handlers = new (Handlers as any)(handlers);
-    this.paramsLength = params.length;
 
+    const paramsLength = params.length;
     httpMethods.forEach((method) => {
-      this.options[method] = { schema: { response: {} } };
+      this.handlers[method].params = params;
+      this.handlers[method].paramsLength = paramsLength;
     });
   }
 
   get label() {
     return this.prefix[0];
   }
-
-  // get numberOfChildren() {
-  //   return Object.keys(this.children).length;
-  // }
 
   addChild(layer: Layer) {
     let label = "";
@@ -250,6 +253,7 @@ class Layer {
     this.handlers = new (Handlers as any)();
     this.regex = null;
     this.wildcardChild = null;
+    this.numberOfChildren = 0;
 
     return this;
   }
@@ -261,49 +265,39 @@ class Layer {
   findChild(path: string, method: Method) {
     let child = this.children[path[0]];
 
-    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method].length !== 0))
+    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method].handlersLength !== 0))
       if (path.slice(0, child.prefix.length) === child.prefix)
         return child;
 
     child = this.children[":"] || this.children["*"];
 
-    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method].length !== 0))
+    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method].handlersLength !== 0))
       return child;
 
     return null;
   }
 
-  addHandler(method: Method, options: Layer.RouteOptions = OPTIONS, handlers: Layer.Handler[]) {
-    if (handlers.length === 0) return this;
+  addHandler(method: Method, options: Layer.RouteOptions = OPTIONS, handlers: Layer.Handler[], prettyPrint = false) {
+    const length = handlers.length;
 
-    // assert(
-    //   this.handlers[method].length !== 0,
-    //   `There is already an handler with method "${method}"`
-    // );
+    if (length === 0) return this;
 
-    this.handlers[method].push(...handlers.map((handler) => new Encapsulation(handler)));
-
-    this.options[method] = Object.assign({}, OPTIONS, options, { schema: options.schema || { response: {} } });
+    this.handlers[method].handlers.push(...handlers.map((handler) => new Encapsulation(handler)));
+    this.handlers[method].handlersLength += length;
+    this.handlers[method].options = Object.assign({}, OPTIONS, options, { schema: options.schema || { response: {} } });
+    this.handlers[method].prettyPrint = this.handlers[method].prettyPrint || prettyPrint;
 
     return this;
   }
 
   getHandler(method: Method) {
-    const handlers = this.handlers[method];
-
-    return {
-      handlers,
-      options: this.options[method],
-      params: this.params,
-      handlersLength: handlers.length,
-      paramsLength: this.paramsLength,
-    };
+    return this.handlers[method];
   }
 
   prettyPrint(prefix: string, tail: boolean = false) {
     const handlers = this.handlers;
     const methods = Object.keys(handlers)
-      .filter((method) => handlers[method].length > 0);
+      .filter((method) => handlers[method].prettyPrint);
     let paramName = "";
 
     if (this.prefix === ":") {

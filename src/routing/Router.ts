@@ -23,11 +23,13 @@ import * as Foxify from "..";
 
 const NODE_TYPES = Layer.TYPES;
 
+function foxify_not_found() {
+  throw new HttpException(HTTP.NOT_FOUND);
+}
+
 const EMPTY_HANDLE = {
   handlers: [
-    new Encapsulation(() => {
-      throw new HttpException(HTTP.NOT_FOUND);
-    }),
+    new Encapsulation(foxify_not_found),
   ],
   options: { schema: { response: {} } },
   params: {},
@@ -111,6 +113,7 @@ module Router {
     path: string;
     opts: Layer.RouteOptions;
     handlers: Layer.Handler[];
+    middleware: boolean;
   }
 
   export interface Params {
@@ -231,17 +234,23 @@ class Router {
     assert(typeof method === "string", "Method should be a string");
     assert(httpMethods.indexOf(method) !== -1, `Method "${method}" is not an http method.`);
 
-    this.routes.push({ method, path: `${this.prefix}${path}`, opts, handlers });
+    this.routes.push({ method, path: `${this.prefix}${path}`, opts, handlers, middleware: false });
 
     return this;
   }
 
   protected _insert(
     method: Method, path: string, kind: number, options: Layer.RouteOptions = { schema: { response: {} } },
-    params: string[] | undefined, handlers: Layer.Handler[] = [], regex: RegExp | null
+    params: string[] = [], handlers: Layer.Handler[] = [], middlewares: Layer.Handler[] = [],
+    regex: RegExp | null
   ) {
-    handlers = (params || []).filter((param) => this.params[param] !== undefined)
-      .map((param) => this.params[param])
+    const prettyPrint = handlers.length !== 0;
+
+    handlers = middlewares
+      .concat(
+        params.filter((param) => this.params[param] !== undefined)
+          .map((param) => this.params[param])
+      )
       .concat(handlers);
 
     const route = path;
@@ -270,9 +279,9 @@ class Router {
           prefix.slice(len),
           currentNode.children,
           currentNode.kind,
-          new (Layer.Handlers as any)(currentNode.handlers),
           currentNode.regex,
-          params
+          params,
+          new (Layer.Handlers as any)(currentNode.handlers)
         );
 
         if (currentNode.wildcardChild !== null)
@@ -289,11 +298,11 @@ class Router {
           assert(currentNode.getHandler(method).handlersLength === 0,
             `Method "${method}" already declared for route "${route}"`);
 
-          currentNode.addHandler(method, options, handlers);
+          currentNode.addHandler(method, options, handlers, prettyPrint);
           currentNode.kind = kind;
         } else {
-          node = new Layer(path.slice(len), {}, kind, undefined, regex, params);
-          node.addHandler(method, options, handlers);
+          node = new Layer(path.slice(len), {}, kind, regex, params);
+          node.addHandler(method, options, handlers, prettyPrint);
           currentNode.addChild(node);
         }
 
@@ -311,8 +320,8 @@ class Router {
           continue;
         }
         // there are not children within the given label, let's create a new one!
-        node = new Layer(path, {}, kind, undefined, regex, params);
-        node.addHandler(method, options, handlers);
+        node = new Layer(path, {}, kind, regex, params);
+        node.addHandler(method, options, handlers, prettyPrint);
 
         currentNode.addChild(node);
 
@@ -320,7 +329,7 @@ class Router {
         // } else if (handler) {
       } else if (handlers)
         // assert(!currentNode.getHandler(method), `Method "${method}" already declared for route "${route}"`);
-        currentNode.addHandler(method, options, handlers);
+        currentNode.addHandler(method, options, handlers, prettyPrint);
       // }
 
       return this;
@@ -363,7 +372,12 @@ class Router {
     this._use(init(app) as any);
 
     const middlewares = this.middlewares.reduce((prev, middleware) => {
-      httpMethods.forEach((method) => prev.push({ ...middleware, opts: { schema: { response: {} } }, method }));
+      httpMethods.forEach((method) => prev.push({
+        ...middleware,
+        opts: { schema: { response: {} } },
+        method,
+        middleware: true,
+      }));
 
       return prev;
     }, [] as Router.Route[]);
@@ -385,12 +399,14 @@ class Router {
         .reduce((prev, { handlers }) => prev.concat(handlers), [] as Layer.Handler[])
         .concat(handlers);
 
-      const newRoutes = [{ method, path, opts: options, handlers: newHandlers }];
+      const newRoutes = [{ method, path, opts: options, handlers: newHandlers, middleware: false }];
 
       if (this.ignoreTrailingSlash && path !== "/" && !path.endsWith("*")) {
-        let newRoute = { method, path: `${path}/`, opts: options, handlers: newHandlers };
+        let newRoute = { method, path: `${path}/`, opts: options, handlers: newHandlers, middleware: false };
 
-        if (path.endsWith("/")) newRoute = { method, path: path.slice(0, -1), opts: options, handlers: newHandlers };
+        if (path.endsWith("/")) newRoute = {
+          method, path: path.slice(0, -1), opts: options, handlers: newHandlers, middleware: false,
+        };
 
         newRoutes.push(newRoute);
       }
@@ -402,14 +418,19 @@ class Router {
     if (middleware) routes = middleware.concat(routes);
 
     routes = routes.map((route) => {
-      route.handlers.push(() => {
-        throw new HttpException(HTTP.NOT_FOUND);
-      });
+      route.handlers = route.handlers.concat([foxify_not_found]);
 
       return route;
     });
 
-    routes.forEach(({ method, path, opts, handlers }) => {
+    routes.forEach(({ method, path, opts, handlers, middleware }) => {
+      let middlewareHandlers: Layer.Handler[] = [];
+
+      if (middleware) {
+        middlewareHandlers = handlers;
+        handlers = [];
+      }
+
       const params = [];
       let j = 0;
 
@@ -424,7 +445,7 @@ class Router {
           if (!this.caseSensitive) staticPart = staticPart.toLowerCase();
 
           // add the static part of the route to the tree
-          this._insert(method, staticPart, NODE_TYPES.STATIC, opts, undefined, undefined, null);
+          this._insert(method, staticPart, NODE_TYPES.STATIC, opts, undefined, undefined, undefined, null);
 
           // isolate the parameter name
           let isRegex = false;
@@ -458,24 +479,35 @@ class Router {
 
           // if the path is ended
           if (i === len)
-            return this._insert(method, path.slice(0, i), nodeType, opts, params, handlers, regex);
+            return this._insert(
+              method,
+              path.slice(0, i),
+              nodeType,
+              opts,
+              params,
+              handlers,
+              middlewareHandlers,
+              regex
+            );
 
           // add the parameter and continue with the search
-          this._insert(method, path.slice(0, i), nodeType, opts, params, undefined, regex);
+          this._insert(method, path.slice(0, i), nodeType, opts, params, undefined, undefined, regex);
 
           i--;
           // wildcard route
         } else if (path.charCodeAt(i) === 42) {
-          this._insert(method, path.slice(0, i), NODE_TYPES.STATIC, opts, undefined, undefined, null);
+          this._insert(method, path.slice(0, i), NODE_TYPES.STATIC, opts, undefined, undefined, undefined, null);
           // add the wildcard parameter
           params.push("*");
-          return this._insert(method, path.slice(0, len), NODE_TYPES.MATCH_ALL, opts, params, handlers, null);
+          return this._insert(
+            method, path.slice(0, len), NODE_TYPES.MATCH_ALL, opts, params, handlers, middlewareHandlers, null
+          );
         }
 
       if (!this.caseSensitive) path = path.toLowerCase();
 
       // static route
-      return this._insert(method, path, NODE_TYPES.STATIC, opts, params, handlers, null);
+      return this._insert(method, path, NODE_TYPES.STATIC, opts, params, handlers, middlewareHandlers, null);
     });
 
     return this;
@@ -492,7 +524,7 @@ class Router {
 
     // path validation
     assert(typeof path === "string", "Path should be a string");
-    assert(path.length > 0, "The path could not be empty");
+    assert(`${this.prefix}${path}`.length > 0, "The path could not be empty");
     assert(path[0] === "/" || path[0] === "*", "The first character of a path should be `/` or `*`");
     // handler validation
     handlers.forEach((handler) => assert(typeof handler === "function", "Handler should be a function"));
