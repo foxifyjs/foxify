@@ -423,92 +423,100 @@ class Router {
       return route;
     });
 
-    routes.concat(middlewares).forEach(({ method, path, opts, handlers, middleware }) => {
-      let middlewareHandlers: Layer.Handler[] = [];
+    routes
+      .concat(
+        middlewares.map((middleware) => {
+          middleware.handlers = middleware.handlers.concat([foxify_not_found]);
 
-      if (middleware) {
-        middlewareHandlers = handlers;
-        handlers = [];
-      }
+          return middleware;
+        })
+      )
+      .forEach(({ method, path, opts, handlers, middleware }) => {
+        let middlewareHandlers: Layer.Handler[] = [];
 
-      const params = [];
-      let j = 0;
-
-      for (let i = 0, len = path.length; i < len; i++)
-        // search for parametric or wildcard routes
-        // parametric route
-        if (path.charCodeAt(i) === 58) {
-          let nodeType = NODE_TYPES.PARAM;
-          let staticPart = path.slice(0, i);
-          j = i + 1;
-
-          if (!this.caseSensitive) staticPart = staticPart.toLowerCase();
-
-          // add the static part of the route to the tree
-          this._insert(method, staticPart, NODE_TYPES.STATIC, opts, undefined, undefined, undefined, null);
-
-          // isolate the parameter name
-          let isRegex = false;
-          while (i < len && path.charCodeAt(i) !== 47) {
-            isRegex = isRegex || path[i] === "(";
-
-            if (isRegex) {
-              i = getClosingParenthensePosition(path, i) + 1;
-              break;
-            } else if (path.charCodeAt(i) !== 45) i++;
-            else break;
-          }
-
-          if (isRegex && (i === len || path.charCodeAt(i) === 47)) nodeType = NODE_TYPES.REGEX;
-          else if (i < len && path.charCodeAt(i) !== 47) nodeType = NODE_TYPES.MULTI_PARAM;
-
-          const parameter = path.slice(j, i);
-          let regex: any = isRegex ? parameter.slice(parameter.indexOf("("), i) : null;
-
-          if (isRegex) {
-            regex = new RegExp(regex);
-
-            if (!this.allowUnsafeRegex) assert(isRegexSafe(regex), `The regex "${regex.toString()}" is not safe!`);
-          }
-
-          params.push(parameter.slice(0, isRegex ? parameter.indexOf("(") : i));
-
-          path = path.slice(0, j) + path.slice(i);
-          i = j;
-          len = path.length;
-
-          // if the path is ended
-          if (i === len)
-            return this._insert(
-              method,
-              path.slice(0, i),
-              nodeType,
-              opts,
-              params,
-              handlers,
-              middlewareHandlers,
-              regex
-            );
-
-          // add the parameter and continue with the search
-          this._insert(method, path.slice(0, i), nodeType, opts, params, undefined, undefined, regex);
-
-          i--;
-          // wildcard route
-        } else if (path.charCodeAt(i) === 42) {
-          this._insert(method, path.slice(0, i), NODE_TYPES.STATIC, opts, undefined, undefined, undefined, null);
-          // add the wildcard parameter
-          params.push("*");
-          return this._insert(
-            method, path.slice(0, len), NODE_TYPES.MATCH_ALL, opts, params, handlers, middlewareHandlers, null
-          );
+        if (middleware) {
+          middlewareHandlers = handlers;
+          handlers = [];
         }
 
-      if (!this.caseSensitive) path = path.toLowerCase();
+        const params = [];
+        let j = 0;
 
-      // static route
-      return this._insert(method, path, NODE_TYPES.STATIC, opts, params, handlers, middlewareHandlers, null);
-    });
+        for (let i = 0, len = path.length; i < len; i++)
+          // search for parametric or wildcard routes
+          // parametric route
+          if (path.charCodeAt(i) === 58) {
+            let nodeType = NODE_TYPES.PARAM;
+            let staticPart = path.slice(0, i);
+            j = i + 1;
+
+            if (!this.caseSensitive) staticPart = staticPart.toLowerCase();
+
+            // add the static part of the route to the tree
+            this._insert(method, staticPart, NODE_TYPES.STATIC, opts, undefined, undefined, undefined, null);
+
+            // isolate the parameter name
+            let isRegex = false;
+            while (i < len && path.charCodeAt(i) !== 47) {
+              isRegex = isRegex || path[i] === "(";
+
+              if (isRegex) {
+                i = getClosingParenthensePosition(path, i) + 1;
+                break;
+              } else if (path.charCodeAt(i) !== 45) i++;
+              else break;
+            }
+
+            if (isRegex && (i === len || path.charCodeAt(i) === 47)) nodeType = NODE_TYPES.REGEX;
+            else if (i < len && path.charCodeAt(i) !== 47) nodeType = NODE_TYPES.MULTI_PARAM;
+
+            const parameter = path.slice(j, i);
+            let regex: any = isRegex ? parameter.slice(parameter.indexOf("("), i) : null;
+
+            if (isRegex) {
+              regex = new RegExp(regex);
+
+              if (!this.allowUnsafeRegex) assert(isRegexSafe(regex), `The regex "${regex.toString()}" is not safe!`);
+            }
+
+            params.push(parameter.slice(0, isRegex ? parameter.indexOf("(") : i));
+
+            path = path.slice(0, j) + path.slice(i);
+            i = j;
+            len = path.length;
+
+            // if the path is ended
+            if (i === len)
+              return this._insert(
+                method,
+                path.slice(0, i),
+                nodeType,
+                opts,
+                params,
+                handlers,
+                middlewareHandlers,
+                regex
+              );
+
+            // add the parameter and continue with the search
+            this._insert(method, path.slice(0, i), nodeType, opts, params, undefined, undefined, regex);
+
+            i--;
+            // wildcard route
+          } else if (path.charCodeAt(i) === 42) {
+            this._insert(method, path.slice(0, i), NODE_TYPES.STATIC, opts, undefined, undefined, undefined, null);
+            // add the wildcard parameter
+            params.push("*");
+            return this._insert(
+              method, path.slice(0, len), NODE_TYPES.MATCH_ALL, opts, params, handlers, middlewareHandlers, null
+            );
+          }
+
+        if (!this.caseSensitive) path = path.toLowerCase();
+
+        // static route
+        return this._insert(method, path, NODE_TYPES.STATIC, opts, params, handlers, middlewareHandlers, null);
+      });
 
     return this;
   }
