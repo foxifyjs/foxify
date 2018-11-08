@@ -316,8 +316,8 @@ class Layer {
         } else
           paramName = `${param} (${method})`;
       });
-    } else if (methods.length)
-      paramName = ` (${methods.join("|")})`;
+    } else if (methods.length) paramName = ` (${methods.join("|")})`;
+    else paramName = ` [--MIDDLEWARES--]`;
 
     let tree = `${prefix}${tail ? "└── " : "├── "}${this.prefix}${paramName}\n`;
 

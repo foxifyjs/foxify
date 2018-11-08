@@ -414,8 +414,8 @@ class Router {
       return prev.concat(newRoutes);
     }, [] as Router.Route[]);
 
-    const middleware = middlewares.filter((middleware) => middleware.path === "*");
-    if (middleware) routes = middleware.concat(routes);
+    const filteredMiddleware = middlewares.filter((middleware) => middleware.path === "*");
+    if (filteredMiddleware) routes = filteredMiddleware.concat(routes);
 
     routes = routes.map((route) => {
       route.handlers = route.handlers.concat([foxify_not_found]);
@@ -423,7 +423,7 @@ class Router {
       return route;
     });
 
-    routes.forEach(({ method, path, opts, handlers, middleware }) => {
+    routes.concat(middlewares).forEach(({ method, path, opts, handlers, middleware }) => {
       let middlewareHandlers: Layer.Handler[] = [];
 
       if (middleware) {
