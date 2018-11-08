@@ -84,9 +84,12 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.handlerobject.html#handler" class="tsd-kind-icon">handler</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.handlerobject.html#handlers" class="tsd-kind-icon">handlers</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.handlerobject.html#handlerslength" class="tsd-kind-icon">handlers<wbr>Length</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.handlerobject.html#options" class="tsd-kind-icon">options</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.handlerobject.html#params" class="tsd-kind-icon">params</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.handlerobject.html#paramslength" class="tsd-kind-icon">params<wbr>Length</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="layer.handlerobject.html#prettyprint" class="tsd-kind-icon">pretty<wbr>Print</a></li>
 							</ul>
 						</section>
 					</div>
@@ -95,12 +98,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="handler" class="tsd-anchor"></a>
-					<h3>handler</h3>
-					<div class="tsd-signature tsd-kind-icon">handler<span class="tsd-signature-symbol">:</span> <a href="../classes/encapsulation.html" class="tsd-signature-type">Encapsulation</a></div>
+					<a name="handlers" class="tsd-anchor"></a>
+					<h3>handlers</h3>
+					<div class="tsd-signature tsd-kind-icon">handlers<span class="tsd-signature-symbol">:</span> <a href="../classes/encapsulation.html" class="tsd-signature-type">Encapsulation</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/193ae80/src/routing/Layer.ts#L38">routing/Layer.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/9ea8058/src/routing/Layer.ts#L45">routing/Layer.ts:45</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="handlerslength" class="tsd-anchor"></a>
+					<h3>handlers<wbr>Length</h3>
+					<div class="tsd-signature tsd-kind-icon">handlers<wbr>Length<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/9ea8058/src/routing/Layer.ts#L46">routing/Layer.ts:46</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="options" class="tsd-anchor"></a>
+					<h3>options</h3>
+					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="layer.routeoptions.html" class="tsd-signature-type">RouteOptions</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/9ea8058/src/routing/Layer.ts#L49">routing/Layer.ts:49</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -110,7 +133,7 @@
 					<div class="tsd-signature tsd-kind-icon">params<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/193ae80/src/routing/Layer.ts#L39">routing/Layer.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/9ea8058/src/routing/Layer.ts#L47">routing/Layer.ts:47</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -120,7 +143,17 @@
 					<div class="tsd-signature tsd-kind-icon">params<wbr>Length<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/193ae80/src/routing/Layer.ts#L40">routing/Layer.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/9ea8058/src/routing/Layer.ts#L48">routing/Layer.ts:48</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="prettyprint" class="tsd-anchor"></a>
+					<h3>pretty<wbr>Print</h3>
+					<div class="tsd-signature tsd-kind-icon">pretty<wbr>Print<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/9ea8058/src/routing/Layer.ts#L50">routing/Layer.ts:50</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -148,13 +181,22 @@
 								<a href="layer.handlerobject.html" class="tsd-kind-icon">Handler<wbr>Object</a>
 								<ul>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="layer.handlerobject.html#handler" class="tsd-kind-icon">handler</a>
+										<a href="layer.handlerobject.html#handlers" class="tsd-kind-icon">handlers</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="layer.handlerobject.html#handlerslength" class="tsd-kind-icon">handlers<wbr>Length</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="layer.handlerobject.html#options" class="tsd-kind-icon">options</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="layer.handlerobject.html#params" class="tsd-kind-icon">params</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="layer.handlerobject.html#paramslength" class="tsd-kind-icon">params<wbr>Length</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="layer.handlerobject.html#prettyprint" class="tsd-kind-icon">pretty<wbr>Print</a>
 									</li>
 								</ul>
 							</li>
@@ -198,16 +240,10 @@
 								<a href="../classes/layer.html#numberofchildren" class="tsd-kind-icon">number<wbr>OfChildren</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/layer.html#options-1" class="tsd-kind-icon">options</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="../classes/layer.html#parametricbrother" class="tsd-kind-icon">parametric<wbr>Brother</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="../classes/layer.html#params" class="tsd-kind-icon">params</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/layer.html#paramslength" class="tsd-kind-icon">params<wbr>Length</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="../classes/layer.html#prefix" class="tsd-kind-icon">prefix</a>
