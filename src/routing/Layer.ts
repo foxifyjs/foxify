@@ -173,7 +173,7 @@ class Layer {
 
   parametricBrother: Layer | null = null;
 
-  numberOfChildren = 0;
+  numberOfChildren = Object.keys(this.children).length;
 
   constructor(
     public prefix = "/",
