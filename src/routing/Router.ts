@@ -115,7 +115,7 @@ module Router {
     path: string;
     opts: Layer.RouteOptions;
     handlers: Layer.Handler[];
-    middleware: boolean;
+    middlewares: Layer.Handler[];
   }
 
   export interface Params {
@@ -236,7 +236,7 @@ class Router {
     assert(typeof method === "string", "Method should be a string");
     assert(httpMethods.indexOf(method) !== -1, `Method "${method}" is not an http method.`);
 
-    this.routes.push({ method, path: `${this.prefix}${path}`, opts, handlers, middleware: false });
+    this.routes.push({ method, path: `${this.prefix}${path}`, opts, handlers, middlewares: [] });
 
     return this;
   }
@@ -373,12 +373,13 @@ class Router {
     /* apply built-in middlewares */
     this._use(init(app) as any);
 
-    const middlewares = this.middlewares.reduce((prev, middleware) => {
+    const middlewares = this.middlewares.reduce((prev, { path, handlers }) => {
       httpMethods.forEach((method) => prev.push({
-        ...middleware,
+        path,
+        handlers: [],
         opts: OPTIONS,
         method,
-        middleware: true,
+        middlewares: handlers,
       }));
 
       return prev;
@@ -396,18 +397,17 @@ class Router {
 
       options.schema = schema;
 
-      const newHandlers = middlewares
+      const matchedMiddlewares = middlewares
         .filter((middleware) => method === middleware.method && pathMatchesMiddleware(path, middleware.path))
-        .reduce((prev, { handlers }) => prev.concat(handlers), [] as Layer.Handler[])
-        .concat(handlers);
+        .reduce((prev, { middlewares }) => prev.concat(middlewares), [] as Layer.Handler[]);
 
-      const newRoutes = [{ method, path, opts: options, handlers: newHandlers, middleware: false }];
+      const newRoutes = [{ method, path, opts: options, handlers, middlewares: matchedMiddlewares }];
 
       if (this.ignoreTrailingSlash && path !== "/" && !path.endsWith("*")) {
-        let newRoute = { method, path: `${path}/`, opts: options, handlers: newHandlers, middleware: false };
+        let newRoute = { method, path: `${path}/`, opts: options, handlers, middlewares: matchedMiddlewares };
 
         if (path.endsWith("/")) newRoute = {
-          method, path: path.slice(0, -1), opts: options, handlers: newHandlers, middleware: false,
+          method, path: path.slice(0, -1), opts: options, handlers, middlewares: matchedMiddlewares,
         };
 
         newRoutes.push(newRoute);
@@ -427,20 +427,15 @@ class Router {
 
     routes
       .concat(
-        middlewares.map((middleware) => {
-          middleware.handlers = middleware.handlers.concat([foxify_not_found]);
+        middlewares
+          .filter((middleware) => !/\*/.test(middleware.path))
+          .map((middleware) => {
+            middleware.handlers = middleware.handlers.concat([foxify_not_found]);
 
-          return middleware;
-        })
+            return middleware;
+          })
       )
-      .forEach(({ method, path, opts, handlers, middleware }) => {
-        let middlewareHandlers: Layer.Handler[] = [];
-
-        if (middleware) {
-          middlewareHandlers = handlers;
-          handlers = [];
-        }
-
+      .forEach(({ method, path, opts, handlers, middlewares }) => {
         const params = [];
         let j = 0;
 
@@ -496,7 +491,7 @@ class Router {
                 opts,
                 params,
                 handlers,
-                middlewareHandlers,
+                middlewares,
                 regex
               );
 
@@ -510,14 +505,14 @@ class Router {
             // add the wildcard parameter
             params.push("*");
             return this._insert(
-              method, path.slice(0, len), NODE_TYPES.MATCH_ALL, opts, params, handlers, middlewareHandlers, null
+              method, path.slice(0, len), NODE_TYPES.MATCH_ALL, opts, params, handlers, middlewares, null
             );
           }
 
         if (!this.caseSensitive) path = path.toLowerCase();
 
         // static route
-        return this._insert(method, path, NODE_TYPES.STATIC, opts, params, handlers, middlewareHandlers, null);
+        return this._insert(method, path, NODE_TYPES.STATIC, opts, params, handlers, middlewares, null);
       });
 
     return this;
