@@ -10,6 +10,8 @@ import httpMethods, { Method } from "./httpMethods";
 import * as Layer from "./Layer";
 import * as Foxify from "..";
 
+const OPTIONS = { schema: { response: {} } };
+
 /*
   Char codes:
     "#": 35
@@ -31,7 +33,7 @@ const EMPTY_HANDLE = {
   handlers: [
     new Encapsulation(foxify_not_found),
   ],
-  options: { schema: { response: {} } },
+  options: OPTIONS,
   params: {},
 };
 
@@ -222,7 +224,7 @@ class Router {
 
   protected _on(
     method: Method | Method[], path: string,
-    opts: Layer.RouteOptions = { schema: { response: {} } }, handlers: Layer.Handler[]
+    opts: Layer.RouteOptions = OPTIONS, handlers: Layer.Handler[]
   ) {
     if (Array.isArray(method)) {
       method.forEach((m) => this._on(m, path, opts, handlers));
@@ -240,7 +242,7 @@ class Router {
   }
 
   protected _insert(
-    method: Method, path: string, kind: number, options: Layer.RouteOptions = { schema: { response: {} } },
+    method: Method, path: string, kind: number, options: Layer.RouteOptions = OPTIONS,
     params: string[] = [], handlers: Layer.Handler[] = [], middlewares: Layer.Handler[] = [],
     regex: RegExp | null
   ) {
@@ -374,7 +376,7 @@ class Router {
     const middlewares = this.middlewares.reduce((prev, middleware) => {
       httpMethods.forEach((method) => prev.push({
         ...middleware,
-        opts: { schema: { response: {} } },
+        opts: OPTIONS,
         method,
         middleware: true,
       }));
