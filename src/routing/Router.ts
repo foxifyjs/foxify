@@ -543,7 +543,7 @@ class Router {
     // handler validation
     handlers.forEach((handler) => assert(typeof handler === "function", "Handler should be a function"));
 
-    return this._on(method, path, opts, handlers as any);
+    return this._on(method, path, opts as any, handlers as any);
   }
 
   route(path: string): Router.PathMethods<Router.PathMethods> {
@@ -830,5 +830,7 @@ class Router {
     return this.tree.prettyPrint("", true);
   }
 }
+
+new Router().route("/").get([console.log, console.log]);
 
 export = Router;

@@ -94,7 +94,6 @@
     "codecov": "^3.1.0",
     "ejs": "^2.6.1",
     "esdoc-typescript-plugin": "^1.0.1",
-    "fs-readdir-recursive": "^1.1.0",
     "jest": "^23.6.0",
     "morgan": "^1.9.1",
     "rimraf": "^2.6.2",
@@ -102,8 +101,7 @@
     "tslint": "^5.11.0",
     "typedoc": "^0.13.0",
     "typedoc-plugin-example-tag": "^1.0.2",
-    "typescript": "^3.1.6",
-    "uglify-es": "^3.3.9"
+    "typescript": "^3.1.6"
   },
   "jest": {
     "moduleFileExtensions": [
