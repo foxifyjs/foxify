@@ -128,8 +128,10 @@ module Router {
     ...handlers: Array<Layer.Handler | Layer.Handler[]>
   ) => T;
 
-  export type PathMethodFunction<T = Router> =
-    (options: Layer.RouteOptions | Layer.Handler, ...handlers: Layer.Handler[]) => T;
+  export type PathMethodFunction<T = Router> = (
+    options: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
+    ...handlers: Array<Layer.Handler | Layer.Handler[]>
+  ) => T;
 
   export interface MethodFunctions<T = Router> {
     get: Router.MethodFunction<T>;
