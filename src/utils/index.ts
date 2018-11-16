@@ -39,3 +39,5 @@ export function define(obj: object, method: "get" | "set", name: string, func: (
     }
   );
 }
+
+export const isHandler = (arg: any) => typeof arg === "function" || arg instanceof Promise;

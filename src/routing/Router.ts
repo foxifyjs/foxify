@@ -3,7 +3,7 @@ import * as fastStringify from "fast-json-stringify";
 import isRegexSafe = require("safe-regex");
 import * as Request from "../Request";
 import * as Response from "../Response";
-import { array, object, function as func, decodeURIComponent as fastDecode, string } from "../utils";
+import { array, object, function as func, decodeURIComponent as fastDecode, string, isHandler } from "../utils";
 import { Encapsulation } from "../exceptions";
 import { init } from "../middlewares";
 import httpMethods, { Method } from "./httpMethods";
@@ -360,7 +360,7 @@ class Router {
     handlers = array.compact(handlers);
 
     // handler validation
-    handlers.forEach((handler) => assert(typeof handler === "function", "Handler should be a function"));
+    handlers.forEach((handler) => assert(isHandler(handler), "Handler should be a function"));
 
     const path = "*";
 
@@ -541,7 +541,7 @@ class Router {
     assert(`${this.prefix}${path}`.length > 0, "The path could not be empty");
     assert(path === "" || path[0] === "/" || path[0] === "*", "The first character of a path should be `/` or `*`");
     // handler validation
-    handlers.forEach((handler) => assert(typeof handler === "function", "Handler should be a function"));
+    handlers.forEach((handler) => assert(isHandler(handler), "Handler should be a function"));
 
     return this._on(method, path, opts as any, handlers as any);
   }
@@ -597,7 +597,7 @@ class Router {
     assert(`${this.prefix}${path}`.length > 0, "The path could not be empty");
     assert(path === "" || path[0] === "/" || path[0] === "*", "The first character of a path should be `/` or `*`");
     // handler validation
-    handlers.forEach((handler) => assert(typeof handler === "function", "Handler should be a function"));
+    handlers.forEach((handler) => assert(isHandler(handler), "Handler should be a function"));
 
     const middlewarePrefix = this.prefix === ""
       ? path
@@ -624,7 +624,7 @@ class Router {
     assert(param.length > 0, "The param could not be empty");
     assert(!/\//.test(param), "The first character of a param shouldn't have `/`");
     // handler validation
-    assert(typeof handler === "function", "Handler should be a function");
+    assert(isHandler(handler), "Handler should be a function");
 
     this.params[param] = handler;
 
