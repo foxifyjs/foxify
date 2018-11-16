@@ -1,6 +1,6 @@
 {
   "name": "foxify",
-  "version": "0.10.14",
+  "version": "0.10.15",
   "description": "The fast, easy to use & typescript ready web framework for Node.js",
   "author": "Ardalan Amini <ardalanamini22@gmail.com> [https://github.com/ardalanamini]",
   "contributors": [
@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@foxify/inject": "^1.0.0",
-    "@types/node": "^10.12.4",
+    "@types/node": "^10.12.9",
     "async": "^2.6.1",
     "content-disposition": "^0.5.2",
     "content-type": "^1.0.4",
@@ -61,7 +61,7 @@
     "cookie-signature": "^1.1.0",
     "dotenv": "^6.1.0",
     "escape-html": "^1.0.3",
-    "fast-json-stringify": "^1.9.1",
+    "fast-json-stringify": "^1.9.2",
     "mime-types": "^2.1.21",
     "negotiator": "^0.6.1",
     "on-finished": "^2.3.0",

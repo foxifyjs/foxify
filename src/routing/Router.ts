@@ -3,7 +3,7 @@ import * as fastStringify from "fast-json-stringify";
 import isRegexSafe = require("safe-regex");
 import * as Request from "../Request";
 import * as Response from "../Response";
-import { array, object, function as func, decodeURIComponent as fastDecode } from "../utils";
+import { array, object, function as func, decodeURIComponent as fastDecode, string } from "../utils";
 import { Encapsulation } from "../exceptions";
 import { init } from "../middlewares";
 import httpMethods, { Method } from "./httpMethods";
@@ -122,8 +122,11 @@ module Router {
     [param: string]: Layer.Handler;
   }
 
-  export type MethodFunction<T = Router> =
-    (path: string, options: Layer.RouteOptions | Layer.Handler, ...handlers: Layer.Handler[]) => T;
+  export type MethodFunction<T = Router> = (
+    path: string,
+    options: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
+    ...handlers: Array<Layer.Handler | Layer.Handler[]>
+  ) => T;
 
   export type PathMethodFunction<T = Router> =
     (options: Layer.RouteOptions | Layer.Handler, ...handlers: Layer.Handler[]) => T;
@@ -216,9 +219,11 @@ class Router {
 
       if ((this as any)[methodName]) throw new Error(`Method already exists: ${methodName}`);
 
-      (this as any)[methodName] =
-        (path: string, opts: Layer.RouteOptions | Layer.Handler, ...handlers: Layer.Handler[]) =>
-          this.on(method, path, opts, ...handlers);
+      (this as any)[methodName] = (
+        path: string,
+        opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
+        ...handlers: Array<Layer.Handler | Layer.Handler[]>
+      ) => this.on(method, path, opts, ...handlers);
     });
   }
 
@@ -519,22 +524,24 @@ class Router {
   }
 
   on(
-    method: Method | Method[], path: string, opts: Layer.RouteOptions | Layer.Handler,
-    ...handlers: Layer.Handler[]
+    method: Method | Method[], path: string, opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
+    ...handlers: Array<Layer.Handler | Layer.Handler[]>
   ) {
-    if (func.isFunction(opts)) {
-      handlers = [opts].concat(handlers);
+    if (func.isFunction(opts) || Array.isArray(opts)) {
+      handlers = [opts].concat(handlers as any);
       opts = {} as Layer.RouteOptions;
     }
+
+    handlers = array.deepFlatten(handlers);
 
     // path validation
     assert(typeof path === "string", "Path should be a string");
     assert(`${this.prefix}${path}`.length > 0, "The path could not be empty");
-    assert(path[0] === "/" || path[0] === "*", "The first character of a path should be `/` or `*`");
+    assert(path === "" || path[0] === "/" || path[0] === "*", "The first character of a path should be `/` or `*`");
     // handler validation
     handlers.forEach((handler) => assert(typeof handler === "function", "Handler should be a function"));
 
-    return this._on(method, path, opts, handlers);
+    return this._on(method, path, opts, handlers as any);
   }
 
   route(path: string): Router.PathMethods<Router.PathMethods> {
@@ -543,7 +550,10 @@ class Router {
 
       if (prev[methodName]) throw new Error(`Method already exists: ${methodName}`);
 
-      prev[methodName] = (opts: Layer.RouteOptions | Layer.Handler, ...handlers: Layer.Handler[]) => {
+      prev[methodName] = (
+        opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
+        ...handlers: Array<Layer.Handler | Layer.Handler[]>
+      ) => {
         this.on(method, path, opts, ...handlers);
 
         return ROUTE;
@@ -555,27 +565,35 @@ class Router {
     return ROUTE;
   }
 
-  use(path: string | Layer.Handler | Router, ...handlers: Array<Layer.Handler | Router>) {
+  all(
+    path: string,
+    opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
+    ...handlers: Array<Layer.Handler | Layer.Handler[]>
+  ) {
+    return this.on(httpMethods, path, opts, ...handlers);
+  }
+
+  use(
+    path: string | Layer.Handler | Layer.Handler[] | Router | Router[],
+    ...handlers: Array<Layer.Handler | Layer.Handler[] | Router | Router[]>
+  ) {
+    if (!string.isString(path)) {
+      handlers = [path].concat(handlers);
+      path = "*";
+    }
+
+    handlers = array.deepFlatten(handlers);
+
     handlers = array.compact(handlers);
 
-    let routers = handlers.filter(Router.isRouter);
-
-    if (Router.isRouter(path)) {
-      routers = [path].concat(routers);
-      path = "*";
-    }
-
-    if (func.isFunction(path)) {
-      handlers = [path].concat(handlers as Layer.Handler[]);
-      path = "*";
-    }
+    const routers = handlers.filter(Router.isRouter);
 
     handlers = handlers.filter((handler) => !Router.isRouter(handler));
 
     // path validation
     assert(typeof path === "string", "Path should be a string");
-    assert(path.length > 0, "The path could not be empty");
-    assert(path[0] === "/" || path[0] === "*", "The first character of a path should be `/` or `*`");
+    assert(`${this.prefix}${path}`.length > 0, "The path could not be empty");
+    assert(path === "" || path[0] === "/" || path[0] === "*", "The first character of a path should be `/` or `*`");
     // handler validation
     handlers.forEach((handler) => assert(typeof handler === "function", "Handler should be a function"));
 
@@ -808,10 +826,6 @@ class Router {
 
   prettyPrint() {
     return this.tree.prettyPrint("", true);
-  }
-
-  all(path: string, ...handlers: Layer.Handler[]) {
-    return this.on.apply(this, [httpMethods, path, ...handlers]);
   }
 }
 
