@@ -3,9 +3,9 @@ import { http } from "../constants";
 import { HttpException } from "../exceptions";
 import * as Request from "../Request";
 import * as Response from "../Response";
-import * as utils from "../utils";
+import { object } from "../utils";
 
-const ERRORS = utils.object.reduce(http, (prev, code) => {
+const ERRORS = object.reduce(http, (prev, code) => {
   prev.push(`error-${code}`);
 
   return prev;
@@ -44,7 +44,7 @@ interface EventEmitter {
 
 class EventEmitter extends Base {
   on(event: EventEmitter.Event, listener: (...args: any[]) => void) {
-    if (!utils.array.contains(EVENTS, event)) throw new TypeError(`Unexpected event "${event}"`);
+    if (!EVENTS.includes(event)) throw new TypeError(`Unexpected event "${event}"`);
 
     switch (event) {
       case "uncaughtException":
@@ -65,7 +65,7 @@ class EventEmitter extends Base {
   }
 
   emit(event: EventEmitter.ErrorEvent, error: HttpException, req: Request, res: Response) {
-    if (!utils.array.contains(EVENTS, event) || event === "error") throw new TypeError(`Unexpected event "${event}"`);
+    if (!EVENTS.includes(event) || event === "error") throw new TypeError(`Unexpected event "${event}"`);
 
     return super.emit(event, error, req, res);
   }

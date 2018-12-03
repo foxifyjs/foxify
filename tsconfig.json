@@ -4,6 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es6",
+    "lib": ["es5", "esnext"],
     "rootDir": "src",
     "outDir": "framework",
     "experimentalDecorators": true,

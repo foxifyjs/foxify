@@ -23,8 +23,6 @@ const OPTIONS = { schema: { response: {} } };
     "?": 63
 */
 
-const NODE_TYPES = Layer.TYPES;
-
 function foxify_not_found() {
   throw new HttpException(HTTP.NOT_FOUND);
 }
@@ -450,14 +448,14 @@ class Router {
           // search for parametric or wildcard routes
           // parametric route
           if (path.charCodeAt(i) === 58) {
-            let nodeType = NODE_TYPES.PARAM;
+            let nodeType = 1; // PARAM
             let staticPart = path.slice(0, i);
             j = i + 1;
 
             if (!this.caseSensitive) staticPart = staticPart.toLowerCase();
 
             // add the static part of the route to the tree
-            this._insert(method, staticPart, NODE_TYPES.STATIC, opts, undefined, undefined, undefined, null);
+            this._insert(method, staticPart, 0 /* STATIC */, opts, undefined, undefined, undefined, null);
 
             // isolate the parameter name
             let isRegex = false;
@@ -471,8 +469,8 @@ class Router {
               else break;
             }
 
-            if (isRegex && (i === len || path.charCodeAt(i) === 47)) nodeType = NODE_TYPES.REGEX;
-            else if (i < len && path.charCodeAt(i) !== 47) nodeType = NODE_TYPES.MULTI_PARAM;
+            if (isRegex && (i === len || path.charCodeAt(i) === 47)) nodeType = 3; // REGEX
+            else if (i < len && path.charCodeAt(i) !== 47) nodeType = 4; // MULTI_PARAM
 
             const parameter = path.slice(j, i);
             let regex: any = isRegex ? parameter.slice(parameter.indexOf("("), i) : null;
@@ -508,18 +506,18 @@ class Router {
             i--;
             // wildcard route
           } else if (path.charCodeAt(i) === 42) {
-            this._insert(method, path.slice(0, i), NODE_TYPES.STATIC, opts, undefined, undefined, undefined, null);
+            this._insert(method, path.slice(0, i), 0 /* STATIC */, opts, undefined, undefined, undefined, null);
             // add the wildcard parameter
             params.push("*");
             return this._insert(
-              method, path.slice(0, len), NODE_TYPES.MATCH_ALL, opts, params, handlers, middlewares, null
+              method, path.slice(0, len), 2 /* MATCH_ALL */, opts, params, handlers, middlewares, null
             );
           }
 
         if (!this.caseSensitive) path = path.toLowerCase();
 
         // static route
-        return this._insert(method, path, NODE_TYPES.STATIC, opts, params, handlers, middlewares, null);
+        return this._insert(method, path, 0 /* STATIC */, opts, params, handlers, middlewares, null);
       });
 
     return this;
@@ -650,11 +648,7 @@ class Router {
     this._safeNext.run(req, res, handle.handlers);
   }
 
-  find(method: Method, path: string): {
-    handlers: Encapsulation[];
-    options: Layer.RouteOptions;
-    params: any;
-  } {
+  find(method: Method, path: string) {
     if (!this.caseSensitive) path = path.toLowerCase();
 
     const maxParamLength = this.maxParamLength;
@@ -722,7 +716,7 @@ class Router {
       const kind = node.kind;
 
       // static route
-      if (kind === NODE_TYPES.STATIC) {
+      if (kind === 0 /* STATIC */) {
         // if exist, save the wildcard child
         if (currentNode.wildcardChild !== null) {
           wildcardNode = currentNode.wildcardChild;
@@ -743,7 +737,7 @@ class Router {
       }
 
       // parametric route
-      if (kind === NODE_TYPES.PARAM) {
+      if (kind === 1 /* PARAM */) {
         currentNode = node;
         i = path.indexOf("/");
 
@@ -762,7 +756,7 @@ class Router {
       }
 
       // wildcard route
-      if (kind === NODE_TYPES.MATCH_ALL) {
+      if (kind === 2 /* MATCH_ALL */) {
         decoded = fastDecode(path);
 
         if (decoded === null) return EMPTY_HANDLE;
@@ -775,8 +769,7 @@ class Router {
       }
 
       // parametric(regex) route
-      if (kind === NODE_TYPES.REGEX) {
-        currentNode = node;
+      if (kind === 3 /* REGEX */) {
         i = path.indexOf("/");
 
         if (i === -1) i = pathLen;
@@ -789,6 +782,7 @@ class Router {
 
         if (!(node.regex as RegExp).test(decoded)) return EMPTY_HANDLE;
 
+        currentNode = node;
         params[pindex++] = decoded;
         path = path.slice(i);
 
@@ -796,10 +790,7 @@ class Router {
       }
 
       // multiparametric route
-      if (kind === NODE_TYPES.MULTI_PARAM) {
-        currentNode = node;
-        i = 0;
-
+      if (kind === 4 /* MULTI_PARAM */) {
         if (node.regex !== null) {
           const matchedParameter = path.match(node.regex);
 
@@ -807,6 +798,7 @@ class Router {
 
           i = matchedParameter[1].length;
         } else {
+          i = 0;
           while (i < pathLen && path.charCodeAt(i) !== 47 && path.charCodeAt(i) !== 45) i++;
 
           if (i > maxParamLength) return EMPTY_HANDLE;
@@ -816,6 +808,7 @@ class Router {
 
         if (decoded === null) return EMPTY_HANDLE;
 
+        currentNode = node;
         params[pindex++] = decoded;
         path = path.slice(i);
 

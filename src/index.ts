@@ -330,7 +330,7 @@ class Foxify {
     };
 
     return inject(
-      this._router.lookup.bind(this._router),
+      this._router.lookup.bind(this._router) as any,
       {
         ...options,
         ServerResponse,

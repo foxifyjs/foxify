@@ -30,12 +30,12 @@ const buildHandlers = (handlers?: any) => {
 const Handlers = buildHandlers();
 
 const TYPES = {
-  STATIC: 0,
-  PARAM: 1,
-  MATCH_ALL: 2,
-  REGEX: 3,
+  STATIC: 0 as 0,
+  PARAM: 1 as 1,
+  MATCH_ALL: 2 as 2,
+  REGEX: 3 as 3,
   // It's used for a parameter, that is followed by another parameter in the same part
-  MULTI_PARAM: 4,
+  MULTI_PARAM: 4 as 4,
 };
 
 module Layer {
@@ -178,7 +178,7 @@ class Layer {
   constructor(
     public prefix = "/",
     public children: Layer.Children = {},
-    public kind = TYPES.STATIC,
+    public kind: number = TYPES.STATIC,
     public regex: RegExp | null = null,
     public params: string[] = [],
     handlers?: Layer.Handlers
