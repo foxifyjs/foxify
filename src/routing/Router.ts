@@ -534,6 +534,8 @@ class Router {
 
     handlers = array.deepFlatten(handlers);
 
+    handlers = array.compact(handlers);
+
     // path validation
     assert(typeof path === "string", "Path should be a string");
     assert(`${this.prefix}${path}`.length > 0, "The path could not be empty");
