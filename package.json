@@ -1,6 +1,6 @@
 {
   "name": "foxify",
-  "version": "0.10.19",
+  "version": "0.10.20",
   "description": "The fast, easy to use & typescript ready web framework for Node.js",
   "author": "Ardalan Amini <ardalanamini22@gmail.com> [https://github.com/ardalanamini]",
   "contributors": [
@@ -52,7 +52,7 @@
     "codecov": "npm run coverage -- --runInBand && codecov"
   },
   "dependencies": {
-    "@foxify/inject": "^1.0.2",
+    "@foxify/inject": "^1.0.3",
     "@types/node": "^10.12.12",
     "async": "^2.6.1",
     "content-disposition": "^0.5.2",
