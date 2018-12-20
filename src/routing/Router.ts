@@ -343,8 +343,10 @@ class Router {
     }
   }
 
-  protected _next = (req: Request, res: Response, handlers: Encapsulation[], index = 0) => {
-    const next = () => this._safeNext.run(req, res, handlers, index + 1);
+  protected _next = (req: Request, res: Response, handlers: Encapsulation[], index = 0, error?: Error) => {
+    if (error) throw error;
+
+    const next = (err?: Error) => this._safeNext.run(req, res, handlers, index + 1, err);
 
     res.next = next;
 

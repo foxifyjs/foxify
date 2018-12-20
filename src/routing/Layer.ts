@@ -39,7 +39,7 @@ const TYPES = {
 };
 
 module Layer {
-  export type Handler = (request: Request, response: Response, next: () => void) => void;
+  export type Handler = (request: Request, response: Response, next: (err?: Error) => void) => void;
 
   export interface HandlerObject {
     handlers: Encapsulation[];

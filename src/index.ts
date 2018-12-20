@@ -98,8 +98,9 @@ class Foxify {
   private _settings: Foxify.Settings = {
     env: process.env.NODE_ENV || "production",
     url: process.env.APP_URL || "localhost",
-    port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
-    workers: process.env.WORKERS ? +process.env.WORKERS : os.cpus().length,
+    port: process.env.APP_PORT ? parseInt(process.env.APP_PORT, 10) : 3000,
+    workers: process.env.WORKERS ? parseInt(process.env.WORKERS, 10) :
+      (!process.env.NODE_ENV || process.env.NODE_ENV === "production") ? os.cpus().length : 1,
     subdomain: {
       offset: 2,
     },
