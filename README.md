@@ -1,4 +1,4 @@
-# Foxify [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Foxify,%20The%20fast,%20easy%20to%20use%20%26%20typescript%20ready%20web%20framework%20for%20Node.js&url=https://github.com/foxifyjs/foxify&via=foxifyjs&hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast) [![Twitter Follow](https://img.shields.io/twitter/follow/foxifyjs.svg?style=social&label=Follow)](https://twitter.com/foxifyjs)
+# Foxify [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Foxify,%20The%20fast,%20easy%20to%20use%20%26%20typescript%20ready%20web%20framework%20for%20Node.js&url=https://github.com/foxifyjs/foxify&via=foxifyjs&hashtags=foxify,nodejs,web,api,framework,typescript,developers,fast) [![Twitter Follow](https://img.shields.io/twitter/follow/foxifyjs.svg?style=social&label=Follow)](https://twitter.com/foxifyjs) <!-- omit in toc -->
 
 The **fast**, **easy to use** & **typescript ready** web framework for [Node.js](https://nodejs.org)
 
@@ -18,6 +18,8 @@ The **fast**, **easy to use** & **typescript ready** web framework for [Node.js]
 [![License](https://img.shields.io/github/license/foxifyjs/foxify.svg)](https://github.com/foxifyjs/foxify/blob/master/LICENSE)
 [![Build Status](https://api.travis-ci.com/foxifyjs/foxify.svg?branch=master)](https://travis-ci.com/foxifyjs/foxify)
 [![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/master/graph/badge.svg)](https://codecov.io/gh/foxifyjs/foxify)
+[![Backers on Open Collective](https://opencollective.com/foxify/backers/badge.svg)](#backers)
+[![Sponsors on Open Collective](https://opencollective.com/foxify/sponsors/badge.svg)](#sponsors)
 [![Github Stars](https://img.shields.io/github/stars/foxifyjs/foxify.svg?style=social&label=Stars)](https://github.com/foxifyjs/foxify)
 [![Github Forks](https://img.shields.io/github/forks/foxifyjs/foxify.svg?style=social&label=Fork)](https://github.com/foxifyjs/foxify)
 
@@ -34,10 +36,13 @@ Enter Foxify. Foxify is a web framework highly focused on providing the best dev
 - [Features](#features)
 - [Benchmarks](#benchmarks)
 - [TODO](#todo)
+- [Credits](#credits)
+  - [Authors](#authors)
+  - [Contributors](#contributors)
+  - [Backers](#backers)
+  - [Sponsors](#sponsors)
 - [Versioning](#versioning)
-- [Authors](#authors)
 - [License](#license)
-- [Support](#support)
 
 ## Getting Started
 
@@ -125,23 +130,34 @@ You can also find all the documents [here](https://foxify.js.org).
 - [ ] Job schedule
 - [ ] Logging
 
+## Credits
+
+### Authors
+
+- **Ardalan Amini** - *Core Maintainer* - [@ardalanamini](https://github.com/ardalanamini)
+
+### Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+
+[![Contributors](https://opencollective.com/foxify/contributors.svg?width=890)](graphs/contributors)
+
+### Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/foxify#backer)]
+
+[![Backers](https://opencollective.com/foxify/backers.svg?width=890)](https://opencollective.com/foxify#backers)
+
+### Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here. [[Become a sponsor](https://opencollective.com/foxify#sponsor)]
+
+[![Sponsors](https://opencollective.com/foxify/sponsors.svg?width=890)](https://opencollective.com/foxify#sponsors)
+
 ## Versioning
 
 We use [SemVer](http://semver.org) for versioning. For the versions available, see the [tags on this repository](https://github.com/foxifyjs/foxify/tags).
 
-## Authors
-
-- **Ardalan Amini** - *Owner/Developer* - [@ardalanamini](https://github.com/ardalanamini)
-
-See also the list of [contributors](https://github.com/foxifyjs/foxify/contributors) who participated in this project.
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-## Support
-
-If my work helps you, please consider
-
-[![Become a Backer](https://opencollective.com/foxify/tiers/backer.svg?avatarHeight=50)](https://opencollective.com/foxify)
-[![Become a Sponsor](https://opencollective.com/foxify/tiers/sponsor.svg?avatarHeight=50)](https://opencollective.com/foxify)
