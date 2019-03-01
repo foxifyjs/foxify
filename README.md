@@ -143,6 +143,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If my work helps you, please consider
 
-[![Become a Backer](https://opencollective.com/foxify/tiers/backer.svg?avatarHeight=36)](https://opencollective.com/foxify)
-
-[![Become a Sponsor](https://opencollective.com/foxify/tiers/sponsor.svg?avatarHeight=36)](https://opencollective.com/foxify)
+[![Become a Backer](https://opencollective.com/foxify/tiers/backer.svg?avatarHeight=50)](https://opencollective.com/foxify)
+[![Become a Sponsor](https://opencollective.com/foxify/tiers/sponsor.svg?avatarHeight=50)](https://opencollective.com/foxify)
