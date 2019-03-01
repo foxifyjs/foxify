@@ -32,6 +32,10 @@
     "framework",
     "foxify"
   ],
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/foxify"
+  },
   "engines": {
     "node": ">=8.12"
   },
@@ -44,6 +48,7 @@
     "build": "node scripts/prepare.js",
     "build:tsc": "tsc",
     "prepublishOnly": "npm run lint && npm test && npm run build",
+    "postinstall": "node -e \"console.log('\\u001b[35m\\u001b[1mLove Foxify? You can now donate to our open collective:\\u001b[22m\\u001b[39m\\n > \\u001b[34mhttps://opencollective.com/foxify/donate\\u001b[0m')\"",
     "lint": "tslint -p tsconfig.json -c tslint.json --exclude '**/*.d.ts'",
     "typedoc": "typedoc --out docs/ --mode file --module commonjs --target ES6 --plugin typedoc-plugin-example-tag src/",
     "doc": "node scripts/doc.js",
