@@ -143,6 +143,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If my work helps you, please consider
 
-[![Become A Patron](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/ardalanamini)
+[![Become a Backer](https://opencollective.com/foxify/tiers/backer.svg?avatarHeight=36)](https://opencollective.com/foxify)
 
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ardalanamini)
+[![Become a Sponsor](https://opencollective.com/foxify/tiers/sponsor.svg?avatarHeight=36)](https://opencollective.com/foxify)
