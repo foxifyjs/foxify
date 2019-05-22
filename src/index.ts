@@ -10,7 +10,7 @@ import * as utils from "./utils";
 import * as Server from "./Server";
 import * as RequestClass from "./Request";
 import * as ResponseClass from "./Response";
-import * as events from "./events";
+import events from "./events";
 import { Engine } from "./view";
 
 const OPTIONS = ["https", "x-powered-by", "routing.case-sensitive", "routing.ignore-trailing-slash",

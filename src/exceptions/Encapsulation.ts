@@ -1,7 +1,7 @@
 import { http } from "../constants";
 import * as Request from "../Request";
 import * as Response from "../Response";
-import * as events from "../events";
+import events from "../events";
 
 const handle = (error: any, req: Request, res: Response) => {
   events.emit(`error-${error.code || http.INTERNAL_SERVER_ERROR}` as any, error, req, res);

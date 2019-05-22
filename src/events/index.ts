@@ -1,5 +1,5 @@
-import * as EventEmitter from "./EventEmitter";
+import * as EventEmitter from "./Emitter";
 
 const eventEmitter = new EventEmitter();
 
-export = eventEmitter;
+export default eventEmitter;
