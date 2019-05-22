@@ -3,11 +3,18 @@ import * as fastStringify from "fast-json-stringify";
 import isRegexSafe = require("safe-regex");
 import * as Request from "../Request";
 import * as Response from "../Response";
-import { array, object, function as func, decodeURIComponent as fastDecode, string, isHandler } from "../utils";
+import {
+  array,
+  object,
+  function as func,
+  decodeURIComponent as fastDecode,
+  string,
+  isHandler,
+} from "../utils";
 import { Encapsulation } from "../exceptions";
 import { init } from "../middlewares";
 import httpMethods, { Method } from "./httpMethods";
-import * as Layer from "./Layer";
+import Layer from "./Layer";
 import * as Foxify from "..";
 
 const OPTIONS = { schema: { response: {} } };
@@ -28,9 +35,7 @@ function foxify_not_found() {
 }
 
 const EMPTY_HANDLE = {
-  handlers: [
-    new Encapsulation(foxify_not_found),
-  ],
+  handlers: [new Encapsulation(foxify_not_found)],
   options: OPTIONS,
   params: {},
 };
@@ -45,20 +50,25 @@ const pathMatchesMiddleware = (path: string, middleware: string) => {
     const k = paths[i];
 
     if (j === "*") {
-      if (i === (length - 1)) return true;
+      if (i === length - 1) return true;
 
       continue;
     }
 
     if (!k || j !== k) return false;
 
-    if (i === (length - 1)) return true;
+    if (i === length - 1) return true;
   }
 
   return false;
 };
 
-const getWildcardNode = (layer: Layer | null, method: Method, path: string, len: number) => {
+const getWildcardNode = (
+  layer: Layer | null,
+  method: Method,
+  path: string,
+  len: number,
+) => {
   if (layer === null) return EMPTY_HANDLE;
 
   const decoded = fastDecode(path.slice(-len));
@@ -67,11 +77,12 @@ const getWildcardNode = (layer: Layer | null, method: Method, path: string, len:
 
   const handler = layer.getHandler(method);
 
-  if (handler.handlersLength > 0) return {
-    handlers: handler.handlers,
-    options: handler.options,
-    params: { "*": decoded },
-  };
+  if (handler.handlersLength > 0)
+    return {
+      handlers: handler.handlers,
+      options: handler.options,
+      params: { "*": decoded },
+    };
 
   return EMPTY_HANDLE;
 };
@@ -160,37 +171,12 @@ module Router {
     connect: Router.MethodFunction<T>;
   }
 
-  export interface PathMethods<T = any> {
-    get: Router.PathMethodFunction<T>;
-    post: Router.PathMethodFunction<T>;
-    put: Router.PathMethodFunction<T>;
-    head: Router.PathMethodFunction<T>;
-    delete: Router.PathMethodFunction<T>;
-    options: Router.PathMethodFunction<T>;
-    trace: Router.PathMethodFunction<T>;
-    copy: Router.PathMethodFunction<T>;
-    lock: Router.PathMethodFunction<T>;
-    mkcol: Router.PathMethodFunction<T>;
-    move: Router.PathMethodFunction<T>;
-    purge: Router.PathMethodFunction<T>;
-    propfind: Router.PathMethodFunction<T>;
-    proppatch: Router.PathMethodFunction<T>;
-    unlock: Router.PathMethodFunction<T>;
-    report: Router.PathMethodFunction<T>;
-    mkactivity: Router.PathMethodFunction<T>;
-    checkout: Router.PathMethodFunction<T>;
-    merge: Router.PathMethodFunction<T>;
-    "m-search": Router.PathMethodFunction<T>;
-    notify: Router.PathMethodFunction<T>;
-    subscribe: Router.PathMethodFunction<T>;
-    unsubscribe: Router.PathMethodFunction<T>;
-    patch: Router.PathMethodFunction<T>;
-    search: Router.PathMethodFunction<T>;
-    connect: Router.PathMethodFunction<T>;
-  }
+  export type PathMethods<T = any> = {
+    [method in Method]: Router.PathMethodFunction<T>
+  };
 }
 
-interface Router extends Router.MethodFunctions { }
+interface Router extends Router.MethodFunctions {}
 
 class Router {
   static isRouter = (arg: any): arg is Router => arg instanceof Router;
@@ -214,10 +200,11 @@ class Router {
   constructor(public prefix = "") {
     assert(typeof prefix === "string", "Prefix should be a string");
 
-    httpMethods.forEach((method) => {
+    httpMethods.forEach(method => {
       const methodName = method.toLowerCase();
 
-      if ((this as any)[methodName]) throw new Error(`Method already exists: ${methodName}`);
+      if ((this as any)[methodName])
+        throw new Error(`Method already exists: ${methodName}`);
 
       (this as any)[methodName] = (
         path: string,
@@ -228,35 +215,52 @@ class Router {
   }
 
   protected _on(
-    method: Method | Method[], path: string,
-    opts: Layer.RouteOptions = OPTIONS, handlers: Layer.Handler[]
+    method: Method | Method[],
+    path: string,
+    opts: Layer.RouteOptions = OPTIONS,
+    handlers: Layer.Handler[],
   ) {
     if (Array.isArray(method)) {
-      method.forEach((m) => this._on(m, path, opts, handlers));
+      method.forEach(m => this._on(m, path, opts, handlers));
 
       return this;
     }
 
     // method validation
     assert(typeof method === "string", "Method should be a string");
-    assert(httpMethods.indexOf(method) !== -1, `Method "${method}" is not an http method.`);
+    assert(
+      httpMethods.indexOf(method) !== -1,
+      `Method "${method}" is not an http method.`,
+    );
 
-    this.routes.push({ method, path: `${this.prefix}${path}`, opts, handlers, middlewares: [] });
+    this.routes.push({
+      method,
+      path: `${this.prefix}${path}`,
+      opts,
+      handlers,
+      middlewares: [],
+    });
 
     return this;
   }
 
   protected _insert(
-    method: Method, path: string, kind: number, options: Layer.RouteOptions = OPTIONS,
-    params: string[] = [], handlers: Layer.Handler[] = [], middlewares: Layer.Handler[] = [],
-    regex: RegExp | null
+    method: Method,
+    path: string,
+    kind: number,
+    options: Layer.RouteOptions = OPTIONS,
+    params: string[] = [],
+    handlers: Layer.Handler[] = [],
+    middlewares: Layer.Handler[] = [],
+    regex: RegExp | null,
   ) {
     const prettyPrint = handlers.length !== 0;
 
     handlers = middlewares
       .concat(
-        params.filter((param) => this.params[param] !== undefined)
-          .map((param) => this.params[param])
+        params
+          .filter(param => this.params[param] !== undefined)
+          .map(param => this.params[param]),
       )
       .concat(handlers);
 
@@ -288,22 +292,22 @@ class Router {
           currentNode.kind,
           currentNode.regex,
           params,
-          new (Layer.Handlers as any)(currentNode.handlers)
+          new (Layer.Handlers as any)(currentNode.handlers),
         );
 
         if (currentNode.wildcardChild !== null)
           node.wildcardChild = currentNode.wildcardChild;
 
         // reset the parent
-        currentNode
-          .reset(prefix.slice(0, len))
-          .addChild(node);
+        currentNode.reset(prefix.slice(0, len)).addChild(node);
 
         // if the longest common prefix has the same length of the current path
         // the handler should be added to the current node, to a child otherwise
         if (len === pathLen) {
-          assert(currentNode.getHandler(method).handlersLength === 0,
-            `Method "${method}" already declared for route "${route}"`);
+          assert(
+            currentNode.getHandler(method).handlersLength === 0,
+            `Method "${method}" already declared for route "${route}"`,
+          );
 
           currentNode.addHandler(method, options, handlers, prettyPrint);
           currentNode.kind = kind;
@@ -343,15 +347,22 @@ class Router {
     }
   }
 
-  protected _next = (req: Request, res: Response, handlers: Encapsulation[], index = 0, error?: Error) => {
+  protected _next = (
+    req: Request,
+    res: Response,
+    handlers: Encapsulation[],
+    index = 0,
+    error?: Error,
+  ) => {
     if (error) throw error;
 
-    const next = (err?: Error) => this._safeNext.run(req, res, handlers, index + 1, err);
+    const next = (err?: Error) =>
+      this._safeNext.run(req, res, handlers, index + 1, err);
 
     res.next = next;
 
     handlers[index].run(req, res, next);
-  }
+  };
 
   protected _safeNext = new Encapsulation(this._next);
 
@@ -360,13 +371,20 @@ class Router {
     handlers = array.compact(handlers);
 
     // handler validation
-    handlers.forEach((handler) => assert(isHandler(handler), "Handler should be a function"));
+    handlers.forEach(handler =>
+      assert(isHandler(handler), "Handler should be a function"),
+    );
 
     const path = "*";
 
-    const index = this.middlewares.findIndex((middleware) => path === middleware.path);
+    const index = this.middlewares.findIndex(
+      middleware => path === middleware.path,
+    );
     if (index === -1) this.middlewares.push({ path, handlers });
-    else this.middlewares[index].handlers = handlers.concat(this.middlewares[index].handlers);
+    else
+      this.middlewares[index].handlers = handlers.concat(
+        this.middlewares[index].handlers,
+      );
 
     return this;
   }
@@ -380,53 +398,89 @@ class Router {
     /* apply built-in middlewares */
     this._use(init(app) as any);
 
-    const middlewares = this.middlewares.reduce((prev, { path, handlers }) => {
-      httpMethods.forEach((method) => prev.push({
-        path,
-        handlers: [],
-        opts: OPTIONS,
-        method,
-        middlewares: handlers,
-      }));
+    const middlewares = this.middlewares.reduce(
+      (prev, { path, handlers }) => {
+        httpMethods.forEach(method =>
+          prev.push({
+            path,
+            handlers: [],
+            opts: OPTIONS,
+            method,
+            middlewares: handlers,
+          }),
+        );
 
-      return prev;
-    }, [] as Router.Route[]);
+        return prev;
+      },
+      [] as Router.Route[],
+    );
 
-    let routes = this.routes.reduce((prev, { method, path, opts, handlers }) => {
-      const options = opts;
+    let routes = this.routes.reduce(
+      (prev, { method, path, opts, handlers }) => {
+        const options = opts;
 
-      const schema = options.schema;
+        const schema = options.schema;
 
-      if (schema) schema.response = object.mapValues(
-        schema.response || {},
-        (value) => fastStringify(value)
-      ) as any;
+        if (schema)
+          schema.response = object.mapValues(schema.response || {}, value =>
+            fastStringify(value),
+          ) as any;
 
-      options.schema = schema;
+        options.schema = schema;
 
-      const matchedMiddlewares = middlewares
-        .filter((middleware) => method === middleware.method && pathMatchesMiddleware(path, middleware.path))
-        .reduce((prev, { middlewares }) => prev.concat(middlewares), [] as Layer.Handler[]);
+        const matchedMiddlewares = middlewares
+          .filter(
+            middleware =>
+              method === middleware.method &&
+              pathMatchesMiddleware(path, middleware.path),
+          )
+          .reduce(
+            (prev, { middlewares }) => prev.concat(middlewares),
+            [] as Layer.Handler[],
+          );
 
-      const newRoutes = [{ method, path, opts: options, handlers, middlewares: matchedMiddlewares }];
+        const newRoutes = [
+          {
+            method,
+            path,
+            opts: options,
+            handlers,
+            middlewares: matchedMiddlewares,
+          },
+        ];
 
-      if (this.ignoreTrailingSlash && path !== "/" && !path.endsWith("*")) {
-        let newRoute = { method, path: `${path}/`, opts: options, handlers, middlewares: matchedMiddlewares };
+        if (this.ignoreTrailingSlash && path !== "/" && !path.endsWith("*")) {
+          let newRoute = {
+            method,
+            path: `${path}/`,
+            opts: options,
+            handlers,
+            middlewares: matchedMiddlewares,
+          };
 
-        if (path.endsWith("/")) newRoute = {
-          method, path: path.slice(0, -1), opts: options, handlers, middlewares: matchedMiddlewares,
-        };
+          if (path.endsWith("/"))
+            newRoute = {
+              method,
+              path: path.slice(0, -1),
+              opts: options,
+              handlers,
+              middlewares: matchedMiddlewares,
+            };
 
-        newRoutes.push(newRoute);
-      }
+          newRoutes.push(newRoute);
+        }
 
-      return prev.concat(newRoutes);
-    }, [] as Router.Route[]);
+        return prev.concat(newRoutes);
+      },
+      [] as Router.Route[],
+    );
 
-    const filteredMiddleware = middlewares.filter((middleware) => middleware.path === "*");
+    const filteredMiddleware = middlewares.filter(
+      middleware => middleware.path === "*",
+    );
     if (filteredMiddleware) routes = filteredMiddleware.concat(routes);
 
-    routes = routes.map((route) => {
+    routes = routes.map(route => {
       route.handlers = route.handlers.concat([foxify_not_found]);
 
       return route;
@@ -435,12 +489,14 @@ class Router {
     routes
       .concat(
         middlewares
-          .filter((middleware) => !/\*/.test(middleware.path))
-          .map((middleware) => {
-            middleware.handlers = middleware.handlers.concat([foxify_not_found]);
+          .filter(middleware => !/\*/.test(middleware.path))
+          .map(middleware => {
+            middleware.handlers = middleware.handlers.concat([
+              foxify_not_found,
+            ]);
 
             return middleware;
-          })
+          }),
       )
       .forEach(({ method, path, opts, handlers, middlewares }) => {
         const params = [];
@@ -457,7 +513,16 @@ class Router {
             if (!this.caseSensitive) staticPart = staticPart.toLowerCase();
 
             // add the static part of the route to the tree
-            this._insert(method, staticPart, 0 /* STATIC */, opts, undefined, undefined, undefined, null);
+            this._insert(
+              method,
+              staticPart,
+              0 /* STATIC */,
+              opts,
+              undefined,
+              undefined,
+              undefined,
+              null,
+            );
 
             // isolate the parameter name
             let isRegex = false;
@@ -471,19 +536,29 @@ class Router {
               else break;
             }
 
-            if (isRegex && (i === len || path.charCodeAt(i) === 47)) nodeType = 3; // REGEX
+            if (isRegex && (i === len || path.charCodeAt(i) === 47))
+              nodeType = 3;
+            // REGEX
             else if (i < len && path.charCodeAt(i) !== 47) nodeType = 4; // MULTI_PARAM
 
             const parameter = path.slice(j, i);
-            let regex: any = isRegex ? parameter.slice(parameter.indexOf("("), i) : null;
+            let regex: any = isRegex
+              ? parameter.slice(parameter.indexOf("("), i)
+              : null;
 
             if (isRegex) {
               regex = new RegExp(regex);
 
-              if (!this.allowUnsafeRegex) assert(isRegexSafe(regex), `The regex "${regex.toString()}" is not safe!`);
+              if (!this.allowUnsafeRegex)
+                assert(
+                  isRegexSafe(regex),
+                  `The regex "${regex.toString()}" is not safe!`,
+                );
             }
 
-            params.push(parameter.slice(0, isRegex ? parameter.indexOf("(") : i));
+            params.push(
+              parameter.slice(0, isRegex ? parameter.indexOf("(") : i),
+            );
 
             path = path.slice(0, j) + path.slice(i);
             i = j;
@@ -499,34 +574,70 @@ class Router {
                 params,
                 handlers,
                 middlewares,
-                regex
+                regex,
               );
 
             // add the parameter and continue with the search
-            this._insert(method, path.slice(0, i), nodeType, opts, params, undefined, undefined, regex);
+            this._insert(
+              method,
+              path.slice(0, i),
+              nodeType,
+              opts,
+              params,
+              undefined,
+              undefined,
+              regex,
+            );
 
             i--;
             // wildcard route
           } else if (path.charCodeAt(i) === 42) {
-            this._insert(method, path.slice(0, i), 0 /* STATIC */, opts, undefined, undefined, undefined, null);
+            this._insert(
+              method,
+              path.slice(0, i),
+              0 /* STATIC */,
+              opts,
+              undefined,
+              undefined,
+              undefined,
+              null,
+            );
             // add the wildcard parameter
             params.push("*");
             return this._insert(
-              method, path.slice(0, len), 2 /* MATCH_ALL */, opts, params, handlers, middlewares, null
+              method,
+              path.slice(0, len),
+              2 /* MATCH_ALL */,
+              opts,
+              params,
+              handlers,
+              middlewares,
+              null,
             );
           }
 
         if (!this.caseSensitive) path = path.toLowerCase();
 
         // static route
-        return this._insert(method, path, 0 /* STATIC */, opts, params, handlers, middlewares, null);
+        return this._insert(
+          method,
+          path,
+          0 /* STATIC */,
+          opts,
+          params,
+          handlers,
+          middlewares,
+          null,
+        );
       });
 
     return this;
   }
 
   on(
-    method: Method | Method[], path: string, opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
+    method: Method | Method[],
+    path: string,
+    opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
     ...handlers: Array<Layer.Handler | Layer.Handler[]>
   ) {
     if (func.isFunction(opts) || Array.isArray(opts)) {
@@ -541,30 +652,39 @@ class Router {
     // path validation
     assert(typeof path === "string", "Path should be a string");
     assert(`${this.prefix}${path}`.length > 0, "The path could not be empty");
-    assert(path === "" || path[0] === "/" || path[0] === "*", "The first character of a path should be `/` or `*`");
+    assert(
+      path === "" || path[0] === "/" || path[0] === "*",
+      "The first character of a path should be `/` or `*`",
+    );
     // handler validation
-    handlers.forEach((handler) => assert(isHandler(handler), "Handler should be a function"));
+    handlers.forEach(handler =>
+      assert(isHandler(handler), "Handler should be a function"),
+    );
 
     return this._on(method, path, opts as any, handlers as any);
   }
 
   route(path: string): Router.PathMethods<Router.PathMethods> {
-    const ROUTE = httpMethods.reduce((prev, method) => {
-      const methodName = method.toLowerCase();
+    const ROUTE = httpMethods.reduce(
+      (prev, method) => {
+        const methodName = method.toLowerCase();
 
-      if (prev[methodName]) throw new Error(`Method already exists: ${methodName}`);
+        if (prev[methodName])
+          throw new Error(`Method already exists: ${methodName}`);
 
-      prev[methodName] = (
-        opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
-        ...handlers: Array<Layer.Handler | Layer.Handler[]>
-      ) => {
-        this.on(method, path, opts, ...handlers);
+        prev[methodName] = (
+          opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
+          ...handlers: Array<Layer.Handler | Layer.Handler[]>
+        ) => {
+          this.on(method, path, opts, ...handlers);
 
-        return ROUTE;
-      };
+          return ROUTE;
+        };
 
-      return prev;
-    }, {} as any);
+        return prev;
+      },
+      {} as any,
+    );
 
     return ROUTE;
   }
@@ -592,28 +712,48 @@ class Router {
 
     const routers = handlers.filter(Router.isRouter);
 
-    handlers = handlers.filter((handler) => !Router.isRouter(handler));
+    handlers = handlers.filter(handler => !Router.isRouter(handler));
 
     // path validation
     assert(typeof path === "string", "Path should be a string");
     assert(`${this.prefix}${path}`.length > 0, "The path could not be empty");
-    assert(path === "" || path[0] === "/" || path[0] === "*", "The first character of a path should be `/` or `*`");
+    assert(
+      path === "" || path[0] === "/" || path[0] === "*",
+      "The first character of a path should be `/` or `*`",
+    );
     // handler validation
-    handlers.forEach((handler) => assert(isHandler(handler), "Handler should be a function"));
+    handlers.forEach(handler =>
+      assert(isHandler(handler), "Handler should be a function"),
+    );
 
-    const middlewarePrefix = this.prefix === ""
-      ? path
-      : (path === "*" ? `${this.prefix}/${path}` : `${this.prefix}${path}`);
-    const index = this.middlewares
-      .findIndex((middleware) => middlewarePrefix === middleware.path);
-    if (index === -1) this.middlewares
-      .push({ path: middlewarePrefix, handlers: handlers as Layer.Handler[] });
-    else this.middlewares[index].handlers.push(...handlers as Layer.Handler[]);
+    const middlewarePrefix =
+      this.prefix === ""
+        ? path
+        : path === "*"
+        ? `${this.prefix}/${path}`
+        : `${this.prefix}${path}`;
+    const index = this.middlewares.findIndex(
+      middleware => middlewarePrefix === middleware.path,
+    );
+    if (index === -1)
+      this.middlewares.push({
+        path: middlewarePrefix,
+        handlers: handlers as Layer.Handler[],
+      });
+    else
+      this.middlewares[index].handlers.push(...(handlers as Layer.Handler[]));
 
     const prefix = `${this.prefix}${path === "*" ? "" : path}`;
-    routers.forEach((router) => {
-      router.middlewares.forEach((middleware) => this.use(`${prefix}${middleware.path}`, ...middleware.handlers));
-      this.routes = this.routes.concat(router.routes.map((route) => ({ ...route, path: `${prefix}${route.path}` })));
+    routers.forEach(router => {
+      router.middlewares.forEach(middleware =>
+        this.use(`${prefix}${middleware.path}`, ...middleware.handlers),
+      );
+      this.routes = this.routes.concat(
+        router.routes.map(route => ({
+          ...route,
+          path: `${prefix}${route.path}`,
+        })),
+      );
       this.params = Object.assign({}, this.params, router.params);
     });
 
@@ -624,7 +764,10 @@ class Router {
     // path validation
     assert(typeof param === "string", "Param should be a string");
     assert(param.length > 0, "The param could not be empty");
-    assert(!/\//.test(param), "The first character of a param shouldn't have `/`");
+    assert(
+      !/\//.test(param),
+      "The first character of a param shouldn't have `/`",
+    );
     // handler validation
     assert(isHandler(handler), "Handler should be a function");
 
@@ -679,7 +822,8 @@ class Router {
           if (handle.paramsLength > 0) {
             const paramNames = handle.params;
 
-            for (i = 0; i < handle.paramsLength; i++) paramsObj[paramNames[i]] = params[i];
+            for (i = 0; i < handle.paramsLength; i++)
+              paramsObj[paramNames[i]] = params[i];
           }
 
           return {
@@ -710,7 +854,12 @@ class Router {
         node = currentNode.parametricBrother;
 
         if (node === null)
-          return getWildcardNode(wildcardNode, method, originalPath, pathLenWildcard);
+          return getWildcardNode(
+            wildcardNode,
+            method,
+            originalPath,
+            pathLenWildcard,
+          );
 
         path = previousPath;
         pathLen = previousPath.length;
@@ -732,7 +881,12 @@ class Router {
       }
 
       if (len !== prefixLen)
-        return getWildcardNode(wildcardNode, method, originalPath, pathLenWildcard);
+        return getWildcardNode(
+          wildcardNode,
+          method,
+          originalPath,
+          pathLenWildcard,
+        );
 
       // if exist, save the wildcard child
       if (currentNode.wildcardChild !== null) {
@@ -803,7 +957,12 @@ class Router {
           i = matchedParameter[1].length;
         } else {
           i = 0;
-          while (i < pathLen && path.charCodeAt(i) !== 47 && path.charCodeAt(i) !== 45) i++;
+          while (
+            i < pathLen &&
+            path.charCodeAt(i) !== 47 &&
+            path.charCodeAt(i) !== 45
+          )
+            i++;
 
           if (i > maxParamLength) return EMPTY_HANDLE;
         }
@@ -828,6 +987,6 @@ class Router {
   }
 }
 
-new Router().route("/").get([console.log, console.log]);
+// new Router().route("/").get([console.log, console.log]);
 
-export = Router;
+export default Router;

@@ -47,15 +47,6 @@ const extToMime = (type: string) => type.indexOf("/") === -1
   ? mime.lookup(type)
   : type;
 
-/**
- * Check if mime is valid.
- *
- * @param {String} type
- * @return {String}
- * @private
- */
-const validMime = (type: string | false) => !!type;
-
 class Accepts {
   protected headers: IncomingHttpHeaders;
 
@@ -110,7 +101,7 @@ class Accepts {
     if (!this.headers.accept) return types[0];
 
     const mimes = types.map(extToMime);
-    const first = this.negotiator.mediaTypes(mimes.filter(validMime) as string[])[0];
+    const first = this.negotiator.mediaTypes(mimes.filter(Boolean) as string[])[0];
 
     return first
       ? types[mimes.indexOf(first)]

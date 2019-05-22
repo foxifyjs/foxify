@@ -1,5 +1,1 @@
-import * as init from "./init";
-
-export {
-  init,
-};
+export { default as init } from "./init";

@@ -75,4 +75,4 @@ const HTTP = {
   NETWORK_AUTHENTICATION_REQUIRED: 511 as 511,
 };
 
-export = HTTP;
+export default HTTP;

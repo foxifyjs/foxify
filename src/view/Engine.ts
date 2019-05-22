@@ -1,4 +1,3 @@
-import * as http from "http";
 import * as path from "path";
 
 declare module Engine {

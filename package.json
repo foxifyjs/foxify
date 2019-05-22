@@ -2,10 +2,11 @@
   "name": "foxify",
   "version": "0.10.20",
   "description": "The fast, easy to use & typescript ready web framework for Node.js",
-  "author": "Ardalan Amini <ardalanamini22@gmail.com> [https://github.com/ardalanamini]",
-  "contributors": [
-    "Ardalan Amini <ardalanamini22@gmail.com> [https://github.com/ardalanamini]"
-  ],
+  "author": {
+    "name": "Ardalan Amini",
+    "email": "ardalanamini22@gmail.com",
+    "url": "https://ardalanamini.com"
+  },
   "license": "MIT",
   "homepage": "https://foxify.js.org",
   "repository": {
@@ -48,7 +49,7 @@
     "build": "node scripts/prepare.js",
     "build:tsc": "tsc",
     "prepublishOnly": "npm run lint && npm test && npm run build",
-    "postinstall": "node -e \"console.log('\\u001b[35m\\u001b[1mLove Foxify? You can now donate to our open collective:\\u001b[22m\\u001b[39m\\n > \\u001b[34mhttps://opencollective.com/foxify/donate\\u001b[0m')\"",
+    "postinstall": "node -e \"console.log('\\u001b[35m\\u001b[1mLove Foxify? You can now donate to our open collective:\\u001b[22m\\u001b[39m\\n > \\u001b[34mhttps://opencollective.com/foxify/donate\\u001b[0m\\n')\"",
     "lint": "tslint -p tsconfig.json -c tslint.json --exclude '**/*.d.ts'",
     "typedoc": "typedoc --out docs/ --mode file --module commonjs --target ES6 --plugin typedoc-plugin-example-tag src/",
     "doc": "node scripts/doc.js",
@@ -57,6 +58,7 @@
     "codecov": "npm run coverage -- --runInBand && codecov"
   },
   "dependencies": {
+    "@foxify/events": "^1.1.4",
     "@foxify/inject": "^1.0.3",
     "@types/node": "^14.11.10",
     "async": "^2.6.3",
@@ -64,7 +66,7 @@
     "content-type": "^1.0.4",
     "cookie": "^0.4.1",
     "cookie-signature": "^1.1.0",
-    "dotenv": "^6.2.0",
+    "dotenv": "^8.0.0",
     "escape-html": "^1.0.3",
     "fast-json-stringify": "^1.21.0",
     "mime-types": "^2.1.27",

@@ -28,7 +28,7 @@
  * This module is modified and optimized for Foxify specifically
  */
 
-import { IncomingHttpHeaders, OutgoingHttpHeaders } from "http";
+import { IncomingHttpHeaders } from "http";
 
 /**
  * RegExp to check for no-cache token in Cache-Control.
@@ -49,38 +49,6 @@ const parseHttpDate = (date: string) => {
   return typeof timestamp === "number"
     ? timestamp
     : NaN;
-};
-
-/**
- * Parse a HTTP token list.
- *
- * @param {string} str
- * @private
- */
-const parseTokenList = (str: string) => {
-  const list = [];
-  let start = 0;
-  let end = 0;
-
-  // gather tokens
-  for (let i = 0, len = str.length; i < len; i++)
-    switch (str.charCodeAt(i)) {
-      case 0x20: /*   */
-        if (start === end) start = end = i + 1;
-        break;
-      case 0x2c: /* , */
-        list.push(str.substring(start, end));
-        start = end = i + 1;
-        break;
-      default:
-        end = i + 1;
-        break;
-    }
-
-  // final token
-  list.push(str.substring(start, end));
-
-  return list;
 };
 
 /**

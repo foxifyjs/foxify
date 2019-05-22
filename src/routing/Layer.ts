@@ -38,8 +38,12 @@ const TYPES = {
   MULTI_PARAM: 4 as 4,
 };
 
-module Layer {
-  export type Handler = (request: Request, response: Response, next: (err?: Error) => void) => void;
+namespace Layer {
+  export type Handler = (
+    request: Request,
+    response: Response,
+    next: (err?: Error) => void,
+  ) => void;
 
   export interface HandlerObject {
     handlers: Encapsulation[];
@@ -50,44 +54,7 @@ module Layer {
     prettyPrint: boolean;
   }
 
-  export interface Handlers {
-    [method: string]: HandlerObject;
-
-    ACL: HandlerObject;
-    BIND: HandlerObject;
-    CHECKOUT: HandlerObject;
-    CONNECT: HandlerObject;
-    COPY: HandlerObject;
-    DELETE: HandlerObject;
-    GET: HandlerObject;
-    HEAD: HandlerObject;
-    LINK: HandlerObject;
-    LOCK: HandlerObject;
-    "M-SEARCH": HandlerObject;
-    MERGE: HandlerObject;
-    MKACTIVITY: HandlerObject;
-    MKCALENDAR: HandlerObject;
-    MKCOL: HandlerObject;
-    MOVE: HandlerObject;
-    NOTIFY: HandlerObject;
-    OPTIONS: HandlerObject;
-    PATCH: HandlerObject;
-    POST: HandlerObject;
-    PROPFIND: HandlerObject;
-    PROPPATCH: HandlerObject;
-    PURGE: HandlerObject;
-    PUT: HandlerObject;
-    REBIND: HandlerObject;
-    REPORT: HandlerObject;
-    SEARCH: HandlerObject;
-    SOURCE: HandlerObject;
-    SUBSCRIBE: HandlerObject;
-    TRACE: HandlerObject;
-    UNBIND: HandlerObject;
-    UNLINK: HandlerObject;
-    UNLOCK: HandlerObject;
-    UNSUBSCRIBE: HandlerObject;
-  }
+  export type Handlers = { [method in Method]: HandlerObject };
 
   export interface Options {
     ACL: RouteOptions;
@@ -130,7 +97,14 @@ module Layer {
     [label: string]: Layer | undefined;
   }
 
-  export type JsonSchemaType = "string" | "integer" | "number" | "array" | "object" | "boolean" | "null";
+  export type JsonSchemaType =
+    | "string"
+    | "integer"
+    | "number"
+    | "array"
+    | "object"
+    | "boolean"
+    | "null";
 
   export interface JsonSchemaProperties {
     [property: string]: {
@@ -159,7 +133,7 @@ module Layer {
   }
 }
 
-interface Layer { }
+interface Layer {}
 
 class Layer {
   static isLayer = (arg: any): arg is Layer => arg instanceof Layer;
@@ -181,12 +155,12 @@ class Layer {
     public kind: number = TYPES.STATIC,
     public regex: RegExp | null = null,
     public params: string[] = [],
-    handlers?: Layer.Handlers
+    handlers?: Layer.Handlers,
   ) {
     this.handlers = new (Handlers as any)(handlers);
 
     const paramsLength = params.length;
-    httpMethods.forEach((method) => {
+    httpMethods.forEach(method => {
       this.handlers[method].params = params;
       this.handlers[method].paramsLength = paramsLength;
     });
@@ -218,7 +192,7 @@ class Layer {
 
     assert(
       this.children[label] === undefined,
-      `There is already a child with label "${label}"`
+      `There is already a child with label "${label}"`,
     );
 
     this.children[label] = layer;
@@ -265,27 +239,44 @@ class Layer {
   findChild(path: string, method: Method) {
     let child = this.children[path[0]];
 
-    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method].handlersLength !== 0))
-      if (path.slice(0, child.prefix.length) === child.prefix)
-        return child;
+    if (
+      child !== undefined &&
+      (child.numberOfChildren > 0 ||
+        child.handlers[method].handlersLength !== 0)
+    )
+      if (path.slice(0, child.prefix.length) === child.prefix) return child;
 
     child = this.children[":"] || this.children["*"];
 
-    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method].handlersLength !== 0))
+    if (
+      child !== undefined &&
+      (child.numberOfChildren > 0 ||
+        child.handlers[method].handlersLength !== 0)
+    )
       return child;
 
     return null;
   }
 
-  addHandler(method: Method, options: Layer.RouteOptions = OPTIONS, handlers: Layer.Handler[], prettyPrint = false) {
+  addHandler(
+    method: Method,
+    options: Layer.RouteOptions = OPTIONS,
+    handlers: Layer.Handler[],
+    prettyPrint = false,
+  ) {
     const length = handlers.length;
 
     if (length === 0) return this;
 
-    this.handlers[method].handlers.push(...handlers.map((handler) => new Encapsulation(handler)));
+    this.handlers[method].handlers.push(
+      ...handlers.map(handler => new Encapsulation(handler)),
+    );
     this.handlers[method].handlersLength += length;
-    this.handlers[method].options = Object.assign({}, OPTIONS, options, { schema: options.schema || { response: {} } });
-    this.handlers[method].prettyPrint = this.handlers[method].prettyPrint || prettyPrint;
+    this.handlers[method].options = Object.assign({}, OPTIONS, options, {
+      schema: options.schema || { response: {} },
+    });
+    this.handlers[method].prettyPrint =
+      this.handlers[method].prettyPrint || prettyPrint;
 
     return this;
   }
@@ -296,8 +287,9 @@ class Layer {
 
   prettyPrint(prefix: string, tail: boolean = false) {
     const handlers = this.handlers;
-    const methods = Object.keys(handlers)
-      .filter((method) => handlers[method].prettyPrint);
+    const methods = Object.keys(handlers).filter(
+      method => handlers[method as Method].prettyPrint,
+    );
     let paramName = "";
 
     if (this.prefix === ":") {
@@ -312,9 +304,8 @@ class Layer {
           }
 
           paramName += `|${method}`;
-          paramName += (index === methods.length - 1 ? ")" : "");
-        } else
-          paramName = `${param} (${method})`;
+          paramName += index === methods.length - 1 ? ")" : "";
+        } else paramName = `${param} (${method})`;
       });
     } else if (methods.length) paramName = ` (${methods.join("|")})`;
 
@@ -327,10 +318,13 @@ class Layer {
       tree += (this.children[labels[i]] as Layer).prettyPrint(prefix);
 
     if (labels.length > 0)
-      tree += (this.children[labels[labels.length - 1]] as Layer).prettyPrint(prefix, true);
+      tree += (this.children[labels[labels.length - 1]] as Layer).prettyPrint(
+        prefix,
+        true,
+      );
 
     return tree;
   }
 }
 
-export = Layer;
+export default Layer;
