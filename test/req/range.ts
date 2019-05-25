@@ -136,7 +136,7 @@ describe(".range(size, options)", () => {
       });
 
       expect(result.statusCode).toBe(200);
-      expect(result.body).toBe("[{\"start\":0,\"end\":100}]");
+      expect(JSON.parse(result.body)).toEqual([{ start: 0, end: 100 }]);
     });
   });
 });
