@@ -46,9 +46,7 @@ const parseHttpDate = (date: string) => {
   const timestamp = date && Date.parse(date);
 
   // istanbul ignore next: guard against date.js Date.parse patching
-  return typeof timestamp === "number"
-    ? timestamp
-    : NaN;
+  return typeof timestamp === "number" ? timestamp : NaN;
 };
 
 /**
@@ -71,13 +69,20 @@ const fresh = (reqHeaders: IncomingHttpHeaders, lastModified?: string) => {
   // to support end-to-end reload requests
   // https://tools.ietf.org/html/rfc2616#section-14.9.4
   const cacheControl = reqHeaders["cache-control"];
-  if (cacheControl && CACHE_CONTROL_NO_CACHE_REGEXP.test(cacheControl)) return false;
+  if (cacheControl && CACHE_CONTROL_NO_CACHE_REGEXP.test(cacheControl)) {
+    return false;
+  }
 
   // if-none-match
   if (noneMatch && noneMatch !== "*") return false;
 
   // if-modified-since
-  if (modifiedSince && !lastModified || !(parseHttpDate(lastModified!) <= parseHttpDate(modifiedSince))) return false;
+  if (
+    (modifiedSince && !lastModified) ||
+    !(parseHttpDate(lastModified!) <= parseHttpDate(modifiedSince))
+  ) {
+    return false;
+  }
 
   return true;
 };

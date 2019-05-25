@@ -1,5 +1,5 @@
-import { HttpException as HttpEx } from "./exceptions";
 import { http } from "./constants";
+import { HttpException as HttpEx } from "./exceptions";
 
 declare global {
   namespace NodeJS {

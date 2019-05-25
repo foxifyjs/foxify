@@ -1,8 +1,8 @@
 import * as assert from "assert";
-import httpMethods, { Method } from "./httpMethods";
+import { Encapsulation } from "../exceptions";
 import * as Request from "../Request";
 import * as Response from "../Response";
-import { Encapsulation } from "../exceptions";
+import httpMethods, { Method } from "./httpMethods";
 
 const OPTIONS = { schema: { response: {} } };
 
@@ -24,6 +24,7 @@ const buildHandlers = (handlers?: any) => {
     `;
   }
 
+  // tslint:disable-next-line:no-function-constructor-with-string-args
   return new Function("handlers", code); // eslint-disable-line
 };
 
@@ -133,21 +134,19 @@ namespace Layer {
   }
 }
 
-interface Layer {}
-
 class Layer {
-  static isLayer = (arg: any): arg is Layer => arg instanceof Layer;
+  public static TYPES = TYPES;
+  public static Handlers = Handlers;
 
-  static TYPES = TYPES;
-  static Handlers = Handlers;
+  public static isLayer = (arg: any): arg is Layer => arg instanceof Layer;
 
-  handlers: Layer.Handlers;
+  public handlers: Layer.Handlers;
 
-  wildcardChild: Layer | null = null;
+  public wildcardChild: Layer | null = null;
 
-  parametricBrother: Layer | null = null;
+  public parametricBrother: Layer | null = null;
 
-  numberOfChildren = Object.keys(this.children).length;
+  public numberOfChildren = Object.keys(this.children).length;
 
   constructor(
     public prefix = "/",
@@ -170,7 +169,7 @@ class Layer {
     return this.prefix[0];
   }
 
-  addChild(layer: Layer) {
+  public addChild(layer: Layer) {
     let label = "";
 
     switch (layer.kind) {
@@ -203,6 +202,7 @@ class Layer {
     let parametricBrother = null;
     for (let i = 0; i < labels.length; i++) {
       const child = this.children[labels[i]] as Layer;
+
       if (child.label === ":") {
         parametricBrother = child;
         break;
@@ -213,14 +213,15 @@ class Layer {
     for (let i = 0; i < labels.length; i++) {
       const child = this.children[labels[i]] as Layer;
 
-      if (child.kind === TYPES.STATIC && parametricBrother)
+      if (child.kind === TYPES.STATIC && parametricBrother) {
         child.parametricBrother = parametricBrother;
+      }
     }
 
     return this;
   }
 
-  reset(prefix = "/") {
+  public reset(prefix = "/") {
     this.prefix = prefix;
     this.children = {};
     this.kind = TYPES.STATIC;
@@ -232,19 +233,20 @@ class Layer {
     return this;
   }
 
-  findByLabel(path: string) {
+  public findByLabel(path: string) {
     return this.children[path[0]];
   }
 
-  findChild(path: string, method: Method) {
+  public findChild(path: string, method: Method) {
     let child = this.children[path[0]];
 
     if (
       child !== undefined &&
       (child.numberOfChildren > 0 ||
         child.handlers[method].handlersLength !== 0)
-    )
+    ) {
       if (path.slice(0, child.prefix.length) === child.prefix) return child;
+    }
 
     child = this.children[":"] || this.children["*"];
 
@@ -252,13 +254,14 @@ class Layer {
       child !== undefined &&
       (child.numberOfChildren > 0 ||
         child.handlers[method].handlersLength !== 0)
-    )
+    ) {
       return child;
+    }
 
     return null;
   }
 
-  addHandler(
+  public addHandler(
     method: Method,
     options: Layer.RouteOptions = OPTIONS,
     handlers: Layer.Handler[],
@@ -281,11 +284,11 @@ class Layer {
     return this;
   }
 
-  getHandler(method: Method) {
+  public getHandler(method: Method) {
     return this.handlers[method];
   }
 
-  prettyPrint(prefix: string, tail: boolean = false) {
+  public prettyPrint(prefix: string, tail: boolean = false) {
     const handlers = this.handlers;
     const methods = Object.keys(handlers).filter(
       method => handlers[method as Method].prettyPrint,
@@ -314,14 +317,16 @@ class Layer {
     prefix = `${prefix}${tail ? "    " : "│   "}`;
     const labels = Object.keys(this.children);
 
-    for (let i = 0; i < labels.length - 1; i++)
+    for (let i = 0; i < labels.length - 1; i++) {
       tree += (this.children[labels[i]] as Layer).prettyPrint(prefix);
+    }
 
-    if (labels.length > 0)
+    if (labels.length > 0) {
       tree += (this.children[labels[labels.length - 1]] as Layer).prettyPrint(
         prefix,
         true,
       );
+    }
 
     return tree;
   }

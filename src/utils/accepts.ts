@@ -31,10 +31,10 @@
  * This module is modified and optimized for Foxify specifically
  */
 
-import * as Negotiator from "negotiator";
-import * as mime from "mime-types";
-import * as Request from "../Request";
 import { IncomingHttpHeaders } from "http";
+import * as mime from "mime-types";
+import * as Negotiator from "negotiator";
+import * as Request from "../Request";
 
 /**
  * Convert extnames to mime.
@@ -43,9 +43,8 @@ import { IncomingHttpHeaders } from "http";
  * @return {String}
  * @private
  */
-const extToMime = (type: string) => type.indexOf("/") === -1
-  ? mime.lookup(type)
-  : type;
+const extToMime = (type: string) =>
+  type.indexOf("/") === -1 ? mime.lookup(type) : type;
 
 class Accepts {
   protected headers: IncomingHttpHeaders;
@@ -93,7 +92,7 @@ class Accepts {
    *     this.types("html", "json");
    *     // => "json"
    */
-  types(types: string[]) {
+  public types(types: string[]) {
     // no types, return all requested types
     if (!types || types.length === 0) return this.negotiator.mediaTypes();
 
@@ -101,11 +100,11 @@ class Accepts {
     if (!this.headers.accept) return types[0];
 
     const mimes = types.map(extToMime);
-    const first = this.negotiator.mediaTypes(mimes.filter(Boolean) as string[])[0];
+    const first = this.negotiator.mediaTypes(mimes.filter(
+      Boolean,
+    ) as string[])[0];
 
-    return first
-      ? types[mimes.indexOf(first)]
-      : false;
+    return first ? types[mimes.indexOf(first)] : false;
   }
 
   /**
@@ -116,9 +115,11 @@ class Accepts {
    *
    *     ["gzip", "deflate"]
    */
-  encodings(encodings: string[]) {
+  public encodings(encodings: string[]) {
     // no encodings, return all requested encodings
-    if (!encodings || encodings.length === 0) return this.negotiator.encodings();
+    if (!encodings || encodings.length === 0) {
+      return this.negotiator.encodings();
+    }
 
     return this.negotiator.encodings(encodings)[0] || false;
   }
@@ -131,7 +132,7 @@ class Accepts {
    *
    *     ["utf-8", "utf-7", "iso-8859-1"]
    */
-  charsets(charsets: string[]) {
+  public charsets(charsets: string[]) {
     // no charsets, return all requested charsets
     if (!charsets || charsets.length === 0) return this.negotiator.charsets();
 
@@ -150,9 +151,11 @@ class Accepts {
    * @return {Array|String}
    * @public
    */
-  languages(languages: string[]) {
+  public languages(languages: string[]) {
     // no languages, return all requested languages
-    if (!languages || languages.length === 0) return this.negotiator.languages();
+    if (!languages || languages.length === 0) {
+      return this.negotiator.languages();
+    }
 
     return this.negotiator.languages(languages)[0] || false;
   }

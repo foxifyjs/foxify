@@ -1,6 +1,6 @@
+import { name } from "../../package.json";
 import * as Foxify from "../index";
 import * as utils from "../utils";
-import { name } from "../../package.json";
 
 const init = (app: Foxify): Foxify.Handler | null => {
   if (app.disabled("x-powered-by")) return null;

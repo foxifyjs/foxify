@@ -48,6 +48,7 @@
   "scripts": {
     "build": "node scripts/prepare.js",
     "build:tsc": "tsc",
+    "watch:tsc": "npm run build:tsc -- --watch",
     "prepublishOnly": "npm run lint && npm test && npm run build",
     "postinstall": "node -e \"console.log('\\u001b[35m\\u001b[1mLove Foxify? You can now donate to our open collective:\\u001b[22m\\u001b[39m\\n > \\u001b[34mhttps://opencollective.com/foxify/donate\\u001b[0m\\n')\"",
     "lint": "tslint -p tsconfig.json -c tslint.json --exclude '**/*.d.ts'",
@@ -106,6 +107,7 @@
     "rimraf": "^2.7.1",
     "ts-jest": "^24.3.0",
     "tslint": "^5.20.1",
+    "tslint-config-airbnb": "^5.11.1",
     "typedoc": "^0.14.2",
     "typedoc-plugin-example-tag": "^1.0.2",
     "typescript": "^3.9.7"

@@ -53,7 +53,9 @@ const combineRanges = (ranges: RangeParser.Ranges) => {
   ordered.length = j + 1;
 
   // generate combined range
-  const combined: RangeParser.Ranges = ordered.sort(sortByRangeIndex).map(mapWithoutIndex) as any;
+  const combined: RangeParser.Ranges = ordered
+    .sort(sortByRangeIndex)
+    .map(mapWithoutIndex) as any;
 
   // copy ranges type
   combined.type = ranges.type;
@@ -66,9 +68,9 @@ const combineRanges = (ranges: RangeParser.Ranges) => {
  * @private
  */
 const mapWithIndex = (range: RangeParser.Range, index: number) => ({
-  start: range.start,
-  end: range.end,
   index,
+  end: range.end,
+  start: range.start,
 });
 
 /**
@@ -76,8 +78,8 @@ const mapWithIndex = (range: RangeParser.Range, index: number) => ({
  * @private
  */
 const mapWithoutIndex = (range: RangeParser.Range) => ({
-  start: range.start,
   end: range.end,
+  start: range.start,
 });
 
 /**
@@ -90,7 +92,8 @@ const sortByRangeIndex = (a: any, b: any) => a.index - b.index;
  * Sort function to sort ranges by start position.
  * @private
  */
-const sortByRangeStart = (a: RangeParser.Range, b: RangeParser.Range) => a.start - b.start;
+const sortByRangeStart = (a: RangeParser.Range, b: RangeParser.Range) =>
+  a.start - b.start;
 
 /**
  * Parse "Range" header `str` relative to the given file `size`.
@@ -100,7 +103,7 @@ const sortByRangeStart = (a: RangeParser.Range, b: RangeParser.Range) => a.start
 const rangeParser = (
   size: number,
   str: string,
-  combine: boolean = false
+  combine: boolean = false,
 ): RangeParser.Result | RangeParser.Ranges => {
   const index = str.indexOf("=");
 
@@ -139,9 +142,7 @@ const rangeParser = (
   // unsatisifiable
   if (ranges.length < 1) return -1;
 
-  return combine
-    ? combineRanges(ranges)
-    : ranges;
+  return combine ? combineRanges(ranges) : ranges;
 };
 
 export default rangeParser;

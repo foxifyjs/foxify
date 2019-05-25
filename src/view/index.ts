@@ -1,3 +1,1 @@
-import * as Engine from "./Engine";
-
-export { Engine };
+export { default as Engine } from "./Engine";

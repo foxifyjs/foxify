@@ -107,9 +107,13 @@ namespace EventEmitter {
 }
 
 class EventEmitter extends Base<EventEmitter.Events> {
-  addListener(event: EventEmitter.Event, listener: (...args: any[]) => void) {
-    if (!EVENTS.includes(event))
+  public addListener(
+    event: EventEmitter.Event,
+    listener: (...args: any[]) => void,
+  ) {
+    if (!EVENTS.includes(event)) {
       throw new TypeError(`Unexpected event "${event}"`);
+    }
 
     switch (event) {
       case "uncaughtException":
@@ -128,9 +132,10 @@ class EventEmitter extends Base<EventEmitter.Events> {
     return this;
   }
 
-  emit(event: EventEmitter.ErrorEvent, ...args: any[]) {
-    if (!EVENTS.includes(event) || event === "error")
+  public emit(event: EventEmitter.ErrorEvent, ...args: any[]) {
+    if (!EVENTS.includes(event) || event === "error") {
       throw new TypeError(`Unexpected event "${event}"`);
+    }
 
     return super.emit.apply(this, [event, ...args]);
   }

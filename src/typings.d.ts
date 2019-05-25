@@ -1,20 +1,20 @@
 declare module "*/package.json" {
   const package: {
-    name: string
-    version: string
-  }
+    name: string;
+    version: string;
+  };
 
-  export = package
+  export = package;
 }
 
 declare module "*.json" {
-  type OBJECT = { [key: string]: any }
-  type JSON = OBJECT | OBJECT[]
+  type OBJECT = { [key: string]: any };
+  type JSON = OBJECT | OBJECT[];
 
-  const json: JSON
+  const json: JSON;
 
-  export = json
+  export = json;
 }
 
-declare module "serve-static"
-declare module "fast-json-stringify"
+declare module "serve-static";
+declare module "fast-json-stringify";

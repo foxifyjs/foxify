@@ -1,8 +1,8 @@
 import * as http from "http";
 import { isIP } from "net";
-import { Url } from "url";
 import * as typeIs from "type-is";
-import { string, parseUrl, Accepts } from "./utils";
+import { Url } from "url";
+import { Accepts, parseUrl, string } from "./utils";
 import { default as rangeParser, RangeParser } from "./utils/range-parser";
 // import proxyAddr = require("proxy-addr");
 
@@ -12,7 +12,7 @@ namespace Request {
    */
   export interface Settings {
     subdomain: {
-      offset?: number,
+      offset?: number;
     };
   }
 }
@@ -31,11 +31,11 @@ class Request extends http.IncomingMessage {
   /**
    * @hidden
    */
-  settings!: Request.Settings;
+  public settings!: Request.Settings;
 
-  query!: any;
+  public query!: any;
 
-  params!: { [key: string]: any };
+  public params!: { [key: string]: any };
 
   /**
    * Parse the "Host" header field to a hostname.
@@ -44,7 +44,7 @@ class Request extends http.IncomingMessage {
    * address, the "X-Forwarded-Host" header field will
    * be trusted.
    */
-  get hostname() {
+  public get hostname() {
     let host = this.get("x-forwarded-host") as string;
 
     if (!host) host = this.get("host") as string;
@@ -62,7 +62,7 @@ class Request extends http.IncomingMessage {
   /**
    * Short-hand for `url.parseUrl(req.url).pathname`.
    */
-  get path() {
+  public get path() {
     return (parseUrl(this) as Url).pathname as string;
   }
 
@@ -77,20 +77,24 @@ class Request extends http.IncomingMessage {
    * If "subdomain.offset" is not set, req.subdomains is `["ferrets", "tobi"]`.
    * If "subdomain.offset" is 3, req.subdomains is `["tobi"]`.
    */
-  get subdomains() {
+  public get subdomains() {
     const hostname = this.hostname;
 
     if (!hostname) return [];
 
-    return (!isIP(hostname) ? hostname.split(".").reverse() : [hostname])
-      .slice(this.settings.subdomain.offset);
+    return (!isIP(hostname) ? hostname.split(".").reverse() : [hostname]).slice(
+      this.settings.subdomain.offset,
+    );
   }
 
   /**
    * Check if the request was an `_XMLHttpRequest_`.
    */
-  get xhr() {
-    return (<string>this.get("x-requested-with") || "").toLowerCase() === "xmlhttprequest";
+  public get xhr() {
+    return (
+      ((this.get("x-requested-with") as string) || "").toLowerCase() ===
+      "xmlhttprequest"
+    );
   }
 
   /**
@@ -133,7 +137,7 @@ class Request extends http.IncomingMessage {
    * req.accepts("html, json");
    * // => "json"
    */
-  accepts(...types: string[]): string | string[] | false {
+  public accepts(...types: string[]): string | string[] | false {
     return new Accepts(this).types(types);
   }
 
@@ -141,14 +145,14 @@ class Request extends http.IncomingMessage {
    * Check if the given `charset`s are acceptable,
    * otherwise you should respond with 406 "Not Acceptable".
    */
-  acceptsCharsets(...charsets: string[]): string | string[] | false {
+  public acceptsCharsets(...charsets: string[]): string | string[] | false {
     return new Accepts(this).charsets(charsets);
   }
 
   /**
    * Check if the given `encoding`s are accepted.
    */
-  acceptsEncodings(...encodings: string[]): string | string[] | false {
+  public acceptsEncodings(...encodings: string[]): string | string[] | false {
     return new Accepts(this).encodings(encodings);
   }
 
@@ -156,7 +160,7 @@ class Request extends http.IncomingMessage {
    * Check if the given `lang`s are acceptable,
    * otherwise you should respond with 406 "Not Acceptable".
    */
-  acceptsLanguages(...langs: string[]): string | string[] | false {
+  public acceptsLanguages(...langs: string[]): string | string[] | false {
     return new Accepts(this).languages(langs);
   }
 
@@ -173,10 +177,14 @@ class Request extends http.IncomingMessage {
    * @example
    * req.get("Something"); // => undefined
    */
-  get(name: string) {
-    if (!name) throw new TypeError("name argument is required to req.get/req.head");
+  public get(name: string) {
+    if (!name) {
+      throw new TypeError("name argument is required to req.get/req.head");
+    }
 
-    if (!string.isString(name)) throw new TypeError("name must be a string to req.get/req.head");
+    if (!string.isString(name)) {
+      throw new TypeError("name must be a string to req.get/req.head");
+    }
 
     const header = name.toLowerCase();
 
@@ -210,7 +218,7 @@ class Request extends http.IncomingMessage {
    * req.is("html");
    * // => false
    */
-  is(types?: string | string[]): string | false | null {
+  public is(types?: string | string[]): string | false | null {
     // support flattened arguments
     if (!Array.isArray(types)) {
       const arr = new Array(arguments.length);
@@ -238,14 +246,16 @@ class Request extends http.IncomingMessage {
    * NOTE: remember that ranges are inclusive, so for example "Range: users=0-3"
    * should respond with 4 users when available, not 3.
    */
-  range(size: number, combine?: boolean) {
+  public range(size: number, combine?: boolean) {
     let range = this.get("range");
 
     if (!range) return;
 
     if (Array.isArray(range)) range = range.join(",");
 
-    return rangeParser(size, range, combine) as RangeParser.Result | RangeParser.Ranges;
+    return rangeParser(size, range, combine) as
+      | RangeParser.Result
+      | RangeParser.Ranges;
   }
 }
 

@@ -39,7 +39,8 @@ import * as Request from "../Request";
  * @private
  */
 const fastParse = (str: string) => {
-  if (str.charCodeAt(0) !== 0x2f /* / */) return parse(str);
+  /* / */
+  if (str.charCodeAt(0) !== 0x2f) return parse(str);
 
   let pathname = str;
   let query = null;
@@ -48,9 +49,9 @@ const fastParse = (str: string) => {
   // This takes the regexp from https://github.com/joyent/node/pull/7878
   // Which is /^(\/[^?#\s]*)(\?[^#\s]*)?$/
   // And unrolls it into a for loop
-  for (let i = 1; i < str.length; i++)
+  for (let i = 1; i < str.length; i++) {
     switch (str.charCodeAt(i)) {
-      case 0x3f: /* ?  */
+      case 0x3f /* ?  */:
         if (search === null) {
           pathname = str.substring(0, i);
           query = str.substring(i + 1);
@@ -67,13 +68,14 @@ const fastParse = (str: string) => {
       case 0xfeff:
         return parse(str);
     }
+  }
 
   return {
-    path: str,
-    href: str,
     pathname,
     query,
     search,
+    href: str,
+    path: str,
   };
 };
 
@@ -85,6 +87,7 @@ const fastParse = (str: string) => {
  * @public
  */
 const parseUrl = (req: Request) =>
-  ((req as any)._parsedUrl = (req as any)._parsedUrl || fastParse(req.url as string));
+  ((req as any)._parsedUrl =
+    (req as any)._parsedUrl || fastParse(req.url as string));
 
 export default parseUrl;

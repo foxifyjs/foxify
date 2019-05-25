@@ -1,34 +1,52 @@
 import "./bootstrap";
-import * as os from "os";
-import * as serveStatic from "serve-static";
+
 import * as inject from "@foxify/inject";
+import * as os from "os";
 import * as qs from "qs";
+import * as serveStatic from "serve-static";
 import { Url } from "url";
 import * as constants from "./constants";
-import { httpMethods, Layer, Router } from "./routing";
-import * as utils from "./utils";
-import * as Server from "./Server";
+import events from "./events";
 import * as RequestClass from "./Request";
 import * as ResponseClass from "./Response";
-import events from "./events";
+import { httpMethods, Layer, Router } from "./routing";
+import * as Server from "./Server";
+import * as utils from "./utils";
 import { Engine } from "./view";
 
-const OPTIONS = ["https", "x-powered-by", "routing.case-sensitive", "routing.ignore-trailing-slash",
-  "routing.allow-unsafe-regex", "json.escape"];
-const SETTINGS = ["env", "url", "port", "workers", "https.cert", "https.key", "json.spaces",
-  "json.replacer", "query.parser", "routing.max-param-length", "subdomain.offset"];
+const OPTIONS = [
+  "https",
+  "x-powered-by",
+  "routing.case-sensitive",
+  "routing.ignore-trailing-slash",
+  "routing.allow-unsafe-regex",
+  "json.escape",
+];
+const SETTINGS = [
+  "env",
+  "url",
+  "port",
+  "workers",
+  "https.cert",
+  "https.key",
+  "json.spaces",
+  "json.replacer",
+  "query.parser",
+  "routing.max-param-length",
+  "subdomain.offset",
+];
 
 namespace Foxify {
   export interface Options {
     https: boolean;
     "x-powered-by": boolean;
     routing: {
-      "case-sensitive": boolean,
-      "ignore-trailing-slash": boolean,
-      "allow-unsafe-regex": boolean,
+      "case-sensitive": boolean;
+      "ignore-trailing-slash": boolean;
+      "allow-unsafe-regex": boolean;
     };
     json: {
-      escape: boolean,
+      escape: boolean;
     };
   }
 
@@ -38,21 +56,21 @@ namespace Foxify {
     port: number;
     workers: number;
     subdomain: {
-      offset?: number,
+      offset?: number;
     };
     https: {
-      cert?: string,
-      key?: string,
+      cert?: string;
+      key?: string;
     };
     json: {
-      replacer?: (...args: any[]) => any,
-      spaces?: number,
+      replacer?: (...args: any[]) => any;
+      spaces?: number;
     };
     query: {
-      parser?: (...args: any[]) => any,
+      parser?: (...args: any[]) => any;
     };
     routing: {
-      "max-param-length": number,
+      "max-param-length": number;
     };
   }
 
@@ -63,35 +81,45 @@ namespace Foxify {
 
 interface Foxify extends Router.MethodFunctions<Foxify> {
   get(setting: string): any;
-  get(path: string, options: Layer.RouteOptions | Layer.Handler, ...controllers: Layer.Handler[]): this;
+  get(
+    path: string,
+    options: Layer.RouteOptions | Layer.Handler,
+    ...controllers: Layer.Handler[]
+  ): this;
 
-  use(path: string | Layer.Handler | Router, ...handlers: Array<Layer.Handler | Router>): this;
+  use(
+    path: string | Layer.Handler | Router,
+    ...handlers: Array<Layer.Handler | Router>
+  ): this;
 
   param(param: string, handler: Layer.Handler): this;
 }
 
 class Foxify {
-  static constants = constants;
-  static Router = Router;
-  static static = serveStatic;
+  public static constants = constants;
+  public static Router = Router;
+  public static static = serveStatic;
 
-  static dotenv = (path: string) => {
-    if (!utils.string.isString(path))
-      throw new TypeError(`Expected 'dotenv' to be an string, got ${typeof path} instead`);
+  public static dotenv = (path: string) => {
+    if (!utils.string.isString(path)) {
+      throw new TypeError(
+        `Expected 'dotenv' to be an string, got ${typeof path} instead`,
+      );
+    }
 
     require("dotenv").config({ path });
-  }
+  };
 
   private _options: Foxify.Options = {
     https: false,
     ["x-powered-by"]: true,
-    routing: {
-      "case-sensitive": true,
-      "ignore-trailing-slash": false,
-      "allow-unsafe-regex": false,
-    },
     json: {
       escape: false,
+    },
+    routing: {
+      "allow-unsafe-regex": false,
+      "case-sensitive": true,
+      "ignore-trailing-slash": false,
     },
   };
 
@@ -99,8 +127,11 @@ class Foxify {
     env: process.env.NODE_ENV || "production",
     url: process.env.APP_URL || "localhost",
     port: process.env.APP_PORT ? parseInt(process.env.APP_PORT, 10) : 3000,
-    workers: process.env.WORKERS ? parseInt(process.env.WORKERS, 10) :
-      (!process.env.NODE_ENV || process.env.NODE_ENV === "production") ? os.cpus().length : 1,
+    workers: process.env.WORKERS
+      ? parseInt(process.env.WORKERS, 10)
+      : !process.env.NODE_ENV || process.env.NODE_ENV === "production"
+      ? os.cpus().length
+      : 1,
     subdomain: {
       offset: 2,
     },
@@ -126,7 +157,7 @@ class Foxify {
 
   constructor() {
     /* apply http routing methods */
-    ["route", "use", "all"].concat(httpMethods).forEach((method) => {
+    ["route", "use", "all"].concat(httpMethods).forEach(method => {
       method = method.toLowerCase();
 
       if ((this as any)[method]) return;
@@ -139,53 +170,49 @@ class Foxify {
     });
   }
 
-  /* handle options & settings */
-  private _set(setting: string, value: any, object: { [key: string]: any }) {
-    const keys = setting.split(".");
-
-    if (keys.length === 1)
-      object[keys[0]] = value;
-    else
-      this._set(utils.array.tail(keys).join("."), value, object[keys[0]]);
-  }
-
   /* handle options */
-  enable(option: string) {
-    if (!utils.string.isString(option))
+  public enable(option: string) {
+    if (!utils.string.isString(option)) {
       throw new TypeError("Argument 'option' should be an string");
+    }
 
-    if (!utils.array.contains(OPTIONS, option))
+    if (!utils.array.contains(OPTIONS, option)) {
       throw new TypeError(`Unknown option '${option}'`);
+    }
 
     this._set(option, true, this._options);
 
     return this;
   }
 
-  disable(option: string) {
-    if (!utils.string.isString(option))
+  public disable(option: string) {
+    if (!utils.string.isString(option)) {
       throw new TypeError("Argument 'option' should be an string");
+    }
 
-    if (!utils.array.contains(OPTIONS, option))
+    if (!utils.array.contains(OPTIONS, option)) {
       throw new TypeError(`Unknown option '${option}'`);
+    }
 
     this._set(option, false, this._options);
 
     return this;
   }
 
-  enabled(option: string): boolean {
-    if (!utils.string.isString(option))
+  public enabled(option: string): boolean {
+    if (!utils.string.isString(option)) {
       throw new TypeError("Argument 'option' should be an string");
+    }
 
-    if (!utils.array.contains(OPTIONS, option))
+    if (!utils.array.contains(OPTIONS, option)) {
       throw new TypeError(`Unknown option '${option}'`);
+    }
 
     const keys = option.split(".");
 
     let _opt: any = this._options;
 
-    keys.forEach((key) => {
+    keys.forEach(key => {
       if (utils.boolean.isBoolean(_opt)) throw new Error("Unknown option");
 
       _opt = _opt[key];
@@ -194,50 +221,63 @@ class Foxify {
     return _opt;
   }
 
-  disabled(option: string): boolean {
+  public disabled(option: string): boolean {
     return !this.enabled(option);
   }
 
   /* handle settings */
-  set(setting: string, value: any) {
-    if (!utils.string.isString(setting))
+  public set(setting: string, value: any) {
+    if (!utils.string.isString(setting)) {
       throw new TypeError("Argument 'setting' should be an string");
+    }
 
     switch (setting) {
       case "env":
       case "url":
-        if (!utils.string.isString(value))
+        if (!utils.string.isString(value)) {
           throw new TypeError(`setting '${setting}' should be an string`);
+        }
         break;
       case "port":
       case "workers":
-        if (!utils.number.isNumber(value))
+        if (!utils.number.isNumber(value)) {
           throw new TypeError(`setting '${setting}' should be a number`);
-        if (value < 1)
-          throw new TypeError(`setting '${setting}' should be a positive number`);
+        }
+        if (value < 1) {
+          throw new TypeError(
+            `setting '${setting}' should be a positive number`,
+          );
+        }
         break;
       case "https.cert":
-        if (!utils.string.isString(value))
+        if (!utils.string.isString(value)) {
           throw new TypeError(`setting '${setting}' should be an string`);
+        }
         break;
       case "https.key":
-        if (!utils.string.isString(value))
+        if (!utils.string.isString(value)) {
           throw new TypeError(`setting '${setting}' should be an string`);
+        }
         break;
       case "json.spaces":
       case "routing.max-param-length":
       case "subdomain.offset":
         if (value == null) break;
-        if (!utils.number.isNumber(value))
+        if (!utils.number.isNumber(value)) {
           throw new TypeError(`setting '${setting}' should be a number`);
-        if (value < 0)
-          throw new TypeError(`setting '${setting}' should be a positive number or zero`);
+        }
+        if (value < 0) {
+          throw new TypeError(
+            `setting '${setting}' should be a positive number or zero`,
+          );
+        }
         break;
       case "json.replacer":
       case "query.parser":
         if (value == null) break;
-        if (!utils.function.isFunction(value))
+        if (!utils.function.isFunction(value)) {
           throw new TypeError(`setting '${setting}' should be a function`);
+        }
         break;
       default:
         throw new TypeError(`Unknown setting '${setting}'`);
@@ -248,22 +288,30 @@ class Foxify {
     return this;
   }
 
-  get(path: string, options?: Layer.RouteOptions | Layer.Handler, ...controllers: Layer.Handler[]): any {
+  public get(
+    path: string,
+    options?: Layer.RouteOptions | Layer.Handler,
+    ...controllers: Layer.Handler[]
+  ): any {
     if (!options) {
       const setting = path;
 
-      if (!utils.string.isString(setting))
+      if (!utils.string.isString(setting)) {
         throw new TypeError("'setting' should be an string");
+      }
 
-      if (!utils.array.contains(SETTINGS, setting))
+      if (!utils.array.contains(SETTINGS, setting)) {
         throw new TypeError(`Unknown setting '${setting}'`);
+      }
 
       const keys = setting.split(".");
 
       let _setting: { [key: string]: any } | boolean = this._settings;
 
-      keys.map((key) => {
-        if (!utils.object.isObject(_setting)) throw new Error("Unknown setting");
+      keys.map(key => {
+        if (!utils.object.isObject(_setting)) {
+          throw new Error("Unknown setting");
+        }
 
         _setting = (_setting as { [key: string]: any })[key];
       });
@@ -274,7 +322,7 @@ class Foxify {
     return this.use(new Router().get(path, options, ...controllers));
   }
 
-  prettyPrint() {
+  public prettyPrint() {
     return this._router.prettyPrint();
   }
 
@@ -283,14 +331,16 @@ class Foxify {
    * @param extension view template file extension
    * @param path the directory containing view templates
    */
-  engine(extension: string, path: string, handler: () => void) {
+  public engine(extension: string, path: string, handler: () => void) {
     this._view = new Engine(path, extension, handler);
 
     return this;
   }
 
-  inject(options: inject.Options | string, callback?: inject.Callback) {
-    if (this.get("env") !== "test") throw new Error(`"inject" only works on testing environment`);
+  public inject(options: inject.Options | string, callback?: inject.Callback) {
+    if (this.get("env") !== "test") {
+      throw new Error(`"inject" only works on testing environment`);
+    }
 
     this._router.initialize(this);
 
@@ -311,11 +361,17 @@ class Foxify {
       },
     };
 
-    if (Object.getOwnPropertyNames(IncomingMessage.prototype).indexOf("query") === -1) {
-      const queryParse: (...args: any[]) => any = settings.query.parser || qs.parse;
+    if (
+      Object.getOwnPropertyNames(IncomingMessage.prototype).indexOf("query") ===
+      -1
+    ) {
+      const queryParse: (...args: any[]) => any =
+        settings.query.parser || qs.parse;
       Object.defineProperty(IncomingMessage.prototype, "query", {
         get() {
-          return queryParse((utils.parseUrl(this) as Url).query, { allowDots: true });
+          return queryParse((utils.parseUrl(this) as Url).query, {
+            allowDots: true,
+          });
         },
       });
     }
@@ -337,13 +393,16 @@ class Foxify {
         ServerResponse,
         IncomingMessage,
       },
-      callback
+      callback,
     );
   }
 
-  start(callback?: Server.Callback) {
-    if (callback && !utils.function.isFunction(callback))
-      throw new TypeError(`Expected 'callback' to be a function, got ${typeof callback} instead`);
+  public start(callback?: Server.Callback) {
+    if (callback && !utils.function.isFunction(callback)) {
+      throw new TypeError(
+        `Expected 'callback' to be a function, got ${typeof callback} instead`,
+      );
+    }
 
     /* set node env */
     process.env.NODE_ENV = this.get("env");
@@ -357,10 +416,18 @@ class Foxify {
         ...this._settings,
         view: this._view,
       },
-      this._router.lookup.bind(this._router)
+      this._router.lookup.bind(this._router),
     );
 
     return server.start(callback);
+  }
+
+  /* handle options & settings */
+  private _set(setting: string, value: any, object: { [key: string]: any }) {
+    const keys = setting.split(".");
+
+    if (keys.length === 1) object[keys[0]] = value;
+    else this._set(utils.array.tail(keys).join("."), value, object[keys[0]]);
   }
 }
 

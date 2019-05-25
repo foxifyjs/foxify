@@ -1,15 +1,21 @@
-import * as http from "http";
-import * as path from "path";
-import * as escapeHtml from "escape-html";
+import * as contentDisposition from "content-disposition";
 import * as contentType from "content-type";
 import * as cookie from "cookie";
 import { sign } from "cookie-signature";
+import * as escapeHtml from "escape-html";
+import * as http from "http";
 import * as onFinished from "on-finished";
-import * as contentDisposition from "content-disposition";
-// import * as vary from "vary";
+import * as path from "path";
 import send = require("send");
 import * as Request from "./Request";
-import { object, string, function as func, fresh, encodeUrl, vary } from "./utils";
+import {
+  encodeUrl,
+  fresh,
+  function as func,
+  object,
+  string,
+  vary,
+} from "./utils";
 import { Engine } from "./view";
 
 const resolve = path.resolve;
@@ -49,25 +55,29 @@ const setCharset = (type?: string, charset?: string) => {
  * @returns {string}
  * @private
  */
-const stringify = (value: any, replacer?: (key: string, value: any) => any, spaces?: number, escape?: boolean) => {
+const stringify = (
+  value: any,
+  replacer?: (key: string, value: any) => any,
+  spaces?: number,
+  escape?: boolean,
+) => {
   // v8 checks arguments.length for optimizing simple call
   // https://bugs.chromium.org/p/v8/issues/detail?id=4730
 
-  if (escape)
-    return JSON.stringify(value, replacer, spaces).replace(/[<>&]/g, (c) => {
-      switch (c.charCodeAt(0)) {
-        case 0x3c:
-          return "\\u003c";
-        case 0x3e:
-          return "\\u003e";
-        case 0x26:
-          return "\\u0026";
-        default:
-          return c;
-      }
-    });
+  if (!escape) return JSON.stringify(value, replacer, spaces);
 
-  return JSON.stringify(value, replacer, spaces);
+  return JSON.stringify(value, replacer, spaces).replace(/[<>&]/g, c => {
+    switch (c.charCodeAt(0)) {
+      case 0x3c:
+        return "\\u003c";
+      case 0x3e:
+        return "\\u003e";
+      case 0x26:
+        return "\\u0026";
+      default:
+        return c;
+    }
+  });
 };
 
 /**
@@ -90,7 +100,7 @@ const sendfile = (
   res: Response,
   file: send.SendStream,
   options: object,
-  callback: (...args: any[]) => void
+  callback: (...args: any[]) => void,
 ) => {
   let done = false;
   let streaming: boolean;
@@ -151,7 +161,7 @@ const sendfile = (
     if (done) return;
 
     setImmediate(() => {
-      if (streaming !== false && !done) {
+      if (streaming && !done) {
         onaborted();
         return;
       }
@@ -177,7 +187,7 @@ const sendfile = (
 
   onFinished(res, onfinish);
 
-  if ((options as any).headers)
+  if ((options as any).headers) {
     // set headers on successful transfer
     file.on("headers", (res: Response) => {
       const obj = (options as any).headers;
@@ -190,6 +200,7 @@ const sendfile = (
         res.setHeader(k, obj[k]);
       }
     });
+  }
 
   // pipe
   file.pipe(res);
@@ -208,20 +219,18 @@ const acceptParams = (str: string, index?: number) => {
   const parts = str.split(/ *; */);
 
   const ret = {
-    value: parts[0],
-    quality: 1,
-    params: <{ [key: string]: any }>{},
     originalIndex: index,
+    params: {} as { [key: string]: any },
+    quality: 1,
+    value: parts[0],
   };
 
   let pms;
   for (let i = 1; i < parts.length; ++i) {
     pms = parts[i].split(/ *= */);
 
-    if ("q" === pms[0])
-      ret.quality = parseFloat(pms[1]);
-    else
-      ret.params[pms[0]] = pms[1];
+    if ("q" === pms[0]) ret.quality = parseFloat(pms[1]);
+    else ret.params[pms[0]] = pms[1];
   }
 
   return ret;
@@ -250,21 +259,23 @@ const normalizeType = (type: string) => {
 const normalizeTypes = (types: string[]) => {
   const ret = [];
 
-  for (let i = 0; i < types.length; ++i) ret.push(exports.normalizeType(types[i]));
+  for (let i = 0; i < types.length; ++i) {
+    ret.push(exports.normalizeType(types[i]));
+  }
 
   return ret;
 };
 
-module Response {
+namespace Response {
   /**
    * @hidden
    */
   export interface Settings {
     engine?: Engine;
     json: {
-      escape: boolean,
-      spaces?: number,
-      replacer?: (...args: any[]) => any,
+      escape: boolean;
+      spaces?: number;
+      replacer?: (...args: any[]) => any;
     };
   }
 }
@@ -294,22 +305,22 @@ class Response extends http.ServerResponse {
   /**
    * @hidden
    */
-  settings!: Response.Settings;
+  public settings!: Response.Settings;
 
   /**
    * @hidden
    */
-  stringify!: { [statusCode: number]: any };
+  public stringify!: { [statusCode: number]: any };
 
   /**
    * @hidden
    */
-  next!: () => void;
+  public next!: () => void;
 
   /**
    * @hidden
    */
-  req: Request;
+  public req: Request;
 
   /**
    *
@@ -326,7 +337,7 @@ class Response extends http.ServerResponse {
    * Last-Modified and/or the ETag
    * still match.
    */
-  get fresh() {
+  public get fresh() {
     const req = this.req;
     const method = req.method;
 
@@ -336,9 +347,12 @@ class Response extends http.ServerResponse {
     const status = this.statusCode;
 
     // 2xx or 304 as per rfc2616 14.26
-    if ((status >= HTTP.OK && status < HTTP.MULTIPLE_CHOICES) ||
-      HTTP.NOT_MODIFIED === status)
+    if (
+      (status >= HTTP.OK && status < HTTP.MULTIPLE_CHOICES) ||
+      HTTP.NOT_MODIFIED === status
+    ) {
       return fresh(req.headers, this.get("last-modified") as string);
+    }
 
     return false;
   }
@@ -363,15 +377,18 @@ class Response extends http.ServerResponse {
    * @example
    * res.append("Warning", "199 Miscellaneous warning");
    */
-  append(field: string, val: string | string[]) {
+  public append(field: string, val: string | string[]) {
     const prev = this.get(field);
     let value: any = val;
 
-    if (prev)
+    if (prev) {
       // concat the new and prev vals
-      value = Array.isArray(prev) ? prev.concat(val)
-        : Array.isArray(val) ? [prev].concat(val)
-          : [prev, val];
+      value = Array.isArray(prev)
+        ? prev.concat(val)
+        : Array.isArray(val)
+        ? [prev].concat(val)
+        : [prev, val];
+    }
 
     return this.set(field, value);
   }
@@ -379,7 +396,7 @@ class Response extends http.ServerResponse {
   /**
    * Set _Content-Disposition_ header to _attachment_ with optional `filename`.
    */
-  attachment(filename?: string) {
+  public attachment(filename?: string) {
     if (filename) this.type(path.extname(filename));
 
     this.set("content-disposition", contentDisposition(filename));
@@ -392,8 +409,12 @@ class Response extends http.ServerResponse {
    *
    * @returns for chaining
    */
-  clearCookie(name: string, options: object = {}) {
-    const opts = Object.assign({}, { expires: new Date(1), path: "/" }, options);
+  public clearCookie(name: string, options: object = {}) {
+    const opts = Object.assign(
+      {},
+      { expires: new Date(1), path: "/" },
+      options,
+    );
 
     return this.cookie(name, "", opts);
   }
@@ -414,10 +435,10 @@ class Response extends http.ServerResponse {
    * @example
    * res.type("png");
    */
-  contentType(type: string) {
-    return this.set("content-type", type.indexOf("/") === -1
-      ? (send.mime as any).lookup(type)
-      : type
+  public contentType(type: string) {
+    return this.set(
+      "content-type",
+      type.indexOf("/") === -1 ? (send.mime as any).lookup(type) : type,
     );
   }
 
@@ -437,18 +458,20 @@ class Response extends http.ServerResponse {
    * // save as above
    * res.cookie("rememberme", "1", { maxAge: 900000, httpOnly: true })
    */
-  cookie(name: string, value: string | object, options: object = {}) {
+  public cookie(name: string, value: string | object, options: object = {}) {
     const opts: { [key: string]: any } = Object.assign({}, options);
     const secret = (this.req as any).secret;
     const signed = opts.signed;
 
-    if (signed && !secret) throw new Error("cookieParser('secret') required for signed cookies");
+    if (signed && !secret) {
+      throw new Error("cookieParser('secret') required for signed cookies");
+    }
 
     let val = object.isObject(value)
-      ? "j:" + JSON.stringify(value)
+      ? `j:${JSON.stringify(value)}`
       : String(value);
 
-    if (signed) val = "s:" + sign(val, secret);
+    if (signed) val = `s:${sign(val, secret)}`;
 
     if ("maxAge" in opts) {
       opts.expires = new Date(Date.now() + opts.maxAge);
@@ -477,7 +500,12 @@ class Response extends http.ServerResponse {
    *
    * This method uses `res.sendFile()`.
    */
-  download(path: string, filename: string, options?: object, callback?: (...args: any[]) => void) {
+  public download(
+    path: string,
+    filename: string,
+    options?: object,
+    callback?: (...args: any[]) => void,
+  ) {
     let done: any = callback;
     let name: any = filename;
     let opts = options || null;
@@ -505,14 +533,18 @@ class Response extends http.ServerResponse {
       for (let i = 0; i < keys.length; i++) {
         key = keys[i];
 
-        if (key.toLowerCase() !== "content-disposition")
-          (headers as { [key: string]: any })[key] = (opts as { [key: string]: any }).headers[key];
+        if (key.toLowerCase() !== "content-disposition") {
+          (headers as { [key: string]: any })[key] = (opts as {
+            [key: string]: any;
+          }).headers[key];
+        }
       }
     }
 
     // merge user-provided options
-    opts = Object.create(opts)
-      (opts as { [key: string]: any }).headers = headers;
+    opts = Object.create(opts)(opts as {
+      [key: string]: any;
+    }).headers = headers;
 
     // Resolve the full path for sendFile
     const fullPath = resolve(path);
@@ -571,7 +603,7 @@ class Response extends http.ServerResponse {
    *   }
    * });
    */
-  format(obj: object) {
+  public format(obj: object) {
     const req = this.req;
     const next = this.next;
 
@@ -581,22 +613,20 @@ class Response extends http.ServerResponse {
 
     const keys = Object.keys(obj);
 
-    const key = keys.length > 0
-      ? <string>req.accepts(...keys)
-      : false;
+    const key = keys.length > 0 ? req.accepts(...keys) as string : false;
 
     this.vary("Accept");
 
     if (key) {
       this.set("content-type", normalizeType(key).value);
       (obj as { [key: string]: any })[key](req, this, next);
-    } else if (fn)
+    } else if (fn) {
       fn();
-    else {
+    } else {
       const err: any = new Error("Not Acceptable");
 
       err.status = err.statusCode = 406;
-      err.types = normalizeTypes(keys).map((o) => o.value);
+      err.types = normalizeTypes(keys).map(o => o.value);
 
       throw err;
     }
@@ -616,26 +646,32 @@ class Response extends http.ServerResponse {
    * @example
    * res.set({ Accept: "text/plain", "X-API-Key": "tobi" });
    */
-  header(field: string | object, val?: string | string[]) {
+  public header(field: string | object, val?: string | string[]) {
     if (val) {
-      let value = Array.isArray(val)
-        ? val.map((v) => `${v}`)
-        : `${val}`;
+      let value = Array.isArray(val) ? val.map(v => `${v}`) : `${val}`;
 
       // add charset to content-type
       if ((field as string).toLowerCase() === "content-type") {
-        if (Array.isArray(value)) throw new TypeError("Content-Type cannot be set to an Array");
+        if (Array.isArray(value)) {
+          throw new TypeError("Content-Type cannot be set to an Array");
+        }
 
         if (!charsetRegExp.test(value)) {
-          const charset = (send.mime as any).charsets.lookup(value.split(";")[0]);
+          const charset = (send.mime as any).charsets.lookup(
+            value.split(";")[0],
+          );
 
-          if (charset) value += "; charset=" + charset.toLowerCase();
+          if (charset) value += `; charset=${charset.toLowerCase()}`;
         }
       }
 
-      this.setHeader(<string>field, value);
-    } else
-      for (const key in <object>field) this.set(key, (field as { [key: string]: any })[key]);
+      this.setHeader(field as string, value);
+    } else {
+      // tslint:disable-next-line:forin
+      for (const key in field as object) {
+        this.set(key, (field as { [key: string]: any })[key]);
+      }
+    }
 
     return this;
   }
@@ -646,7 +682,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.json({ user: "tj" });
    */
-  json(obj: object | any[], status?: number) {
+  public json(obj: object | any[], status?: number) {
     if (status !== undefined) this.status(status);
 
     this.setHeader("content-type", "application/json");
@@ -658,8 +694,8 @@ class Response extends http.ServerResponse {
         obj,
         options.replacer,
         options.spaces,
-        options.escape
-      )
+        options.escape,
+      ),
     );
   }
 
@@ -669,7 +705,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.jsonp({ user: "tj" });
    */
-  jsonp(obj: object, status?: number) {
+  public jsonp(obj: object, status?: number) {
     // settings
     const app = (this as any).app;
     const options = this.settings.json;
@@ -699,13 +735,11 @@ class Response extends http.ServerResponse {
       callback = callback.replace(/[^\[\]\w$.]/g, "");
 
       // replace chars not allowed in JavaScript that are in JSON
-      body = body
-        .replace(/\u2028/g, "\\u2028")
-        .replace(/\u2029/g, "\\u2029");
+      body = body.replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
 
       // the /**/ is a specific security mitigation for "Rosetta Flash JSONP abuse"
       // the typeof check is just to reduce client error noise
-      body = "/**/ typeof " + callback + " === 'function' && " + callback + "(" + body + ");";
+      body = `/**/ typeof ${callback}  === 'function' && $callback{}(${body});`;
     }
 
     return this.send(body);
@@ -720,12 +754,14 @@ class Response extends http.ServerResponse {
    *   last: "http://api.example.com/users?page=5"
    * });
    */
-  links(links: object) {
+  public links(links: object) {
     return this.set(
       "link",
-      `${this.get("link") || ""}, ` + Object.keys(links)
-        .map((rel) => `<${(links as { [key: string]: string })[rel]}>; rel="${rel}"`)
-        .join(", ")
+      `${this.get("link") || ""}, ${Object.keys(links)
+        .map(
+          rel => `<${(links as { [key: string]: string })[rel]}>; rel="${rel}"`,
+        )
+        .join(", ")}`,
     );
   }
 
@@ -743,15 +779,13 @@ class Response extends http.ServerResponse {
    * @example
    * res.location("../login");
    */
-  location(url: string) {
+  public location(url: string) {
     return this.set(
       "location",
       encodeUrl(
         // "back" is an alias for the referrer
-        url === "back" ?
-          this.req.get("referrer") as string || "/" :
-          url
-      )
+        url === "back" ? (this.req.get("referrer") as string) || "/" : url,
+      ),
     );
   }
 
@@ -772,38 +806,37 @@ class Response extends http.ServerResponse {
    * @example
    * res.redirect("../login"); // /blog/post/1 -> /blog/login
    */
-  redirect(url: string | number, status = 302) {
-    let address = <string>url;
+  public redirect(url: string, status = 302) {
     let body: string = "";
 
     // Set location header
-    address = this.location(address).get("Location") as string;
+    url = this.location(url).get("Location") as string;
 
     // Support text/{plain,html} by default
     this.format({
-      text: () => {
-        body = STATUS_CODES[status] + ". Redirecting to " + address;
-      },
+      default: () => (body = ""),
       html: () => {
-        const u = escapeHtml(address);
-        body = "<p>" + STATUS_CODES[status] + ". Redirecting to <a href=\"" + u + "\">" + u + "</a></p>";
+        const u = escapeHtml(url);
+        body = `<p>${
+          STATUS_CODES[status]
+        }. Redirecting to <a href="${u}">${u}</a></p>`;
       },
-      default: () => {
-        body = "";
-      },
+      text: () => (body = `${STATUS_CODES[status]}. Redirecting to ${url}`),
     });
 
     // Respond
     this.statusCode = status;
-    this.set("content-length", <any>Buffer.byteLength(body));
+    this.set("content-length", Buffer.byteLength(body) as any);
 
-    if (this.req.method === "HEAD")
-      this.end();
-    else
-      this.end(body);
+    if (this.req.method === "HEAD") this.end();
+    else this.end(body);
   }
 
-  render(view: string, data?: object | Engine.Callback, callback?: Engine.Callback) {
+  public render(
+    view: string,
+    data?: object | Engine.Callback,
+    callback?: Engine.Callback,
+  ) {
     const engine = this.settings.engine;
 
     if (!engine) throw new Error("View engine is not specified");
@@ -813,12 +846,13 @@ class Response extends http.ServerResponse {
       data = undefined;
     }
 
-    if (!callback)
+    if (!callback) {
       callback = (err, str) => {
         if (err) throw err;
 
         this.send(str);
       };
+    }
 
     engine.render(view, data, callback);
   }
@@ -833,11 +867,15 @@ class Response extends http.ServerResponse {
    * @example
    * res.send("<p>some html</p>");
    */
-  send(body: string | object | any[] | Buffer): this {
+  public send(body: string | object | any[] | Buffer): this {
     if (string.isString(body)) {
       // reflect this in content-type
-      if (!this.get("content-type"))
-        this.setHeader("Content-Type", setCharset("text/html", "utf-8") as string);
+      if (!this.get("content-type")) {
+        this.setHeader("Content-Type", setCharset(
+          "text/html",
+          "utf-8",
+        ) as string);
+      }
     } else if (Buffer.isBuffer(body)) {
       if (!this.get("content-type")) this.type("bin");
     } else return this.json(body);
@@ -899,7 +937,11 @@ class Response extends http.ServerResponse {
    *   });
    * });
    */
-  sendFile(path: string, options?: object | ((...args: any[]) => void), callback?: (...args: any[]) => void) {
+  public sendFile(
+    path: string,
+    options?: object | ((...args: any[]) => void),
+    callback?: (...args: any[]) => void,
+  ) {
     let done = callback;
     const req = this.req;
     const next = this.next;
@@ -913,8 +955,11 @@ class Response extends http.ServerResponse {
       opts = {};
     }
 
-    if (!(opts as any).root && !isAbsolute(path))
-      throw new TypeError("path must be absolute or specify root to res.sendFile");
+    if (!(opts as any).root && !isAbsolute(path)) {
+      throw new TypeError(
+        "path must be absolute or specify root to res.sendFile",
+      );
+    }
 
     // create file stream
     const pathname = encodeURI(path);
@@ -926,7 +971,9 @@ class Response extends http.ServerResponse {
       if (err && err.code === "EISDIR") return next();
 
       // next() all but write errors
-      if (err && err.code !== "ECONNABORTED" && err.syscall !== "write") throw err;
+      if (err && err.code !== "ECONNABORTED" && err.syscall !== "write") {
+        throw err;
+      }
     });
   }
 
@@ -940,7 +987,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.sendStatus(200);
    */
-  sendStatus(statusCode: number) {
+  public sendStatus(statusCode: number) {
     this.statusCode = statusCode;
 
     this.type("txt");
@@ -954,7 +1001,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.status(500);
    */
-  status(code: number) {
+  public status(code: number) {
     this.statusCode = code;
 
     return this;
@@ -966,7 +1013,7 @@ class Response extends http.ServerResponse {
    *
    * @returns for chaining
    */
-  vary(field: string | string[]) {
+  public vary(field: string | string[]) {
     return vary(this, field);
   }
 }
