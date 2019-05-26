@@ -1,8 +1,8 @@
 import { EventEmitter as Base } from "@foxify/events";
 import { http } from "../constants";
 import { HttpException } from "../exceptions";
-import * as Request from "../Request";
-import * as Response from "../Response";
+import Request from "../Request";
+import Response from "../Response";
 import { object } from "../utils";
 
 const ERRORS = object.reduce(

@@ -266,7 +266,7 @@ class Request extends http.IncomingMessage {
 Request.prototype.head = Request.prototype.get;
 Request.prototype.params = {};
 
-export = Request;
+export default Request;
 
 // /**
 //  * Return the remote address from the trusted proxy.

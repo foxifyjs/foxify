@@ -27,7 +27,7 @@
  * This module is modified and optimized for Foxify specifically
  */
 
-import * as Response from "../Response";
+import Response from "../Response";
 
 /**
  * RegExp to match field-name in RFC 7230 sec 3.2

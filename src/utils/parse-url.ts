@@ -29,7 +29,7 @@
  */
 
 import { parse } from "url";
-import * as Request from "../Request";
+import Request from "../Request";
 
 /**
  * Parse the `str` url with fast-path short-cut.

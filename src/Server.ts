@@ -6,8 +6,8 @@ import { Url } from "url";
 import * as Foxify from ".";
 import events from "./events";
 import * as EventEmitter from "./events/Emitter";
-import * as Request from "./Request";
-import * as Response from "./Response";
+import Request from "./Request";
+import Response from "./Response";
 import { parseUrl } from "./utils";
 import { Engine } from "./view";
 

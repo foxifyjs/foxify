@@ -7,7 +7,8 @@ import * as http from "http";
 import * as onFinished from "on-finished";
 import * as path from "path";
 import send = require("send");
-import * as Request from "./Request";
+import { http as httpStatus } from "./constants";
+import Request from "./Request";
 import {
   encodeUrl,
   fresh,
@@ -613,7 +614,7 @@ class Response extends http.ServerResponse {
 
     const keys = Object.keys(obj);
 
-    const key = keys.length > 0 ? req.accepts(...keys) as string : false;
+    const key = keys.length > 0 ? (req.accepts(...keys) as string) : false;
 
     this.vary("Accept");
 
@@ -682,7 +683,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.json({ user: "tj" });
    */
-  public json(obj: object | any[], status?: number) {
+  public json(obj: object | any[], status?: httpStatus) {
     if (status !== undefined) this.status(status);
 
     this.setHeader("content-type", "application/json");
@@ -705,7 +706,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.jsonp({ user: "tj" });
    */
-  public jsonp(obj: object, status?: number) {
+  public jsonp(obj: object, status?: httpStatus) {
     // settings
     const app = (this as any).app;
     const options = this.settings.json;
@@ -806,7 +807,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.redirect("../login"); // /blog/post/1 -> /blog/login
    */
-  public redirect(url: string, status = 302) {
+  public redirect(url: string, status: httpStatus = HTTP.FOUND) {
     let body: string = "";
 
     // Set location header
@@ -987,7 +988,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.sendStatus(200);
    */
-  public sendStatus(statusCode: number) {
+  public sendStatus(statusCode: httpStatus) {
     this.statusCode = statusCode;
 
     this.type("txt");
@@ -1001,7 +1002,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.status(500);
    */
-  public status(code: number) {
+  public status(code: httpStatus) {
     this.statusCode = code;
 
     return this;
@@ -1037,4 +1038,4 @@ Response.prototype.set = Response.prototype.header;
  */
 Response.prototype.get = Response.prototype.getHeader;
 
-export = Response;
+export default Response;

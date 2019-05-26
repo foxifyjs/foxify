@@ -1,7 +1,7 @@
 import { http } from "../constants";
 import events from "../events";
-import * as Request from "../Request";
-import * as Response from "../Response";
+import Request from "../Request";
+import Response from "../Response";
 
 const handle = (error: any, req: Request, res: Response) => {
   events.emit(

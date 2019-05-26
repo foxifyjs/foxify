@@ -8,6 +8,8 @@
     "rootDir": "src",
     "outDir": "framework",
     "experimentalDecorators": true,
+    "preserveConstEnums": true,
+    "esModuleInterop": false,
     "declaration": true,
     "strict": true
   },

@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { Encapsulation } from "../exceptions";
-import * as Request from "../Request";
-import * as Response from "../Response";
+import Request from "../Request";
+import Response from "../Response";
 import httpMethods, { Method } from "./httpMethods";
 
 const OPTIONS = { schema: { response: {} } };
@@ -30,14 +30,14 @@ const buildHandlers = (handlers?: any) => {
 
 const Handlers = buildHandlers();
 
-const TYPES = {
-  STATIC: 0 as 0,
-  PARAM: 1 as 1,
-  MATCH_ALL: 2 as 2,
-  REGEX: 3 as 3,
+export const enum TYPES {
+  STATIC = 0,
+  PARAM = 1,
+  MATCH_ALL = 2,
+  REGEX = 3,
   // It's used for a parameter, that is followed by another parameter in the same part
-  MULTI_PARAM: 4 as 4,
-};
+  MULTI_PARAM = 4,
+}
 
 namespace Layer {
   export type Handler = (
@@ -135,7 +135,6 @@ namespace Layer {
 }
 
 class Layer {
-  public static TYPES = TYPES;
   public static Handlers = Handlers;
 
   public static isLayer = (arg: any): arg is Layer => arg instanceof Layer;

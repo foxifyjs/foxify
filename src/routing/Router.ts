@@ -4,8 +4,8 @@ import isRegexSafe = require("safe-regex");
 import * as Foxify from "..";
 import { Encapsulation } from "../exceptions";
 import { init } from "../middlewares";
-import * as Request from "../Request";
-import * as Response from "../Response";
+import Request from "../Request";
+import Response from "../Response";
 import {
   array,
   decodeURIComponent as fastDecode,
@@ -15,7 +15,7 @@ import {
   string,
 } from "../utils";
 import httpMethods, { Method } from "./httpMethods";
-import Layer from "./Layer";
+import Layer, { TYPES } from "./Layer";
 
 const OPTIONS = { schema: { response: {} } };
 
@@ -339,7 +339,7 @@ class Router {
           // search for parametric or wildcard routes
           // parametric route
           if (path.charCodeAt(i) === 58) {
-            let nodeType = 1; // PARAM
+            let nodeType = TYPES.PARAM;
             let staticPart = path.slice(0, i);
             j = i + 1;
 
@@ -349,7 +349,7 @@ class Router {
             this._insert(
               method,
               staticPart,
-              0 /* STATIC */,
+              TYPES.STATIC,
               opts,
               undefined,
               undefined,
@@ -433,7 +433,7 @@ class Router {
             this._insert(
               method,
               path.slice(0, i),
-              0 /* STATIC */,
+              TYPES.STATIC,
               opts,
               undefined,
               undefined,
@@ -445,7 +445,7 @@ class Router {
             return this._insert(
               method,
               path.slice(0, len),
-              2 /* MATCH_ALL */,
+              TYPES.MATCH_ALL,
               opts,
               params,
               handlers,
@@ -461,7 +461,7 @@ class Router {
         return this._insert(
           method,
           path,
-          0 /* STATIC */,
+          TYPES.STATIC,
           opts,
           params,
           handlers,
@@ -713,8 +713,7 @@ class Router {
       const kind = node.kind;
 
       // static route
-      if (kind === 0) {
-        /* STATIC */
+      if (kind === TYPES.STATIC) {
         // if exist, save the wildcard child
         if (currentNode.wildcardChild !== null) {
           wildcardNode = currentNode.wildcardChild;
@@ -741,8 +740,7 @@ class Router {
       }
 
       // parametric route
-      if (kind === 1) {
-        /* PARAM */
+      if (kind === TYPES.PARAM) {
         currentNode = node;
         i = path.indexOf("/");
 
@@ -761,8 +759,7 @@ class Router {
       }
 
       // wildcard route
-      if (kind === 2) {
-        /* MATCH_ALL */
+      if (kind === TYPES.MATCH_ALL) {
         decoded = fastDecode(path);
 
         if (decoded === null) return EMPTY_HANDLE;
@@ -775,8 +772,7 @@ class Router {
       }
 
       // parametric(regex) route
-      if (kind === 3) {
-        /* REGEX */
+      if (kind === TYPES.REGEX) {
         i = path.indexOf("/");
 
         if (i === -1) i = pathLen;
@@ -797,8 +793,7 @@ class Router {
       }
 
       // multiparametric route
-      if (kind === 4) {
-        /* MULTI_PARAM */
+      if (kind === TYPES.MULTI_PARAM) {
         if (node.regex !== null) {
           const matchedParameter = path.match(node.regex);
 

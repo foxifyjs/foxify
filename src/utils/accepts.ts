@@ -34,7 +34,7 @@
 import { IncomingHttpHeaders } from "http";
 import * as mime from "mime-types";
 import * as Negotiator from "negotiator";
-import * as Request from "../Request";
+import Request from "../Request";
 
 /**
  * Convert extnames to mime.

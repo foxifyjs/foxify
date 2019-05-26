@@ -1,7 +1,7 @@
 import { STATUS_CODES } from "http";
 import { http } from "../constants";
-import * as Request from "../Request";
-import * as Response from "../Response";
+import Request from "../Request";
+import Response from "../Response";
 import * as utils from "../utils";
 import htmlError from "./htmlError";
 
