@@ -3,6 +3,7 @@ import "./bootstrap";
 import * as inject from "@foxify/inject";
 import * as assert from "assert";
 import * as os from "os";
+import * as proxyAddr from "proxy-addr";
 import * as qs from "qs";
 import * as serveStatic from "serve-static";
 import { Url } from "url";
@@ -32,6 +33,7 @@ const SETTINGS = [
   "https.key",
   "json.spaces",
   "json.replacer",
+  "trust.proxy",
   "query.parser",
   "routing.max-param-length",
   "subdomain.offset",
@@ -66,6 +68,9 @@ namespace Foxify {
     json: {
       replacer?: (...args: any[]) => any;
       spaces?: number;
+    };
+    trust: {
+      proxy: (ip: string, hopIndex: number) => boolean;
     };
     query: {
       parser?: (...args: any[]) => any;
@@ -143,6 +148,9 @@ class Foxify {
       replacer: undefined,
       spaces: undefined,
     },
+    trust: {
+      proxy: undefined as any,
+    },
     query: {
       parser: undefined,
     },
@@ -168,6 +176,8 @@ class Foxify {
         return this;
       };
     });
+
+    this.set("trust.proxy", false);
   }
 
   /* handle options */
@@ -270,6 +280,15 @@ class Foxify {
           throw new TypeError(`setting '${setting}' should be a function`);
         }
         break;
+      case "trust.proxy":
+        if (value === true) {
+          value = () => true;
+        } else if (utils.number.isNumber(value)) {
+          value = (ip: string, i: number) => i < value;
+        } else {
+          value = proxyAddr.compile(value || []);
+        }
+        break;
       default:
         throw new TypeError(`Unknown setting '${setting}'`);
     }
@@ -326,9 +345,10 @@ class Foxify {
   }
 
   public inject(options: inject.Options | string, callback?: inject.Callback) {
-    if (this.get("env") !== "test") {
-      throw new Error(`"inject" only works on testing environment`);
-    }
+    assert(
+      this.get("env") === "test",
+      "Inject only works on the testing environment",
+    );
 
     this._router.initialize(this);
 
@@ -346,6 +366,9 @@ class Foxify {
     IncomingMessage.prototype.settings = {
       subdomain: {
         ...settings.subdomain,
+      },
+      trust: {
+        ...settings.trust,
       },
     };
 

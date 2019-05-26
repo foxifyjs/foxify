@@ -62,6 +62,9 @@ class Server {
       subdomain: {
         ...settings.subdomain,
       },
+      trust: {
+        ...settings.trust,
+      },
     };
 
     const queryParse: (...args: any[]) => any =

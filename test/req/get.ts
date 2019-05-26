@@ -22,7 +22,7 @@ describe(".get(field)", () => {
   });
 
   it("should special-case Referer", async () => {
-    expect.assertions(1);
+    expect.assertions(2);
 
     const app = new Foxify();
 
@@ -30,14 +30,55 @@ describe(".get(field)", () => {
       res.end(req.get("Referer"));
     });
 
-    const result = await app.inject({
+    const referer = "https://foxify.js.org";
+
+    let result = await app.inject({
       url: "/",
       headers: {
-        referer: "http://foobar.com",
+        referer,
       },
     });
 
-    expect(result.body).toBe("http://foobar.com");
+    expect(result.body).toBe(referer);
+
+    result = await app.inject({
+      url: "/",
+      headers: {
+        referrer: referer,
+      },
+    });
+
+    expect(result.body).toBe(referer);
+  });
+
+  it("should special-case Referrer", async () => {
+    expect.assertions(2);
+
+    const app = new Foxify();
+
+    app.use((req, res) => {
+      res.end(req.get("Referrer"));
+    });
+
+    const referer = "https://foxify.js.org";
+
+    let result = await app.inject({
+      url: "/",
+      headers: {
+        referer,
+      },
+    });
+
+    expect(result.body).toBe(referer);
+
+    result = await app.inject({
+      url: "/",
+      headers: {
+        referrer: referer,
+      },
+    });
+
+    expect(result.body).toBe(referer);
   });
 
   it("should throw missing header name", async () => {
