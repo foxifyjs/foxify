@@ -1,6 +1,7 @@
 import "./bootstrap";
 
 import * as inject from "@foxify/inject";
+import * as assert from "assert";
 import * as os from "os";
 import * as qs from "qs";
 import * as serveStatic from "serve-static";
@@ -101,11 +102,10 @@ class Foxify {
   public static static = serveStatic;
 
   public static dotenv = (path: string) => {
-    if (!utils.string.isString(path)) {
-      throw new TypeError(
-        `Expected 'dotenv' to be an string, got ${typeof path} instead`,
-      );
-    }
+    assert(
+      utils.string.isString(path),
+      `Expected 'dotenv' to be an string, got ${typeof path} instead`,
+    );
 
     require("dotenv").config({ path });
   };
@@ -172,13 +172,10 @@ class Foxify {
 
   /* handle options */
   public enable(option: string) {
-    if (!utils.string.isString(option)) {
-      throw new TypeError("Argument 'option' should be an string");
-    }
-
-    if (!utils.array.contains(OPTIONS, option)) {
-      throw new TypeError(`Unknown option '${option}'`);
-    }
+    assert(
+      OPTIONS.includes(option),
+      `Expected 'option' to be one of [${OPTIONS}], got '${option}' instead`,
+    );
 
     this._set(option, true, this._options);
 
@@ -186,13 +183,10 @@ class Foxify {
   }
 
   public disable(option: string) {
-    if (!utils.string.isString(option)) {
-      throw new TypeError("Argument 'option' should be an string");
-    }
-
-    if (!utils.array.contains(OPTIONS, option)) {
-      throw new TypeError(`Unknown option '${option}'`);
-    }
+    assert(
+      OPTIONS.includes(option),
+      `Expected 'option' to be one of [${OPTIONS}], got '${option}' instead`,
+    );
 
     this._set(option, false, this._options);
 
@@ -200,13 +194,10 @@ class Foxify {
   }
 
   public enabled(option: string): boolean {
-    if (!utils.string.isString(option)) {
-      throw new TypeError("Argument 'option' should be an string");
-    }
-
-    if (!utils.array.contains(OPTIONS, option)) {
-      throw new TypeError(`Unknown option '${option}'`);
-    }
+    assert(
+      OPTIONS.includes(option),
+      `Expected 'option' to be one of [${OPTIONS}], got '${option}' instead`,
+    );
 
     const keys = option.split(".");
 
@@ -296,13 +287,10 @@ class Foxify {
     if (!options) {
       const setting = path;
 
-      if (!utils.string.isString(setting)) {
-        throw new TypeError("'setting' should be an string");
-      }
-
-      if (!utils.array.contains(SETTINGS, setting)) {
-        throw new TypeError(`Unknown setting '${setting}'`);
-      }
+      assert(
+        SETTINGS.includes(setting),
+        `Expected 'setting' to be one of [${SETTINGS}], got '${setting}' instead`,
+      );
 
       const keys = setting.split(".");
 
@@ -398,11 +386,10 @@ class Foxify {
   }
 
   public start(callback?: Server.Callback) {
-    if (callback && !utils.function.isFunction(callback)) {
-      throw new TypeError(
-        `Expected 'callback' to be a function, got ${typeof callback} instead`,
-      );
-    }
+    assert(
+      utils.function.isFunction(callback),
+      `Expected 'callback' to be a function, got ${typeof callback} instead`,
+    );
 
     /* set node env */
     process.env.NODE_ENV = this.get("env");

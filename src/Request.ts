@@ -1,3 +1,4 @@
+import * as assert from "assert";
 import * as http from "http";
 import { isIP } from "net";
 import * as typeIs from "type-is";
@@ -178,13 +179,7 @@ class Request extends http.IncomingMessage {
    * req.get("Something"); // => undefined
    */
   public get(name: string) {
-    if (!name) {
-      throw new TypeError("name argument is required to req.get/req.head");
-    }
-
-    if (!string.isString(name)) {
-      throw new TypeError("name must be a string to req.get/req.head");
-    }
+    assert(string.isString(name), `Expected 'name' to be an string, got '${typeof name}' instead`);
 
     const header = name.toLowerCase();
 

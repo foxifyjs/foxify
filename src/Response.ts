@@ -1,3 +1,4 @@
+import * as assert from "assert";
 import * as contentDisposition from "content-disposition";
 import * as contentType from "content-type";
 import * as cookie from "cookie";
@@ -653,13 +654,11 @@ class Response extends http.ServerResponse {
 
       // add charset to content-type
       if ((field as string).toLowerCase() === "content-type") {
-        if (Array.isArray(value)) {
-          throw new TypeError("Content-Type cannot be set to an Array");
-        }
+        assert(!Array.isArray(value), "Content-Type cannot be set to an Array");
 
-        if (!charsetRegExp.test(value)) {
+        if (!charsetRegExp.test(value as string)) {
           const charset = (send.mime as any).charsets.lookup(
-            value.split(";")[0],
+            (value as string).split(";")[0],
           );
 
           if (charset) value += `; charset=${charset.toLowerCase()}`;
@@ -838,9 +837,9 @@ class Response extends http.ServerResponse {
     data?: object | Engine.Callback,
     callback?: Engine.Callback,
   ) {
-    const engine = this.settings.engine;
+    const engine = this.settings.engine!;
 
-    if (!engine) throw new Error("View engine is not specified");
+    assert(engine, "View engine is not specified");
 
     if (func.isFunction(data)) {
       callback = data;
@@ -948,7 +947,7 @@ class Response extends http.ServerResponse {
     const next = this.next;
     let opts = options || {};
 
-    if (!path) throw new TypeError("path argument is required to res.sendFile");
+    assert(path, "Argument 'path' is required to res.sendFile");
 
     // support function as second arg
     if (func.isFunction(options)) {

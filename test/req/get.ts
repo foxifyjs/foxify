@@ -52,7 +52,9 @@ describe(".get(field)", () => {
     const result = await app.inject("/");
 
     expect(result.statusCode).toBe(500);
-    expect(result.body).toMatch(/name argument is required to req\.get/);
+    expect(JSON.parse(result.body)).toEqual({
+      message: "Expected 'name' to be an string, got 'undefined' instead",
+    });
   });
 
   it("should throw for non-string header name", async () => {
@@ -67,6 +69,8 @@ describe(".get(field)", () => {
     const result = await app.inject("/");
 
     expect(result.statusCode).toBe(500);
-    expect(result.body).toMatch(/name must be a string to req\.get/);
+    expect(JSON.parse(result.body)).toEqual({
+      message: "Expected 'name' to be an string, got 'number' instead",
+    });
   });
 });

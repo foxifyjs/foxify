@@ -57,42 +57,7 @@ namespace Layer {
 
   export type Handlers = { [method in Method]: HandlerObject };
 
-  export interface Options {
-    ACL: RouteOptions;
-    BIND: RouteOptions;
-    CHECKOUT: RouteOptions;
-    CONNECT: RouteOptions;
-    COPY: RouteOptions;
-    DELETE: RouteOptions;
-    GET: RouteOptions;
-    HEAD: RouteOptions;
-    LINK: RouteOptions;
-    LOCK: RouteOptions;
-    "M-SEARCH": RouteOptions;
-    MERGE: RouteOptions;
-    MKACTIVITY: RouteOptions;
-    MKCALENDAR: RouteOptions;
-    MKCOL: RouteOptions;
-    MOVE: RouteOptions;
-    NOTIFY: RouteOptions;
-    OPTIONS: RouteOptions;
-    PATCH: RouteOptions;
-    POST: RouteOptions;
-    PROPFIND: RouteOptions;
-    PROPPATCH: RouteOptions;
-    PURGE: RouteOptions;
-    PUT: RouteOptions;
-    REBIND: RouteOptions;
-    REPORT: RouteOptions;
-    SEARCH: RouteOptions;
-    SOURCE: RouteOptions;
-    SUBSCRIBE: RouteOptions;
-    TRACE: RouteOptions;
-    UNBIND: RouteOptions;
-    UNLINK: RouteOptions;
-    UNLOCK: RouteOptions;
-    UNSUBSCRIBE: RouteOptions;
-  }
+  export type Options = { [method in Method]: RouteOptions };
 
   export interface Children {
     [label: string]: Layer | undefined;

@@ -206,9 +206,10 @@ class Router {
     httpMethods.forEach(method => {
       const methodName = method.toLowerCase();
 
-      if ((this as any)[methodName]) {
-        throw new Error(`Method already exists: ${methodName}`);
-      }
+      assert(
+        !(this as any)[methodName],
+        `Method already exists: ${methodName}`,
+      );
 
       (this as any)[methodName] = (
         path: string,
@@ -508,9 +509,10 @@ class Router {
       (prev, method) => {
         const methodName = method.toLowerCase();
 
-        if (prev[methodName]) {
-          throw new Error(`Method already exists: ${methodName}`);
-        }
+        assert(
+          !prev[methodName],
+          `Method already exists: ${methodName}`,
+        );
 
         prev[methodName] = (
           opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
@@ -1009,7 +1011,5 @@ class Router {
     return this;
   }
 }
-
-// new Router().route("/").get([console.log, console.log]);
 
 export default Router;

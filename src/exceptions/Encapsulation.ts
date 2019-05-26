@@ -4,14 +4,19 @@ import Request from "../Request";
 import Response from "../Response";
 
 const handle = (error: any, req: Request, res: Response) => {
-  events.emit(
-    `error-${error.code || http.INTERNAL_SERVER_ERROR}` as any,
-    error,
-    req,
-    res,
-  );
+  let code = error.code;
 
-  // if (process.env.NODE_ENV === "development") console.error("Encapsulation: ", error);
+  switch (code) {
+    case "ERR_ASSERTION":
+    case undefined:
+    case null:
+      code = error.code = http.INTERNAL_SERVER_ERROR;
+  }
+
+  events.emit(`error-${code}` as any, error, req, res);
+
+  // tslint:disable-next-line:no-console
+  // if (process.env.NODE_ENV === "development") console.error(error);
 };
 
 class Encapsulation {

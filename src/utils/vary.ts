@@ -27,6 +27,7 @@
  * This module is modified and optimized for Foxify specifically
  */
 
+import * as assert from "assert";
 import Response from "../Response";
 
 /**
@@ -50,16 +51,17 @@ const FIELD_NAME_REGEXP = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
  * @public
  */
 const append = (header: string, field: string | string[]) => {
-  if (!field) throw new TypeError("field argument is required");
+  assert(field, "Argument 'field' is required");
 
   // get fields array
   const fields = !Array.isArray(field) ? parse(String(field)) : field;
 
   // assert on invalid field names
   for (let j = 0; j < fields.length; j++) {
-    if (!FIELD_NAME_REGEXP.test(fields[j])) {
-      throw new TypeError("field argument contains an invalid header name");
-    }
+    assert(
+      FIELD_NAME_REGEXP.test(fields[j]),
+      "Argument 'field' contains an invalid header name",
+    );
   }
 
   // existing, unspecified vary

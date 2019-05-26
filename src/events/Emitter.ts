@@ -1,4 +1,5 @@
 import { EventEmitter as Base } from "@foxify/events";
+import * as assert from "assert";
 import { http } from "../constants";
 import { HttpException } from "../exceptions";
 import Request from "../Request";
@@ -111,9 +112,10 @@ class EventEmitter extends Base<EventEmitter.Events> {
     event: EventEmitter.Event,
     listener: (...args: any[]) => void,
   ) {
-    if (!EVENTS.includes(event)) {
-      throw new TypeError(`Unexpected event "${event}"`);
-    }
+    assert(
+      EVENTS.includes(event),
+      `Expected event to be one of [${EVENTS}], got "${event}" instead`,
+    );
 
     switch (event) {
       case "uncaughtException":
@@ -133,9 +135,10 @@ class EventEmitter extends Base<EventEmitter.Events> {
   }
 
   public emit(event: EventEmitter.ErrorEvent, ...args: any[]) {
-    if (!EVENTS.includes(event) || event === "error") {
-      throw new TypeError(`Unexpected event "${event}"`);
-    }
+    assert(
+      EVENTS.includes(event),
+      `Expected event to be one of [${EVENTS}], got "${event}" instead`,
+    );
 
     return super.emit.apply(this, [event, ...args]);
   }
