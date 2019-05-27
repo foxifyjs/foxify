@@ -78,10 +78,14 @@ class Server {
     const ServerResponse = Response;
     ServerResponse.prototype.settings = {
       engine: settings.view,
+      etag: settings.etag,
       json: {
         escape: options.json.escape,
         replacer: settings.json.replacer,
         spaces: settings.json.spaces,
+      },
+      jsonp: {
+        callback: settings.jsonp.callback,
       },
     };
 

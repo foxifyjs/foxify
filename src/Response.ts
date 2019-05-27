@@ -274,10 +274,17 @@ namespace Response {
    */
   export interface Settings {
     engine?: Engine;
+    etag?: (
+      body: string | Buffer,
+      encoding?: BufferEncoding,
+    ) => string | undefined;
     json: {
       escape: boolean;
       spaces?: number;
       replacer?: (...args: any[]) => any;
+    };
+    jsonp: {
+      callback: string;
     };
   }
 }
@@ -325,16 +332,6 @@ class Response extends http.ServerResponse {
   public req: Request;
 
   /**
-   *
-   * @param req request
-   */
-  constructor(req: Request) {
-    super(req);
-
-    this.req = req;
-  }
-
-  /**
    * Check if the request is fresh, aka
    * Last-Modified and/or the ETag
    * still match.
@@ -364,8 +361,189 @@ class Response extends http.ServerResponse {
    * "Last-Modified" and / or the "ETag" for the
    * resource has changed.
    */
-  get stale() {
+  public get stale() {
     return !this.fresh;
+  }
+
+  /**
+   *
+   * @param req request
+   */
+  constructor(req: Request) {
+    super(req);
+
+    this.req = req;
+
+    this.type = this.contentType;
+    this.set = this.header;
+    this.get = this.getHeader;
+  }
+
+  /**
+   * Set response status code.
+   *
+   * @example
+   * res.status(500);
+   */
+  public status(code: httpStatus) {
+    this.statusCode = code;
+
+    return this;
+  }
+
+  /**
+   * Set Link header field with the given links.
+   *
+   * @example
+   * res.links({
+   *   next: "http://api.example.com/users?page=2",
+   *   last: "http://api.example.com/users?page=5"
+   * });
+   */
+  public links(links: { [rel: string]: string }) {
+    let link = this.get("link") || "";
+
+    if (link) link += ", ";
+
+    return this.set(
+      "link",
+      `${link}${Object.keys(links)
+        .map(rel => `<${links[rel]}>; rel="${rel}"`)
+        .join(", ")}`,
+    );
+  }
+
+  /**
+   * Send a response.
+   *
+   * @example
+   * res.send(Buffer.from("wahoo"));
+   * @example
+   * res.send({ some: "json" });
+   * @example
+   * res.send("<p>some html</p>");
+   */
+  public send(body: string | object | any[] | Buffer): this {
+    let encoding: BufferEncoding | undefined;
+
+    if (string.isString(body)) {
+      encoding = "utf-8";
+      // reflect this in content-type
+      if (!this.get("content-type")) {
+        this.set("Content-Type", setCharset("text/html", encoding));
+      }
+    } else if (Buffer.isBuffer(body)) {
+      if (!this.get("content-type")) this.type("bin");
+    } else return this.json(body);
+
+    const etagFn = this.settings.etag;
+
+    if (!this.get("ETag") && etagFn) {
+      const etag = etagFn(body, encoding);
+
+      if (etag) this.set("ETag", etag);
+    }
+
+    // freshness
+    if (this.fresh) this.statusCode = HTTP.NOT_MODIFIED;
+
+    const statusCode = this.statusCode;
+
+    // strip irrelevant headers
+    if (HTTP.NO_CONTENT === statusCode || HTTP.NOT_MODIFIED === statusCode) {
+      this.removeHeader("content-type");
+      this.removeHeader("content-length");
+      this.removeHeader("transfer-encoding");
+
+      body = "";
+    }
+
+    // skip body for HEAD
+    if (this.req.method === "HEAD") this.end();
+    else this.end(body, encoding as string);
+
+    return this;
+  }
+
+  /**
+   * Send JSON response.
+   *
+   * @example
+   * res.json({ user: "tj" });
+   */
+  public json(obj: object | any[]) {
+    if (!this.get("Content-Type")) {
+      this.set("Content-Type", "application/json");
+    }
+
+    const { replacer, spaces, escape } = this.settings.json;
+
+    return this.send(
+      (this.stringify[this.statusCode] || stringify)(
+        obj,
+        replacer,
+        spaces,
+        escape,
+      ),
+    );
+  }
+
+  /**
+   * Send JSON response with JSONP callback support.
+   *
+   * @example
+   * res.jsonp({ user: "tj" });
+   */
+  public jsonp(obj: object) {
+    // settings
+    const { escape, replacer, spaces } = this.settings.json;
+    let body = stringify(obj, replacer, spaces, escape);
+    let callback = this.req.query[this.settings.jsonp.callback];
+
+    // content-type
+    if (!this.get("content-type")) {
+      this.set("x-content-type-options", "nosniff");
+      this.set("content-type", "application/json");
+    }
+
+    // fixup callback
+    if (Array.isArray(callback)) callback = callback[0];
+
+    // jsonp
+    if (string.isString(callback) && callback.length !== 0) {
+      this.set("x-content-type-options", "nosniff");
+      this.set("content-type", "text/javascript");
+
+      // restrict callback charset
+      callback = callback.replace(/[^\[\]\w$.]/g, "");
+
+      // replace chars not allowed in JavaScript that are in JSON
+      body = body.replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
+
+      // the /**/ is a specific security mitigation for "Rosetta Flash JSONP abuse"
+      // the typeof check is just to reduce client error noise
+      body = `/**/ typeof ${callback}  === 'function' && ${callback}(${body});`;
+    }
+
+    return this.send(body);
+  }
+
+  /**
+   * Send given HTTP status code.
+   *
+   * Sets the response status to `statusCode` and the body of the
+   * response to the standard description from node's http.STATUS_CODES
+   * or the statusCode number if no description.
+   *
+   * @example
+   * res.sendStatus(200);
+   */
+  public sendStatus(statusCode: httpStatus) {
+    this.statusCode = statusCode;
+
+    this.type("txt");
+
+    return this.send(STATUS_CODES[statusCode] || `${statusCode}`);
   }
 
   /**
@@ -677,95 +855,6 @@ class Response extends http.ServerResponse {
   }
 
   /**
-   * Send JSON response.
-   *
-   * @example
-   * res.json({ user: "tj" });
-   */
-  public json(obj: object | any[], status?: httpStatus) {
-    if (status !== undefined) this.status(status);
-
-    this.setHeader("content-type", "application/json");
-
-    const options = this.settings.json;
-
-    return this.send(
-      (this.stringify[this.statusCode] || stringify)(
-        obj,
-        options.replacer,
-        options.spaces,
-        options.escape,
-      ),
-    );
-  }
-
-  /**
-   * Send JSON response with JSONP callback support.
-   *
-   * @example
-   * res.jsonp({ user: "tj" });
-   */
-  public jsonp(obj: object, status?: httpStatus) {
-    // settings
-    const app = (this as any).app;
-    const options = this.settings.json;
-    const escape = options.escape;
-    const replacer = options.replacer;
-    const spaces = options.spaces;
-    let body = stringify(obj, replacer, spaces, escape);
-    let callback = this.req.query[app.get("jsonp callback name")];
-
-    if (status) this.status(status);
-
-    // content-type
-    if (!this.get("content-type")) {
-      this.set("x-content-type-options", "nosniff");
-      this.set("content-type", "application/json");
-    }
-
-    // fixup callback
-    if (Array.isArray(callback)) callback = callback[0];
-
-    // jsonp
-    if (string.isString(callback) && callback.length !== 0) {
-      this.set("x-content-type-options", "nosniff");
-      this.set("content-type", "text/javascript");
-
-      // restrict callback charset
-      callback = callback.replace(/[^\[\]\w$.]/g, "");
-
-      // replace chars not allowed in JavaScript that are in JSON
-      body = body.replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
-
-      // the /**/ is a specific security mitigation for "Rosetta Flash JSONP abuse"
-      // the typeof check is just to reduce client error noise
-      body = `/**/ typeof ${callback}  === 'function' && $callback{}(${body});`;
-    }
-
-    return this.send(body);
-  }
-
-  /**
-   * Set Link header field with the given links.
-   *
-   * @example
-   * res.links({
-   *   next: "http://api.example.com/users?page=2",
-   *   last: "http://api.example.com/users?page=5"
-   * });
-   */
-  public links(links: object) {
-    return this.set(
-      "link",
-      `${this.get("link") || ""}, ${Object.keys(links)
-        .map(
-          rel => `<${(links as { [key: string]: string })[rel]}>; rel="${rel}"`,
-        )
-        .join(", ")}`,
-    );
-  }
-
-  /**
    * Set the location header to `url`.
    *
    * The given `url` can also be "back", which redirects
@@ -858,50 +947,6 @@ class Response extends http.ServerResponse {
   }
 
   /**
-   * Send a response.
-   *
-   * @example
-   * res.send(Buffer.from("wahoo"));
-   * @example
-   * res.send({ some: "json" });
-   * @example
-   * res.send("<p>some html</p>");
-   */
-  public send(body: string | object | any[] | Buffer): this {
-    if (string.isString(body)) {
-      // reflect this in content-type
-      if (!this.get("content-type")) {
-        this.setHeader("Content-Type", setCharset(
-          "text/html",
-          "utf-8",
-        ) as string);
-      }
-    } else if (Buffer.isBuffer(body)) {
-      if (!this.get("content-type")) this.type("bin");
-    } else return this.json(body);
-
-    // freshness
-    if (this.fresh) this.statusCode = HTTP.NOT_MODIFIED;
-
-    const statusCode = this.statusCode;
-
-    // strip irrelevant headers
-    if (HTTP.NO_CONTENT === statusCode || HTTP.NOT_MODIFIED === statusCode) {
-      this.removeHeader("content-type");
-      this.removeHeader("content-length");
-      this.removeHeader("transfer-encoding");
-
-      body = "";
-    }
-
-    // skip body for HEAD
-    if (this.req.method === "HEAD") this.end();
-    else this.end(body, "utf8");
-
-    return this;
-  }
-
-  /**
    * Transfer the file at the given `path`.
    *
    * Automatically sets the _Content-Type_ response header field.
@@ -978,36 +1023,6 @@ class Response extends http.ServerResponse {
   }
 
   /**
-   * Send given HTTP status code.
-   *
-   * Sets the response status to `statusCode` and the body of the
-   * response to the standard description from node's http.STATUS_CODES
-   * or the statusCode number if no description.
-   *
-   * @example
-   * res.sendStatus(200);
-   */
-  public sendStatus(statusCode: httpStatus) {
-    this.statusCode = statusCode;
-
-    this.type("txt");
-
-    return this.send(STATUS_CODES[statusCode] || `${statusCode}`);
-  }
-
-  /**
-   * Set response status code.
-   *
-   * @example
-   * res.status(500);
-   */
-  public status(code: httpStatus) {
-    this.statusCode = code;
-
-    return this;
-  }
-
-  /**
    * Add `field` to Vary. If already present in the Vary set, then
    * this call is simply ignored.
    *
@@ -1017,24 +1032,5 @@ class Response extends http.ServerResponse {
     return vary(this, field);
   }
 }
-
-/**
- *
- * @alias contentType
- */
-Response.prototype.type = Response.prototype.contentType;
-
-/**
- *
- * @alias header
- */
-Response.prototype.set = Response.prototype.header;
-
-/**
- * Get value for header `field`.
- *
- * @alias getHeader
- */
-Response.prototype.get = Response.prototype.getHeader;
 
 export default Response;

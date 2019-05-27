@@ -29,6 +29,7 @@ const SETTINGS = [
   "url",
   "port",
   "workers",
+  "etag",
   "https.cert",
   "https.key",
   "json.spaces",
@@ -58,6 +59,10 @@ namespace Foxify {
     url: string;
     port: number;
     workers: number;
+    etag?: (
+      body: string | Buffer,
+      encoding?: BufferEncoding,
+    ) => string | undefined;
     subdomain: {
       offset?: number;
     };
@@ -68,6 +73,9 @@ namespace Foxify {
     json: {
       replacer?: (...args: any[]) => any;
       spaces?: number;
+    };
+    jsonp: {
+      callback: string;
     };
     trust: {
       proxy: (ip: string, hopIndex: number) => boolean;
@@ -137,6 +145,7 @@ class Foxify {
       : !process.env.NODE_ENV || process.env.NODE_ENV === "production"
       ? os.cpus().length
       : 1,
+    etag: undefined,
     subdomain: {
       offset: 2,
     },
@@ -147,6 +156,9 @@ class Foxify {
     json: {
       replacer: undefined,
       spaces: undefined,
+    },
+    jsonp: {
+      callback: "callback",
     },
     trust: {
       proxy: undefined as any,
@@ -177,6 +189,7 @@ class Foxify {
       };
     });
 
+    this.set("etag", "weak");
     this.set("trust.proxy", false);
   }
 
@@ -250,6 +263,18 @@ class Foxify {
           );
         }
         break;
+      case "etag":
+        if (value == null || utils.function.isFunction(value)) break;
+        if (value === false) value = undefined;
+        if ([true, "weak"].includes(value)) {
+          value = utils.createETagGenerator(true);
+        } else if (value === "strong") {
+          value = utils.createETagGenerator(false);
+        } else {
+          throw new TypeError(`Unknown value for 'etag' setting: ${value}`);
+        }
+        break;
+      case "jsonp.callback":
       case "https.cert":
         if (!utils.string.isString(value)) {
           throw new TypeError(`setting '${setting}' should be an string`);
@@ -390,11 +415,13 @@ class Foxify {
     const ServerResponse = ResponseClass;
     ServerResponse.prototype.settings = {
       engine: settings.view,
+      etag: settings.etag,
       json: {
         escape: opts.json.escape,
         spaces: settings.json.spaces,
         replacer: settings.json.replacer,
       },
+      jsonp: settings.jsonp,
     };
 
     return inject(
