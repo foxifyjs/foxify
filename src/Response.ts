@@ -163,7 +163,7 @@ const sendfile = (
     if (done) return;
 
     setImmediate(() => {
-      if (streaming && !done) {
+      if (streaming !== false && !done) {
         onaborted();
         return;
       }
@@ -262,7 +262,7 @@ const normalizeTypes = (types: string[]) => {
   const ret = [];
 
   for (let i = 0; i < types.length; ++i) {
-    ret.push(exports.normalizeType(types[i]));
+    ret.push(normalizeType(types[i]));
   }
 
   return ret;
@@ -547,56 +547,154 @@ class Response extends http.ServerResponse {
   }
 
   /**
-   * Append additional header `field` with value `val`.
+   * Transfer the file at the given `path`.
    *
-   * @returns for chaining
+   * Automatically sets the _Content-Type_ response header field.
+   * The callback `callback(err)` is invoked when the transfer is complete
+   * or when an error occurs. Be sure to check `res.sentHeader`
+   * if you wish to attempt responding, as the header and some data
+   * may have already been transferred.
+   *
+   * Options:
+   *   - `maxAge`   defaulting to 0 (can be string converted by `ms`)
+   *   - `root`     root directory for relative filenames
+   *   - `headers`  object of headers to serve with file
+   *   - `dotfiles` serve dotfiles, defaulting to false; can be `"allow"` to send them
+   *
+   * Other options are passed along to `send`.
+   *
    * @example
-   * res.append("Link", ["<http://localhost/>", "<http://localhost:3000/>"]);
-   * @example
-   * res.append("Set-Cookie", "foo=bar; Path=/; HttpOnly");
-   * @example
-   * res.append("Warning", "199 Miscellaneous warning");
+   * // The following example illustrates how `res.sendFile()` may
+   * // be used as an alternative for the `static()` middleware for
+   * // dynamic situations. The code backing `res.sendFile()` is actually
+   * // the same code, so HTTP cache support etc is identical.
+   *
+   * app.get("/user/:uid/photos/:file", function(req, res) {
+   *   let uid = req.params.uid;
+   *   let file = req.params.file;
+   *
+   *   req.user.mayViewFilesFrom(uid, function(yes) {
+   *     if (yes) {
+   *       res.sendFile("/uploads/" + uid + "/" + file);
+   *     } else {
+   *       res.send(403, "Sorry! you cant see that.");
+   *     }
+   *   });
+   * });
    */
-  public append(field: string, val: string | string[]) {
-    const prev = this.get(field);
-    let value: any = val;
-
-    if (prev) {
-      // concat the new and prev vals
-      value = Array.isArray(prev)
-        ? prev.concat(val)
-        : Array.isArray(val)
-        ? [prev].concat(val)
-        : [prev, val];
+  public sendFile(path: string, callback?: (...args: any[]) => void): void;
+  public sendFile(
+    path: string,
+    options: object,
+    callback?: (...args: any[]) => void,
+  ): void;
+  public sendFile(
+    path: string,
+    options: object | ((...args: any[]) => void) = {},
+    callback?: (...args: any[]) => void,
+  ) {
+    if (func.isFunction(options)) {
+      callback = options;
+      options = {};
     }
 
-    return this.set(field, value);
-  }
+    assert(path, "Argument 'path' is required to res.sendFile");
 
-  /**
-   * Set _Content-Disposition_ header to _attachment_ with optional `filename`.
-   */
-  public attachment(filename?: string) {
-    if (filename) this.type(path.extname(filename));
+    // support function as second arg
 
-    this.set("content-disposition", contentDisposition(filename));
-
-    return this;
-  }
-
-  /**
-   * Clear cookie `name`.
-   *
-   * @returns for chaining
-   */
-  public clearCookie(name: string, options: object = {}) {
-    const opts = Object.assign(
-      {},
-      { expires: new Date(1), path: "/" },
-      options,
+    assert(
+      (options as any).root && isAbsolute(path),
+      "Path must be absolute or specify root to res.sendFile",
     );
 
-    return this.cookie(name, "", opts);
+    // create file stream
+    const pathname = encodeURI(path);
+    const file = send(this.req, pathname, options);
+
+    // transfer
+    sendfile(this, file, options, (err: any) => {
+      if (callback) return callback(err);
+      if (err && err.code === "EISDIR") return this.next();
+
+      // next() all but write errors
+      if (err && err.code !== "ECONNABORTED" && err.syscall !== "write") {
+        throw err;
+      }
+    });
+  }
+
+  /**
+   * Transfer the file at the given `path` as an attachment.
+   *
+   * Optionally providing an alternate attachment `filename`,
+   * and optional callback `callback(err)`. The callback is invoked
+   * when the data transfer is complete, or when an error has
+   * ocurred. Be sure to check `res.headersSent` if you plan to respond.
+   *
+   * Optionally providing an `options` object to use with `res.sendFile()`.
+   * This function will set the `Content-Disposition` header, overriding
+   * any `Content-Disposition` header passed as header options in order
+   * to set the attachment and filename.
+   *
+   * This method uses `res.sendFile()`.
+   */
+  public download(path: string, callback?: (...args: any[]) => void): void;
+  public download(
+    path: string,
+    filename: string,
+    callback?: (...args: any[]) => void,
+  ): void;
+  public download(
+    path: string,
+    filename: string,
+    options: object,
+    callback?: (...args: any[]) => void,
+  ): void;
+  public download(
+    path: string,
+    filename?: string | ((...args: any[]) => void),
+    options: object | ((...args: any[]) => void) = {},
+    callback?: (...args: any[]) => void,
+  ) {
+    if (func.isFunction(filename)) {
+      callback = filename;
+      filename = undefined;
+    } else if (func.isFunction(options)) {
+      callback = options;
+      options = {};
+    }
+
+    // support function as second or third arg
+
+    // set Content-Disposition when file is sent
+    const headers = {
+      "Content-Disposition": contentDisposition(filename || path),
+    };
+
+    // merge user-provided headers
+    if ((options as { [key: string]: any }).headers) {
+      const keys = Object.keys((options as { [key: string]: any }).headers);
+
+      let key;
+      for (let i = 0; i < keys.length; i++) {
+        key = keys[i];
+
+        if (key.toLowerCase() !== "content-disposition") {
+          (headers as { [key: string]: any })[key] = (options as {
+            [key: string]: any;
+          }).headers[key];
+        }
+      }
+    }
+
+    // merge user-provided options
+    options = Object.assign({}, options, { headers });
+
+    // Resolve the full path for sendFile
+    const fullPath = resolve(path);
+
+    // send file
+    return this.sendFile(fullPath, options, callback);
   }
 
   /**
@@ -617,120 +715,9 @@ class Response extends http.ServerResponse {
    */
   public contentType(type: string) {
     return this.set(
-      "content-type",
+      "Content-Type",
       type.indexOf("/") === -1 ? (send.mime as any).lookup(type) : type,
     );
-  }
-
-  /**
-   * Set cookie `name` to `value`, with the given `options`.
-   *
-   * Options:
-   *    - `maxAge`   max-age in milliseconds, converted to `expires`
-   *    - `signed`   sign the cookie
-   *    - `path`     defaults to "/"
-   *
-   * @returns for chaining
-   * @example
-   * // "Remember Me" for 15 minutes
-   * res.cookie("rememberme", "1", { expires: new Date(Date.now() + 900000), httpOnly: true });
-   * @example
-   * // save as above
-   * res.cookie("rememberme", "1", { maxAge: 900000, httpOnly: true })
-   */
-  public cookie(name: string, value: string | object, options: object = {}) {
-    const opts: { [key: string]: any } = Object.assign({}, options);
-    const secret = (this.req as any).secret;
-    const signed = opts.signed;
-
-    if (signed && !secret) {
-      throw new Error("cookieParser('secret') required for signed cookies");
-    }
-
-    let val = object.isObject(value)
-      ? `j:${JSON.stringify(value)}`
-      : String(value);
-
-    if (signed) val = `s:${sign(val, secret)}`;
-
-    if ("maxAge" in opts) {
-      opts.expires = new Date(Date.now() + opts.maxAge);
-      opts.maxAge /= 1000;
-    }
-
-    if (opts.path == null) opts.path = "/";
-
-    this.append("Set-Cookie", cookie.serialize(name, String(val), opts));
-
-    return this;
-  }
-
-  /**
-   * Transfer the file at the given `path` as an attachment.
-   *
-   * Optionally providing an alternate attachment `filename`,
-   * and optional callback `callback(err)`. The callback is invoked
-   * when the data transfer is complete, or when an error has
-   * ocurred. Be sure to check `res.headersSent` if you plan to respond.
-   *
-   * Optionally providing an `options` object to use with `res.sendFile()`.
-   * This function will set the `Content-Disposition` header, overriding
-   * any `Content-Disposition` header passed as header options in order
-   * to set the attachment and filename.
-   *
-   * This method uses `res.sendFile()`.
-   */
-  public download(
-    path: string,
-    filename: string,
-    options?: object,
-    callback?: (...args: any[]) => void,
-  ) {
-    let done: any = callback;
-    let name: any = filename;
-    let opts = options || null;
-
-    // support function as second or third arg
-    if (func.isFunction(filename)) {
-      done = filename;
-      name = null;
-      opts = null;
-    } else if (func.isFunction(options)) {
-      done = options;
-      opts = null;
-    }
-
-    // set Content-Disposition when file is sent
-    const headers = {
-      "content-disposition": contentDisposition(name || path),
-    };
-
-    // merge user-provided headers
-    if (opts && (opts as { [key: string]: any }).headers) {
-      const keys = Object.keys((opts as { [key: string]: any }).headers);
-
-      let key;
-      for (let i = 0; i < keys.length; i++) {
-        key = keys[i];
-
-        if (key.toLowerCase() !== "content-disposition") {
-          (headers as { [key: string]: any })[key] = (opts as {
-            [key: string]: any;
-          }).headers[key];
-        }
-      }
-    }
-
-    // merge user-provided options
-    opts = Object.create(opts)(opts as {
-      [key: string]: any;
-    }).headers = headers;
-
-    // Resolve the full path for sendFile
-    const fullPath = resolve(path);
-
-    // send file
-    return this.sendFile(fullPath, opts, done);
   }
 
   /**
@@ -783,15 +770,17 @@ class Response extends http.ServerResponse {
    *   }
    * });
    */
-  public format(obj: object) {
+  public format(types: {
+    [type: string]: (req: Request, res: Response, next: () => void) => void;
+  }) {
     const req = this.req;
     const next = this.next;
 
-    const fn = (obj as { [key: string]: any }).default;
+    const fn = types.default;
 
-    if (fn) delete (obj as { [key: string]: any }).default;
+    if (fn) delete types.default;
 
-    const keys = Object.keys(obj);
+    const keys = Object.keys(types);
 
     const key = keys.length > 0 ? (req.accepts(...keys) as string) : false;
 
@@ -799,19 +788,55 @@ class Response extends http.ServerResponse {
 
     if (key) {
       this.set("content-type", normalizeType(key).value);
-      (obj as { [key: string]: any })[key](req, this, next);
+      types[key](req, this, next);
     } else if (fn) {
-      fn();
+      fn(req, this, next);
     } else {
       const err: any = new Error("Not Acceptable");
 
       err.status = err.statusCode = 406;
       err.types = normalizeTypes(keys).map(o => o.value);
 
+      // next(err);
       throw err;
     }
 
     return this;
+  }
+
+  /**
+   * Set _Content-Disposition_ header to _attachment_ with optional `filename`.
+   */
+  public attachment(filename?: string) {
+    if (filename) this.type(path.extname(filename));
+
+    return this.set("Content-Disposition", contentDisposition(filename));
+  }
+
+  /**
+   * Append additional header `field` with value `val`.
+   *
+   * @returns for chaining
+   * @example
+   * res.append("Link", ["<http://localhost/>", "<http://localhost:3000/>"]);
+   * @example
+   * res.append("Set-Cookie", "foo=bar; Path=/; HttpOnly");
+   * @example
+   * res.append("Warning", "199 Miscellaneous warning");
+   */
+  public append(field: string, value: string | string[]) {
+    const prev = this.get(field) as string | string[];
+
+    if (prev) {
+      // concat the new and prev vals
+      value = Array.isArray(prev)
+        ? prev.concat(value)
+        : Array.isArray(value)
+        ? [prev].concat(value)
+        : [prev, value];
+    }
+
+    return this.set(field, value);
   }
 
   /**
@@ -826,32 +851,99 @@ class Response extends http.ServerResponse {
    * @example
    * res.set({ Accept: "text/plain", "X-API-Key": "tobi" });
    */
-  public header(field: string | object, val?: string | string[]) {
-    if (val) {
-      let value = Array.isArray(val) ? val.map(v => `${v}`) : `${val}`;
-
-      // add charset to content-type
-      if ((field as string).toLowerCase() === "content-type") {
-        assert(!Array.isArray(value), "Content-Type cannot be set to an Array");
-
-        if (!charsetRegExp.test(value as string)) {
-          const charset = (send.mime as any).charsets.lookup(
-            (value as string).split(";")[0],
-          );
-
-          if (charset) value += `; charset=${charset.toLowerCase()}`;
-        }
-      }
-
-      this.setHeader(field as string, value);
-    } else {
+  public header(headers: {
+    [header: string]: string | number | string[];
+  }): this;
+  public header(field: string, value: string | string[]): this;
+  public header(field: string | object, value?: string | number | string[]) {
+    if (!string.isString(field)) {
       // tslint:disable-next-line:forin
       for (const key in field as object) {
-        this.set(key, (field as { [key: string]: any })[key]);
+        this.header(
+          key,
+          (field as {
+            [key: string]: any;
+          })[key],
+        );
+      }
+
+      return this;
+    }
+
+    value = Array.isArray(value) ? value.map(String) : `${value}`;
+
+    // add charset to content-type
+    if ((field as string).toLowerCase() === "content-type") {
+      assert(!Array.isArray(value), "Content-Type cannot be set to an Array");
+
+      if (!charsetRegExp.test(value as string)) {
+        const charset = (send.mime as any).charsets.lookup(
+          (value as string).split(";")[0],
+        );
+
+        if (charset) value += `; charset=${charset.toLowerCase()}`;
       }
     }
 
+    this.setHeader(field as string, value);
+
     return this;
+  }
+
+  /**
+   * Clear cookie `name`.
+   *
+   * @returns for chaining
+   */
+  public clearCookie(name: string, options: object = {}) {
+    return this.cookie(
+      name,
+      "",
+      Object.assign({ expires: new Date(1), path: "/" }, options),
+    );
+  }
+
+  /**
+   * Set cookie `name` to `value`, with the given `options`.
+   *
+   * Options:
+   *    - `maxAge`   max-age in milliseconds, converted to `expires`
+   *    - `signed`   sign the cookie
+   *    - `path`     defaults to "/"
+   *
+   * @returns for chaining
+   * @example
+   * // "Remember Me" for 15 minutes
+   * res.cookie("rememberme", "1", { expires: new Date(Date.now() + 900000), httpOnly: true });
+   * @example
+   * // save as above
+   * res.cookie("rememberme", "1", { maxAge: 900000, httpOnly: true })
+   */
+  public cookie(
+    name: string,
+    value: string | object,
+    options: { maxAge?: number; signed?: boolean; path?: string } = {},
+  ) {
+    const secret = this.req.secret;
+    const signed = options.signed;
+
+    assert(
+      !signed && secret,
+      "cookieParser('secret') required for signed cookies",
+    );
+
+    value = object.isObject(value) ? `j:${JSON.stringify(value)}` : `${value}`;
+
+    if (signed) value = `s:${sign(value, secret)}`;
+
+    if (options.maxAge !== undefined) {
+      (options as any).expires = new Date(Date.now() + options.maxAge);
+      options.maxAge /= 1000;
+    }
+
+    if (!options.path) options.path = "/";
+
+    return this.append("Set-Cookie", cookie.serialize(name, value, options));
   }
 
   /**
@@ -862,6 +954,8 @@ class Response extends http.ServerResponse {
    *
    * @returns for chaining
    * @example
+   * res.location("back").;
+   * @example
    * res.location("/foo/bar").;
    * @example
    * res.location("http://example.com");
@@ -870,10 +964,10 @@ class Response extends http.ServerResponse {
    */
   public location(url: string) {
     return this.set(
-      "location",
+      "Location",
       encodeUrl(
         // "back" is an alias for the referrer
-        url === "back" ? (this.req.get("referrer") as string) || "/" : url,
+        url === "back" ? this.req.get("referer") || "/" : url,
       ),
     );
   }
@@ -915,10 +1009,20 @@ class Response extends http.ServerResponse {
 
     // Respond
     this.statusCode = status;
-    this.set("content-length", Buffer.byteLength(body) as any);
+    // this.set("Content-Length", Buffer.byteLength(body) as any);
 
     if (this.req.method === "HEAD") this.end();
     else this.end(body);
+  }
+
+  /**
+   * Add `field` to Vary. If already present in the Vary set, then
+   * this call is simply ignored.
+   *
+   * @returns for chaining
+   */
+  public vary(field: string | string[]) {
+    return vary(this, field);
   }
 
   public render(
@@ -944,92 +1048,6 @@ class Response extends http.ServerResponse {
     }
 
     engine.render(view, data, callback);
-  }
-
-  /**
-   * Transfer the file at the given `path`.
-   *
-   * Automatically sets the _Content-Type_ response header field.
-   * The callback `callback(err)` is invoked when the transfer is complete
-   * or when an error occurs. Be sure to check `res.sentHeader`
-   * if you wish to attempt responding, as the header and some data
-   * may have already been transferred.
-   *
-   * Options:
-   *   - `maxAge`   defaulting to 0 (can be string converted by `ms`)
-   *   - `root`     root directory for relative filenames
-   *   - `headers`  object of headers to serve with file
-   *   - `dotfiles` serve dotfiles, defaulting to false; can be `"allow"` to send them
-   *
-   * Other options are passed along to `send`.
-   *
-   * @example
-   * // The following example illustrates how `res.sendFile()` may
-   * // be used as an alternative for the `static()` middleware for
-   * // dynamic situations. The code backing `res.sendFile()` is actually
-   * // the same code, so HTTP cache support etc is identical.
-   *
-   * app.get("/user/:uid/photos/:file", function(req, res) {
-   *   let uid = req.params.uid;
-   *   let file = req.params.file;
-   *
-   *   req.user.mayViewFilesFrom(uid, function(yes) {
-   *     if (yes) {
-   *       res.sendFile("/uploads/" + uid + "/" + file);
-   *     } else {
-   *       res.send(403, "Sorry! you cant see that.");
-   *     }
-   *   });
-   * });
-   */
-  public sendFile(
-    path: string,
-    options?: object | ((...args: any[]) => void),
-    callback?: (...args: any[]) => void,
-  ) {
-    let done = callback;
-    const req = this.req;
-    const next = this.next;
-    let opts = options || {};
-
-    assert(path, "Argument 'path' is required to res.sendFile");
-
-    // support function as second arg
-    if (func.isFunction(options)) {
-      done = options;
-      opts = {};
-    }
-
-    if (!(opts as any).root && !isAbsolute(path)) {
-      throw new TypeError(
-        "path must be absolute or specify root to res.sendFile",
-      );
-    }
-
-    // create file stream
-    const pathname = encodeURI(path);
-    const file = send(req, pathname, opts);
-
-    // transfer
-    sendfile(this, file, opts, (err: any) => {
-      if (done) return done(err);
-      if (err && err.code === "EISDIR") return next();
-
-      // next() all but write errors
-      if (err && err.code !== "ECONNABORTED" && err.syscall !== "write") {
-        throw err;
-      }
-    });
-  }
-
-  /**
-   * Add `field` to Vary. If already present in the Vary set, then
-   * this call is simply ignored.
-   *
-   * @returns for chaining
-   */
-  public vary(field: string | string[]) {
-    return vary(this, field);
   }
 }
 
