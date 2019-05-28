@@ -66,31 +66,33 @@ class Accepts {
    * such as "json" or an array `["json", "html", "text/plain"]`. When a list
    * or array is given the _best_ match, if any is returned.
    *
-   * Examples:
+   * @example
+   * // Accept: text/html
+   * this.types("html");
+   * // => "html"
    *
-   *     // Accept: text/html
-   *     this.types("html");
-   *     // => "html"
+   * @example
+   * // Accept: text/*, application/json
+   * this.types("html");
+   * // => "html"
+   * this.types("text/html");
+   * // => "text/html"
+   * this.types("json", "text");
+   * // => "json"
+   * this.types("application/json");
+   * // => "application/json"
    *
-   *     // Accept: text/*, application/json
-   *     this.types("html");
-   *     // => "html"
-   *     this.types("text/html");
-   *     // => "text/html"
-   *     this.types("json", "text");
-   *     // => "json"
-   *     this.types("application/json");
-   *     // => "application/json"
+   * @example
+   * // Accept: text/*, application/json
+   * this.types("image/png");
+   * this.types("png");
+   * // => undefined
    *
-   *     // Accept: text/*, application/json
-   *     this.types("image/png");
-   *     this.types("png");
-   *     // => undefined
-   *
-   *     // Accept: text/*;q=.5, application/json
-   *     this.types(["html", "json"]);
-   *     this.types("html", "json");
-   *     // => "json"
+   * @example
+   * // Accept: text/*;q=.5, application/json
+   * this.types(["html", "json"]);
+   * this.types("html", "json");
+   * // => "json"
    */
   public types(types: string[]) {
     // no types, return all requested types

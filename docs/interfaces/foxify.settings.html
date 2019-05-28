@@ -90,12 +90,15 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#env" class="tsd-kind-icon">env</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#etag" class="tsd-kind-icon">etag</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#https" class="tsd-kind-icon">https</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#json" class="tsd-kind-icon">json</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#jsonp" class="tsd-kind-icon">jsonp</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#port" class="tsd-kind-icon">port</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#query" class="tsd-kind-icon">query</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#routing" class="tsd-kind-icon">routing</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#subdomain" class="tsd-kind-icon">subdomain</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#trust" class="tsd-kind-icon">trust</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#url" class="tsd-kind-icon">url</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="foxify.settings.html#workers" class="tsd-kind-icon">workers</a></li>
 							</ul>
@@ -111,7 +114,17 @@
 					<div class="tsd-signature tsd-kind-icon">env<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/index.ts#L36">index.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L58">index.ts:58</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="etag" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> etag</h3>
+					<div class="tsd-signature tsd-kind-icon">etag<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L62">index.ts:62</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -121,7 +134,7 @@
 					<div class="tsd-signature tsd-kind-icon">https<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/index.ts#L43">index.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L69">index.ts:69</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -142,7 +155,7 @@
 					<div class="tsd-signature tsd-kind-icon">json<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/index.ts#L47">index.ts:47</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L73">index.ts:73</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -158,12 +171,30 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="jsonp" class="tsd-anchor"></a>
+					<h3>jsonp</h3>
+					<div class="tsd-signature tsd-kind-icon">jsonp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L77">index.ts:77</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="port" class="tsd-anchor"></a>
 					<h3>port</h3>
 					<div class="tsd-signature tsd-kind-icon">port<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/index.ts#L38">index.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L60">index.ts:60</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -173,7 +204,7 @@
 					<div class="tsd-signature tsd-kind-icon">query<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/index.ts#L51">index.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L83">index.ts:83</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -191,7 +222,7 @@
 					<div class="tsd-signature tsd-kind-icon">routing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/index.ts#L54">index.ts:54</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L86">index.ts:86</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -209,7 +240,7 @@
 					<div class="tsd-signature tsd-kind-icon">subdomain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/index.ts#L40">index.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L66">index.ts:66</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -222,12 +253,51 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="trust" class="tsd-anchor"></a>
+					<h3>trust</h3>
+					<div class="tsd-signature tsd-kind-icon">trust<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L80">index.ts:80</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>proxy<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter-siganture">
+										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable">
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>ip<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, hopIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+										</ul>
+										<ul class="tsd-descriptions">
+											<li class="tsd-description">
+												<h4 class="tsd-parameters-title">Parameters</h4>
+												<ul class="tsd-parameters">
+													<li>
+														<h5>ip: <span class="tsd-signature-type">string</span></h5>
+													</li>
+													<li>
+														<h5>hopIndex: <span class="tsd-signature-type">number</span></h5>
+													</li>
+												</ul>
+												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="url" class="tsd-anchor"></a>
 					<h3>url</h3>
 					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/index.ts#L37">index.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L59">index.ts:59</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -237,7 +307,7 @@
 					<div class="tsd-signature tsd-kind-icon">workers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/index.ts#L39">index.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/index.ts#L61">index.ts:61</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -265,10 +335,16 @@
 										<a href="foxify.settings.html#env" class="tsd-kind-icon">env</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="foxify.settings.html#etag" class="tsd-kind-icon">etag</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="foxify.settings.html#https" class="tsd-kind-icon">https</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="foxify.settings.html#json" class="tsd-kind-icon">json</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="foxify.settings.html#jsonp" class="tsd-kind-icon">jsonp</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="foxify.settings.html#port" class="tsd-kind-icon">port</a>
@@ -281,6 +357,9 @@
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="foxify.settings.html#subdomain" class="tsd-kind-icon">subdomain</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="foxify.settings.html#trust" class="tsd-kind-icon">trust</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="foxify.settings.html#url" class="tsd-kind-icon">url</a>

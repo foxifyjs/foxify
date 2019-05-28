@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Route | foxify</title>
+	<title>TYPES | foxify</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,93 +56,82 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../classes/router.html">Router</a>
-				</li>
-				<li>
-					<a href="router.route.html">Route</a>
+					<a href="types.html">TYPES</a>
 				</li>
 			</ul>
-			<h1>Interface Route</h1>
+			<h1>Enumeration TYPES</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">Route</span>
-					</li>
-				</ul>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="router.route.html#handlers" class="tsd-kind-icon">handlers</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="router.route.html#method" class="tsd-kind-icon">method</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="router.route.html#middlewares" class="tsd-kind-icon">middlewares</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="router.route.html#opts" class="tsd-kind-icon">opts</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="router.route.html#path" class="tsd-kind-icon">path</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="types.html#match_all" class="tsd-kind-icon">MATCH_<wbr>ALL</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="types.html#multi_param" class="tsd-kind-icon">MULTI_<wbr>PARAM</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="types.html#param" class="tsd-kind-icon">PARAM</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="types.html#regex" class="tsd-kind-icon">REGEX</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="types.html#static" class="tsd-kind-icon">STATIC</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="handlers" class="tsd-anchor"></a>
-					<h3>handlers</h3>
-					<div class="tsd-signature tsd-kind-icon">handlers<span class="tsd-signature-symbol">:</span> <a href="../classes/layer.html#handler" class="tsd-signature-type">Handler</a><span class="tsd-signature-symbol">[]</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="match_all" class="tsd-anchor"></a>
+					<h3>MATCH_<wbr>ALL</h3>
+					<div class="tsd-signature tsd-kind-icon">MATCH_<wbr>ALL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;2</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/routing/Router.ts#L127">routing/Router.ts:127</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/routing/Layer.ts#L36">routing/Layer.ts:36</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="method" class="tsd-anchor"></a>
-					<h3>method</h3>
-					<div class="tsd-signature tsd-kind-icon">method<span class="tsd-signature-symbol">:</span> <a href="../globals.html#method" class="tsd-signature-type">Method</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="multi_param" class="tsd-anchor"></a>
+					<h3>MULTI_<wbr>PARAM</h3>
+					<div class="tsd-signature tsd-kind-icon">MULTI_<wbr>PARAM<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;4</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/routing/Router.ts#L124">routing/Router.ts:124</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/routing/Layer.ts#L39">routing/Layer.ts:39</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="middlewares" class="tsd-anchor"></a>
-					<h3>middlewares</h3>
-					<div class="tsd-signature tsd-kind-icon">middlewares<span class="tsd-signature-symbol">:</span> <a href="../classes/layer.html#handler" class="tsd-signature-type">Handler</a><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="param" class="tsd-anchor"></a>
+					<h3>PARAM</h3>
+					<div class="tsd-signature tsd-kind-icon">PARAM<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;1</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/routing/Router.ts#L128">routing/Router.ts:128</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/routing/Layer.ts#L35">routing/Layer.ts:35</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="opts" class="tsd-anchor"></a>
-					<h3>opts</h3>
-					<div class="tsd-signature tsd-kind-icon">opts<span class="tsd-signature-symbol">:</span> <a href="layer.routeoptions.html" class="tsd-signature-type">RouteOptions</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="regex" class="tsd-anchor"></a>
+					<h3>REGEX</h3>
+					<div class="tsd-signature tsd-kind-icon">REGEX<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;3</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/routing/Router.ts#L126">routing/Router.ts:126</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/routing/Layer.ts#L37">routing/Layer.ts:37</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="path" class="tsd-anchor"></a>
-					<h3>path</h3>
-					<div class="tsd-signature tsd-kind-icon">path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="static" class="tsd-anchor"></a>
+					<h3>STATIC</h3>
+					<div class="tsd-signature tsd-kind-icon">STATIC<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/routing/Router.ts#L125">routing/Router.ts:125</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/routing/Layer.ts#L34">routing/Layer.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -160,28 +149,23 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-has-type-parameter">
-						<a href="../classes/router.html" class="tsd-kind-icon">Router</a>
+					<li class="current tsd-kind-enum">
+						<a href="types.html" class="tsd-kind-icon">TYPES</a>
 						<ul>
-							<li class="current tsd-kind-interface tsd-parent-kind-class">
-								<a href="router.route.html" class="tsd-kind-icon">Route</a>
-								<ul>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="router.route.html#handlers" class="tsd-kind-icon">handlers</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="router.route.html#method" class="tsd-kind-icon">method</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="router.route.html#middlewares" class="tsd-kind-icon">middlewares</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="router.route.html#opts" class="tsd-kind-icon">opts</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="router.route.html#path" class="tsd-kind-icon">path</a>
-									</li>
-								</ul>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="types.html#match_all" class="tsd-kind-icon">MATCH_<wbr>ALL</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="types.html#multi_param" class="tsd-kind-icon">MULTI_<wbr>PARAM</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="types.html#param" class="tsd-kind-icon">PARAM</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="types.html#regex" class="tsd-kind-icon">REGEX</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="types.html#static" class="tsd-kind-icon">STATIC</a>
 							</li>
 						</ul>
 					</li>

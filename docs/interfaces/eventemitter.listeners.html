@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>internal | foxify</title>
+	<title>Listeners | foxify</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,28 +59,27 @@
 					<a href="../classes/eventemitter.html">EventEmitter</a>
 				</li>
 				<li>
-					<a href="eventemitter.internal.html">internal</a>
+					<a href="eventemitter.listeners.html">Listeners</a>
 				</li>
 			</ul>
-			<h1>Module internal</h1>
+			<h1>Interface Listeners</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Classes</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/eventemitter.internal.eventemitter.html" class="tsd-kind-icon">Event<wbr>Emitter</a></li>
-							</ul>
-						</section>
-					</div>
-				</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">Listeners</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-kind-interface tsd-parent-kind-class">
+				<h3 class="tsd-before-signature">Indexable</h3>
+				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>event: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">Item</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -89,25 +88,100 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class="current tsd-kind-module tsd-parent-kind-class">
-						<a href="eventemitter.internal.html">Event<wbr>Emitter.internal</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="rangeparser.html">Range<wbr>Parser</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-not-exported">
-						<a href="__global.html">__global</a>
-					</li>
-					<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
-						<a href="__global.nodejs.html">__global.<wbr>NodeJS</a>
-					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/eventemitter.internal.eventemitter.html" class="tsd-kind-icon">Event<wbr>Emitter</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
+						<a href="../classes/eventemitter.html" class="tsd-kind-icon">Event<wbr>Emitter</a>
+						<ul>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="eventemitter.events.html" class="tsd-kind-icon">Events</a>
+							</li>
+							<li class="current tsd-kind-interface tsd-parent-kind-class">
+								<a href="eventemitter.listeners.html" class="tsd-kind-icon">Listeners</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/eventemitter.html#defaultevents" class="tsd-kind-icon">Default<wbr>Events</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/eventemitter.html#defaultlistener" class="tsd-kind-icon">Default<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+								<a href="../classes/eventemitter.html#emitargs" class="tsd-kind-icon">Emit<wbr>Args</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/eventemitter.html#errorevent" class="tsd-kind-icon">Error<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/eventemitter.html#errorevents" class="tsd-kind-icon">Error<wbr>Events</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/eventemitter.html#errorlistener" class="tsd-kind-icon">Error<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+								<a href="../classes/eventemitter.html#event" class="tsd-kind-icon">Event</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/eventemitter.html#exceptionlistener" class="tsd-kind-icon">Exception<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+								<a href="../classes/eventemitter.html#listener" class="tsd-kind-icon">Listener</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/eventemitter.html#rejectionlistener" class="tsd-kind-icon">Rejection<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+								<a href="../classes/eventemitter.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="../classes/eventemitter.html#_listeners" class="tsd-kind-icon">_listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/eventemitter.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/eventemitter.html#emit" class="tsd-kind-icon">emit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="../classes/eventemitter.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="../classes/eventemitter.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="../classes/eventemitter.html#listeners-1" class="tsd-kind-icon">listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="../classes/eventemitter.html#off" class="tsd-kind-icon">off</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="../classes/eventemitter.html#on" class="tsd-kind-icon">on</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="../classes/eventemitter.html#once" class="tsd-kind-icon">once</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="../classes/eventemitter.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="../classes/eventemitter.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="../classes/eventemitter.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="../classes/eventemitter.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="../classes/eventemitter.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 				</ul>
 			</nav>
 		</div>

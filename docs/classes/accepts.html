@@ -115,7 +115,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/utils/accepts.ts#L62">utils/accepts.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/utils/accepts.ts#L52">utils/accepts.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -137,7 +137,7 @@
 					<div class="tsd-signature tsd-kind-icon">headers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">IncomingHttpHeaders</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/utils/accepts.ts#L60">utils/accepts.ts:60</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/utils/accepts.ts#L50">utils/accepts.ts:50</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -147,7 +147,7 @@
 					<div class="tsd-signature tsd-kind-icon">negotiator<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Negotiator</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/utils/accepts.ts#L62">utils/accepts.ts:62</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/utils/accepts.ts#L52">utils/accepts.ts:52</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -164,7 +164,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/utils/accepts.ts#L143">utils/accepts.ts:143</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/utils/accepts.ts#L137">utils/accepts.ts:137</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -200,7 +200,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/utils/accepts.ts#L128">utils/accepts.ts:128</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/utils/accepts.ts#L120">utils/accepts.ts:120</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -236,7 +236,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/utils/accepts.ts#L162">utils/accepts.ts:162</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/utils/accepts.ts#L156">utils/accepts.ts:156</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -272,7 +272,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/utils/accepts.ts#L105">utils/accepts.ts:105</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/utils/accepts.ts#L97">utils/accepts.ts:97</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -285,12 +285,12 @@
 									such as &quot;application/json&quot;, the extension name
 									such as &quot;json&quot; or an array <code>[&quot;json&quot;, &quot;html&quot;, &quot;text/plain&quot;]</code>. When a list
 								or array is given the <em>best</em> match, if any is returned.</p>
-								<p>Examples:</p>
-								<pre><code><span class="hljs-comment">// Accept: text/html</span>
+								<h4 id="example-1">Example 1</h4>
+								<pre><code class="language-typescript"><span class="hljs-comment">// Accept: text/html</span>
 <span class="hljs-keyword">this</span>.types(<span class="hljs-string">"html"</span>);
-<span class="hljs-comment">// =&gt; "html"</span>
-
-<span class="hljs-comment">// Accept: text/*, application/json</span>
+<span class="hljs-comment">// =&gt; "html"</span></code></pre>
+								<h4 id="example-2">Example 2</h4>
+								<pre><code class="language-typescript"><span class="hljs-comment">// Accept: text/*, application/json</span>
 <span class="hljs-keyword">this</span>.types(<span class="hljs-string">"html"</span>);
 <span class="hljs-comment">// =&gt; "html"</span>
 <span class="hljs-keyword">this</span>.types(<span class="hljs-string">"text/html"</span>);
@@ -298,14 +298,14 @@
 <span class="hljs-keyword">this</span>.types(<span class="hljs-string">"json"</span>, <span class="hljs-string">"text"</span>);
 <span class="hljs-comment">// =&gt; "json"</span>
 <span class="hljs-keyword">this</span>.types(<span class="hljs-string">"application/json"</span>);
-<span class="hljs-comment">// =&gt; "application/json"</span>
-
-<span class="hljs-comment">// Accept: text/*, application/json</span>
+<span class="hljs-comment">// =&gt; "application/json"</span></code></pre>
+								<h4 id="example-3">Example 3</h4>
+								<pre><code class="language-typescript"><span class="hljs-comment">// Accept: text/*, application/json</span>
 <span class="hljs-keyword">this</span>.types(<span class="hljs-string">"image/png"</span>);
 <span class="hljs-keyword">this</span>.types(<span class="hljs-string">"png"</span>);
-<span class="hljs-comment">// =&gt; undefined</span>
-
-<span class="hljs-comment">// Accept: text/*;q=.5, application/json</span>
+<span class="hljs-comment">// =&gt; undefined</span></code></pre>
+								<h4 id="example-4">Example 4</h4>
+								<pre><code class="language-typescript"><span class="hljs-comment">// Accept: text/*;q=.5, application/json</span>
 <span class="hljs-keyword">this</span>.types([<span class="hljs-string">"html"</span>, <span class="hljs-string">"json"</span>]);
 <span class="hljs-keyword">this</span>.types(<span class="hljs-string">"html"</span>, <span class="hljs-string">"json"</span>);
 <span class="hljs-comment">// =&gt; "json"</span></code></pre>
