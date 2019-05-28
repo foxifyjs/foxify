@@ -13,6 +13,20 @@
 
 ---
 
+## [v1.0.0](https://github.com/foxifyjs/foxify/releases/tag/v1.0.0) - *(2019-__-__)*
+
+- :zap: Added ability to pass error to next function in route handlers
+- :zap: Added Request property: `protocol`
+- :zap: Added Request property: `secure`
+- :zap: Added Request property: `hostname`
+- :zap: Added Request property: `ips`
+- :zap: Added Request property: `ip`
+- :zap: Added setting: `trust.proxy`
+- :zap: Added setting: `jsonp.callback`
+- :zap: Added setting: `etag`
+- :boom: Response `json` and `jsonp` methods no longer accept status parameter
+- :beetle: Fixed a bug related to handling assertion errors
+
 ## [v0.10.7](https://github.com/foxifyjs/foxify/releases/tag/v0.10.7) - *(2018-11-07)*
 
 - :star2: Improved performance
