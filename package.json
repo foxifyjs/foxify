@@ -13,6 +13,10 @@
     "type": "git",
     "url": "git+https://github.com/foxifyjs/foxify.git"
   },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/foxify"
+  },
   "keywords": [
     "node",
     "fast",
@@ -33,10 +37,6 @@
     "framework",
     "foxify"
   ],
-  "collective": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/foxify"
-  },
   "engines": {
     "node": ">=8.12"
   },
@@ -46,9 +46,8 @@
   "main": "framework/index.js",
   "types": "framework/index.d.ts",
   "scripts": {
-    "build": "node scripts/prepare.js",
-    "build:tsc": "tsc",
-    "watch:tsc": "npm run build:tsc -- --watch",
+    "build": "tsc",
+    "watch": "npm run build -- --watch",
     "prepublishOnly": "npm run lint && npm test && npm run build",
     "postinstall": "node -e \"console.log('\\u001b[35m\\u001b[1mLove Foxify? You can now donate to our open collective:\\u001b[22m\\u001b[39m\\n > \\u001b[34mhttps://opencollective.com/foxify/donate\\u001b[0m\\n')\"",
     "lint": "tslint -p tsconfig.json -c tslint.json --exclude '**/*.d.ts'",
