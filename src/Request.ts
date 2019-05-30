@@ -143,7 +143,7 @@ class Request extends http.IncomingMessage {
   public get hostname() {
     let host = this.get("x-forwarded-host") as string;
 
-    if (!host || this.settings.trust.proxy(this.socket.remoteAddress!, 0)) {
+    if (!host || !this.settings.trust.proxy(this.socket.remoteAddress!, 0)) {
       host = this.get("host")!;
     } else if (host.indexOf(",") !== -1) {
       // Note: X-Forwarded-Host is normally only ever a

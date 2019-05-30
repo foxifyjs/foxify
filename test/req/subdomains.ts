@@ -19,7 +19,7 @@ describe(".subdomains", () => {
       });
 
       expect(result.statusCode).toBe(200);
-      expect(result.body).toBe("[\"ferrets\",\"tobi\"]");
+      expect(result.body).toBe('["ferrets","tobi"]');
     });
 
     it("should work with IPv4 address", async () => {
@@ -109,6 +109,8 @@ describe(".subdomains", () => {
 
       const app = new Foxify();
 
+      app.set("trust.proxy", true);
+
       app.use((req, res) => {
         res.send(req.subdomains);
       });
@@ -121,7 +123,7 @@ describe(".subdomains", () => {
       });
 
       expect(result.statusCode).toBe(200);
-      expect(result.body).toBe("[\"ferrets\",\"tobi\"]");
+      expect(result.body).toBe('["ferrets","tobi"]');
     });
   });
 
@@ -146,7 +148,7 @@ describe(".subdomains", () => {
         });
 
         expect(result.statusCode).toBe(200);
-        expect(result.body).toBe("[\"com\",\"example\",\"sub\",\"ferrets\",\"tobi\"]");
+        expect(result.body).toBe('["com","example","sub","ferrets","tobi"]');
       });
 
       it("should return an array with the whole IPv4", async () => {
@@ -168,7 +170,7 @@ describe(".subdomains", () => {
         });
 
         expect(result.statusCode).toBe(200);
-        expect(result.body).toBe("[\"127.0.0.1\"]");
+        expect(result.body).toBe('["127.0.0.1"]');
       });
 
       it("should return an array with the whole IPv6", async () => {
@@ -190,7 +192,7 @@ describe(".subdomains", () => {
         });
 
         expect(result.statusCode).toBe(200);
-        expect(result.body).toBe("[\"[::1]\"]");
+        expect(result.body).toBe('["[::1]"]');
       });
     });
 
@@ -214,7 +216,7 @@ describe(".subdomains", () => {
         });
 
         expect(result.statusCode).toBe(200);
-        expect(result.body).toBe("[\"ferrets\",\"tobi\"]");
+        expect(result.body).toBe('["ferrets","tobi"]');
       });
     });
 
