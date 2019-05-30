@@ -309,8 +309,13 @@ class Foxify {
         if (value === true) {
           value = () => true;
         } else if (utils.number.isNumber(value)) {
-          value = (ip: string, i: number) => i < value;
-        } else {
+          const num = value;
+          value = (ip: string, i: number) => i < num;
+        } else if (!utils.function.isFunction(value)) {
+          if (utils.string.isString(value)) {
+            value = value.split(/ *, */);
+          }
+
           value = proxyAddr.compile(value || []);
         }
         break;
