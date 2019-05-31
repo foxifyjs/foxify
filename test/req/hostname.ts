@@ -1,6 +1,6 @@
 import * as Foxify from "../../src";
 
-it("Should return the Host when present", async () => {
+it("should return the Host when present", async () => {
   expect.assertions(1);
 
   const app = new Foxify();
@@ -19,7 +19,7 @@ it("Should return the Host when present", async () => {
   expect(result.body).toBe("example.com");
 });
 
-it("Should strip port number", async () => {
+it("should strip port number", async () => {
   expect.assertions(1);
 
   const app = new Foxify();
@@ -38,7 +38,7 @@ it("Should strip port number", async () => {
   expect(result.body).toBe("example.com");
 });
 
-it("Should return undefined otherwise", async () => {
+it("should return undefined otherwise", async () => {
   expect.assertions(1);
 
   const app = new Foxify();
@@ -53,7 +53,7 @@ it("Should return undefined otherwise", async () => {
   expect(result.body).toBe("undefined");
 });
 
-it("Should work with IPv6 Host", async () => {
+it("should work with IPv6 Host", async () => {
   expect.assertions(1);
 
   const app = new Foxify();
@@ -72,7 +72,7 @@ it("Should work with IPv6 Host", async () => {
   expect(result.body).toBe("[::1]");
 });
 
-it("Should work with IPv6 Host and port", async () => {
+it("should work with IPv6 Host and port", async () => {
   expect.assertions(1);
 
   const app = new Foxify();
@@ -92,7 +92,7 @@ it("Should work with IPv6 Host and port", async () => {
 });
 
 describe("When 'trust.proxy' is enabled", () => {
-  it("Should respect X-Forwarded-Host", async () => {
+  it("should respect X-Forwarded-Host", async () => {
     expect.assertions(1);
 
     const app = new Foxify();
@@ -114,7 +114,7 @@ describe("When 'trust.proxy' is enabled", () => {
     expect(result.body).toBe("example.com");
   });
 
-  it("Should ignore X-Forwarded-Host if socket addr not trusted", async () => {
+  it("should ignore X-Forwarded-Host if socket addr not trusted", async () => {
     expect.assertions(1);
 
     const app = new Foxify();

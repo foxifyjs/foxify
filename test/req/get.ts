@@ -1,117 +1,115 @@
 import * as Foxify from "../../src";
 
-describe(".get(field)", () => {
-  it("should return the header field value", async () => {
-    expect.assertions(2);
+it("should return the header field value", async () => {
+  expect.assertions(2);
 
-    const app = new Foxify();
+  const app = new Foxify();
 
-    app.use((req, res) => {
-      expect(req.get("Something-Else")).toBeUndefined();
-      res.end(req.get("Content-Type"));
-    });
-
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        "content-type": "application/json",
-      },
-    });
-
-    expect(result.body).toBe("application/json");
+  app.use((req, res) => {
+    expect(req.get("Something-Else")).toBeUndefined();
+    res.end(req.get("Content-Type"));
   });
 
-  it("should special-case Referer", async () => {
-    expect.assertions(2);
-
-    const app = new Foxify();
-
-    app.use((req, res) => {
-      res.end(req.get("Referer"));
-    });
-
-    const referer = "https://foxify.js.org";
-
-    let result = await app.inject({
-      url: "/",
-      headers: {
-        referer,
-      },
-    });
-
-    expect(result.body).toBe(referer);
-
-    result = await app.inject({
-      url: "/",
-      headers: {
-        referrer: referer,
-      },
-    });
-
-    expect(result.body).toBe(referer);
+  const result = await app.inject({
+    url: "/",
+    headers: {
+      "content-type": "application/json",
+    },
   });
 
-  it("should special-case Referrer", async () => {
-    expect.assertions(2);
+  expect(result.body).toBe("application/json");
+});
 
-    const app = new Foxify();
+it("should special-case Referer", async () => {
+  expect.assertions(2);
 
-    app.use((req, res) => {
-      res.end(req.get("Referrer"));
-    });
+  const app = new Foxify();
 
-    const referer = "https://foxify.js.org";
-
-    let result = await app.inject({
-      url: "/",
-      headers: {
-        referer,
-      },
-    });
-
-    expect(result.body).toBe(referer);
-
-    result = await app.inject({
-      url: "/",
-      headers: {
-        referrer: referer,
-      },
-    });
-
-    expect(result.body).toBe(referer);
+  app.use((req, res) => {
+    res.end(req.get("Referer"));
   });
 
-  it("should throw missing header name", async () => {
-    expect.assertions(2);
+  const referer = "https://foxify.js.org";
 
-    const app = new Foxify();
-
-    app.use((req, res) => {
-      res.end((req as any).get());
-    });
-
-    const result = await app.inject("/");
-
-    expect(result.statusCode).toBe(500);
-    expect(JSON.parse(result.body)).toEqual({
-      message: "Expected 'name' to be an string, got 'undefined' instead",
-    });
+  let result = await app.inject({
+    url: "/",
+    headers: {
+      referer,
+    },
   });
 
-  it("should throw for non-string header name", async () => {
-    expect.assertions(2);
+  expect(result.body).toBe(referer);
 
-    const app = new Foxify();
+  result = await app.inject({
+    url: "/",
+    headers: {
+      referrer: referer,
+    },
+  });
 
-    app.use((req, res) => {
-      res.end(req.get(42 as any));
-    });
+  expect(result.body).toBe(referer);
+});
 
-    const result = await app.inject("/");
+it("should special-case Referrer", async () => {
+  expect.assertions(2);
 
-    expect(result.statusCode).toBe(500);
-    expect(JSON.parse(result.body)).toEqual({
-      message: "Expected 'name' to be an string, got 'number' instead",
-    });
+  const app = new Foxify();
+
+  app.use((req, res) => {
+    res.end(req.get("Referrer"));
+  });
+
+  const referer = "https://foxify.js.org";
+
+  let result = await app.inject({
+    url: "/",
+    headers: {
+      referer,
+    },
+  });
+
+  expect(result.body).toBe(referer);
+
+  result = await app.inject({
+    url: "/",
+    headers: {
+      referrer: referer,
+    },
+  });
+
+  expect(result.body).toBe(referer);
+});
+
+it("should throw missing header name", async () => {
+  expect.assertions(2);
+
+  const app = new Foxify();
+
+  app.use((req, res) => {
+    res.end((req as any).get());
+  });
+
+  const result = await app.inject("/");
+
+  expect(result.statusCode).toBe(500);
+  expect(JSON.parse(result.body)).toEqual({
+    message: "Expected 'name' to be an string, got 'undefined' instead",
+  });
+});
+
+it("should throw for non-string header name", async () => {
+  expect.assertions(2);
+
+  const app = new Foxify();
+
+  app.use((req, res) => {
+    res.end(req.get(42 as any));
+  });
+
+  const result = await app.inject("/");
+
+  expect(result.statusCode).toBe(500);
+  expect(JSON.parse(result.body)).toEqual({
+    message: "Expected 'name' to be an string, got 'number' instead",
   });
 });

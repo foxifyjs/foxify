@@ -1,57 +1,55 @@
 import * as Foxify from "../../src";
 
-describe(".accepts(type)", () => {
-  it("should return true when Accept is not present", async () => {
-    expect.assertions(1);
+it("should return true when Accept is not present", async () => {
+  expect.assertions(1);
 
-    const app = new Foxify();
+  const app = new Foxify();
 
-    app.use((req, res) => {
-      res.end(req.accepts("json") ? "yes" : "no");
-    });
-
-    const result = await app.inject("/");
-
-    expect(result.body).toBe("yes");
+  app.use((req, res) => {
+    res.end(req.accepts("json") ? "yes" : "no");
   });
 
-  it("should return true when present", async () => {
-    expect.assertions(1);
+  const result = await app.inject("/");
 
-    const app = new Foxify();
+  expect(result.body).toBe("yes");
+});
 
-    app.use((req, res) => {
-      res.end(req.accepts("json") ? "yes" : "no");
-    });
+it("should return true when present", async () => {
+  expect.assertions(1);
 
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        accept: "application/json",
-      },
-    });
+  const app = new Foxify();
 
-    expect(result.body).toBe("yes");
+  app.use((req, res) => {
+    res.end(req.accepts("json") ? "yes" : "no");
   });
 
-  it("should return false otherwise", async () => {
-    expect.assertions(1);
-
-    const app = new Foxify();
-
-    app.use((req, res) => {
-      res.end(req.accepts("json") ? "yes" : "no");
-    });
-
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        accept: "text/html",
-      },
-    });
-
-    expect(result.body).toBe("no");
+  const result = await app.inject({
+    url: "/",
+    headers: {
+      accept: "application/json",
+    },
   });
+
+  expect(result.body).toBe("yes");
+});
+
+it("should return false otherwise", async () => {
+  expect.assertions(1);
+
+  const app = new Foxify();
+
+  app.use((req, res) => {
+    res.end(req.accepts("json") ? "yes" : "no");
+  });
+
+  const result = await app.inject({
+    url: "/",
+    headers: {
+      accept: "text/html",
+    },
+  });
+
+  expect(result.body).toBe("no");
 });
 
 it("should accept an argument list of type names", async () => {
@@ -73,94 +71,92 @@ it("should accept an argument list of type names", async () => {
   expect(result.body).toBe("json");
 });
 
-describe(".accepts(types)", () => {
-  it("should return the first when Accept is not present", async () => {
-    expect.assertions(1);
+it("should return the first when Accept is not present", async () => {
+  expect.assertions(1);
 
-    const app = new Foxify();
+  const app = new Foxify();
 
-    app.use((req, res) => {
-      res.end(req.accepts("json", "html"));
-    });
-
-    const result = await app.inject("/");
-
-    expect(result.body).toBe("json");
+  app.use((req, res) => {
+    res.end(req.accepts("json", "html"));
   });
 
-  it("should return the first acceptable type", async () => {
-    expect.assertions(1);
+  const result = await app.inject("/");
 
-    const app = new Foxify();
+  expect(result.body).toBe("json");
+});
 
-    app.use((req, res) => {
-      res.end(req.accepts("json", "html"));
-    });
+it("should return the first acceptable type", async () => {
+  expect.assertions(1);
 
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        accept: "text/html",
-      },
-    });
+  const app = new Foxify();
 
-    expect(result.body).toBe("html");
+  app.use((req, res) => {
+    res.end(req.accepts("json", "html"));
   });
 
-  it("should return false when no match is made", async () => {
-    expect.assertions(1);
-
-    const app = new Foxify();
-
-    app.use((req, res) => {
-      res.end(req.accepts("text/html", "application/json") ? "yup" : "nope");
-    });
-
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        accept: "foo/bar, bar/baz",
-      },
-    });
-
-    expect(result.body).toBe("nope");
+  const result = await app.inject({
+    url: "/",
+    headers: {
+      accept: "text/html",
+    },
   });
 
-  it("should take quality into account", async () => {
-    expect.assertions(1);
+  expect(result.body).toBe("html");
+});
 
-    const app = new Foxify();
+it("should return false when no match is made", async () => {
+  expect.assertions(1);
 
-    app.use((req, res) => {
-      res.end(req.accepts("text/html", "application/json"));
-    });
+  const app = new Foxify();
 
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        accept: "*/html; q=.5, application/json",
-      },
-    });
-
-    expect(result.body).toBe("application/json");
+  app.use((req, res) => {
+    res.end(req.accepts("text/html", "application/json") ? "yup" : "nope");
   });
 
-  it("should return the first acceptable type with canonical mime types", async () => {
-    expect.assertions(1);
-
-    const app = new Foxify();
-
-    app.use((req, res) => {
-      res.end(req.accepts("application/json", "text/html"));
-    });
-
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        accept: "*/html",
-      },
-    });
-
-    expect(result.body).toBe("text/html");
+  const result = await app.inject({
+    url: "/",
+    headers: {
+      accept: "foo/bar, bar/baz",
+    },
   });
+
+  expect(result.body).toBe("nope");
+});
+
+it("should take quality into account", async () => {
+  expect.assertions(1);
+
+  const app = new Foxify();
+
+  app.use((req, res) => {
+    res.end(req.accepts("text/html", "application/json"));
+  });
+
+  const result = await app.inject({
+    url: "/",
+    headers: {
+      accept: "*/html; q=.5, application/json",
+    },
+  });
+
+  expect(result.body).toBe("application/json");
+});
+
+it("should return the first acceptable type with canonical mime types", async () => {
+  expect.assertions(1);
+
+  const app = new Foxify();
+
+  app.use((req, res) => {
+    res.end(req.accepts("application/json", "text/html"));
+  });
+
+  const result = await app.inject({
+    url: "/",
+    headers: {
+      accept: "*/html",
+    },
+  });
+
+  expect(result.body).toBe("text/html");
 });

@@ -38,7 +38,7 @@ describe("when X-Forwarded-Proto is present", () => {
     expect(result.body).toBe("no");
   });
 
-  it('should return true when "trust proxy" is enabled', async () => {
+  it('should return true when "trust.proxy" is enabled', async () => {
     expect.assertions(1);
 
     const app = new Foxify();
@@ -101,7 +101,7 @@ describe("when X-Forwarded-Proto is present", () => {
     expect(result.body).toBe("yes");
   });
 
-  describe("when 'trust proxy' trusting hop count", () => {
+  describe("when 'trust.proxy' trusting hop count", () => {
     it("should respect X-Forwarded-Proto", async () => {
       expect.assertions(1);
 
