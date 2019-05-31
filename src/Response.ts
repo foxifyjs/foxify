@@ -928,7 +928,7 @@ class Response extends http.ServerResponse {
     const signed = options.signed;
 
     assert(
-      !signed && secret,
+      !signed || secret,
       "cookieParser('secret') required for signed cookies",
     );
 
