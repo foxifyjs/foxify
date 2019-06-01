@@ -4,16 +4,13 @@ import Request from "../Request";
 import Response from "../Response";
 
 const handle = (error: any, req: Request, res: Response) => {
-  let code = error.code;
+  let statusCode = error.statusCode;
 
-  switch (code) {
-    case "ERR_ASSERTION":
-    case undefined:
-    case null:
-      code = error.code = http.INTERNAL_SERVER_ERROR;
+  if (!statusCode) {
+    statusCode = error.statusCode = http.INTERNAL_SERVER_ERROR;
   }
 
-  events.emit(`error-${code}` as any, error, req, res);
+  events.emit(`error-${statusCode}` as any, error, req, res);
 
   // tslint:disable-next-line:no-console
   // if (process.env.NODE_ENV === "development") console.error(error);

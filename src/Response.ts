@@ -324,7 +324,7 @@ class Response extends http.ServerResponse {
   /**
    * @hidden
    */
-  public next!: () => void;
+  public next!: (err?: Error) => void;
 
   /**
    * @hidden
@@ -603,7 +603,7 @@ class Response extends http.ServerResponse {
     // support function as second arg
 
     assert(
-      (options as any).root && isAbsolute(path),
+      (options as any).root || isAbsolute(path),
       "Path must be absolute or specify root to res.sendFile",
     );
 
@@ -618,7 +618,7 @@ class Response extends http.ServerResponse {
 
       // next() all but write errors
       if (err && err.code !== "ECONNABORTED" && err.syscall !== "write") {
-        throw err;
+        this.next(err);
       }
     });
   }
@@ -656,11 +656,11 @@ class Response extends http.ServerResponse {
     options: object | ((...args: any[]) => void) = {},
     callback?: (...args: any[]) => void,
   ) {
-    if (func.isFunction(filename)) {
+    if (typeof filename === "function") {
       callback = filename;
       filename = undefined;
-    } else if (func.isFunction(options)) {
-      callback = options;
+    } else if (typeof options === "function") {
+      callback = options as any;
       options = {};
     }
 
@@ -797,8 +797,7 @@ class Response extends http.ServerResponse {
       err.status = err.statusCode = 406;
       err.types = normalizeTypes(keys).map(o => o.value);
 
-      // next(err);
-      throw err;
+      next(err);
     }
 
     return this;
@@ -1048,7 +1047,7 @@ class Response extends http.ServerResponse {
 
     if (!callback) {
       callback = (err, str) => {
-        if (err) throw err;
+        if (err) return this.next(err);
 
         this.send(str);
       };

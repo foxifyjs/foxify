@@ -14,8 +14,8 @@ class HttpException extends Error {
     req: Request,
     res: Response,
   ): void {
-    const code = exception.code || http.INTERNAL_SERVER_ERROR;
-    const message = exception.message || STATUS_CODES[code] || "";
+    const statusCode = exception.statusCode || http.INTERNAL_SERVER_ERROR;
+    const message = exception.message || STATUS_CODES[statusCode] || "";
     let stack: string[];
 
     exception.path = req.path;
@@ -31,7 +31,7 @@ class HttpException extends Error {
       stack.shift();
     }
 
-    res.status(code).format({
+    res.status(statusCode).format({
       "application/json": () => {
         const json: { [key: string]: any } = { message, stack };
 
@@ -45,8 +45,8 @@ class HttpException extends Error {
       "text/html": () =>
         res.send(
           htmlError(
-            code,
-            STATUS_CODES[code],
+            statusCode,
+            STATUS_CODES[statusCode],
             message,
             stack && stack.join("<br>").replace(/ /g, "&nbsp;"),
           ),
@@ -54,38 +54,38 @@ class HttpException extends Error {
     });
   }
 
-  public code: number;
+  public statusCode: number;
 
   public errors: object;
 
   constructor(errors?: object);
   constructor(message: string | number, errors?: object);
-  constructor(message: string, code: number, errors?: object);
+  constructor(message: string, statusCode: number, errors?: object);
   constructor(
     message?: string | number | object,
-    code: number | object = http.INTERNAL_SERVER_ERROR,
+    statusCode: number | object = http.INTERNAL_SERVER_ERROR,
     errors: object = {},
   ) {
     if (utils.object.isObject(message)) {
       errors = message;
-      code = http.INTERNAL_SERVER_ERROR;
+      statusCode = http.INTERNAL_SERVER_ERROR;
       message = undefined;
     } else if (utils.number.isNumber(message)) {
-      errors = utils.object.isObject(code) ? code : {};
-      code = message;
+      errors = utils.object.isObject(statusCode) ? statusCode : {};
+      statusCode = message;
       message = undefined;
     }
 
-    if (utils.object.isObject(code)) {
-      errors = code;
-      code = http.INTERNAL_SERVER_ERROR;
+    if (utils.object.isObject(statusCode)) {
+      errors = statusCode;
+      statusCode = http.INTERNAL_SERVER_ERROR;
     }
 
-    if (!message) message = STATUS_CODES[code];
+    if (!message) message = STATUS_CODES[statusCode];
 
     super(message);
 
-    this.code = code;
+    this.statusCode = statusCode;
     this.errors = errors;
   }
 }

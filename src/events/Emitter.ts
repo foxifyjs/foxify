@@ -8,8 +8,8 @@ import { object } from "../utils";
 
 const ERRORS = object.reduce(
   http,
-  (prev, code) => {
-    prev.push(`error-${code}`);
+  (prev, statusCode) => {
+    prev.push(`error-${statusCode}`);
 
     return prev;
   },
