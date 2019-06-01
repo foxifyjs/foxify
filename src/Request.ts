@@ -22,13 +22,17 @@ namespace Request {
 }
 
 interface Request {
-  [key: string]: any;
+  body: any;
+
+  cookies: any;
+
+  query: any;
 
   /**
    *
    * @alias get
    */
-  head<T extends string>(name: T): http.IncomingHttpHeaders[T];
+  header<T extends string>(name: T): http.IncomingHttpHeaders[T];
 }
 
 class Request extends http.IncomingMessage {
@@ -36,8 +40,6 @@ class Request extends http.IncomingMessage {
    * @hidden
    */
   public settings!: Request.Settings;
-
-  public query!: any;
 
   public params: { [key: string]: any } = {};
 
@@ -180,7 +182,7 @@ class Request extends http.IncomingMessage {
   constructor(socket: Socket) {
     super(socket);
 
-    this.head = this.get;
+    this.header = this.get;
   }
 
   /**

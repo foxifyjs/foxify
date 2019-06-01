@@ -921,10 +921,17 @@ class Response extends http.ServerResponse {
    */
   public cookie(
     name: string,
-    value: string | object,
-    options: { maxAge?: number; signed?: boolean; path?: string } = {},
+    value: number | string | object,
+    options: {
+      maxAge?: number;
+      signed?: boolean;
+      path?: string;
+      [option: string]: any;
+    } = {},
   ) {
-    const secret = this.req.secret;
+    options = Object.assign({}, options);
+
+    const secret = (this.req as any).secret;
     const signed = options.signed;
 
     assert(
