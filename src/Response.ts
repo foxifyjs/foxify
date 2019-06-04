@@ -287,6 +287,8 @@ namespace Response {
       callback: string;
     };
   }
+
+  export type Json = string | number | object | any[] | null;
 }
 
 interface Response {
@@ -423,14 +425,18 @@ class Response extends http.ServerResponse {
    * @example
    * res.send("<p>some html</p>");
    */
-  public send(body: string | object | any[] | Buffer): this {
+  public send(body: string | Response.Json | Buffer): this {
     let encoding: BufferEncoding | undefined;
 
     if (string.isString(body)) {
       encoding = "utf-8";
+      const type = this.get("content-type");
+
       // reflect this in content-type
-      if (!this.get("content-type")) {
+      if (!type) {
         this.set("Content-Type", setCharset("text/html", encoding));
+      } else if (typeof type === "string") {
+        this.set("Content-Type", setCharset(type, "utf-8"));
       }
     } else if (Buffer.isBuffer(body)) {
       if (!this.get("content-type")) this.type("bin");
@@ -471,7 +477,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.json({ user: "tj" });
    */
-  public json(obj: object | any[]) {
+  public json(obj: Response.Json) {
     if (!this.get("Content-Type")) {
       this.set("Content-Type", "application/json");
     }
@@ -494,7 +500,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.jsonp({ user: "tj" });
    */
-  public jsonp(obj: object) {
+  public jsonp(obj: Response.Json) {
     // settings
     const { escape, replacer, spaces } = this.settings.json;
     let body = stringify(obj, replacer, spaces, escape);

@@ -1,6 +1,4 @@
 import * as Foxify from "../../src";
-// var after = require("after");
-// var assert = require("assert");
 
 describe(".download(path)", () => {
   it("should transfer as an attachment", async () => {
