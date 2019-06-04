@@ -289,6 +289,8 @@ namespace Response {
   }
 
   export type Json = string | number | object | any[] | null;
+
+  export interface Headers extends http.OutgoingHttpHeaders {}
 }
 
 interface Response {
@@ -302,14 +304,17 @@ interface Response {
    *
    * @alias header
    */
-  set(field: string | object, val?: string | string[]): this;
+  set<T extends string>(field: T, val: Response.Headers[T]): this;
+  set<T extends string>(fields: { [field in T]: Response.Headers[T] }): this;
+
+  getHeader<T extends string>(name: T): Response.Headers[T];
 
   /**
    * Get value for header `field`.
    *
    * @alias getHeader
    */
-  get(name: string): number | string | string[] | undefined;
+  get<T extends string>(name: T): Response.Headers[T];
 }
 
 class Response extends http.ServerResponse {
@@ -856,10 +861,10 @@ class Response extends http.ServerResponse {
    * @example
    * res.set({ Accept: "text/plain", "X-API-Key": "tobi" });
    */
-  public header(headers: {
-    [header: string]: string | number | string[];
-  }): this;
-  public header(field: string, value: string | string[]): this;
+  public header<T extends string>(field: T, value: Response.Headers[T]): this;
+  public header<T extends string>(
+    fields: { [header in T]: Response.Headers[T] },
+  ): this;
   public header(field: string | object, value?: string | number | string[]) {
     if (!string.isString(field)) {
       // tslint:disable-next-line:forin
@@ -1021,7 +1026,7 @@ class Response extends http.ServerResponse {
 
     // Respond
     this.statusCode = status;
-    // this.set("Content-Length", Buffer.byteLength(body) as any);
+    this.set("content-length", Buffer.byteLength(body));
 
     if (this.req.method === "HEAD") this.end();
     else this.end(body);
