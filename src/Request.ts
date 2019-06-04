@@ -19,6 +19,10 @@ namespace Request {
       proxy: (ip: string, hopIndex: number) => boolean;
     };
   }
+
+  export interface Headers extends http.IncomingHttpHeaders {
+    referrer: http.IncomingHttpHeaders["referer"];
+  }
 }
 
 interface Request {
@@ -32,7 +36,7 @@ interface Request {
    *
    * @alias get
    */
-  header<T extends string>(name: T): http.IncomingHttpHeaders[T];
+  header<T extends string>(name: T): Request.Headers[T];
 }
 
 class Request extends http.IncomingMessage {
@@ -265,7 +269,7 @@ class Request extends http.IncomingMessage {
    * @example
    * req.get("Something"); // => undefined
    */
-  public get<T extends string>(name: T): http.IncomingHttpHeaders[T] {
+  public get<T extends string>(name: T): Request.Headers[T] {
     assert(
       string.isString(name),
       `Expected 'name' to be an string, got '${typeof name}' instead`,

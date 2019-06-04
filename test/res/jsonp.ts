@@ -1,7 +1,5 @@
 import * as Foxify from "../../src";
 
-// var utils = require("./support/utils");
-
 it("should respond with jsonp", async () => {
   expect.assertions(3);
 

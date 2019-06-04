@@ -979,7 +979,7 @@ class Response extends http.ServerResponse {
       "Location",
       encodeUrl(
         // "back" is an alias for the referrer
-        url === "back" ? this.req.get("referer") || "/" : url,
+        url === "back" ? this.req.get("referrer") || "/" : url,
       ),
     );
   }
