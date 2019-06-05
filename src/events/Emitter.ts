@@ -1,13 +1,11 @@
 import { EventEmitter as Base } from "@foxify/events";
 import assert from "assert";
-import { HTTP } from "../constants";
+import { STATUSES } from "../constants";
 import { HttpException } from "../exceptions";
 import Request from "../Request";
 import Response from "../Response";
-import { object } from "../utils";
 
-const ERRORS = object.reduce(
-  HTTP,
+const ERRORS = STATUSES.reduce(
   (prev, statusCode) => {
     prev.push(`error-${statusCode}`);
 
