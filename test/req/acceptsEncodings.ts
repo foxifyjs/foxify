@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 it("should be true if encoding accepted", async () => {
   expect.assertions(3);

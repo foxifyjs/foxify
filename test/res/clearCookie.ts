@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 describe(".clearCookie(name)", () => {
   it("should set a cookie passed expiry", async () => {

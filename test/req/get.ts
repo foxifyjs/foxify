@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 it("should return the header field value", async () => {
   expect.assertions(2);

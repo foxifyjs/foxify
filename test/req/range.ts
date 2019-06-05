@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 describe(".range(size)", () => {
   it("should return parsed ranges", async () => {

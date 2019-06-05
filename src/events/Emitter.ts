@@ -1,5 +1,5 @@
 import { EventEmitter as Base } from "@foxify/events";
-import * as assert from "assert";
+import assert from "assert";
 import { http } from "../constants";
 import { HttpException } from "../exceptions";
 import Request from "../Request";
@@ -13,7 +13,7 @@ const ERRORS = object.reduce(
 
     return prev;
   },
-  [],
+  [] as string[],
 );
 
 const EVENTS = ["uncaughtException", "unhandledRejection", "error"].concat(
@@ -144,4 +144,4 @@ class EventEmitter extends Base<EventEmitter.Events> {
   }
 }
 
-export = EventEmitter;
+export default EventEmitter;

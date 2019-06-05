@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 describe(".attachment()", () => {
   it("should Content-Disposition to attachment", async () => {

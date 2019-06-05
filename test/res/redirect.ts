@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 describe(".redirect(url)", () => {
   it("should default to a 302 redirect", async () => {

@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 it("should respond with jsonp", async () => {
   expect.assertions(3);

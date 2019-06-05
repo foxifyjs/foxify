@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 describe("when X-Forwarded-For is present", () => {
   describe("when 'trust.proxy' is enabled", () => {

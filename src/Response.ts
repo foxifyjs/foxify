@@ -1,19 +1,19 @@
-import * as assert from "assert";
-import * as contentDisposition from "content-disposition";
-import * as contentType from "content-type";
-import * as cookie from "cookie";
+import assert from "assert";
+import contentDisposition from "content-disposition";
+import contentType from "content-type";
+import cookie from "cookie";
 import { sign } from "cookie-signature";
-import * as escapeHtml from "escape-html";
-import * as http from "http";
-import * as onFinished from "on-finished";
-import * as path from "path";
+import escapeHtml from "escape-html";
+import http from "http";
+import onFinished from "on-finished";
+import path from "path";
 import send = require("send");
 import { http as httpStatus } from "./constants";
 import Request from "./Request";
 import {
   encodeUrl,
   fresh,
-  function as func,
+  func,
   object,
   string,
   vary,

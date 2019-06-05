@@ -1,4 +1,4 @@
-import * as assert from "assert";
+import assert from "assert";
 import { Encapsulation } from "../exceptions";
 import Request from "../Request";
 import Response from "../Response";

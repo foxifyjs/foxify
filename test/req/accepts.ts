@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 it("should return true when Accept is not present", async () => {
   expect.assertions(1);

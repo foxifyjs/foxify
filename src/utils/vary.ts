@@ -27,7 +27,7 @@
  * This module is modified and optimized for Foxify specifically
  */
 
-import * as assert from "assert";
+import assert from "assert";
 import Response from "../Response";
 
 /**

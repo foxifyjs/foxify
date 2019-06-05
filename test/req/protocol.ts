@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 it("should return the protocol string", async () => {
   expect.assertions(1);

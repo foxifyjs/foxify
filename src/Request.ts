@@ -1,8 +1,8 @@
-import * as assert from "assert";
-import * as http from "http";
+import assert from "assert";
+import http from "http";
 import { isIP, Socket } from "net";
-import * as proxyAddr from "proxy-addr";
-import * as typeIs from "type-is";
+import proxyAddr from "proxy-addr";
+import typeIs from "type-is";
 import { Url } from "url";
 import { Accepts, parseUrl, string } from "./utils";
 import rangeParser, { RangeParser } from "./utils/range-parser";

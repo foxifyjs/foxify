@@ -32,8 +32,8 @@
  */
 
 import { IncomingHttpHeaders } from "http";
-import * as mime from "mime-types";
-import * as Negotiator from "negotiator";
+import mime from "mime-types";
+import Negotiator from "negotiator";
 import Request from "../Request";
 
 /**

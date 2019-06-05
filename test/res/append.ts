@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 it("should append multiple headers", async () => {
   expect.assertions(1);

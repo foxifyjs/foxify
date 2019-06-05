@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 describe(".download(path)", () => {
   it("should transfer as an attachment", async () => {

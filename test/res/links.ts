@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 it("should set Link header field", async () => {
   expect.assertions(2);

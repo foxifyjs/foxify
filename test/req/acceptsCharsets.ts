@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 describe("when Accept-Charset is not present", () => {
   it("should return true", async () => {

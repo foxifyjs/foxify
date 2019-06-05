@@ -1,4 +1,4 @@
-import * as etag from "etag";
+import etag from "etag";
 export * from "prototyped.js/es6/methods";
 
 export { default as Accepts } from "./accepts";

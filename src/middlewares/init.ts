@@ -1,5 +1,5 @@
+import Foxify from "..";
 import { name } from "../../package.json";
-import * as Foxify from "../index";
 import * as utils from "../utils";
 
 const init = (app: Foxify): Foxify.Handler | null => {

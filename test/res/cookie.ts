@@ -1,6 +1,6 @@
-import * as cookie from "cookie";
-import * as cookieParser from "cookie-parser";
-import * as Foxify from "../../src";
+import cookie from "cookie";
+import cookieParser from "cookie-parser";
+import Foxify from "../../src";
 
 describe(".cookie(name, object)", () => {
   it("should generate a JSON cookie", async () => {

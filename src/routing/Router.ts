@@ -1,7 +1,7 @@
-import * as assert from "assert";
-import * as fastStringify from "fast-json-stringify";
+import assert from "assert";
+import fastStringify from "fast-json-stringify";
 import isRegexSafe = require("safe-regex");
-import * as Foxify from "..";
+import Foxify from "..";
 import { Encapsulation } from "../exceptions";
 import { init } from "../middlewares";
 import Request from "../Request";
@@ -9,7 +9,7 @@ import Response from "../Response";
 import {
   array,
   decodeURIComponent as fastDecode,
-  function as func,
+  func,
   isHandler,
   object,
   string,

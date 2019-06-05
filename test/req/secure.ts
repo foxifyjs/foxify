@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 describe("when X-Forwarded-Proto is missing", () => {
   it("should return false when http", async () => {

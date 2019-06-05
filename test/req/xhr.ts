@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 it("should return true when X-Requested-With is xmlhttprequest", async () => {
   expect.assertions(2);
