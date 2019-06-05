@@ -1,5 +1,5 @@
 import { STATUS_CODES } from "http";
-import { http } from "../constants";
+import { HTTP } from "../constants";
 import Request from "../Request";
 import Response from "../Response";
 import * as utils from "../utils";
@@ -14,7 +14,7 @@ class HttpException extends Error {
     req: Request,
     res: Response,
   ): void {
-    const statusCode = exception.statusCode || http.INTERNAL_SERVER_ERROR;
+    const statusCode = exception.statusCode || HTTP.INTERNAL_SERVER_ERROR;
     const message = exception.message || STATUS_CODES[statusCode] || "";
     let stack: string[];
 
@@ -63,12 +63,12 @@ class HttpException extends Error {
   constructor(message: string, statusCode: number, errors?: object);
   constructor(
     message?: string | number | object,
-    statusCode: number | object = http.INTERNAL_SERVER_ERROR,
+    statusCode: number | object = HTTP.INTERNAL_SERVER_ERROR,
     errors: object = {},
   ) {
     if (utils.object.isObject(message)) {
       errors = message;
-      statusCode = http.INTERNAL_SERVER_ERROR;
+      statusCode = HTTP.INTERNAL_SERVER_ERROR;
       message = undefined;
     } else if (utils.number.isNumber(message)) {
       errors = utils.object.isObject(statusCode) ? statusCode : {};
@@ -78,7 +78,7 @@ class HttpException extends Error {
 
     if (utils.object.isObject(statusCode)) {
       errors = statusCode;
-      statusCode = http.INTERNAL_SERVER_ERROR;
+      statusCode = HTTP.INTERNAL_SERVER_ERROR;
     }
 
     if (!message) message = STATUS_CODES[statusCode];

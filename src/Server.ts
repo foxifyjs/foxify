@@ -6,6 +6,7 @@ import { Url } from "url";
 import Foxify from ".";
 import events from "./events";
 import EventEmitter from "./events/Emitter";
+import { HttpException } from "./exceptions";
 import Request from "./Request";
 import Response from "./Response";
 import { parseUrl } from "./utils";

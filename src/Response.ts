@@ -8,16 +8,9 @@ import http from "http";
 import onFinished from "on-finished";
 import path from "path";
 import send = require("send");
-import { http as httpStatus } from "./constants";
+import { HTTP } from "./constants";
 import Request from "./Request";
-import {
-  encodeUrl,
-  fresh,
-  func,
-  object,
-  string,
-  vary,
-} from "./utils";
+import { encodeUrl, fresh, func, object, string, vary } from "./utils";
 import { Engine } from "./view";
 
 const resolve = path.resolve;
@@ -392,7 +385,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.status(500);
    */
-  public status(code: httpStatus) {
+  public status(code: HTTP) {
     this.statusCode = code;
 
     return this;
@@ -549,7 +542,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.sendStatus(200);
    */
-  public sendStatus(statusCode: httpStatus) {
+  public sendStatus(statusCode: HTTP) {
     this.statusCode = statusCode;
 
     this.type("txt");
@@ -1006,7 +999,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.redirect("../login"); // /blog/post/1 -> /blog/login
    */
-  public redirect(url: string, status: httpStatus = HTTP.FOUND) {
+  public redirect(url: string, status: HTTP = HTTP.FOUND) {
     let body: string = "";
 
     // Set location header

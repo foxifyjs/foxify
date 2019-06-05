@@ -2,7 +2,8 @@ import assert from "assert";
 import fastStringify from "fast-json-stringify";
 import isRegexSafe = require("safe-regex");
 import Foxify from "..";
-import { Encapsulation } from "../exceptions";
+import { HTTP } from "../constants";
+import { Encapsulation, HttpException } from "../exceptions";
 import { init } from "../middlewares";
 import Request from "../Request";
 import Response from "../Response";
@@ -509,10 +510,7 @@ class Router {
       (prev, method) => {
         const methodName = method.toLowerCase();
 
-        assert(
-          !prev[methodName],
-          `Method already exists: ${methodName}`,
-        );
+        assert(!prev[methodName], `Method already exists: ${methodName}`);
 
         prev[methodName] = (
           opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],

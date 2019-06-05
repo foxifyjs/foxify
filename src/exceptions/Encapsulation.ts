@@ -1,4 +1,4 @@
-import { http } from "../constants";
+import { HTTP } from "../constants";
 import events from "../events";
 import Request from "../Request";
 import Response from "../Response";
@@ -7,7 +7,7 @@ const handle = (error: any, req: Request, res: Response) => {
   let statusCode = error.statusCode;
 
   if (!statusCode) {
-    statusCode = error.statusCode = http.INTERNAL_SERVER_ERROR;
+    statusCode = error.statusCode = HTTP.INTERNAL_SERVER_ERROR;
   }
 
   events.emit(`error-${statusCode}` as any, error, req, res);

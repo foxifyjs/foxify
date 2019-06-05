@@ -1,5 +1,3 @@
-import "./bootstrap";
-
 import inject from "@foxify/inject";
 import assert from "assert";
 import os from "os";
@@ -9,6 +7,7 @@ import serveStatic from "serve-static";
 import { Url } from "url";
 import * as constants from "./constants";
 import events from "./events";
+import { HttpException } from "./exceptions";
 import RequestClass from "./Request";
 import ResponseClass from "./Response";
 import { httpMethods, Layer, Router } from "./routing";
@@ -88,8 +87,6 @@ namespace Foxify {
     };
   }
 
-  export type Request = RequestClass;
-  export type Response = ResponseClass;
   export type Handler = Layer.Handler;
 }
 
@@ -110,7 +107,6 @@ interface Foxify extends Router.MethodFunctions<Foxify> {
 }
 
 class Foxify {
-  public static constants = constants;
   public static Router = Router;
   public static static = serveStatic;
 
