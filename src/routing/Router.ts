@@ -3,6 +3,7 @@ import fastStringify from "fast-json-stringify";
 import isRegexSafe = require("safe-regex");
 import Foxify from "..";
 import { HTTP } from "../constants";
+import { Method, METHODS } from "../constants/METHOD";
 import { Encapsulation, HttpException } from "../exceptions";
 import { init } from "../middlewares";
 import Request from "../Request";
@@ -15,7 +16,6 @@ import {
   object,
   string,
 } from "../utils";
-import httpMethods, { Method } from "./httpMethods";
 import Layer, { TYPES } from "./Layer";
 
 const OPTIONS = { schema: { response: {} } };
@@ -204,7 +204,7 @@ class Router {
   constructor(public prefix = "") {
     assert(typeof prefix === "string", "Prefix should be a string");
 
-    httpMethods.forEach(method => {
+    METHODS.forEach(method => {
       const methodName = method.toLowerCase();
 
       assert(
@@ -233,7 +233,7 @@ class Router {
 
     const middlewares = this.middlewares.reduce(
       (prev, { path, handlers }) => {
-        httpMethods.forEach(method =>
+        METHODS.forEach(method =>
           prev.push({
             method,
             path,
@@ -506,7 +506,7 @@ class Router {
   }
 
   public route(path: string): Router.PathMethods<Router.PathMethods> {
-    const ROUTE = httpMethods.reduce(
+    const ROUTE = METHODS.reduce(
       (prev, method) => {
         const methodName = method.toLowerCase();
 
@@ -534,7 +534,7 @@ class Router {
     opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
     ...handlers: Array<Layer.Handler | Layer.Handler[]>
   ) {
-    return this.on(httpMethods, path, opts, ...handlers);
+    return this.on(METHODS, path, opts, ...handlers);
   }
 
   public use(
@@ -847,7 +847,7 @@ class Router {
     // method validation
     assert(typeof method === "string", "Method should be a string");
     assert(
-      httpMethods.indexOf(method) !== -1,
+      METHODS.indexOf(method) !== -1,
       `Method "${method}" is not an http method.`,
     );
 

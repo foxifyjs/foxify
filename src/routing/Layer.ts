@@ -1,8 +1,8 @@
 import assert from "assert";
+import { Method, METHODS } from "../constants/METHOD";
 import { Encapsulation } from "../exceptions";
 import Request from "../Request";
 import Response from "../Response";
-import httpMethods, { Method } from "./httpMethods";
 
 const OPTIONS = { schema: { response: {} } };
 
@@ -10,8 +10,8 @@ const buildHandlers = (handlers?: any) => {
   let code = `handlers = handlers || {}
   `;
 
-  for (let i = 0; i < httpMethods.length; i++) {
-    const m = httpMethods[i];
+  for (let i = 0; i < METHODS.length; i++) {
+    const m = METHODS[i];
 
     code += `this["${m}"] = handlers["${m}"] || {
       handlers: [],
@@ -123,7 +123,7 @@ class Layer {
     this.handlers = new (Handlers as any)(handlers);
 
     const paramsLength = params.length;
-    httpMethods.forEach(method => {
+    METHODS.forEach(method => {
       this.handlers[method].params = params;
       this.handlers[method].paramsLength = paramsLength;
     });

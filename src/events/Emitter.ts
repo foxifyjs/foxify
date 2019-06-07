@@ -1,6 +1,6 @@
 import { EventEmitter as Base } from "@foxify/events";
 import assert from "assert";
-import { STATUSES } from "../constants";
+import { STATUSES } from "../constants/HTTP";
 import { HttpException } from "../exceptions";
 import Request from "../Request";
 import Response from "../Response";

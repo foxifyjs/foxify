@@ -5,12 +5,12 @@ import proxyAddr from "proxy-addr";
 import qs from "qs";
 import serveStatic from "serve-static";
 import { Url } from "url";
-import * as constants from "./constants";
+import { METHODS } from "./constants/METHOD";
 import events from "./events";
 import { HttpException } from "./exceptions";
 import RequestClass from "./Request";
 import ResponseClass from "./Response";
-import { httpMethods, Layer, Router } from "./routing";
+import { Layer, Router } from "./routing";
 import Server from "./Server";
 import * as utils from "./utils";
 import { Engine } from "./view";
@@ -173,7 +173,7 @@ class Foxify {
 
   constructor() {
     /* apply http routing methods */
-    ["route", "use", "all"].concat(httpMethods).forEach(method => {
+    ["route", "use", "all"].concat(METHODS).forEach(method => {
       method = method.toLowerCase();
 
       if ((this as any)[method]) return;
