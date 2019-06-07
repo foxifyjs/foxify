@@ -126,6 +126,7 @@ You can also find all the documents [here](https://foxify.js.org).
 - [x] Options & Settings
 - [x] Database Model ([`Odin`](https://github.com/foxifyjs/odin))
 - [x] Clustering
+- [ ] I18n
 - [ ] File storage
 - [ ] Job schedule
 - [ ] Logging

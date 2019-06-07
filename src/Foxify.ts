@@ -68,6 +68,7 @@ namespace Foxify {
     "trust.proxy":
       | boolean
       | number
+      | string
       | ((ip: string, hopIndex: number) => boolean);
     "query.parser": boolean | "simple" | "extended" | ((str: string) => object);
   }
