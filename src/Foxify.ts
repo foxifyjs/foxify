@@ -1,6 +1,5 @@
 import inject from "@foxify/inject";
 import assert from "assert";
-import os from "os";
 import proxyAddr from "proxy-addr";
 import qs from "qs";
 import serveStatic from "serve-static";
@@ -15,42 +14,62 @@ import Server from "./Server";
 import * as utils from "./utils";
 import { Engine } from "./view";
 
-const OPTIONS = [
-  "https",
-  "x-powered-by",
-  "routing.case-sensitive",
-  "routing.ignore-trailing-slash",
-  "routing.allow-unsafe-regex",
-  "json.escape",
-];
-const SETTINGS = [
+const SETTINGS: Array<keyof Foxify.UserSettings> = [
   "env",
   "url",
   "port",
   "workers",
   "etag",
+  "https",
   "https.cert",
   "https.key",
-  "json.spaces",
+  "x-powered-by",
+  "routing.case-sensitive",
+  "routing.ignore-trailing-slash",
+  "routing.allow-unsafe-regex",
+  "routing.max-param-length",
+  "json.escape",
   "json.replacer",
+  "json.spaces",
+  "jsonp.callback",
+  "subdomain.offset",
   "trust.proxy",
   "query.parser",
-  "routing.max-param-length",
-  "subdomain.offset",
 ];
 
 namespace Foxify {
-  export interface Options {
+  export interface UserSettings {
+    env: string;
+    url: string;
+    port: number;
+    workers: number;
+    etag?:
+      | null
+      | boolean
+      | "weak"
+      | "strong"
+      | ((
+          body: string | Buffer,
+          encoding?: BufferEncoding,
+        ) => string | undefined);
     https: boolean;
+    "https.cert"?: string;
+    "https.key"?: string;
     "x-powered-by": boolean;
-    routing: {
-      "case-sensitive": boolean;
-      "ignore-trailing-slash": boolean;
-      "allow-unsafe-regex": boolean;
-    };
-    json: {
-      escape: boolean;
-    };
+    "routing.case-sensitive": boolean;
+    "routing.ignore-trailing-slash": boolean;
+    "routing.allow-unsafe-regex": boolean;
+    "routing.max-param-length": number;
+    "json.escape": boolean;
+    "json.replacer"?: (...args: any[]) => any;
+    "json.spaces"?: number;
+    "jsonp.callback": string;
+    "subdomain.offset": number;
+    "trust.proxy":
+      | boolean
+      | number
+      | ((ip: string, hopIndex: number) => boolean);
+    "query.parser": boolean | "simple" | "extended" | ((str: string) => object);
   }
 
   export interface Settings {
@@ -58,33 +77,25 @@ namespace Foxify {
     url: string;
     port: number;
     workers: number;
-    etag?: (
+    etag: (
       body: string | Buffer,
       encoding?: BufferEncoding,
     ) => string | undefined;
-    subdomain: {
-      offset?: number;
-    };
-    https: {
-      cert?: string;
-      key?: string;
-    };
-    json: {
-      replacer?: (...args: any[]) => any;
-      spaces?: number;
-    };
-    jsonp: {
-      callback: string;
-    };
-    trust: {
-      proxy: (ip: string, hopIndex: number) => boolean;
-    };
-    query: {
-      parser?: (...args: any[]) => any;
-    };
-    routing: {
-      "max-param-length": number;
-    };
+    https: boolean;
+    "https.cert"?: string;
+    "https.key"?: string;
+    "x-powered-by": boolean;
+    "routing.case-sensitive": boolean;
+    "routing.ignore-trailing-slash": boolean;
+    "routing.allow-unsafe-regex": boolean;
+    "routing.max-param-length": number;
+    "json.escape": boolean;
+    "json.replacer"?: (...args: any[]) => any;
+    "json.spaces"?: number;
+    "jsonp.callback": string;
+    "subdomain.offset": number;
+    "trust.proxy": (ip: string, hopIndex: number) => boolean;
+    "query.parser": (str: string) => object;
   }
 
   export type Handler = Layer.Handler;
@@ -110,61 +121,29 @@ class Foxify {
   public static Router = Router;
   public static static = serveStatic;
 
-  public static dotenv = (path: string) => {
-    assert(
-      utils.string.isString(path),
-      `Expected 'dotenv' to be an string, got ${typeof path} instead`,
-    );
+  public static dotenv(path: string) {
+    utils.assertType("path", "string", path);
 
     require("dotenv").config({ path });
-  };
-
-  private _options: Foxify.Options = {
-    https: false,
-    ["x-powered-by"]: true,
-    json: {
-      escape: false,
-    },
-    routing: {
-      "allow-unsafe-regex": false,
-      "case-sensitive": true,
-      "ignore-trailing-slash": false,
-    },
-  };
+  }
 
   private _settings: Foxify.Settings = {
-    env: process.env.NODE_ENV || "production",
+    env: process.env.NODE_ENV || "development",
     url: process.env.APP_URL || "localhost",
-    port: process.env.APP_PORT ? parseInt(process.env.APP_PORT, 10) : 3000,
-    workers: process.env.WORKERS
-      ? parseInt(process.env.WORKERS, 10)
-      : !process.env.NODE_ENV || process.env.NODE_ENV === "production"
-      ? os.cpus().length
-      : 1,
-    etag: undefined,
-    subdomain: {
-      offset: 2,
-    },
-    https: {
-      cert: undefined,
-      key: undefined,
-    },
-    json: {
-      replacer: undefined,
-      spaces: undefined,
-    },
-    jsonp: {
-      callback: "callback",
-    },
-    trust: {
-      proxy: undefined as any,
-    },
-    query: {
-      parser: undefined,
-    },
-    routing: {
-      "max-param-length": 100,
-    },
+    port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
+    workers: process.env.WORKERS ? +process.env.WORKERS : 1,
+    https: false,
+    "x-powered-by": true,
+    "routing.allow-unsafe-regex": false,
+    "routing.case-sensitive": true,
+    "routing.ignore-trailing-slash": false,
+    "routing.max-param-length": 100,
+    "json.escape": false,
+    "jsonp.callback": "callback",
+    "subdomain.offset": 2,
+    "query.parser": qs.parse,
+    "trust.proxy": undefined as any,
+    etag: undefined as any,
   };
 
   private _router = new Router();
@@ -186,173 +165,149 @@ class Foxify {
     });
 
     this.set("etag", "weak");
-    this.set("trust.proxy", false);
+    this.disable("trust.proxy");
   }
 
-  /* handle options */
-  public enable(option: string) {
-    assert(
-      OPTIONS.includes(option),
-      `Expected 'option' to be one of [${OPTIONS}], got '${option}' instead`,
-    );
-
-    this._set(option, true, this._options);
-
-    return this;
+  public enable(setting: keyof Foxify.Settings) {
+    return this.set(setting, true);
   }
 
-  public disable(option: string) {
-    assert(
-      OPTIONS.includes(option),
-      `Expected 'option' to be one of [${OPTIONS}], got '${option}' instead`,
-    );
-
-    this._set(option, false, this._options);
-
-    return this;
+  public disable(setting: keyof Foxify.Settings) {
+    return this.set(setting, false);
   }
 
-  public enabled(option: string): boolean {
-    assert(
-      OPTIONS.includes(option),
-      `Expected 'option' to be one of [${OPTIONS}], got '${option}' instead`,
-    );
-
-    const keys = option.split(".");
-
-    let _opt: any = this._options;
-
-    keys.forEach(key => {
-      if (utils.boolean.isBoolean(_opt)) throw new Error("Unknown option");
-
-      _opt = _opt[key];
-    });
-
-    return _opt;
+  public disabled(setting: keyof Foxify.Settings): boolean {
+    return !this.get(setting);
   }
 
-  public disabled(option: string): boolean {
-    return !this.enabled(option);
+  public enabled(setting: keyof Foxify.Settings): boolean {
+    return !this.disabled(setting);
   }
 
-  /* handle settings */
-  public set(setting: string, value: any) {
-    if (!utils.string.isString(setting)) {
-      throw new TypeError("Argument 'setting' should be an string");
-    }
-
+  public set<T extends keyof Foxify.UserSettings>(
+    setting: T,
+    value: Foxify.UserSettings[T],
+  ) {
     switch (setting) {
       case "env":
+        utils.assertType(setting, "string", value);
+        break;
       case "url":
-        if (!utils.string.isString(value)) {
-          throw new TypeError(`setting '${setting}' should be an string`);
-        }
+        utils.assertType(setting, "string", value);
         break;
       case "port":
+        utils.assertNonNegInt(setting, value);
+        break;
       case "workers":
-        if (!utils.number.isNumber(value)) {
-          throw new TypeError(`setting '${setting}' should be a number`);
-        }
-        if (value < 1) {
-          throw new TypeError(
-            `setting '${setting}' should be a positive number`,
-          );
-        }
+        utils.assertPosInt(setting, value);
         break;
       case "etag":
-        if (value == null || utils.func.isFunction(value)) break;
-        if (value === false) value = undefined;
-        if ([true, "weak"].includes(value)) {
-          value = utils.createETagGenerator(true);
+        if (value == null || typeof value === "function") break;
+        if (value === false) value = undefined as any;
+        if (value === true || value === "weak") {
+          value = utils.createETagGenerator(true) as any;
         } else if (value === "strong") {
-          value = utils.createETagGenerator(false);
+          value = utils.createETagGenerator(false) as any;
         } else {
-          throw new TypeError(`Unknown value for 'etag' setting: ${value}`);
+          throw new TypeError(`Unknown value for ${setting} setting: ${value}`);
         }
         break;
-      case "jsonp.callback":
+      case "https":
+        utils.assertType(setting, "boolean", value);
+        break;
       case "https.cert":
-        if (!utils.string.isString(value)) {
-          throw new TypeError(`setting '${setting}' should be an string`);
-        }
+        utils.assertType(setting, "string", value);
         break;
       case "https.key":
-        if (!utils.string.isString(value)) {
-          throw new TypeError(`setting '${setting}' should be an string`);
-        }
+        utils.assertType(setting, "string", value);
         break;
-      case "json.spaces":
+      case "x-powered-by":
+        utils.assertType(setting, "boolean", value);
+        break;
+      case "routing.case-sensitive":
+        utils.assertType(setting, "boolean", value);
+        break;
+      case "routing.ignore-trailing-slash":
+        utils.assertType(setting, "boolean", value);
+        break;
+      case "routing.allow-unsafe-regex":
+        utils.assertType(setting, "boolean", value);
+        break;
       case "routing.max-param-length":
-      case "subdomain.offset":
-        if (value == null) break;
-        if (!utils.number.isNumber(value)) {
-          throw new TypeError(`setting '${setting}' should be a number`);
-        }
-        if (value < 0) {
-          throw new TypeError(
-            `setting '${setting}' should be a positive number or zero`,
-          );
-        }
+        utils.assertPosInt(setting, value);
+        break;
+      case "json.escape":
+        utils.assertType(setting, "boolean", value);
         break;
       case "json.replacer":
-      case "query.parser":
-        if (value == null) break;
-        if (!utils.func.isFunction(value)) {
-          throw new TypeError(`setting '${setting}' should be a function`);
-        }
+        utils.assertType(setting, "function", value);
+        break;
+      case "json.spaces":
+        utils.assertNonNegInt(setting, value);
+        break;
+      case "jsonp.callback":
+        utils.assertType(setting, "string", value);
+        break;
+      case "subdomain.offset":
+        utils.assertNonNegInt(setting, value);
         break;
       case "trust.proxy":
         if (value === true) {
-          value = () => true;
-        } else if (utils.number.isNumber(value)) {
+          value = (() => true) as any;
+        } else if (typeof value === "number") {
           const num = value;
-          value = (ip: string, i: number) => i < num;
-        } else if (!utils.func.isFunction(value)) {
-          if (utils.string.isString(value)) {
-            value = value.split(/ *, */);
+          value = ((ip: string, i: number) => i < num) as any;
+        } else if (typeof value !== "function") {
+          if (typeof value === "string") {
+            value = value.split(/ *, */) as any;
           }
 
-          value = proxyAddr.compile(value || []);
+          value = proxyAddr.compile((value as any) || []) as any;
+        }
+        break;
+      case "query.parser":
+        if (typeof value === "function") break;
+        if (value === true || value === "simple") value = qs.parse as any;
+        else if (value === false) value = (() => ({})) as any;
+        else if (value === "extended") {
+          value = ((str: string) =>
+            qs.parse(str, { allowPrototypes: true })) as any;
+        } else {
+          throw new TypeError(`Unknown value for ${setting} setting: ${value}`);
         }
         break;
       default:
-        throw new TypeError(`Unknown setting '${setting}'`);
+        throw new TypeError(
+          `Expected setting to be one of [${SETTINGS}], got ${setting}`,
+        );
     }
 
-    this._set(setting, value, this._settings);
+    this._settings[setting] = value as any;
 
     return this;
   }
 
+  public get<T extends keyof Foxify.Settings>(setting: T): Foxify.Settings[T];
+  public get(
+    path: string,
+    options: Layer.RouteOptions | Layer.Handler,
+    ...controllers: Layer.Handler[]
+  ): this;
   public get(
     path: string,
     options?: Layer.RouteOptions | Layer.Handler,
     ...controllers: Layer.Handler[]
   ): any {
-    if (!options) {
-      const setting = path;
-
+    if (arguments.length === 1) {
       assert(
-        SETTINGS.includes(setting),
-        `Expected 'setting' to be one of [${SETTINGS}], got '${setting}' instead`,
+        SETTINGS.includes(path as keyof Foxify.Settings),
+        `Expected setting to be one of [${SETTINGS}], got ${path}`,
       );
 
-      const keys = setting.split(".");
-
-      let _setting: { [key: string]: any } | boolean = this._settings;
-
-      keys.map(key => {
-        if (!utils.object.isObject(_setting)) {
-          throw new Error("Unknown setting");
-        }
-
-        _setting = (_setting as { [key: string]: any })[key];
-      });
-
-      return _setting;
+      return this._settings[path as keyof Foxify.Settings];
     }
 
-    return this.use(new Router().get(path, options, ...controllers));
+    return this.use(new Router().get(path, options as any, ...controllers));
   }
 
   public prettyPrint() {
@@ -382,47 +337,15 @@ class Foxify {
 
     events.on("error", HttpException.handle);
 
-    const opts = this._options;
-    const settings = {
-      ...this._settings,
-      view: this._view,
-    };
-
     const IncomingMessage = RequestClass;
     IncomingMessage.prototype.settings = {
-      subdomain: {
-        ...settings.subdomain,
-      },
-      trust: {
-        ...settings.trust,
-      },
+      ...this._settings,
     };
-
-    if (
-      Object.getOwnPropertyNames(IncomingMessage.prototype).indexOf("query") ===
-      -1
-    ) {
-      const queryParse: (...args: any[]) => any =
-        settings.query.parser || qs.parse;
-      Object.defineProperty(IncomingMessage.prototype, "query", {
-        get() {
-          return queryParse((utils.parseUrl(this) as Url).query, {
-            allowDots: true,
-          });
-        },
-      });
-    }
 
     const ServerResponse = ResponseClass;
     ServerResponse.prototype.settings = {
-      engine: settings.view,
-      etag: settings.etag,
-      json: {
-        escape: opts.json.escape,
-        spaces: settings.json.spaces,
-        replacer: settings.json.replacer,
-      },
-      jsonp: settings.jsonp,
+      ...this._settings,
+      view: this._view,
     };
 
     return inject(
@@ -437,10 +360,7 @@ class Foxify {
   }
 
   public start(callback?: Server.Callback) {
-    assert(
-      utils.func.isFunction(callback),
-      `Expected 'callback' to be a function, got ${typeof callback} instead`,
-    );
+    utils.assertType("callback", "function", callback);
 
     /* set node env */
     process.env.NODE_ENV = this.get("env");
@@ -449,7 +369,6 @@ class Foxify {
     this._router.initialize(this);
 
     const server = new Server(
-      this._options,
       {
         ...this._settings,
         view: this._view,
@@ -458,14 +377,6 @@ class Foxify {
     );
 
     return server.start(callback);
-  }
-
-  /* handle options & settings */
-  private _set(setting: string, value: any, object: { [key: string]: any }) {
-    const keys = setting.split(".");
-
-    if (keys.length === 1) object[keys[0]] = value;
-    else this._set(utils.array.tail(keys).join("."), value, object[keys[0]]);
   }
 }
 

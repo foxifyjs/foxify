@@ -10,6 +10,7 @@ import path from "path";
 import send = require("send");
 import HTTP, { Status } from "./constants/HTTP";
 import Request from "./Request";
+import Server from "./Server";
 import { encodeUrl, fresh, func, object, string, vary } from "./utils";
 import { Engine } from "./view";
 
@@ -262,25 +263,6 @@ const normalizeTypes = (types: string[]) => {
 };
 
 namespace Response {
-  /**
-   * @hidden
-   */
-  export interface Settings {
-    engine?: Engine;
-    etag?: (
-      body: string | Buffer,
-      encoding?: BufferEncoding,
-    ) => string | undefined;
-    json: {
-      escape: boolean;
-      spaces?: number;
-      replacer?: (...args: any[]) => any;
-    };
-    jsonp: {
-      callback: string;
-    };
-  }
-
   export type Json = string | number | object | any[] | null;
 
   export interface Headers extends http.OutgoingHttpHeaders {}
@@ -314,7 +296,7 @@ class Response extends http.ServerResponse {
   /**
    * @hidden
    */
-  public settings!: Response.Settings;
+  public settings!: Server.Settings;
 
   /**
    * @hidden
@@ -480,7 +462,11 @@ class Response extends http.ServerResponse {
       this.set("Content-Type", "application/json");
     }
 
-    const { replacer, spaces, escape } = this.settings.json;
+    const {
+      "json.replacer": replacer,
+      "json.spaces": spaces,
+      "json.escape": escape,
+    } = this.settings;
 
     return this.send(
       (this.stringify[this.statusCode] || stringify)(
@@ -500,9 +486,13 @@ class Response extends http.ServerResponse {
    */
   public jsonp(obj: Response.Json) {
     // settings
-    const { escape, replacer, spaces } = this.settings.json;
+    const {
+      "json.replacer": replacer,
+      "json.spaces": spaces,
+      "json.escape": escape,
+    } = this.settings;
     let body = stringify(obj, replacer, spaces, escape);
-    let callback = this.req.query[this.settings.jsonp.callback];
+    let callback = this.req.query[this.settings["jsonp.callback"]];
 
     // content-type
     if (!this.get("content-type")) {
@@ -1040,7 +1030,7 @@ class Response extends http.ServerResponse {
     data?: object | Engine.Callback,
     callback?: Engine.Callback,
   ) {
-    const engine = this.settings.engine!;
+    const engine = this.settings.view!;
 
     assert(engine, "View engine is not specified");
 

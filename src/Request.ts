@@ -4,22 +4,11 @@ import { isIP, Socket } from "net";
 import proxyAddr from "proxy-addr";
 import typeIs from "type-is";
 import { Url } from "url";
+import Server from "./Server";
 import { Accepts, parseUrl, string } from "./utils";
 import rangeParser, { RangeParser } from "./utils/range-parser";
 
 namespace Request {
-  /**
-   * @hidden
-   */
-  export interface Settings {
-    subdomain: {
-      offset?: number;
-    };
-    trust: {
-      proxy: (ip: string, hopIndex: number) => boolean;
-    };
-  }
-
   export interface Headers extends http.IncomingHttpHeaders {
     referrer: http.IncomingHttpHeaders["referer"];
   }
@@ -29,8 +18,6 @@ interface Request {
   body: any;
 
   cookies: any;
-
-  query: any;
 
   /**
    *
@@ -43,11 +30,21 @@ class Request extends http.IncomingMessage {
   /**
    * @hidden
    */
-  public settings!: Request.Settings;
+  public settings!: Server.Settings;
 
   public params: { [key: string]: any } = {};
 
   private _acceptsCache?: Accepts;
+
+  private _query?: { [key: string]: any };
+
+  public get query() {
+    if (!this._query) {
+      this._query = this.settings["query.parser"](parseUrl(this).query);
+    }
+
+    return this._query;
+  }
 
   /**
    * Return the protocol string "http" or "https"
@@ -62,7 +59,7 @@ class Request extends http.IncomingMessage {
   public get protocol() {
     const proto = (this.socket as any).encrypted ? "https" : "http";
 
-    if (!this.settings.trust.proxy(this.socket.remoteAddress!, 0)) {
+    if (!this.settings["trust.proxy"](this.socket.remoteAddress!, 0)) {
       return proto;
     }
 
@@ -90,7 +87,7 @@ class Request extends http.IncomingMessage {
    * "trust.proxy" is set.
    */
   public get ip() {
-    return proxyAddr(this, this.settings.trust.proxy);
+    return proxyAddr(this, this.settings["trust.proxy"]);
   }
 
   /**
@@ -102,7 +99,7 @@ class Request extends http.IncomingMessage {
    * "proxy2" were trusted.
    */
   public get ips() {
-    const addresses = proxyAddr.all(this, this.settings.trust.proxy);
+    const addresses = proxyAddr.all(this, this.settings["trust.proxy"]);
 
     // reverse the order (to farthest -> closest)
     // and remove socket address
@@ -128,7 +125,7 @@ class Request extends http.IncomingMessage {
     if (!hostname) return [];
 
     return (isIP(hostname) ? [hostname] : hostname.split(".").reverse()).slice(
-      this.settings.subdomain.offset,
+      this.settings["subdomain.offset"],
     );
   }
 
@@ -149,7 +146,7 @@ class Request extends http.IncomingMessage {
   public get hostname() {
     let host = this.get("x-forwarded-host") as string;
 
-    if (!host || !this.settings.trust.proxy(this.socket.remoteAddress!, 0)) {
+    if (!host || !this.settings["trust.proxy"](this.socket.remoteAddress!, 0)) {
       host = this.get("host")!;
     } else if (host.indexOf(",") !== -1) {
       // Note: X-Forwarded-Host is normally only ever a

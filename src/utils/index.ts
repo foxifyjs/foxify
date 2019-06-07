@@ -1,5 +1,7 @@
 import etag from "etag";
+
 export * from "prototyped.js/es6/methods";
+export * from "./assertions";
 
 export { default as Accepts } from "./accepts";
 export { default as encodeUrl } from "./encode-url";

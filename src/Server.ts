@@ -13,8 +13,6 @@ import { parseUrl } from "./utils";
 import { Engine } from "./view";
 
 namespace Server {
-  export interface Options extends Foxify.Options {}
-
   export interface Settings extends Foxify.Settings {
     view?: Engine;
   }
@@ -47,56 +45,24 @@ class Server {
 
   private _instance?: http.Server | https.Server;
 
-  constructor(
-    options: Server.Options,
-    settings: Server.Settings,
-    listener: Server.Listener,
-  ) {
+  constructor(settings: Server.Settings, listener: Server.Listener) {
     this._host = settings.url;
     this._port = settings.port;
 
-    const isHttps = options.https;
+    const isHttps = settings.https;
     const SERVER: any = isHttps ? https : http;
 
     const IncomingMessage = Request;
-    IncomingMessage.prototype.settings = {
-      subdomain: {
-        ...settings.subdomain,
-      },
-      trust: {
-        ...settings.trust,
-      },
-    };
-
-    const queryParse: (...args: any[]) => any =
-      settings.query.parser || qs.parse;
-    Object.defineProperty(IncomingMessage.prototype, "query", {
-      get() {
-        return queryParse((parseUrl(this) as Url).query, { allowDots: true });
-      },
-    });
+    IncomingMessage.prototype.settings = settings;
 
     const ServerResponse = Response;
-    ServerResponse.prototype.settings = {
-      engine: settings.view,
-      etag: settings.etag,
-      json: {
-        escape: options.json.escape,
-        replacer: settings.json.replacer,
-        spaces: settings.json.spaces,
-      },
-      jsonp: {
-        callback: settings.jsonp.callback,
-      },
-    };
+    ServerResponse.prototype.settings = settings;
 
     const OPTIONS: any = { IncomingMessage, ServerResponse };
 
     if (isHttps) {
-      const httpsSettings = settings.https;
-
-      OPTIONS.cert = httpsSettings.cert;
-      OPTIONS.key = httpsSettings.key;
+      OPTIONS.cert = settings["https.cert"];
+      OPTIONS.key = settings["https.key"];
     }
 
     this.on("error", HttpException.handle);
