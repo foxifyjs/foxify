@@ -24,6 +24,7 @@
 - :zap: Added setting: `trust.proxy`
 - :zap: Added setting: `jsonp.callback`
 - :zap: Added setting: `etag`
+- :zap: Added method: `error` to `Foxify`
 - :star2: Improved setting handling
 - :boom: Response `json` and `jsonp` methods no longer accept status parameter
 - :beetle: Fixed assertion error handling bug

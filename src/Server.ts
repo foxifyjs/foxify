@@ -1,15 +1,10 @@
 import * as cluster from "cluster";
 import * as http from "http";
 import * as https from "https";
-import * as qs from "qs";
-import { Url } from "url";
 import Foxify from ".";
-import events from "./events";
-import EventEmitter from "./events/Emitter";
 import { HttpException } from "./exceptions";
 import Request from "./Request";
 import Response from "./Response";
-import { parseUrl } from "./utils";
 import { Engine } from "./view";
 
 namespace Server {
@@ -20,21 +15,6 @@ namespace Server {
   export type Listener = (request: Request, response: Response) => void;
 
   export type Callback = (server: Server) => void;
-}
-
-interface Server {
-  on(
-    event: EventEmitter.ErrorEvent,
-    listener: EventEmitter.ErrorListener,
-  ): this;
-  on(
-    event: "uncaughtException",
-    listener: EventEmitter.ExceptionListener,
-  ): this;
-  on(
-    event: "unhandledRejection",
-    listener: EventEmitter.RejectionListener,
-  ): this;
 }
 
 class Server {
@@ -64,8 +44,6 @@ class Server {
       OPTIONS.cert = settings["https.cert"];
       OPTIONS.key = settings["https.key"];
     }
-
-    this.on("error", HttpException.handle);
 
     const workers = settings.workers;
 
@@ -118,12 +96,6 @@ class Server {
     if (this._listening) return this.stop(server => server.start(callback));
 
     return this.start(callback);
-  }
-
-  public on(event: EventEmitter.Event, listener: (...args: any[]) => void) {
-    events.on(event, listener);
-
-    return this;
   }
 }
 

@@ -3,10 +3,8 @@ import assert from "assert";
 import proxyAddr from "proxy-addr";
 import qs from "qs";
 import serveStatic from "serve-static";
-import { Url } from "url";
 import { METHODS } from "./constants/METHOD";
-import events from "./events";
-import { HttpException } from "./exceptions";
+import { Encapsulation } from "./exceptions";
 import RequestClass from "./Request";
 import ResponseClass from "./Response";
 import { Layer, Router } from "./routing";
@@ -98,8 +96,6 @@ namespace Foxify {
     "trust.proxy": (ip: string, hopIndex: number) => boolean;
     "query.parser": (str: string) => object;
   }
-
-  export type Handler = Layer.Handler;
 }
 
 interface Foxify extends Router.MethodFunctions<Foxify> {
@@ -311,6 +307,12 @@ class Foxify {
     return this.use(new Router().get(path, options as any, ...controllers));
   }
 
+  public error(...handlers: Encapsulation.Handler[]) {
+    Encapsulation.use(handlers);
+
+    return this;
+  }
+
   public prettyPrint() {
     return this._router.prettyPrint();
   }
@@ -335,8 +337,6 @@ class Foxify {
     this._router.initialize(this);
 
     if (typeof options === "string") options = { url: options };
-
-    events.on("error", HttpException.handle);
 
     const IncomingMessage = RequestClass;
     IncomingMessage.prototype.settings = {

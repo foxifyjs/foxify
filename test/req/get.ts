@@ -1,3 +1,4 @@
+import { omit } from "prototyped.js/es6/object/methods";
 import Foxify from "../../src";
 
 it("should return the header field value", async () => {
@@ -81,7 +82,7 @@ it("should special-case Referrer", async () => {
 });
 
 it("should throw missing header name", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   const app = new Foxify();
 
@@ -91,14 +92,17 @@ it("should throw missing header name", async () => {
 
   const result = await app.inject("/");
 
+  const body = JSON.parse(result.body);
+
   expect(result.statusCode).toBe(500);
-  expect(JSON.parse(result.body)).toEqual({
+  expect(body.stack).toBeInstanceOf(Array);
+  expect(omit(body, ["stack"])).toEqual({
     message: "Expected 'name' to be an string, got 'undefined' instead",
   });
 });
 
 it("should throw for non-string header name", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   const app = new Foxify();
 
@@ -108,8 +112,11 @@ it("should throw for non-string header name", async () => {
 
   const result = await app.inject("/");
 
+  const body = JSON.parse(result.body);
+
   expect(result.statusCode).toBe(500);
-  expect(JSON.parse(result.body)).toEqual({
+  expect(body.stack).toBeInstanceOf(Array);
+  expect(omit(body, ["stack"])).toEqual({
     message: "Expected 'name' to be an string, got 'number' instead",
   });
 });

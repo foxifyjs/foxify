@@ -13,7 +13,7 @@
     "prefer-array-literal": false,
     "import-name": false,
     "interface-name": [true, "never-prefix"],
-    "quotemark": [true, "double"],
+    "quotemark": [true, "double", "avoid-escape"],
     "ter-arrow-parens": [true, "as-needed"],
     "variable-name": [
       true,

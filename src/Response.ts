@@ -9,6 +9,7 @@ import onFinished from "on-finished";
 import path from "path";
 import send = require("send");
 import HTTP, { Status } from "./constants/HTTP";
+import METHOD from "./constants/METHOD";
 import Request from "./Request";
 import Server from "./Server";
 import { encodeUrl, fresh, func, object, string, vary } from "./utils";
@@ -323,7 +324,7 @@ class Response extends http.ServerResponse {
     const method = req.method;
 
     // GET or HEAD for weak freshness validation only
-    if ("GET" !== method && "HEAD" !== method) return false;
+    if (METHOD.GET !== method && METHOD.HEAD !== method) return false;
 
     const status = this.statusCode;
 
@@ -878,7 +879,7 @@ class Response extends http.ServerResponse {
       }
     }
 
-    this.setHeader(field as string, value);
+    this.setHeader(field, value);
 
     return this;
   }

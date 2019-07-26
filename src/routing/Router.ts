@@ -845,10 +845,9 @@ class Router {
     }
 
     // method validation
-    assert(typeof method === "string", "Method should be a string");
     assert(
-      METHODS.indexOf(method) !== -1,
-      `Method "${method}" is not an http method.`,
+      METHODS.includes(method),
+      `Expected method to be one of [${METHODS}], got ${method}`,
     );
 
     this.routes.push({
