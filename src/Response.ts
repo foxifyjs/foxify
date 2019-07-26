@@ -264,7 +264,7 @@ const normalizeTypes = (types: string[]) => {
 };
 
 namespace Response {
-  export type Json = string | number | object | any[] | null;
+  export type Json = string | number | object | any[] | null | undefined;
 
   export interface Headers extends http.OutgoingHttpHeaders {}
 }
@@ -280,8 +280,8 @@ interface Response {
    *
    * @alias header
    */
-  set<T extends string>(field: T, val: Response.Headers[T]): this;
-  set<T extends string>(fields: { [field in T]: Response.Headers[T] }): this;
+  set<T extends string>(field: T, val: Response.Headers[T] | number[]): this;
+  set<T extends string>(fields: { [field in T]: Response.Headers[T] | number[] }): this;
 
   getHeader<T extends string>(name: T): Response.Headers[T];
 
@@ -533,7 +533,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.sendStatus(200);
    */
-  public sendStatus(statusCode: Status) {
+  public sendStatus(statusCode: Status | number) {
     this.statusCode = statusCode;
 
     this.type("txt");
@@ -845,9 +845,9 @@ class Response extends http.ServerResponse {
    * @example
    * res.set({ Accept: "text/plain", "X-API-Key": "tobi" });
    */
-  public header<T extends string>(field: T, value: Response.Headers[T]): this;
+  public header<T extends string>(field: T, value: Response.Headers[T] | number[]): this;
   public header<T extends string>(
-    fields: { [header in T]: Response.Headers[T] },
+    fields: { [header in T]: Response.Headers[T] | number[] },
   ): this;
   public header(field: string | object, value?: string | number | string[]) {
     if (!string.isString(field)) {
@@ -1022,7 +1022,7 @@ class Response extends http.ServerResponse {
    *
    * @returns for chaining
    */
-  public vary(field: string | string[]) {
+  public vary(field: string | string[] = []) {
     return vary(this, field);
   }
 
