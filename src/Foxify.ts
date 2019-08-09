@@ -5,8 +5,8 @@ import qs from "qs";
 import serveStatic from "serve-static";
 import { METHODS } from "./constants/METHOD";
 import { Encapsulation } from "./exceptions";
-import RequestClass from "./Request";
-import ResponseClass from "./Response";
+import { createConstructor as createRequestConstructor } from "./Request";
+import { createConstructor as createResponseConstructor } from "./Response";
 import { Layer, Router } from "./routing";
 import Server from "./Server";
 import * as utils from "./utils";
@@ -338,16 +338,11 @@ class Foxify {
 
     if (typeof options === "string") options = { url: options };
 
-    const IncomingMessage = RequestClass;
-    IncomingMessage.prototype.settings = {
-      ...this._settings,
-    };
-
-    const ServerResponse = ResponseClass;
-    ServerResponse.prototype.settings = {
+    const IncomingMessage = createRequestConstructor(this._settings);
+    const ServerResponse = createResponseConstructor({
       ...this._settings,
       view: this._view,
-    };
+    });
 
     return inject(
       this._router.lookup.bind(this._router) as any,
@@ -361,7 +356,9 @@ class Foxify {
   }
 
   public start(callback?: Server.Callback) {
-    utils.assertType("callback", "function", callback);
+    if (callback !== undefined) {
+      utils.assertType("callback", "function", callback);
+    }
 
     /* set node env */
     process.env.NODE_ENV = this.get("env");

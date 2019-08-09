@@ -2,9 +2,12 @@ import * as cluster from "cluster";
 import * as http from "http";
 import * as https from "https";
 import Foxify from ".";
-import { HttpException } from "./exceptions";
-import Request from "./Request";
-import Response from "./Response";
+import Request, {
+  createConstructor as createRequestConstructor,
+} from "./Request";
+import Response, {
+  createConstructor as createResponseConstructor,
+} from "./Response";
 import { Engine } from "./view";
 
 namespace Server {
@@ -32,11 +35,8 @@ class Server {
     const isHttps = settings.https;
     const SERVER: any = isHttps ? https : http;
 
-    const IncomingMessage = Request;
-    IncomingMessage.prototype.settings = settings;
-
-    const ServerResponse = Response;
-    ServerResponse.prototype.settings = settings;
+    const IncomingMessage = createRequestConstructor(settings);
+    const ServerResponse = createResponseConstructor(settings);
 
     const OPTIONS: any = { IncomingMessage, ServerResponse };
 

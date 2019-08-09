@@ -20,6 +20,18 @@ const STATUS_CODES = http.STATUS_CODES;
 
 const charsetRegExp = /;\s*charset\s*=/;
 
+const SETTINGS: Server.Settings = {} as any;
+
+export function createConstructor(settings: Server.Settings) {
+  Object.assign(SETTINGS, settings);
+
+  Response.prototype.type = Response.prototype.contentType;
+  Response.prototype.set = Response.prototype.header;
+  Response.prototype.get = Response.prototype.getHeader;
+
+  return Response;
+}
+
 /**
  * Set the charset in a given Content-Type string.
  *
@@ -281,7 +293,9 @@ interface Response {
    * @alias header
    */
   set<T extends string>(field: T, val: Response.Headers[T] | number[]): this;
-  set<T extends string>(fields: { [field in T]: Response.Headers[T] | number[] }): this;
+  set<T extends string>(
+    fields: { [field in T]: Response.Headers[T] | number[] },
+  ): this;
 
   getHeader<T extends string>(name: T): Response.Headers[T];
 
@@ -294,11 +308,6 @@ interface Response {
 }
 
 class Response extends http.ServerResponse {
-  /**
-   * @hidden
-   */
-  public settings!: Server.Settings;
-
   /**
    * @hidden
    */
@@ -356,10 +365,6 @@ class Response extends http.ServerResponse {
     super(req);
 
     this.req = req;
-
-    this.type = this.contentType;
-    this.set = this.header;
-    this.get = this.getHeader;
   }
 
   /**
@@ -409,26 +414,26 @@ class Response extends http.ServerResponse {
   public send(body: string | Response.Json | Buffer): this {
     let encoding: BufferEncoding | undefined;
 
-    if (string.isString(body)) {
+    if (typeof body === "string") {
       encoding = "utf-8";
       const type = this.get("content-type");
 
       // reflect this in content-type
       if (!type) {
         this.set("Content-Type", setCharset("text/html", encoding));
-      } else if (typeof type === "string") {
-        this.set("Content-Type", setCharset(type, "utf-8"));
+      } else if (typeof type === "string" && !charsetRegExp.test(type)) {
+        this.set("Content-Type", setCharset(type, encoding));
       }
     } else if (Buffer.isBuffer(body)) {
-      if (!this.get("content-type")) this.type("bin");
+      if (!this.hasHeader("content-type")) this.type("bin");
     } else return this.json(body);
 
-    const etagFn = this.settings.etag;
+    const { etag } = SETTINGS;
 
-    if (!this.get("ETag") && etagFn) {
-      const etag = etagFn(body, encoding);
+    if (!this.hasHeader("etag") && etag) {
+      const generatedETag = etag(body, encoding);
 
-      if (etag) this.set("ETag", etag);
+      if (generatedETag) this.setHeader("ETag", generatedETag);
     }
 
     // freshness
@@ -446,7 +451,7 @@ class Response extends http.ServerResponse {
     }
 
     // skip body for HEAD
-    if (this.req.method === "HEAD") this.end();
+    if (this.req.method === METHOD.HEAD) this.end();
     else this.end(body, encoding as string);
 
     return this;
@@ -459,15 +464,15 @@ class Response extends http.ServerResponse {
    * res.json({ user: "tj" });
    */
   public json(obj: Response.Json) {
-    if (!this.get("Content-Type")) {
-      this.set("Content-Type", "application/json");
+    if (!this.hasHeader("content-type")) {
+      this.setHeader("Content-Type", "application/json; charset=utf-8");
     }
 
     const {
       "json.replacer": replacer,
       "json.spaces": spaces,
       "json.escape": escape,
-    } = this.settings;
+    } = SETTINGS;
 
     return this.send(
       (this.stringify[this.statusCode] || stringify)(
@@ -491,9 +496,9 @@ class Response extends http.ServerResponse {
       "json.replacer": replacer,
       "json.spaces": spaces,
       "json.escape": escape,
-    } = this.settings;
+    } = SETTINGS;
     let body = stringify(obj, replacer, spaces, escape);
-    let callback = this.req.query[this.settings["jsonp.callback"]];
+    let callback = this.req.query[SETTINGS["jsonp.callback"]];
 
     // content-type
     if (!this.get("content-type")) {
@@ -845,7 +850,10 @@ class Response extends http.ServerResponse {
    * @example
    * res.set({ Accept: "text/plain", "X-API-Key": "tobi" });
    */
-  public header<T extends string>(field: T, value: Response.Headers[T] | number[]): this;
+  public header<T extends string>(
+    field: T,
+    value: Response.Headers[T] | number[],
+  ): this;
   public header<T extends string>(
     fields: { [header in T]: Response.Headers[T] | number[] },
   ): this;
@@ -867,7 +875,7 @@ class Response extends http.ServerResponse {
     value = Array.isArray(value) ? value.map(String) : `${value}`;
 
     // add charset to content-type
-    if ((field as string).toLowerCase() === "content-type") {
+    if (field.toLowerCase() === "content-type") {
       assert(!Array.isArray(value), "Content-Type cannot be set to an Array");
 
       if (!charsetRegExp.test(value as string)) {
@@ -1012,7 +1020,7 @@ class Response extends http.ServerResponse {
     this.statusCode = status;
     this.set("content-length", Buffer.byteLength(body));
 
-    if (this.req.method === "HEAD") this.end();
+    if (this.req.method === METHOD.HEAD) this.end();
     else this.end(body);
   }
 
@@ -1031,7 +1039,7 @@ class Response extends http.ServerResponse {
     data?: object | Engine.Callback,
     callback?: Engine.Callback,
   ) {
-    const engine = this.settings.view!;
+    const engine = SETTINGS.view!;
 
     assert(engine, "View engine is not specified");
 
