@@ -201,7 +201,7 @@ class Foxify {
       case "etag":
         if (value == null || typeof value === "function") break;
         if (value === false) value = undefined as any;
-        if (value === true || value === "weak") {
+        else if (value === true || value === "weak") {
           value = utils.createETagGenerator(true) as any;
         } else if (value === "strong") {
           value = utils.createETagGenerator(false) as any;

@@ -422,7 +422,7 @@ class Response extends http.ServerResponse {
    * @example
    * res.send("<p>some html</p>");
    */
-  public send(body: string | Response.Json | Buffer): this {
+  public send(body?: string | Response.Json | Buffer): this {
     let encoding: BufferEncoding | undefined;
 
     if (typeof body === "string") {
@@ -430,21 +430,24 @@ class Response extends http.ServerResponse {
       const type = this.get("content-type");
 
       // reflect this in content-type
-      if (!type) {
-        this.set("Content-Type", setCharset("text/html", encoding));
-      } else if (typeof type === "string" && !charsetRegExp.test(type)) {
+      if (typeof type === "string") {
         this.set("Content-Type", setCharset(type, encoding));
+      } else {
+        this.set("Content-Type", setCharset("text/html", encoding));
       }
     } else if (Buffer.isBuffer(body)) {
       if (!this.hasHeader("content-type")) this.type("bin");
-    } else return this.json(body);
+    } else if (body === null) body = "";
+    else if (body !== undefined) return this.json(body);
 
-    const { etag } = SETTINGS;
+    if (body !== undefined) {
+      const { etag } = SETTINGS;
 
-    if (!this.hasHeader("etag") && etag) {
-      const generatedETag = etag(body, encoding);
+      if (etag && !this.hasHeader("etag")) {
+        const generatedETag = etag(body, encoding);
 
-      if (generatedETag) this.setHeader("ETag", generatedETag);
+        if (generatedETag) this.setHeader("ETag", generatedETag);
+      }
     }
 
     // freshness
