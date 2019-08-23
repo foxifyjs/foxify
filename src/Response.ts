@@ -1,3 +1,4 @@
+import fresh from "@foxify/fresh";
 import assert from "assert";
 import contentDisposition from "content-disposition";
 import contentType from "content-type";
@@ -12,7 +13,7 @@ import HTTP, { Status } from "./constants/HTTP";
 import METHOD from "./constants/METHOD";
 import Request from "./Request";
 import Server from "./Server";
-import { encodeUrl, fresh, func, object, string, vary } from "./utils";
+import { encodeUrl, func, object, string, vary } from "./utils";
 import { Engine } from "./view";
 
 const resolve = path.resolve;
@@ -349,7 +350,10 @@ class Response extends http.ServerResponse {
       (status >= HTTP.OK && status < HTTP.MULTIPLE_CHOICES) ||
       HTTP.NOT_MODIFIED === status
     ) {
-      return fresh(req.headers, this.getHeaders());
+      return fresh(req.headers, {
+        etag: this.get("etag"),
+        "last-modified": this.getHeader("last-modified"),
+      });
     }
 
     return false;

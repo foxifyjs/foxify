@@ -38,7 +38,7 @@
     "foxify"
   ],
   "engines": {
-    "node": ">=8.12"
+    "node": ">= 8.12"
   },
   "files": [
     "framework"
@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@foxify/events": "^1.1.4",
+    "@foxify/fresh": "^1.0.0",
     "@foxify/inject": "^1.0.3",
     "@types/node": "^14.11.10",
     "async": "^2.6.3",
