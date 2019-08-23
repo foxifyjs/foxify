@@ -28,26 +28,13 @@
  * This module is modified and optimized for Foxify specifically
  */
 
-import { IncomingHttpHeaders } from "http";
+import { IncomingHttpHeaders, OutgoingHttpHeaders } from "http";
 
 /**
  * RegExp to check for no-cache token in Cache-Control.
  * @private
  */
 const CACHE_CONTROL_NO_CACHE_REGEXP = /(?:^|,)\s*?no-cache\s*?(?:,|$)/;
-
-/**
- * Parse an HTTP Date into a number.
- *
- * @param {string} date
- * @private
- */
-const parseHttpDate = (date: string) => {
-  const timestamp = date && Date.parse(date);
-
-  // istanbul ignore next: guard against date.js Date.parse patching
-  return typeof timestamp === "number" ? timestamp : NaN;
-};
 
 /**
  * Check freshness of the response using request and response headers.
@@ -57,10 +44,13 @@ const parseHttpDate = (date: string) => {
  * @return {Boolean}
  * @public
  */
-const fresh = (reqHeaders: IncomingHttpHeaders, lastModified?: string) => {
+export default function fresh(
+  reqHeaders: IncomingHttpHeaders,
+  resHeaders: OutgoingHttpHeaders,
+) {
   // fields
-  const modifiedSince = reqHeaders["if-modified-since"] as string;
-  const noneMatch = reqHeaders["if-none-match"] as string;
+  const modifiedSince = reqHeaders["if-modified-since"];
+  const noneMatch = reqHeaders["if-none-match"];
 
   // unconditional request
   if (!modifiedSince && !noneMatch) return false;
@@ -74,17 +64,83 @@ const fresh = (reqHeaders: IncomingHttpHeaders, lastModified?: string) => {
   }
 
   // if-none-match
-  if (noneMatch && noneMatch !== "*") return false;
+  if (noneMatch && noneMatch !== "*") {
+    const etag = resHeaders.etag;
+
+    if (!etag) return false;
+
+    let etagStale = true;
+    const matches = parseTokenList(noneMatch);
+
+    for (let i = 0; i < matches.length; i++) {
+      const match = matches[i];
+
+      if (match === etag || match === `W/${etag}` || `W/${match}` === etag) {
+        etagStale = false;
+        break;
+      }
+    }
+
+    if (etagStale) return false;
+  }
 
   // if-modified-since
-  if (
-    (modifiedSince && !lastModified) ||
-    !(parseHttpDate(lastModified!) <= parseHttpDate(modifiedSince))
-  ) {
-    return false;
+  if (modifiedSince) {
+    const lastModified = resHeaders["last-modified"] as string;
+    const modifiedStale =
+      !lastModified ||
+      !(parseHttpDate(lastModified) <= parseHttpDate(modifiedSince));
+
+    if (modifiedStale) return false;
   }
 
   return true;
-};
+}
 
-export default fresh;
+/**
+ * Parse an HTTP Date into a number.
+ *
+ * @param {string} date
+ * @private
+ */
+function parseHttpDate(date: string) {
+  const timestamp = date && Date.parse(date);
+
+  // istanbul ignore next: guard against date.js Date.parse patching
+  return typeof timestamp === "number" ? timestamp : NaN;
+}
+
+/**
+ * Parse a HTTP token list.
+ *
+ * @param {string} str
+ * @private
+ */
+function parseTokenList(str: string) {
+  const list = [];
+  let start = 0;
+  let end = 0;
+
+  // gather tokens
+  for (let i = 0, len = str.length; i < len; i++) {
+    switch (str.charCodeAt(i)) {
+      case 0x20 /*   */:
+        if (start === end) {
+          start = end = i + 1;
+        }
+        break;
+      case 0x2c /* , */:
+        list.push(str.substring(start, end));
+        start = end = i + 1;
+        break;
+      default:
+        end = i + 1;
+        break;
+    }
+  }
+
+  // final token
+  list.push(str.substring(start, end));
+
+  return list;
+}

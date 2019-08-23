@@ -276,7 +276,14 @@ const normalizeTypes = (types: string[]) => {
 };
 
 namespace Response {
-  export type Json = string | number | object | any[] | null | undefined;
+  export type Json =
+    | boolean
+    | string
+    | number
+    | object
+    | any[]
+    | null
+    | undefined;
 
   export interface Headers extends http.OutgoingHttpHeaders {}
 }
@@ -342,7 +349,7 @@ class Response extends http.ServerResponse {
       (status >= HTTP.OK && status < HTTP.MULTIPLE_CHOICES) ||
       HTTP.NOT_MODIFIED === status
     ) {
-      return fresh(req.headers, this.get("last-modified") as string);
+      return fresh(req.headers, this.getHeaders());
     }
 
     return false;
