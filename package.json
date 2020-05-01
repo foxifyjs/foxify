@@ -54,7 +54,9 @@
     "doc": "node scripts/doc.js",
     "test": "jest",
     "coverage": "npm test -- --coverage",
-    "codecov": "npm run coverage -- --runInBand && codecov"
+    "codecov": "npm run coverage -- --runInBand && codecov",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "@foxify/inject": "^1.0.3",
@@ -76,7 +78,8 @@
     "safe-regex": "^2.0.2",
     "send": "^0.16.2",
     "serve-static": "^1.13.2",
-    "type-is": "^1.6.16"
+    "type-is": "^1.6.16",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@types/async": "^2.4.1",
@@ -120,5 +123,6 @@
     "testMatch": [
       "<rootDir>/test/**/*\\.ts"
     ]
-  }
+  },
+  "snyk": true
 }
