@@ -1,10 +1,2 @@
-import httpMethods, { Method } from "./httpMethods";
-import * as Layer from "./Layer";
-import * as Router from "./Router";
-
-export {
-  httpMethods,
-  Method,
-  Layer,
-  Router,
-};
+export { default as Layer } from "./Layer";
+export { default as Router } from "./Router";

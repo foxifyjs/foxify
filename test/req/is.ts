@@ -1,4 +1,4 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
 describe("when given a mime type", () => {
   it("should return the type when matching", async () => {

@@ -1,8 +1,8 @@
-import * as assert from "assert";
-import httpMethods, { Method } from "./httpMethods";
-import * as Request from "../Request";
-import * as Response from "../Response";
+import assert from "assert";
+import { Method, METHODS } from "../constants/METHOD";
 import { Encapsulation } from "../exceptions";
+import Request from "../Request";
+import Response from "../Response";
 
 const OPTIONS = { schema: { response: {} } };
 
@@ -10,8 +10,8 @@ const buildHandlers = (handlers?: any) => {
   let code = `handlers = handlers || {}
   `;
 
-  for (let i = 0; i < httpMethods.length; i++) {
-    const m = httpMethods[i];
+  for (let i = 0; i < METHODS.length; i++) {
+    const m = METHODS[i];
 
     code += `this["${m}"] = handlers["${m}"] || {
       handlers: [],
@@ -24,22 +24,27 @@ const buildHandlers = (handlers?: any) => {
     `;
   }
 
+  // tslint:disable-next-line:no-function-constructor-with-string-args
   return new Function("handlers", code); // eslint-disable-line
 };
 
 const Handlers = buildHandlers();
 
-const TYPES = {
-  STATIC: 0 as 0,
-  PARAM: 1 as 1,
-  MATCH_ALL: 2 as 2,
-  REGEX: 3 as 3,
+export const enum TYPES {
+  STATIC = 0,
+  PARAM = 1,
+  MATCH_ALL = 2,
+  REGEX = 3,
   // It's used for a parameter, that is followed by another parameter in the same part
-  MULTI_PARAM: 4 as 4,
-};
+  MULTI_PARAM = 4,
+}
 
-module Layer {
-  export type Handler = (request: Request, response: Response, next: (err?: Error) => void) => void;
+namespace Layer {
+  export type Handler = (
+    request: Request,
+    response: Response,
+    next: (err?: Error) => void,
+  ) => void;
 
   export interface HandlerObject {
     handlers: Encapsulation[];
@@ -50,87 +55,22 @@ module Layer {
     prettyPrint: boolean;
   }
 
-  export interface Handlers {
-    [method: string]: HandlerObject;
+  export type Handlers = { [method in Method]: HandlerObject };
 
-    ACL: HandlerObject;
-    BIND: HandlerObject;
-    CHECKOUT: HandlerObject;
-    CONNECT: HandlerObject;
-    COPY: HandlerObject;
-    DELETE: HandlerObject;
-    GET: HandlerObject;
-    HEAD: HandlerObject;
-    LINK: HandlerObject;
-    LOCK: HandlerObject;
-    "M-SEARCH": HandlerObject;
-    MERGE: HandlerObject;
-    MKACTIVITY: HandlerObject;
-    MKCALENDAR: HandlerObject;
-    MKCOL: HandlerObject;
-    MOVE: HandlerObject;
-    NOTIFY: HandlerObject;
-    OPTIONS: HandlerObject;
-    PATCH: HandlerObject;
-    POST: HandlerObject;
-    PROPFIND: HandlerObject;
-    PROPPATCH: HandlerObject;
-    PURGE: HandlerObject;
-    PUT: HandlerObject;
-    REBIND: HandlerObject;
-    REPORT: HandlerObject;
-    SEARCH: HandlerObject;
-    SOURCE: HandlerObject;
-    SUBSCRIBE: HandlerObject;
-    TRACE: HandlerObject;
-    UNBIND: HandlerObject;
-    UNLINK: HandlerObject;
-    UNLOCK: HandlerObject;
-    UNSUBSCRIBE: HandlerObject;
-  }
-
-  export interface Options {
-    ACL: RouteOptions;
-    BIND: RouteOptions;
-    CHECKOUT: RouteOptions;
-    CONNECT: RouteOptions;
-    COPY: RouteOptions;
-    DELETE: RouteOptions;
-    GET: RouteOptions;
-    HEAD: RouteOptions;
-    LINK: RouteOptions;
-    LOCK: RouteOptions;
-    "M-SEARCH": RouteOptions;
-    MERGE: RouteOptions;
-    MKACTIVITY: RouteOptions;
-    MKCALENDAR: RouteOptions;
-    MKCOL: RouteOptions;
-    MOVE: RouteOptions;
-    NOTIFY: RouteOptions;
-    OPTIONS: RouteOptions;
-    PATCH: RouteOptions;
-    POST: RouteOptions;
-    PROPFIND: RouteOptions;
-    PROPPATCH: RouteOptions;
-    PURGE: RouteOptions;
-    PUT: RouteOptions;
-    REBIND: RouteOptions;
-    REPORT: RouteOptions;
-    SEARCH: RouteOptions;
-    SOURCE: RouteOptions;
-    SUBSCRIBE: RouteOptions;
-    TRACE: RouteOptions;
-    UNBIND: RouteOptions;
-    UNLINK: RouteOptions;
-    UNLOCK: RouteOptions;
-    UNSUBSCRIBE: RouteOptions;
-  }
+  export type Options = { [method in Method]: RouteOptions };
 
   export interface Children {
     [label: string]: Layer | undefined;
   }
 
-  export type JsonSchemaType = "string" | "integer" | "number" | "array" | "object" | "boolean" | "null";
+  export type JsonSchemaType =
+    | "string"
+    | "integer"
+    | "number"
+    | "array"
+    | "object"
+    | "boolean"
+    | "null";
 
   export interface JsonSchemaProperties {
     [property: string]: {
@@ -159,21 +99,18 @@ module Layer {
   }
 }
 
-interface Layer { }
-
 class Layer {
-  static isLayer = (arg: any): arg is Layer => arg instanceof Layer;
+  public static Handlers = Handlers;
 
-  static TYPES = TYPES;
-  static Handlers = Handlers;
+  public static isLayer = (arg: any): arg is Layer => arg instanceof Layer;
 
-  handlers: Layer.Handlers;
+  public handlers: Layer.Handlers;
 
-  wildcardChild: Layer | null = null;
+  public wildcardChild: Layer | null = null;
 
-  parametricBrother: Layer | null = null;
+  public parametricBrother: Layer | null = null;
 
-  numberOfChildren = Object.keys(this.children).length;
+  public numberOfChildren = Object.keys(this.children).length;
 
   constructor(
     public prefix = "/",
@@ -181,12 +118,12 @@ class Layer {
     public kind: number = TYPES.STATIC,
     public regex: RegExp | null = null,
     public params: string[] = [],
-    handlers?: Layer.Handlers
+    handlers?: Layer.Handlers,
   ) {
     this.handlers = new (Handlers as any)(handlers);
 
     const paramsLength = params.length;
-    httpMethods.forEach((method) => {
+    METHODS.forEach(method => {
       this.handlers[method].params = params;
       this.handlers[method].paramsLength = paramsLength;
     });
@@ -196,7 +133,7 @@ class Layer {
     return this.prefix[0];
   }
 
-  addChild(layer: Layer) {
+  public addChild(layer: Layer) {
     let label = "";
 
     switch (layer.kind) {
@@ -218,7 +155,7 @@ class Layer {
 
     assert(
       this.children[label] === undefined,
-      `There is already a child with label "${label}"`
+      `There is already a child with label "${label}"`,
     );
 
     this.children[label] = layer;
@@ -229,6 +166,7 @@ class Layer {
     let parametricBrother = null;
     for (let i = 0; i < labels.length; i++) {
       const child = this.children[labels[i]] as Layer;
+
       if (child.label === ":") {
         parametricBrother = child;
         break;
@@ -239,14 +177,15 @@ class Layer {
     for (let i = 0; i < labels.length; i++) {
       const child = this.children[labels[i]] as Layer;
 
-      if (child.kind === TYPES.STATIC && parametricBrother)
+      if (child.kind === TYPES.STATIC && parametricBrother) {
         child.parametricBrother = parametricBrother;
+      }
     }
 
     return this;
   }
 
-  reset(prefix = "/") {
+  public reset(prefix = "/") {
     this.prefix = prefix;
     this.children = {};
     this.kind = TYPES.STATIC;
@@ -258,46 +197,66 @@ class Layer {
     return this;
   }
 
-  findByLabel(path: string) {
+  public findByLabel(path: string) {
     return this.children[path[0]];
   }
 
-  findChild(path: string, method: Method) {
+  public findChild(path: string, method: Method) {
     let child = this.children[path[0]];
 
-    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method].handlersLength !== 0))
-      if (path.slice(0, child.prefix.length) === child.prefix)
-        return child;
+    if (
+      child !== undefined &&
+      (child.numberOfChildren > 0 ||
+        child.handlers[method].handlersLength !== 0)
+    ) {
+      if (path.slice(0, child.prefix.length) === child.prefix) return child;
+    }
 
     child = this.children[":"] || this.children["*"];
 
-    if (child !== undefined && (child.numberOfChildren > 0 || child.handlers[method].handlersLength !== 0))
+    if (
+      child !== undefined &&
+      (child.numberOfChildren > 0 ||
+        child.handlers[method].handlersLength !== 0)
+    ) {
       return child;
+    }
 
     return null;
   }
 
-  addHandler(method: Method, options: Layer.RouteOptions = OPTIONS, handlers: Layer.Handler[], prettyPrint = false) {
+  public addHandler(
+    method: Method,
+    options: Layer.RouteOptions = OPTIONS,
+    handlers: Layer.Handler[],
+    prettyPrint = false,
+  ) {
     const length = handlers.length;
 
     if (length === 0) return this;
 
-    this.handlers[method].handlers.push(...handlers.map((handler) => new Encapsulation(handler)));
+    this.handlers[method].handlers.push(
+      ...handlers.map(handler => new Encapsulation(handler)),
+    );
     this.handlers[method].handlersLength += length;
-    this.handlers[method].options = Object.assign({}, OPTIONS, options, { schema: options.schema || { response: {} } });
-    this.handlers[method].prettyPrint = this.handlers[method].prettyPrint || prettyPrint;
+    this.handlers[method].options = Object.assign({}, OPTIONS, options, {
+      schema: options.schema || { response: {} },
+    });
+    this.handlers[method].prettyPrint =
+      this.handlers[method].prettyPrint || prettyPrint;
 
     return this;
   }
 
-  getHandler(method: Method) {
+  public getHandler(method: Method) {
     return this.handlers[method];
   }
 
-  prettyPrint(prefix: string, tail: boolean = false) {
+  public prettyPrint(prefix: string, tail: boolean = false) {
     const handlers = this.handlers;
-    const methods = Object.keys(handlers)
-      .filter((method) => handlers[method].prettyPrint);
+    const methods = Object.keys(handlers).filter(
+      method => handlers[method as Method].prettyPrint,
+    );
     let paramName = "";
 
     if (this.prefix === ":") {
@@ -312,9 +271,8 @@ class Layer {
           }
 
           paramName += `|${method}`;
-          paramName += (index === methods.length - 1 ? ")" : "");
-        } else
-          paramName = `${param} (${method})`;
+          paramName += index === methods.length - 1 ? ")" : "";
+        } else paramName = `${param} (${method})`;
       });
     } else if (methods.length) paramName = ` (${methods.join("|")})`;
 
@@ -323,14 +281,19 @@ class Layer {
     prefix = `${prefix}${tail ? "    " : "│   "}`;
     const labels = Object.keys(this.children);
 
-    for (let i = 0; i < labels.length - 1; i++)
+    for (let i = 0; i < labels.length - 1; i++) {
       tree += (this.children[labels[i]] as Layer).prettyPrint(prefix);
+    }
 
-    if (labels.length > 0)
-      tree += (this.children[labels[labels.length - 1]] as Layer).prettyPrint(prefix, true);
+    if (labels.length > 0) {
+      tree += (this.children[labels[labels.length - 1]] as Layer).prettyPrint(
+        prefix,
+        true,
+      );
+    }
 
     return tree;
   }
 }
 
-export = Layer;
+export default Layer;

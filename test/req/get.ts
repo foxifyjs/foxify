@@ -1,72 +1,122 @@
-import * as Foxify from "../../src";
+import { omit } from "prototyped.js/es6/object/methods";
+import Foxify from "../../src";
 
-describe(".get(field)", () => {
-  it("should return the header field value", async () => {
-    expect.assertions(2);
+it("should return the header field value", async () => {
+  expect.assertions(2);
 
-    const app = new Foxify();
+  const app = new Foxify();
 
-    app.use((req, res) => {
-      expect(req.get("Something-Else")).toBeUndefined();
-      res.end(req.get("Content-Type"));
-    });
-
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        "content-type": "application/json",
-      },
-    });
-
-    expect(result.body).toBe("application/json");
+  app.use((req, res) => {
+    expect(req.get("Something-Else")).toBeUndefined();
+    res.end(req.get("Content-Type"));
   });
 
-  it("should special-case Referer", async () => {
-    expect.assertions(1);
-
-    const app = new Foxify();
-
-    app.use((req, res) => {
-      res.end(req.get("Referer"));
-    });
-
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        referer: "http://foobar.com",
-      },
-    });
-
-    expect(result.body).toBe("http://foobar.com");
+  const result = await app.inject({
+    url: "/",
+    headers: {
+      "content-type": "application/json",
+    },
   });
 
-  it("should throw missing header name", async () => {
-    expect.assertions(2);
+  expect(result.body).toBe("application/json");
+});
 
-    const app = new Foxify();
+it("should special-case Referer", async () => {
+  expect.assertions(2);
 
-    app.use((req, res) => {
-      res.end((req as any).get());
-    });
+  const app = new Foxify();
 
-    const result = await app.inject("/");
-
-    expect(result.statusCode).toBe(500);
-    expect(result.body).toMatch(/name argument is required to req\.get/);
+  app.use((req, res) => {
+    res.end(req.get("Referer"));
   });
 
-  it("should throw for non-string header name", async () => {
-    expect.assertions(2);
+  const referer = "https://foxify.js.org";
 
-    const app = new Foxify();
+  let result = await app.inject({
+    url: "/",
+    headers: {
+      referer,
+    },
+  });
 
-    app.use((req, res) => {
-      res.end(req.get(42 as any));
-    });
+  expect(result.body).toBe(referer);
 
-    const result = await app.inject("/");
+  result = await app.inject({
+    url: "/",
+    headers: {
+      referrer: referer,
+    },
+  });
 
-    expect(result.statusCode).toBe(500);
-    expect(result.body).toMatch(/name must be a string to req\.get/);
+  expect(result.body).toBe(referer);
+});
+
+it("should special-case Referrer", async () => {
+  expect.assertions(2);
+
+  const app = new Foxify();
+
+  app.use((req, res) => {
+    res.end(req.get("Referrer"));
+  });
+
+  const referer = "https://foxify.js.org";
+
+  let result = await app.inject({
+    url: "/",
+    headers: {
+      referer,
+    },
+  });
+
+  expect(result.body).toBe(referer);
+
+  result = await app.inject({
+    url: "/",
+    headers: {
+      referrer: referer,
+    },
+  });
+
+  expect(result.body).toBe(referer);
+});
+
+it("should throw missing header name", async () => {
+  expect.assertions(3);
+
+  const app = new Foxify();
+
+  app.use((req, res) => {
+    res.end((req as any).get());
+  });
+
+  const result = await app.inject("/");
+
+  const body = JSON.parse(result.body);
+
+  expect(result.statusCode).toBe(500);
+  expect(body.stack).toBeInstanceOf(Array);
+  expect(omit(body, ["stack"])).toEqual({
+    message: "Expected 'name' to be an string, got 'undefined' instead",
+  });
+});
+
+it("should throw for non-string header name", async () => {
+  expect.assertions(3);
+
+  const app = new Foxify();
+
+  app.use((req, res) => {
+    res.end(req.get(42 as any));
+  });
+
+  const result = await app.inject("/");
+
+  const body = JSON.parse(result.body);
+
+  expect(result.statusCode).toBe(500);
+  expect(body.stack).toBeInstanceOf(Array);
+  expect(omit(body, ["stack"])).toEqual({
+    message: "Expected 'name' to be an string, got 'number' instead",
   });
 });

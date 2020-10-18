@@ -1,35 +1,20 @@
 {
   "defaultSeverity": "error",
-  "extends": [
-    "tslint:recommended"
-  ],
-  "jsRules": {},
+  "extends": ["tslint:recommended", "tslint-config-airbnb"],
   "rules": {
-    "trailing-comma": [
-      true,
-      {
-        "multiline": {
-          "objects": "always",
-          "arrays": "always",
-          "functions": "never",
-          "typeLiterals": "ignore"
-        },
-        "esSpecCompliant": true
-      }
-    ],
-    "ordered-imports": false,
     "no-namespace": false,
-    "no-internal-module": false,
-    "interface-name": [
-      true,
-      "never-prefix"
-    ],
+    "no-bitwise": false,
+    "no-parameter-reassignment": false,
     "no-empty-interface": false,
-    "member-access": [
-      true,
-      "no-public"
-    ],
+    "no-increment-decrement": false,
+    "increment-decrement": false,
     "object-literal-sort-keys": false,
+    "prefer-for-of": false,
+    "prefer-array-literal": false,
+    "import-name": false,
+    "interface-name": [true, "never-prefix"],
+    "quotemark": [true, "double", "avoid-escape"],
+    "ter-arrow-parens": [true, "as-needed"],
     "variable-name": [
       true,
       "ban-keywords",
@@ -37,47 +22,22 @@
       "allow-pascal-case",
       "allow-leading-underscore"
     ],
-    "no-angle-bracket-type-assertion": false,
-    "no-shadowed-variable": false,
-    "member-ordering": [
+    "function-name": [
       true,
       {
-        "order": [
-          "private-static-field",
-          "public-static-field",
-          "private-instance-field",
-          "public-instance-field",
-          "private-constructor",
-          "public-constructor",
-          "protected-instance-method",
-          "private-instance-method",
-          "public-instance-method"
-        ]
+        "function-regex": "^[a-z$][\\w\\d]+$",
+        "method-regex": "^[a-z$][\\w\\d]+$",
+        "private-method-regex": "^_[a-z$][\\w\\d]+$",
+        "protected-method-regex": "^_[a-z$][\\w\\d]+$",
+        "static-method-regex": "^[a-z$][\\w\\d]+$"
       }
     ],
-    "no-console": false,
-    "no-empty": false,
-    "whitespace": [
-      true,
-      "check-branch",
-      "check-decl",
-      "check-operator",
-      "check-module",
-      "check-separator",
-      "check-rest-spread",
-      "check-type",
-      "check-type-operator",
-      "check-preblock"
-    ],
-    "forin": false,
-    "curly": [
-      true,
-      "as-needed"
-    ],
-    "unified-signatures": false,
-    "prefer-for-of": false,
-    "no-bitwise": false,
-    "space-before-function-paren": false
-  },
-  "rulesDirectory": []
+    "semicolon": {
+      "options": [true, "always"],
+      "severity": "warning"
+    },
+    "no-shadowed-variable": {
+      "severity": "warning"
+    }
+  }
 }

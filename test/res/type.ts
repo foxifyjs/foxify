@@ -1,46 +1,45 @@
-import * as Foxify from "../../src";
+import Foxify from "../../src";
 
-describe(".type(str)", () => {
-  it("should set the Content-Type based on a filename", async () => {
-    expect.assertions(1);
+it("should set the Content-Type based on a filename", async () => {
+  expect.assertions(1);
 
-    const app = new Foxify();
+  const app = new Foxify();
 
-    app.use((req, res) => {
-      res.type("foo.js").end("var name = \"tj\";");
-    });
-
-    const result = await app.inject("/");
-
-    expect(result.headers["content-type"]).toBe("application/javascript; charset=utf-8");
+  app.use((req, res) => {
+    res.type("foo.js").end('var name = "tj";');
   });
 
-  it("should default to application/octet-stream", async () => {
-    expect.assertions(1);
+  const result = await app.inject("/");
 
-    const app = new Foxify();
+  expect(result.headers["content-type"]).toBe(
+    "application/javascript; charset=utf-8",
+  );
+});
 
-    app.use((req, res) => {
-      res.type("rawr").end("var name = \"tj\";");
-    });
+it("should default to application/octet-stream", async () => {
+  expect.assertions(1);
 
-    const result = await app.inject("/");
+  const app = new Foxify();
 
-    expect(result.headers["content-type"]).toBe("application/octet-stream");
+  app.use((req, res) => {
+    res.type("rawr").end('var name = "tj";');
   });
 
-  it("should set the Content-Type with type/subtype", async () => {
-    expect.assertions(1);
+  const result = await app.inject("/");
 
-    const app = new Foxify();
+  expect(result.headers["content-type"]).toBe("application/octet-stream");
+});
 
-    app.use((req, res) => {
-      res.type("application/vnd.amazon.ebook")
-        .end("var name = \"tj\";");
-    });
+it("should set the Content-Type with type/subtype", async () => {
+  expect.assertions(1);
 
-    const result = await app.inject("/");
+  const app = new Foxify();
 
-    expect(result.headers["content-type"]).toBe("application/vnd.amazon.ebook");
+  app.use((req, res) => {
+    res.type("application/vnd.amazon.ebook").end('var name = "tj";');
   });
+
+  const result = await app.inject("/");
+
+  expect(result.headers["content-type"]).toBe("application/vnd.amazon.ebook");
 });

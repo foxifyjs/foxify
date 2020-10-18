@@ -27,7 +27,8 @@
  * This module is modified and optimized for Foxify specifically
  */
 
-import * as Response from "../Response";
+import assert from "assert";
+import Response from "../Response";
 
 /**
  * RegExp to match field-name in RFC 7230 sec 3.2
@@ -50,17 +51,18 @@ const FIELD_NAME_REGEXP = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
  * @public
  */
 const append = (header: string, field: string | string[]) => {
-  if (!field) throw new TypeError("field argument is required");
+  assert(field, "Argument 'field' is required");
 
   // get fields array
-  const fields = !Array.isArray(field)
-    ? parse(String(field))
-    : field;
+  const fields = !Array.isArray(field) ? parse(String(field)) : field;
 
   // assert on invalid field names
-  for (let j = 0; j < fields.length; j++)
-    if (!FIELD_NAME_REGEXP.test(fields[j]))
-      throw new TypeError("field argument contains an invalid header name");
+  for (let j = 0; j < fields.length; j++) {
+    assert(
+      FIELD_NAME_REGEXP.test(fields[j]),
+      "Argument 'field' contains an invalid header name",
+    );
+  }
 
   // existing, unspecified vary
   if (header === "*") return header;
@@ -79,9 +81,7 @@ const append = (header: string, field: string | string[]) => {
     if (vals.indexOf(fld) === -1) {
       vals.push(fld);
 
-      val = val
-        ? val + ", " + fields[i]
-        : fields[i];
+      val = val ? `${val}, ${fields[i]}` : fields[i];
     }
   }
 
@@ -99,12 +99,12 @@ const parse = (header: string) => {
   let end = 0;
 
   // gather tokens
-  for (let i = 0, len = header.length; i < len; i++)
+  for (let i = 0, len = header.length; i < len; i++) {
     switch (header.charCodeAt(i)) {
-      case 0x20: /*   */
+      case 0x20 /*   */:
         if (start === end) start = end = i + 1;
         break;
-      case 0x2c: /* , */
+      case 0x2c /* , */:
         list.push(header.substring(start, end));
         start = end = i + 1;
         break;
@@ -112,6 +112,7 @@ const parse = (header: string) => {
         end = i + 1;
         break;
     }
+  }
 
   // final token
   list.push(header.substring(start, end));
@@ -129,9 +130,7 @@ function vary<T extends Response>(res: T, field: string | string[]): T {
   // get existing header
   let value = res.get("vary") || "";
 
-  const header = Array.isArray(value)
-    ? value.join(", ")
-    : `${value}`;
+  const header = Array.isArray(value) ? value.join(", ") : `${value}`;
 
   value = append(header, field);
 

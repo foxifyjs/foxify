@@ -1,8 +1,7 @@
-import * as http from "http";
 import * as path from "path";
 
-declare module Engine {
-  type Callback = (err: Error, str: string) => any;
+namespace Engine {
+  export type Callback = (err: Error, str: string) => any;
 }
 
 class Engine {
@@ -16,9 +15,9 @@ class Engine {
     this._handler = handler;
   }
 
-  render(filename: string, opts: object = {}, cb?: Engine.Callback) {
+  public render(filename: string, opts: object = {}, cb?: Engine.Callback) {
     this._handler(path.join(this._path, `${filename}.${this._ext}`), opts, cb);
   }
 }
 
-export = Engine;
+export default Engine;

@@ -35,7 +35,7 @@ Enter Foxify. Foxify is a web framework highly focused on providing the best dev
   - [Usage](#usage)
 - [Features](#features)
 - [Benchmarks](#benchmarks)
-- [TODO](#todo)
+- [Roadmap](#roadmap)
 - [Credits](#credits)
   - [Authors](#authors)
   - [Contributors](#contributors)
@@ -117,24 +117,15 @@ You can also find all the documents [here](https://foxify.js.org).
 
 > More detailed benchmarks available [here](https://github.com/foxifyjs/benchmarks)
 
-## TODO
+## Roadmap
 
-- [x] Routing
-- [x] Middleware support
-- [x] Error handling
-- [x] View engine
-- [x] Options & Settings
-- [x] Database Model ([`Odin`](https://github.com/foxifyjs/odin))
-- [x] Clustering
-- [ ] File storage
-- [ ] Job schedule
-- [ ] Logging
+See the [ROADMAP.md](ROADMAP.md) file for details
 
 ## Credits
 
 ### Authors
 
-- **Ardalan Amini** - *Core Maintainer* - [@ardalanamini](https://github.com/ardalanamini)
+- [**Ardalan Amini**](https://ardalanamini.com) - *Core Maintainer* - [@ardalanamini](https://github.com/ardalanamini)
 
 ### Contributors
 

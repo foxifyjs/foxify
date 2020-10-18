@@ -1,7 +1,2 @@
-import * as HttpException from "./HttpException";
-import * as Encapsulation from "./Encapsulation";
-
-export {
-  HttpException,
-  Encapsulation,
-};
+export { default as Encapsulation } from "./Encapsulation";
+export { default as HttpException } from "./HttpException";

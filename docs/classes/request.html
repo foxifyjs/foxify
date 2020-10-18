@@ -93,15 +93,17 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="request.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="request.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="request.html#_acceptscache" class="tsd-kind-icon">_accepts<wbr>Cache</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="request.html#complete" class="tsd-kind-icon">complete</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="request.html#connection" class="tsd-kind-icon">connection</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="request.html#headers" class="tsd-kind-icon">headers</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="request.html#httpversion" class="tsd-kind-icon">http<wbr>Version</a></li>
@@ -126,8 +128,13 @@
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-private"><a href="request.html#_accepts" class="tsd-kind-icon">_accepts</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="request.html#hostname" class="tsd-kind-icon">hostname</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="request.html#ip" class="tsd-kind-icon">ip</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="request.html#ips" class="tsd-kind-icon">ips</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="request.html#path" class="tsd-kind-icon">path</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="request.html#protocol" class="tsd-kind-icon">protocol</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="request.html#secure" class="tsd-kind-icon">secure</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="request.html#subdomains" class="tsd-kind-icon">subdomains</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="request.html#xhr" class="tsd-kind-icon">xhr</a></li>
 							</ul>
@@ -146,9 +153,9 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="request.html#destroy" class="tsd-kind-icon">destroy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="request.html#emit" class="tsd-kind-icon">emit</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="request.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="request.html#get" class="tsd-kind-icon">get</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="request.html#get" class="tsd-kind-icon">get</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="request.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="request.html#head" class="tsd-kind-icon">head</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="request.html#head" class="tsd-kind-icon">head</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="request.html#is" class="tsd-kind-icon">is</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="request.html#ispaused" class="tsd-kind-icon">is<wbr>Paused</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="request.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a></li>
@@ -179,21 +186,20 @@
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 						<li class="tsd-signature tsd-kind-icon">new <wbr>Request<span class="tsd-signature-symbol">(</span>socket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Socket</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="request.html" class="tsd-signature-type">Request</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from IncomingMessage.__constructor</p>
-								<p>Overrides Readable.__constructor</p>
+								<p>Overrides IncomingMessage.__constructor</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1256</li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L178">Request.ts:178</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -209,6 +215,27 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_acceptscache" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> _accepts<wbr>Cache</h3>
+					<div class="tsd-signature tsd-kind-icon">_accepts<wbr>Cache<span class="tsd-signature-symbol">:</span> <a href="accepts.html" class="tsd-signature-type">Accepts</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L44">Request.ts:44</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="complete" class="tsd-anchor"></a>
+					<h3>complete</h3>
+					<div class="tsd-signature tsd-kind-icon">complete<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from IncomingMessage.complete</p>
+						<ul>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:183</li>
+						</ul>
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="connection" class="tsd-anchor"></a>
 					<h3>connection</h3>
@@ -216,7 +243,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.connection</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1262</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:184</li>
 						</ul>
 					</aside>
 				</section>
@@ -227,7 +254,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.headers</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1263</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:185</li>
 						</ul>
 					</aside>
 				</section>
@@ -238,7 +265,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.httpVersion</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1259</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:180</li>
 						</ul>
 					</aside>
 				</section>
@@ -249,7 +276,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.httpVersionMajor</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1260</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:181</li>
 						</ul>
 					</aside>
 				</section>
@@ -260,7 +287,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.httpVersionMinor</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1261</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:182</li>
 						</ul>
 					</aside>
 				</section>
@@ -271,7 +298,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.method</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1271</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:193</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -286,7 +313,7 @@
 					<div class="tsd-signature tsd-kind-icon">params<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L38">Request.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L42">Request.ts:42</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -304,7 +331,7 @@
 					<div class="tsd-signature tsd-kind-icon">query<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L36">Request.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L40">Request.ts:40</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -315,7 +342,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.rawHeaders</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1264</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:186</li>
 						</ul>
 					</aside>
 				</section>
@@ -326,7 +353,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.rawTrailers</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1266</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:188</li>
 						</ul>
 					</aside>
 				</section>
@@ -337,7 +364,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Readable.readable</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6869</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:21</li>
 						</ul>
 					</aside>
 				</section>
@@ -348,7 +375,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Readable.readableHighWaterMark</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6870</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:22</li>
 						</ul>
 					</aside>
 				</section>
@@ -359,7 +386,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Readable.readableLength</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6871</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:23</li>
 						</ul>
 					</aside>
 				</section>
@@ -370,7 +397,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.socket</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1284</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:206</li>
 						</ul>
 					</aside>
 				</section>
@@ -381,7 +408,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.statusCode</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1279</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:201</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -397,7 +424,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.statusMessage</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1283</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:205</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -413,7 +440,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.trailers</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1265</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:187</li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -432,7 +459,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from IncomingMessage.url</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1275</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:197</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -448,13 +475,30 @@
 					<aside class="tsd-sources">
 						<p>Inherited from EventEmitter.defaultMaxListeners</p>
 						<ul>
-							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1089</li>
+							<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/events.d.ts:9</li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
+					<a name="_accepts" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _accepts</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> _accepts<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="accepts.html" class="tsd-signature-type">Accepts</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L174">Request.ts:174</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="accepts.html" class="tsd-signature-type">Accepts</a></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="hostname" class="tsd-anchor"></a>
 					<h3>hostname</h3>
@@ -465,14 +509,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L47">Request.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L143">Request.ts:143</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Parse the &quot;Host&quot; header field to a hostname.</p>
 								</div>
-								<p>When the &quot;trust proxy&quot; setting trusts the socket
+								<p>When the &quot;trust.proxy&quot; setting trusts the socket
 									address, the &quot;X-Forwarded-Host&quot; header field will
 								be trusted.</p>
 							</div>
@@ -480,6 +524,56 @@
 								<span class="tsd-signature-symbol"> | </span>
 								<span class="tsd-signature-type">string</span>
 							</h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="ip" class="tsd-anchor"></a>
+					<h3>ip</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> ip<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L86">Request.ts:86</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Return the remote address from the trusted proxy.</p>
+								</div>
+								<p>The is the remote address on the socket unless
+								&quot;trust.proxy&quot; is set.</p>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="ips" class="tsd-anchor"></a>
+					<h3>ips</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> ips<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L98">Request.ts:98</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>When &quot;trust.proxy&quot; is set, trusted proxy addresses + client.</p>
+								</div>
+								<p>For example if the value were &quot;client, proxy1, proxy2&quot;
+									you would receive the array <code>[&quot;client&quot;, &quot;proxy1&quot;, &quot;proxy2&quot;]</code>
+									where &quot;proxy2&quot; is the furthest down-stream and &quot;proxy1&quot; and
+								&quot;proxy2&quot; were trusted.</p>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -493,7 +587,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L65">Request.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L132">Request.ts:132</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -502,6 +596,57 @@
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="protocol" class="tsd-anchor"></a>
+					<h3>protocol</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> protocol<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L56">Request.ts:56</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Return the protocol string &quot;http&quot; or &quot;https&quot;
+										when requested with TLS. When the &quot;trust.proxy&quot;
+										setting trusts the socket address, the
+										&quot;X-Forwarded-Proto&quot; header field will be trusted
+									and used if present.</p>
+								</div>
+								<p>If you&#39;re running behind a reverse proxy that
+								supplies https for you this may be enabled.</p>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="secure" class="tsd-anchor"></a>
+					<h3>secure</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> secure<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L76">Request.ts:76</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Short-hand for:</p>
+								</div>
+								<p>   req.protocol === &#39;https&#39;</p>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -515,7 +660,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L80">Request.ts:80</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L119">Request.ts:119</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -543,7 +688,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L92">Request.ts:92</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L167">Request.ts:167</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -569,7 +714,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.[Symbol.asyncIterator]</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6944</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:96</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AsyncIterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -587,7 +732,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Readable._destroy</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6883</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:35</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -600,14 +745,14 @@
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
 											<ul class="tsd-signatures tsd-kind-type-literal">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 											</ul>
 											<ul class="tsd-descriptions">
 												<li class="tsd-description">
 													<h4 class="tsd-parameters-title">Parameters</h4>
 													<ul class="tsd-parameters">
 														<li>
-															<h5>error: <span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+															<h5><span class="tsd-flag ts-flagOptional">Optional</span> error: <span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
 														</li>
 													</ul>
 													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -632,7 +777,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Readable._read</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6873</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:25</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -655,7 +800,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L136">Request.ts:136</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L226">Request.ts:226</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -722,7 +867,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L144">Request.ts:144</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L234">Request.ts:234</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -756,7 +901,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L151">Request.ts:151</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L241">Request.ts:241</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -789,7 +934,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L159">Request.ts:159</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L249">Request.ts:249</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -830,7 +975,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6895</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:47</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -874,7 +1019,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6896</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:48</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -911,7 +1056,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6897</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:49</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -942,7 +1087,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6898</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:50</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -973,7 +1118,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6899</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:51</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1010,7 +1155,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6900</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:52</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1056,7 +1201,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from IncomingMessage.destroy</p>
 								<p>Overrides Readable.destroy</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1285</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:207</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1086,7 +1231,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6902</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:54</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1102,7 +1247,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6903</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:55</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1121,7 +1266,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6904</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:56</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1137,7 +1282,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6905</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:57</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1153,7 +1298,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6906</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:58</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1172,7 +1317,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6907</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:59</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1200,24 +1345,24 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from EventEmitter.eventNames</p>
 								<p>Overrides EventEmitter.eventNames</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1104</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/events.d.ts:24</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 					<a name="get" class="tsd-anchor"></a>
 					<h3>get</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">get&lt;T&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IncomingHttpHeaders[T]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L176">Request.ts:176</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L266">Request.ts:266</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1233,18 +1378,19 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<h4 id="example-3">Example 3</h4>
 								<pre><code class="language-typescript">req.get(<span class="hljs-string">"Something"</span>); <span class="hljs-comment">// =&gt; undefined</span></code></pre>
 							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+								</li>
+							</ul>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
+									<h5>name: <span class="tsd-signature-type">T</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">string</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IncomingHttpHeaders[T]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1260,24 +1406,24 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 								<p>Inherited from EventEmitter.getMaxListeners</p>
 								<p>Overrides EventEmitter.getMaxListeners</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1100</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/events.d.ts:20</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 					<a name="head" class="tsd-anchor"></a>
 					<h3>head</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">head<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">head&lt;T&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IncomingHttpHeaders[T]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L27">Request.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L31">Request.ts:31</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1287,18 +1433,19 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 									</dd>
 								</dl>
 							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+								</li>
+							</ul>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
+									<h5>name: <span class="tsd-signature-type">T</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">undefined</span>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IncomingHttpHeaders[T]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1312,7 +1459,7 @@ req.accepts(<span class="hljs-string">"html, json"</span>);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L213">Request.ts:213</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L304">Request.ts:304</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1362,7 +1509,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.isPaused</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6878</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:30</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -1381,7 +1528,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from EventEmitter.listenerCount</p>
 								<p>Overrides EventEmitter.listenerCount</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1105</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/events.d.ts:25</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1406,7 +1553,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from EventEmitter.listeners</p>
 								<p>Overrides EventEmitter.listeners</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1101</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/events.d.ts:21</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1431,7 +1578,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from EventEmitter.off</p>
 								<p>Overrides EventEmitter.off</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1097</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/events.d.ts:17</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1482,7 +1629,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.on</p>
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6909</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:61</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1513,7 +1660,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.on</p>
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6910</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:62</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1550,7 +1697,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.on</p>
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6911</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:63</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1581,7 +1728,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.on</p>
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6912</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:64</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1612,7 +1759,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.on</p>
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6913</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:65</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1649,7 +1796,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.on</p>
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6914</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:66</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1700,7 +1847,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6916</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:68</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1731,7 +1878,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6917</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:69</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1768,7 +1915,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6918</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:70</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1799,7 +1946,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6919</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:71</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1830,7 +1977,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6920</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:72</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1867,7 +2014,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6921</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:73</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1912,7 +2059,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.pause</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6876</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:28</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -1930,7 +2077,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from internal.pipe</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6854</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:5</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1969,7 +2116,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6923</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:75</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2000,7 +2147,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6924</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:76</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2037,7 +2184,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6925</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:77</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2068,7 +2215,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6926</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:78</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2099,7 +2246,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6927</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:79</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2136,7 +2283,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6928</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:80</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2187,7 +2334,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6930</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:82</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2218,7 +2365,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6931</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:83</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2255,7 +2402,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6932</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:84</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2286,7 +2433,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6933</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:85</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2317,7 +2464,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6934</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:86</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2354,7 +2501,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6935</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:87</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2399,7 +2546,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.push</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6882</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:34</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2425,7 +2572,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/3166d33/src/Request.ts#L241">Request.ts:241</a></li>
+									<li>Defined in <a href="https://github.com/foxifyjs/foxify/blob/f3a41e4/src/Request.ts#L332">Request.ts:332</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2474,7 +2621,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from EventEmitter.rawListeners</p>
 								<p>Overrides EventEmitter.rawListeners</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1102</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/events.d.ts:22</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2498,7 +2645,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.read</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6874</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:26</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2523,7 +2670,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from EventEmitter.removeAllListeners</p>
 								<p>Overrides EventEmitter.removeAllListeners</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1098</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/events.d.ts:18</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2553,7 +2700,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6937</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:89</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2584,7 +2731,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6938</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:90</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2621,7 +2768,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6939</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:91</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2652,7 +2799,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6940</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:92</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2683,7 +2830,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6941</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:93</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2720,7 +2867,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6942</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:94</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2765,7 +2912,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.resume</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6877</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:29</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -2783,7 +2930,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.setEncoding</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6875</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:27</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2808,7 +2955,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 								<p>Inherited from EventEmitter.setMaxListeners</p>
 								<p>Overrides EventEmitter.setMaxListeners</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1099</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/events.d.ts:19</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2832,7 +2979,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from IncomingMessage.setTimeout</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1267</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/http.d.ts:189</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2871,7 +3018,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.unpipe</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6879</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:31</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2895,7 +3042,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.unshift</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6880</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:32</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2919,7 +3066,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.wrap</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:6881</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/stream.d.ts:33</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2943,7 +3090,7 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<aside class="tsd-sources">
 								<p>Inherited from EventEmitter.listenerCount</p>
 								<ul>
-									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/index.d.ts:1088</li>
+									<li>Defined in /home/phantom/Projects/Github/foxifyjs/foxify/node_modules/@types/node/events.d.ts:8</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2983,8 +3130,14 @@ req.is(<span class="hljs-string">"application/*"</span>);
 					<li class="current tsd-kind-class">
 						<a href="request.html" class="tsd-kind-icon">Request</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="request.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="request.html#_acceptscache" class="tsd-kind-icon">_accepts<wbr>Cache</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="request.html#complete" class="tsd-kind-icon">complete</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="request.html#connection" class="tsd-kind-icon">connection</a>
@@ -3043,11 +3196,26 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 								<a href="request.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a>
 							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
+								<a href="request.html#_accepts" class="tsd-kind-icon">_accepts</a>
+							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="request.html#hostname" class="tsd-kind-icon">hostname</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="request.html#ip" class="tsd-kind-icon">ip</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="request.html#ips" class="tsd-kind-icon">ips</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="request.html#path" class="tsd-kind-icon">path</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="request.html#protocol" class="tsd-kind-icon">protocol</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="request.html#secure" class="tsd-kind-icon">secure</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="request.html#subdomains" class="tsd-kind-icon">subdomains</a>
@@ -3088,13 +3256,13 @@ req.is(<span class="hljs-string">"application/*"</span>);
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="request.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="request.html#get" class="tsd-kind-icon">get</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="request.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="request.html#head" class="tsd-kind-icon">head</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">

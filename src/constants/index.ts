@@ -1,3 +1,2 @@
-import * as http from "./http";
-
-export { http };
+export { default as HTTP } from "./HTTP";
+export { default as METHOD } from "./METHOD";

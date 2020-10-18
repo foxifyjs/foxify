@@ -1,69 +1,116 @@
-import * as http from "http";
+import assert from "assert";
+import http from "http";
 import { isIP } from "net";
+import proxyAddr from "proxy-addr";
+import typeIs from "type-is";
 import { Url } from "url";
-import * as typeIs from "type-is";
-import { string, parseUrl, Accepts } from "./utils";
-import { default as rangeParser, RangeParser } from "./utils/range-parser";
-// import proxyAddr = require("proxy-addr");
+import Server from "./Server";
+import { Accepts, parseUrl, string } from "./utils";
+import rangeParser, { RangeParser } from "./utils/range-parser";
+
+const SETTINGS: Server.Settings = {} as any;
+
+export function createConstructor(settings: Server.Settings) {
+  Object.assign(SETTINGS, settings);
+
+  Request.prototype.header = Request.prototype.get;
+
+  return Request;
+}
 
 namespace Request {
-  /**
-   * @hidden
-   */
-  export interface Settings {
-    subdomain: {
-      offset?: number,
-    };
+  export interface Headers extends http.IncomingHttpHeaders {
+    referrer: http.IncomingHttpHeaders["referer"];
   }
 }
 
 interface Request {
-  [key: string]: any;
+  body: any;
+
+  cookies: any;
 
   /**
    *
    * @alias get
    */
-  head(name: string): string | string[] | undefined;
+  header<T extends string>(name: T): Request.Headers[T];
 }
 
 class Request extends http.IncomingMessage {
-  /**
-   * @hidden
-   */
-  settings!: Request.Settings;
+  public params: { [key: string]: any } = {};
 
-  query!: any;
+  private _acceptsCache?: Accepts;
 
-  params!: { [key: string]: any };
+  private _query?: { [key: string]: any };
 
-  /**
-   * Parse the "Host" header field to a hostname.
-   *
-   * When the "trust proxy" setting trusts the socket
-   * address, the "X-Forwarded-Host" header field will
-   * be trusted.
-   */
-  get hostname() {
-    let host = this.get("x-forwarded-host") as string;
+  public get query() {
+    if (!this._query) {
+      this._query = SETTINGS["query.parser"](parseUrl(this).query);
+    }
 
-    if (!host) host = this.get("host") as string;
-
-    if (!host) return;
-
-    // IPv6 literal support
-    const offset = host[0] === "[" ? host.indexOf("]") + 1 : 0;
-
-    const index = host.indexOf(":", offset);
-
-    return index !== -1 ? host.substring(0, index) : host;
+    return this._query;
   }
 
   /**
-   * Short-hand for `url.parseUrl(req.url).pathname`.
+   * Return the protocol string "http" or "https"
+   * when requested with TLS. When the "trust.proxy"
+   * setting trusts the socket address, the
+   * "X-Forwarded-Proto" header field will be trusted
+   * and used if present.
+   *
+   * If you're running behind a reverse proxy that
+   * supplies https for you this may be enabled.
    */
-  get path() {
-    return (parseUrl(this) as Url).pathname as string;
+  public get protocol() {
+    const proto = (this.socket as any).encrypted ? "https" : "http";
+
+    if (!SETTINGS["trust.proxy"](this.socket.remoteAddress!, 0)) {
+      return proto;
+    }
+
+    // Note: X-Forwarded-Proto is normally only ever a
+    //       single value, but this is to be safe.
+    const header = (this.get("X-Forwarded-Proto") as string) || proto;
+    const index = header.indexOf(",");
+
+    return index !== -1 ? header.substring(0, index).trim() : header.trim();
+  }
+
+  /**
+   * Short-hand for:
+   *
+   *    req.protocol === 'https'
+   */
+  public get secure() {
+    return this.protocol === "https";
+  }
+
+  /**
+   * Return the remote address from the trusted proxy.
+   *
+   * The is the remote address on the socket unless
+   * "trust.proxy" is set.
+   */
+  public get ip() {
+    return proxyAddr(this, SETTINGS["trust.proxy"]);
+  }
+
+  /**
+   * When "trust.proxy" is set, trusted proxy addresses + client.
+   *
+   * For example if the value were "client, proxy1, proxy2"
+   * you would receive the array `["client", "proxy1", "proxy2"]`
+   * where "proxy2" is the furthest down-stream and "proxy1" and
+   * "proxy2" were trusted.
+   */
+  public get ips() {
+    const addresses = proxyAddr.all(this, SETTINGS["trust.proxy"]);
+
+    // reverse the order (to farthest -> closest)
+    // and remove socket address
+    addresses.reverse().pop();
+
+    return addresses;
   }
 
   /**
@@ -77,20 +124,66 @@ class Request extends http.IncomingMessage {
    * If "subdomain.offset" is not set, req.subdomains is `["ferrets", "tobi"]`.
    * If "subdomain.offset" is 3, req.subdomains is `["tobi"]`.
    */
-  get subdomains() {
+  public get subdomains() {
     const hostname = this.hostname;
 
     if (!hostname) return [];
 
-    return (!isIP(hostname) ? hostname.split(".").reverse() : [hostname])
-      .slice(this.settings.subdomain.offset);
+    return (isIP(hostname)
+      ? [hostname]
+      : hostname.split(".").reverse()
+    ).slice(SETTINGS["subdomain.offset"]);
+  }
+
+  /**
+   * Short-hand for `url.parseUrl(req.url).pathname`.
+   */
+  public get path() {
+    return (parseUrl(this) as Url).pathname as string;
+  }
+
+  /**
+   * Parse the "Host" header field to a hostname.
+   *
+   * When the "trust.proxy" setting trusts the socket
+   * address, the "X-Forwarded-Host" header field will
+   * be trusted.
+   */
+  public get hostname() {
+    let host = this.get("x-forwarded-host") as string;
+
+    if (!host || !SETTINGS["trust.proxy"](this.socket.remoteAddress!, 0)) {
+      host = this.get("host")!;
+    } else if (host.indexOf(",") !== -1) {
+      // Note: X-Forwarded-Host is normally only ever a
+      //       single value, but this is to be safe.
+      host = host.substring(0, host.indexOf(",")).trimRight();
+    }
+
+    if (!host) return;
+
+    // IPv6 literal support
+    const offset = host[0] === "[" ? host.indexOf("]") + 1 : 0;
+
+    const index = host.indexOf(":", offset);
+
+    return index !== -1 ? host.substring(0, index) : host;
   }
 
   /**
    * Check if the request was an `_XMLHttpRequest_`.
    */
-  get xhr() {
-    return (<string>this.get("x-requested-with") || "").toLowerCase() === "xmlhttprequest";
+  public get xhr() {
+    return (
+      ((this.get("x-requested-with") as string) || "").toLowerCase() ===
+      "xmlhttprequest"
+    );
+  }
+
+  private get _accepts() {
+    if (!this._acceptsCache) this._acceptsCache = new Accepts(this);
+
+    return this._acceptsCache;
   }
 
   /**
@@ -133,31 +226,31 @@ class Request extends http.IncomingMessage {
    * req.accepts("html, json");
    * // => "json"
    */
-  accepts(...types: string[]): string | string[] | false {
-    return new Accepts(this).types(types);
+  public accepts(...types: string[]): string | string[] | false {
+    return this._accepts.types(types);
   }
 
   /**
    * Check if the given `charset`s are acceptable,
    * otherwise you should respond with 406 "Not Acceptable".
    */
-  acceptsCharsets(...charsets: string[]): string | string[] | false {
-    return new Accepts(this).charsets(charsets);
+  public acceptsCharsets(...charsets: string[]): string | string[] | false {
+    return this._accepts.charsets(charsets);
   }
 
   /**
    * Check if the given `encoding`s are accepted.
    */
-  acceptsEncodings(...encodings: string[]): string | string[] | false {
-    return new Accepts(this).encodings(encodings);
+  public acceptsEncodings(...encodings: string[]): string | string[] | false {
+    return this._accepts.encodings(encodings);
   }
 
   /**
    * Check if the given `lang`s are acceptable,
    * otherwise you should respond with 406 "Not Acceptable".
    */
-  acceptsLanguages(...langs: string[]): string | string[] | false {
-    return new Accepts(this).languages(langs);
+  public acceptsLanguages(...langs: string[]): string | string[] | false {
+    return this._accepts.languages(langs);
   }
 
   /**
@@ -173,20 +266,21 @@ class Request extends http.IncomingMessage {
    * @example
    * req.get("Something"); // => undefined
    */
-  get(name: string) {
-    if (!name) throw new TypeError("name argument is required to req.get/req.head");
+  public get<T extends string>(name: T): Request.Headers[T] {
+    assert(
+      string.isString(name),
+      `Expected 'name' to be an string, got '${typeof name}' instead`,
+    );
 
-    if (!string.isString(name)) throw new TypeError("name must be a string to req.get/req.head");
+    name = name.toLowerCase() as T;
 
-    const header = name.toLowerCase();
-
-    switch (header) {
+    switch (name) {
       case "referer":
         return this.headers.referer || this.headers.referrer;
       case "referrer":
         return this.headers.referrer || this.headers.referer;
       default:
-        return this.headers[header];
+        return this.headers[name];
     }
   }
 
@@ -210,7 +304,7 @@ class Request extends http.IncomingMessage {
    * req.is("html");
    * // => false
    */
-  is(types?: string | string[]): string | false | null {
+  public is(types?: string | string[]): string | false | null {
     // support flattened arguments
     if (!Array.isArray(types)) {
       const arr = new Array(arguments.length);
@@ -238,58 +332,15 @@ class Request extends http.IncomingMessage {
    * NOTE: remember that ranges are inclusive, so for example "Range: users=0-3"
    * should respond with 4 users when available, not 3.
    */
-  range(size: number, combine?: boolean) {
-    let range = this.get("range");
+  public range(size: number, combine?: boolean) {
+    const range = this.get("range");
 
     if (!range) return;
 
-    if (Array.isArray(range)) range = range.join(",");
-
-    return rangeParser(size, range, combine) as RangeParser.Result | RangeParser.Ranges;
+    return rangeParser(size, range, combine) as
+      | RangeParser.Result
+      | RangeParser.Ranges;
   }
 }
 
-/**
- *
- * @alias get
- */
-Request.prototype.head = Request.prototype.get;
-Request.prototype.params = {};
-
-export = Request;
-
-// /**
-//  * Return the remote address from the trusted proxy.
-//  *
-//  * The is the remote address on the socket unless
-//  * "trust proxy" is set.
-//  *
-//  * @return {String}
-//  * @public
-//  */
-// utils.define(req.prototype, "get", "ip", function (this: http.IncomingMessage) {
-//   const trust = (this as any).app.get("trust proxy fn");
-
-//   return proxyAddr(this, trust);
-// });
-
-// /**
-//  * When "trust proxy" is set, trusted proxy addresses + client.
-//  *
-//  * For example if the value were "client, proxy1, proxy2"
-//  * you would receive the array `["client", "proxy1", "proxy2"]`
-//  * where "proxy2" is the furthest down-stream and "proxy1" and
-//  * "proxy2" were trusted.
-//  *
-//  * @return {Array}
-//  * @public
-//  */
-// utils.define(req.prototype, "get", "ips", function (this: http.IncomingMessage) {
-//   // let trust = this.app.get("trust proxy fn")
-//   // let addrs = proxyAddr.all(this, trust)
-//   const addrs = proxyAddr.all(this);
-
-//   // reverse the order (to farthest -> closest)
-//   // and remove socket address
-//   return utils.array.initial(addrs.reverse());
-// });
+export default Request;

@@ -1,6 +1,6 @@
-const Foxify = require('../../framework')
+const { Router, HttpException, HTTP } = require("../../framework");
 
-const routes = new Foxify.Router()
+const routes = new Router()
 
 routes.get('/', (req, res) => {
   res.render('index', {
@@ -37,7 +37,7 @@ routes.get('/greet-fast', {
 })
 
 routes.get('/404', (req, res) => {
-  throw new HttpException("This is a demo", 404)
+  throw new HttpException("This is a demo", HTTP.NOT_FOUND);
 })
 
 routes.get('/error', async (req, res) => {
