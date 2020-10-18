@@ -16,7 +16,7 @@ The **fast**, **easy to use** & **typescript ready** web framework for [Node.js]
 [![Dependencies Status](https://david-dm.org/foxifyjs/foxify.svg)](https://david-dm.org/foxifyjs/foxify)
 [![Pull Requests](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/foxifyjs/foxify/pulls)
 [![License](https://img.shields.io/github/license/foxifyjs/foxify.svg)](https://github.com/foxifyjs/foxify/blob/master/LICENSE)
-[![Build Status](https://api.travis-ci.com/foxifyjs/foxify.svg?branch=master)](https://travis-ci.com/foxifyjs/foxify)
+[![Build Status](https://github.com/foxifyjs/foxify/workflows/Test/badge.svg)](https://github.com/foxifyjs/foxify/actions)
 [![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/master/graph/badge.svg)](https://codecov.io/gh/foxifyjs/foxify)
 [![Backers on Open Collective](https://opencollective.com/foxify/backers/badge.svg)](#backers)
 [![Sponsors on Open Collective](https://opencollective.com/foxify/sponsors/badge.svg)](#sponsors)
