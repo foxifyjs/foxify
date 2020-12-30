@@ -18,7 +18,7 @@ describe(".range(size)", () => {
     });
 
     expect(result.statusCode).toBe(200);
-    expect(result.body).toBe("[{\"start\":0,\"end\":50},{\"start\":51,\"end\":100}]");
+    expect(result.body).toBe('[{"start":0,"end":50},{"start":51,"end":100}]');
   });
 
   it("should cap to the given size", async () => {
@@ -38,7 +38,7 @@ describe(".range(size)", () => {
     });
 
     expect(result.statusCode).toBe(200);
-    expect(result.body).toBe("[{\"start\":0,\"end\":74}]");
+    expect(result.body).toBe('[{"start":0,"end":74}]');
   });
 
   it("should cap to the given size when open-ended", async () => {
@@ -58,7 +58,7 @@ describe(".range(size)", () => {
     });
 
     expect(result.statusCode).toBe(200);
-    expect(result.body).toBe("[{\"start\":0,\"end\":74}]");
+    expect(result.body).toBe('[{"start":0,"end":74}]');
   });
 
   it("should have a .type", async () => {
@@ -118,7 +118,7 @@ describe(".range(size)", () => {
 });
 
 describe(".range(size, options)", () => {
-  describe("with \"combine: true\" option", () => {
+  describe('with "combine: true" option', () => {
     it("should return combined ranges", async () => {
       expect.assertions(2);
 

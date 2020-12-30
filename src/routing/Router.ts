@@ -1,7 +1,6 @@
 import { Request, Response } from "@foxify/http";
 import assert from "assert";
 import fastStringify from "fast-json-stringify";
-import isRegexSafe = require("safe-regex");
 import Foxify from "..";
 import { HTTP } from "../constants";
 import { Method, METHODS } from "../constants/METHOD";
@@ -16,6 +15,7 @@ import {
   string,
 } from "../utils";
 import Layer, { TYPES } from "./Layer";
+import isRegexSafe = require("safe-regex");
 
 const OPTIONS = { schema: { response: {} } };
 
@@ -114,6 +114,7 @@ const getClosingParenthesesPosition = (path: string, idx: number) => {
   throw new TypeError(`Invalid regexp expression in "${path}"`);
 };
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Router {
   export interface Middleware {
     path: string;
@@ -177,11 +178,10 @@ namespace Router {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Router extends Router.MethodFunctions {}
 
 class Router {
-  public static isRouter = (arg: any): arg is Router => arg instanceof Router;
-
   public tree = new Layer();
 
   public middlewares: Router.Middleware[] = [];
@@ -200,7 +200,7 @@ class Router {
 
   protected _safeNext: Encapsulation;
 
-  constructor(public prefix = "") {
+  public constructor(public prefix = "") {
     assert(typeof prefix === "string", "Prefix should be a string");
 
     METHODS.forEach(method => {
@@ -220,6 +220,8 @@ class Router {
 
     this._safeNext = new Encapsulation(this._next);
   }
+
+  public static isRouter = (arg: any): arg is Router => arg instanceof Router;
 
   public initialize(app: Foxify) {
     this.caseSensitive = app.enabled("routing.case-sensitive");
@@ -563,8 +565,8 @@ class Router {
       this.prefix === ""
         ? path
         : path === "*"
-        ? `${this.prefix}/${path}`
-        : `${this.prefix}${path}`;
+          ? `${this.prefix}/${path}`
+          : `${this.prefix}${path}`;
     const index = this.middlewares.findIndex(
       middleware => middlewarePrefix === middleware.path,
     );
@@ -643,6 +645,7 @@ class Router {
     let pindex = 0;
     let i = 0;
 
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const prefix = currentNode.prefix;
       let pathLen = path.length;
@@ -883,6 +886,7 @@ class Router {
     let max = 0;
     let node = null;
 
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       prefix = currentNode.prefix;
       prefixLen = prefix.length;

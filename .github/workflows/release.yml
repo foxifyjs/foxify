@@ -15,22 +15,21 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
       - run: npm ci
       - run: npm run lint
       - run: npm run build
-      - run: npm run coverage
+      - run: npm run test:coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: RELEASE
           fail_ci_if_error: true
 
       - name: Changelog
         id: changelog
         uses: ardalanamini/auto-changelog@v1.1.0
-        env:
+        with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
@@ -52,11 +51,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm run build
-      - run: npm publish
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
@@ -68,7 +67,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
           registry-url: https://npm.pkg.github.com/
       - run: npm ci
       - run: npm run build

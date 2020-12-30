@@ -1,4 +1,3 @@
-// tslint:disable:max-line-length
 export default (
   statusCode: number,
   title?: string,

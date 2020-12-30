@@ -474,9 +474,9 @@ const decodeURIComponent = (uri: string) => {
         codepoint <= 0xffff
           ? String.fromCharCode(codepoint)
           : String.fromCharCode(
-              0xd7c0 + (codepoint >> 10),
-              0xdc00 + (codepoint & 0x3ff),
-            );
+            0xd7c0 + (codepoint >> 10),
+            0xdc00 + (codepoint & 0x3ff),
+          );
 
       codepoint = 0;
       last = percentPosition + 3;

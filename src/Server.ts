@@ -10,6 +10,7 @@ import * as https from "https";
 import Foxify from ".";
 import { Engine } from "./view";
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Server {
   export interface Settings extends Foxify.Settings {
     view?: Engine;
