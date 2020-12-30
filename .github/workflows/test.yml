@@ -16,8 +16,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
-        node-version: [8.x, 10.x, 12.x, 14.x]
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+        node-version: [ 14.x ]
 
     env:
       OS: ${{ matrix.os }}
@@ -32,10 +32,9 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
-      - run: npm run coverage
+      - run: npm run test:coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,NODE_VERSION
           fail_ci_if_error: true

@@ -33,10 +33,10 @@ function createHtmlDocument(message: string) {
     .replace(NEWLINE_REGEXP, "<br>")
     .replace(DOUBLE_SPACE_REGEXP, " &nbsp;");
 
-  // tslint:disable-next-line: max-line-length
   return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Error</title></head><body><pre>${body}</pre></body></html>`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Encapsulation {
   export type Handler = (
     error: Error,
@@ -47,6 +47,14 @@ namespace Encapsulation {
 }
 
 class Encapsulation {
+  public constructor(
+    protected _fn: (
+      req: Request,
+      res: Response,
+      ...rest: any[]
+    ) => void | Promise<void>,
+  ) {}
+
   public static use(handlers: Encapsulation.Handler[]) {
     handlers = utils.array.compact(handlers);
 
@@ -55,16 +63,8 @@ class Encapsulation {
       assert(utils.isHandler(handler), "Handler should be a function"),
     );
 
-    HANDLERS.push.apply(HANDLERS, handlers);
+    HANDLERS.push(...handlers);
   }
-
-  constructor(
-    protected _fn: (
-      req: Request,
-      res: Response,
-      ...rest: any[]
-    ) => void | Promise<void>,
-  ) {}
 
   public run(req: Request, res: Response, ...rest: any[]) {
     try {

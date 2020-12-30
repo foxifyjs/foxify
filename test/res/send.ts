@@ -400,7 +400,7 @@ describe('"etag" setting', () => {
       expect(result.headers.etag).toBe('W/"c-IgR/L5SF7CJQff4wxKGF/vfPuZ0"');
     });
 
-    METHODS.forEach((method) => {
+    METHODS.forEach(method => {
       if (method.toLowerCase() === "connect") return;
 
       it(`should send ETag in response to ${method} request`, async () => {

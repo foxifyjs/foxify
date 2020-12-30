@@ -39,6 +39,7 @@ const SETTINGS: Array<keyof Foxify.UserSettings> = [
   "query.parser",
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Foxify {
   export interface UserSettings {
     env: string;
@@ -72,7 +73,11 @@ namespace Foxify {
       | number
       | string
       | ((ip: string, hopIndex: number) => boolean);
-    "query.parser": boolean | "simple" | "extended" | ((str: string) => object);
+    "query.parser":
+      | boolean
+      | "simple"
+      | "extended"
+      | ((str: string) => Record<string, unknown>);
   }
 
   export interface Settings {
@@ -98,7 +103,7 @@ namespace Foxify {
     "jsonp.callback": string;
     "subdomain.offset": number;
     "trust.proxy": (ip: string, hopIndex: number) => boolean;
-    "query.parser": (str: string) => object;
+    "query.parser": (str: string) => Record<string, unknown>;
   }
 }
 
@@ -123,12 +128,6 @@ class Foxify {
   public static Router = Router;
   public static static = serveStatic;
 
-  public static dotenv(path: string) {
-    utils.assertType("path", "string", path);
-
-    require("dotenv").config({ path });
-  }
-
   private _settings: Foxify.Settings = {
     env: process.env.NODE_ENV || "development",
     url: process.env.APP_URL || "localhost",
@@ -152,7 +151,7 @@ class Foxify {
 
   private _view?: Engine;
 
-  constructor() {
+  public constructor() {
     /* apply http routing methods */
     ["route", "use", "all"].concat(METHODS).forEach(method => {
       method = method.toLowerCase();
@@ -168,6 +167,13 @@ class Foxify {
 
     this.set("etag", "weak");
     this.disable("trust.proxy");
+  }
+
+  public static dotenv(path: string) {
+    utils.assertType("path", "string", path);
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require("dotenv").config({ path });
   }
 
   public enable(setting: keyof Foxify.Settings) {

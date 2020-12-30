@@ -23,7 +23,6 @@ const buildHandlers = (handlers?: any) => {
     `;
   }
 
-  // tslint:disable-next-line:no-function-constructor-with-string-args
   return new Function("handlers", code); // eslint-disable-line
 };
 
@@ -38,6 +37,7 @@ export const enum TYPES {
   MULTI_PARAM = 4,
 }
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Layer {
   export type Handler = (
     request: Request,
@@ -101,8 +101,6 @@ namespace Layer {
 class Layer {
   public static Handlers = Handlers;
 
-  public static isLayer = (arg: any): arg is Layer => arg instanceof Layer;
-
   public handlers: Layer.Handlers;
 
   public wildcardChild: Layer | null = null;
@@ -111,7 +109,7 @@ class Layer {
 
   public numberOfChildren = Object.keys(this.children).length;
 
-  constructor(
+  public constructor(
     public prefix = "/",
     public children: Layer.Children = {},
     public kind: number = TYPES.STATIC,
@@ -128,7 +126,9 @@ class Layer {
     });
   }
 
-  get label() {
+  public static isLayer = (arg: any): arg is Layer => arg instanceof Layer;
+
+  public get label() {
     return this.prefix[0];
   }
 
@@ -251,7 +251,7 @@ class Layer {
     return this.handlers[method];
   }
 
-  public prettyPrint(prefix: string, tail: boolean = false) {
+  public prettyPrint(prefix: string, tail = false) {
     const handlers = this.handlers;
     const methods = Object.keys(handlers).filter(
       method => handlers[method as Method].prettyPrint,
