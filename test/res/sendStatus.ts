@@ -6,7 +6,7 @@ describe(".sendStatus(statusCode)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.sendStatus(201);
     });
 
@@ -21,7 +21,7 @@ describe(".sendStatus(statusCode)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.sendStatus(599 as any);
     });
 

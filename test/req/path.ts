@@ -5,7 +5,7 @@ it("should return the parsed pathname", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/*", (req, res) => {
     res.end(req.path);
   });
 

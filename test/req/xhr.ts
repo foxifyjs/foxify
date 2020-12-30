@@ -5,7 +5,7 @@ it("should return true when X-Requested-With is xmlhttprequest", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     expect(req.xhr).toBe(true);
     res.end();
   });
@@ -25,7 +25,7 @@ it("should case-insensitive", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     expect(req.xhr).toBe(true);
     res.end();
   });
@@ -45,7 +45,7 @@ it("should return false otherwise", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     expect(req.xhr).toBe(false);
     res.end();
   });
@@ -65,7 +65,7 @@ it("should return false when not present", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     expect(req.xhr).toBe(false);
     res.end();
   });

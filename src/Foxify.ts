@@ -5,13 +5,11 @@ import {
   responseSettings,
 } from "@foxify/http";
 import inject, { OptionsI as InjectOptionsI } from "@foxify/inject";
+import Router from "@foxify/router";
 import assert from "assert";
 import proxyAddr from "proxy-addr";
 import qs from "qs";
 import serveStatic from "serve-static";
-import { METHODS } from "./constants/METHOD";
-import { Encapsulation } from "./exceptions";
-import { Layer, Router } from "./routing";
 import Server from "./Server";
 import * as utils from "./utils";
 import { Engine } from "./view";
@@ -107,25 +105,7 @@ namespace Foxify {
   }
 }
 
-interface Foxify extends Router.MethodFunctions<Foxify> {
-  get(setting: string): any;
-
-  get(
-    path: string,
-    options: Layer.RouteOptions | Layer.Handler,
-    ...controllers: Layer.Handler[]
-  ): this;
-
-  use(
-    path: string | Layer.Handler | Router,
-    ...handlers: Array<Layer.Handler | Router>
-  ): this;
-
-  param(param: string, handler: Layer.Handler): this;
-}
-
-class Foxify {
-  public static Router = Router;
+class Foxify extends Router<Request, Response> {
   public static static = serveStatic;
 
   private _settings: Foxify.Settings = {
@@ -147,23 +127,10 @@ class Foxify {
     etag: undefined as any,
   };
 
-  private _router = new Router();
-
   private _view?: Engine;
 
   public constructor() {
-    /* apply http routing methods */
-    ["route", "use", "all"].concat(METHODS).forEach(method => {
-      method = method.toLowerCase();
-
-      if ((this as any)[method]) return;
-
-      (this as any)[method] = (...args: any[]) => {
-        (this._router as any)[method](...args);
-
-        return this;
-      };
-    });
+    super();
 
     this.set("etag", "weak");
     this.disable("trust.proxy");
@@ -185,7 +152,7 @@ class Foxify {
   }
 
   public disabled(setting: keyof Foxify.Settings): boolean {
-    return !this.get(setting);
+    return !this.setting(setting);
   }
 
   public enabled(setting: keyof Foxify.Settings): boolean {
@@ -295,37 +262,15 @@ class Foxify {
     return this;
   }
 
-  public get<T extends keyof Foxify.Settings>(setting: T): Foxify.Settings[T];
-  public get(
-    path: string,
-    options: Layer.RouteOptions | Layer.Handler,
-    ...controllers: Layer.Handler[]
-  ): this;
-  public get(
-    path: string,
-    options?: Layer.RouteOptions | Layer.Handler,
-    ...controllers: Layer.Handler[]
-  ): any {
-    if (arguments.length === 1) {
-      assert(
-        SETTINGS.includes(path as keyof Foxify.Settings),
-        `Expected setting to be one of [${SETTINGS}], got ${path}`,
-      );
+  public setting<T extends keyof Foxify.Settings>(
+    setting: T,
+  ): Foxify.Settings[T] {
+    assert(
+      SETTINGS.includes(setting),
+      `Expected setting to be one of [${SETTINGS}], got ${setting}`,
+    );
 
-      return this._settings[path as keyof Foxify.Settings];
-    }
-
-    return this.use(new Router().get(path, options as any, ...controllers));
-  }
-
-  public error(...handlers: Encapsulation.Handler[]) {
-    Encapsulation.use(handlers);
-
-    return this;
-  }
-
-  public prettyPrint() {
-    return this._router.prettyPrint();
+    return this._settings[setting];
   }
 
   /**
@@ -341,11 +286,9 @@ class Foxify {
 
   public inject(options: InjectOptionsI | string) {
     assert(
-      this.get("env") === "test",
+      this.setting("env") === "test",
       "Inject only works on the testing environment",
     );
-
-    this._router.initialize(this);
 
     if (typeof options === "string") options = { url: options };
 
@@ -355,7 +298,7 @@ class Foxify {
       view: this._view,
     } as any);
 
-    return inject(this._router.lookup.bind(this._router) as any, {
+    return inject(this.lookup.bind(this), {
       ...options,
       Response,
       Request,
@@ -368,17 +311,14 @@ class Foxify {
     }
 
     /* set node env */
-    process.env.NODE_ENV = this.get("env");
-
-    /* initialize the router with provided options and settings */
-    this._router.initialize(this);
+    process.env.NODE_ENV = this.setting("env");
 
     const server = new Server(
       {
         ...this._settings,
         view: this._view,
       },
-      this._router.lookup.bind(this._router),
+      this.lookup.bind(this),
     );
 
     return server.start(callback);

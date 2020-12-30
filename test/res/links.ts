@@ -5,7 +5,7 @@ it("should set Link header field", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.links({
       next: "http://api.example.com/users?page=2",
       last: "http://api.example.com/users?page=5",
@@ -26,7 +26,7 @@ it("should set Link header field for multiple calls", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.links({
       next: "http://api.example.com/users?page=2",
       last: "http://api.example.com/users?page=5",

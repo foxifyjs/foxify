@@ -6,7 +6,7 @@ describe(".range(size)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json(req.range(120) as any);
     });
 
@@ -26,7 +26,7 @@ describe(".range(size)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json(req.range(75) as any);
     });
 
@@ -46,7 +46,7 @@ describe(".range(size)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json(req.range(75) as any);
     });
 
@@ -66,7 +66,7 @@ describe(".range(size)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send((req.range(120) as any).type);
     });
 
@@ -86,7 +86,7 @@ describe(".range(size)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send((req.range(120) as any).type);
     });
 
@@ -106,7 +106,7 @@ describe(".range(size)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(String(req.range(120) as any));
     });
 
@@ -124,7 +124,7 @@ describe(".range(size, options)", () => {
 
       const app = new Foxify();
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.json(req.range(120, true) as any);
       });
 

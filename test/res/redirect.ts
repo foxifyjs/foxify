@@ -6,7 +6,7 @@ describe(".redirect(url)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect("http://google.com");
     });
 
@@ -21,7 +21,7 @@ describe(".redirect(url)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect("https://google.com?q=\u2603 §10");
     });
 
@@ -38,7 +38,7 @@ describe(".redirect(url)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect("https://google.com?q=%A710");
     });
 
@@ -55,7 +55,7 @@ describe(".redirect(url, status)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect("http://google.com", 303);
     });
 
@@ -72,7 +72,7 @@ describe("when the request method is HEAD", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.head("/", (req, res) => {
       res.redirect("http://google.com");
     });
 
@@ -93,7 +93,7 @@ describe("when accepting html", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect("http://google.com");
     });
 
@@ -117,7 +117,7 @@ describe("when accepting html", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect("<la'me>");
     });
 
@@ -142,7 +142,7 @@ describe("when accepting html", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect("http://google.com", 301);
     });
 
@@ -168,7 +168,7 @@ describe("when accepting text", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect("http://google.com");
     });
 
@@ -190,7 +190,7 @@ describe("when accepting text", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect('http://example.com/?param=<script>alert("hax");</script>');
     });
 
@@ -217,7 +217,7 @@ describe("when accepting text", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect("http://google.com", 301);
     });
 
@@ -243,7 +243,7 @@ describe("when accepting neither text or html", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.redirect("http://google.com");
     });
 

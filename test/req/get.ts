@@ -5,7 +5,7 @@ it("should return the header field value", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     expect(req.get("Something-Else")).toBeUndefined();
     res.end(req.get("Content-Type"));
   });
@@ -25,7 +25,7 @@ it("should special-case Referer", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.get("Referer"));
   });
 
@@ -55,7 +55,7 @@ it("should special-case Referrer", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.get("Referrer"));
   });
 

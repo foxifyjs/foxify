@@ -5,7 +5,7 @@ it("should respond with jsonp", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.jsonp({ count: 1 });
   });
 
@@ -21,7 +21,7 @@ it("should use first callback parameter with jsonp", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.jsonp({ count: 1 });
   });
 
@@ -39,7 +39,7 @@ it("should ignore object callback parameter with jsonp", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.jsonp({ count: 1 });
   });
 
@@ -59,7 +59,7 @@ it("should allow renaming callback", async () => {
 
   app.set("jsonp.callback", "clb");
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.jsonp({ count: 1 });
   });
 
@@ -75,7 +75,7 @@ it("should allow []", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.jsonp({ count: 1 });
   });
 
@@ -91,7 +91,7 @@ it("should disallow arbitrary js", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.jsonp({});
   });
 
@@ -107,7 +107,7 @@ it("should escape utf whitespace", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.jsonp({ str: "\u2028 \u2029 woot" });
   });
 
@@ -123,7 +123,7 @@ it("should not escape utf whitespace for json fallback", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.jsonp({ str: "\u2028 \u2029 woot" });
   });
 
@@ -141,7 +141,7 @@ it("should include security header and prologue", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.jsonp({ count: 1 });
   });
 
@@ -197,7 +197,7 @@ describe("when given primitives", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.jsonp(null);
     });
 
@@ -215,7 +215,7 @@ describe("when given primitives", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.jsonp(300);
     });
 
@@ -233,7 +233,7 @@ describe("when given primitives", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.jsonp("str");
     });
 
@@ -253,7 +253,7 @@ describe("when given an array", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.jsonp(["foo", "bar", "baz"]);
     });
 
@@ -273,7 +273,7 @@ describe("when given an object", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.jsonp({ name: "tobi" });
     });
 
@@ -303,7 +303,7 @@ describe('"json.escape" setting', () => {
 
     app.enable("json.escape");
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.jsonp({ "&": "\u2028<script>\u2029" });
     });
 
@@ -329,7 +329,7 @@ describe('"json.replacer" setting', () => {
       return key[0] === "_" ? undefined : val;
     });
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.jsonp({ name: "tobi", _id: 12345 });
     });
 
@@ -349,7 +349,7 @@ describe('"json.spaces" setting', () => {
 
     const app = new Foxify();
 
-    expect(app.get("json.spaces")).toBeUndefined();
+    expect(app.setting("json.spaces")).toBeUndefined();
   });
 
   it("should be passed to JSON.stringify()", async () => {
@@ -359,7 +359,7 @@ describe('"json.spaces" setting', () => {
 
     app.set("json.spaces", 2);
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.jsonp({ name: "tobi", age: 2 });
     });
 

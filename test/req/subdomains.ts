@@ -6,7 +6,7 @@ describe("when present", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(req.subdomains);
     });
 
@@ -26,7 +26,7 @@ describe("when present", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(req.subdomains);
     });
 
@@ -46,7 +46,7 @@ describe("when present", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(req.subdomains);
     });
 
@@ -68,7 +68,7 @@ describe("otherwise", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(req.subdomains);
     });
 
@@ -90,7 +90,7 @@ describe("with no host", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       req.headers.host = undefined;
       res.send(req.subdomains);
     });
@@ -110,7 +110,7 @@ describe("with trusted X-Forwarded-Host", () => {
 
     app.set("trust.proxy", true);
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(req.subdomains);
     });
 
@@ -135,7 +135,7 @@ describe("when subdomain offset is set", () => {
 
       app.set("subdomain.offset", 0);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.subdomains);
       });
 
@@ -157,7 +157,7 @@ describe("when subdomain offset is set", () => {
 
       app.set("subdomain.offset", 0);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.subdomains);
       });
 
@@ -179,7 +179,7 @@ describe("when subdomain offset is set", () => {
 
       app.set("subdomain.offset", 0);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.subdomains);
       });
 
@@ -203,7 +203,7 @@ describe("when subdomain offset is set", () => {
 
       app.set("subdomain.offset", 3);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.subdomains);
       });
 
@@ -227,7 +227,7 @@ describe("when subdomain offset is set", () => {
 
       app.set("subdomain.offset", 3);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.subdomains);
       });
 

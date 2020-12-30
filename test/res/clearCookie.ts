@@ -6,7 +6,7 @@ describe(".clearCookie(name)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.clearCookie("sid").end();
     });
 
@@ -25,7 +25,7 @@ describe(".clearCookie(name, options)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.clearCookie("sid", { path: "/admin" }).end();
     });
 

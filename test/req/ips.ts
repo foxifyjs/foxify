@@ -9,7 +9,7 @@ describe("when X-Forwarded-For is present", () => {
 
       app.set("trust.proxy", true);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.ips);
       });
 
@@ -30,7 +30,7 @@ describe("when X-Forwarded-For is present", () => {
 
       app.set("trust.proxy", 2);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.ips);
       });
 
@@ -51,7 +51,7 @@ describe("when X-Forwarded-For is present", () => {
 
       const app = new Foxify();
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.ips);
       });
 
@@ -73,7 +73,7 @@ describe("when X-Forwarded-For is not present", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(req.ips);
     });
 

@@ -7,7 +7,7 @@ describe(".send()", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send();
     });
 
@@ -24,7 +24,7 @@ describe(".send(null)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(null);
     });
 
@@ -41,7 +41,7 @@ describe(".send(undefined)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(undefined);
     });
 
@@ -58,7 +58,7 @@ describe(".send(String)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send("<p>hey</p>");
     });
 
@@ -74,7 +74,7 @@ describe(".send(String)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       const str = Array(1000).join("-");
 
       res.send(str);
@@ -91,7 +91,7 @@ describe(".send(String)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.set("Content-Type", "text/plain").send("hey");
     });
 
@@ -107,7 +107,7 @@ describe(".send(String)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.set("Content-Type", "text/plain; charset=iso-8859-1").send("hey");
     });
 
@@ -123,7 +123,7 @@ describe(".send(String)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res
         .set("Content-Type", "text/plain; charset=iso-8859-1")
         .send(Buffer.from("hi"));
@@ -145,7 +145,7 @@ describe(".send(Buffer)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(Buffer.from("hello"));
     });
 
@@ -161,7 +161,7 @@ describe(".send(Buffer)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send(Buffer.alloc(999, "-"));
     });
 
@@ -176,7 +176,7 @@ describe(".send(Buffer)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.set("Content-Type", "text/plain").send(Buffer.from("hey"));
     });
 
@@ -192,7 +192,7 @@ describe(".send(Buffer)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.type("text/plain").set("ETag", '"foo"').send(Buffer.from("hey"));
     });
 
@@ -210,7 +210,7 @@ describe(".send(Object)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.send({ name: "tobi" });
     });
 
@@ -230,7 +230,7 @@ describe("when the request method is HEAD", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.head("/", (req, res) => {
       res.send("yay");
     });
 
@@ -250,7 +250,7 @@ describe("when .statusCode is 204", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.status(204).set("Transfer-Encoding", "chunked").send("foo");
     });
 
@@ -270,7 +270,7 @@ describe("when .statusCode is 304", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.status(304).set("Transfer-Encoding", "chunked").send("foo");
     });
 
@@ -290,7 +290,7 @@ it("should always check regardless of length", async () => {
   const app = new Foxify();
   const etag = '"asdf"';
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.set("ETag", etag);
     res.send("hey");
   });
@@ -311,7 +311,7 @@ it("should respond with 304 Not Modified when fresh", async () => {
   const app = new Foxify();
   const etag = '"asdf"';
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     const str = Array(1000).join("-");
 
     res.set("ETag", etag);
@@ -334,7 +334,7 @@ it("should not perform freshness check unless 2xx or 304", async () => {
   const app = new Foxify();
   const etag = '"asdf"';
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.status(500);
     res.set("ETag", etag);
     res.send("hey");
@@ -356,7 +356,7 @@ it("should not support jsonp callbacks", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.send({ foo: "bar" });
   });
 
@@ -371,7 +371,7 @@ it("should be chainable", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     expect(res.send("hey")).toEqual(res);
   });
 
@@ -388,7 +388,7 @@ describe('"etag" setting', () => {
 
       const app = new Foxify();
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send("kajdslfkasdf");
       });
 
@@ -430,7 +430,7 @@ describe('"etag" setting', () => {
 
       const app = new Foxify();
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send("");
       });
 
@@ -447,7 +447,7 @@ describe('"etag" setting', () => {
 
       const app = new Foxify();
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         const str = Array(1000).join("-");
 
         res.send(str);
@@ -466,7 +466,7 @@ describe('"etag" setting', () => {
 
       const app = new Foxify();
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.set("etag", '"asdf"');
 
         res.send(200);
@@ -485,7 +485,7 @@ describe('"etag" setting', () => {
 
       const app = new Foxify();
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send();
       });
 
@@ -504,7 +504,7 @@ describe('"etag" setting', () => {
 
       const app = new Foxify();
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         const str = Array(1000).join("-");
 
         res.send(str);
@@ -525,7 +525,7 @@ describe('"etag" setting', () => {
 
       app.disable("etag");
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.set("etag", '"asdf"');
 
         res.send(200);
@@ -546,7 +546,7 @@ describe('"etag" setting', () => {
 
       app.set("etag", "strong");
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send("hello, world!");
       });
 
@@ -565,7 +565,7 @@ describe('"etag" setting', () => {
 
       app.set("etag", "weak");
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send("hello, world!");
       });
 
@@ -592,7 +592,7 @@ describe('"etag" setting', () => {
         return '"custom"';
       });
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send("hello, world!");
       });
 
@@ -611,7 +611,7 @@ describe('"etag" setting', () => {
         return undefined;
       });
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send("hello, world!");
       });
 

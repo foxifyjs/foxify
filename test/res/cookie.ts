@@ -8,7 +8,7 @@ describe(".cookie(name, object)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.cookie("user", { name: "tobi" }).end();
     });
 
@@ -27,7 +27,7 @@ describe(".cookie(name, string)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.cookie("name", "tobi").end();
     });
 
@@ -42,7 +42,7 @@ describe(".cookie(name, string)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.cookie("name", "tobi");
       res.cookie("age", 1);
       res.cookie("gender", "?");
@@ -66,7 +66,7 @@ describe(".cookie(name, string, options)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.cookie("name", "tobi", { httpOnly: true, secure: true });
       res.end();
     });
@@ -85,7 +85,7 @@ describe(".cookie(name, string, options)", () => {
 
       const app = new Foxify();
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.cookie("name", "tobi", { maxAge: 1000 });
         res.end();
       });
@@ -103,7 +103,7 @@ describe(".cookie(name, string, options)", () => {
 
       const app = new Foxify();
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.cookie("name", "tobi", { maxAge: 1000 });
         res.end();
       });
@@ -121,7 +121,7 @@ describe(".cookie(name, string, options)", () => {
       const options = { maxAge: 1000 };
       const optionsCopy = Object.assign({}, options);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.cookie("name", "tobi", options);
         res.json(options);
       });
@@ -139,9 +139,9 @@ describe(".cookie(name, string, options)", () => {
 
       const app = new Foxify();
 
-      app.use(cookieParser("foo bar baz") as any);
+      app.get("/", cookieParser("foo bar baz") as any);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.cookie("user", { name: "tobi" }, { signed: true }).end();
       });
 
@@ -160,9 +160,9 @@ describe(".cookie(name, string, options)", () => {
 
       const app = new Foxify();
 
-      app.use(cookieParser() as any);
+      app.get("/", cookieParser() as any);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.cookie("name", "tobi", { signed: true }).end();
       });
 
@@ -179,9 +179,9 @@ describe(".cookie(name, string, options)", () => {
 
       const app = new Foxify();
 
-      app.use(cookieParser("foo bar baz") as any);
+      app.get("/", cookieParser("foo bar baz") as any);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.cookie("name", "tobi", { signed: true }).end();
       });
 

@@ -1,6 +1,7 @@
-import Foxify, { Handler } from "..";
+import { HandlerT } from "@foxify/router";
+import Foxify from "..";
 
-const init = (app: Foxify): Handler | null => {
+const init = (app: Foxify): HandlerT | null => {
   if (app.disabled("x-powered-by")) return null;
 
   return function foxify_init(req, res, next) {

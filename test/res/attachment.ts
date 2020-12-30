@@ -6,7 +6,7 @@ describe(".attachment()", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.attachment().send("foo");
     });
 
@@ -22,7 +22,7 @@ describe(".attachment(filename)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.attachment("/path/to/image.png");
       res.send("foo");
     });
@@ -39,7 +39,7 @@ describe(".attachment(filename)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.attachment("/path/to/image.png");
       res.send(Buffer.alloc(4, "."));
     });
@@ -56,7 +56,7 @@ describe(".attachment(utf8filename)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.attachment("/locales/日本語.txt");
       res.send("japanese");
     });
@@ -74,7 +74,7 @@ describe(".attachment(utf8filename)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.attachment("/locales/日本語.txt");
       res.send("japanese");
     });

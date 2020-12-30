@@ -5,7 +5,7 @@ it("should default to {}", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.send(req.query as any);
   });
 
@@ -20,7 +20,7 @@ it("should default to parse complex keys", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.send(req.query as any);
   });
 

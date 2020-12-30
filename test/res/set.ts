@@ -6,7 +6,7 @@ describe(".set(field, value)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.set("Content-Type", "text/x-foo; charset=utf-8").end();
     });
 
@@ -20,7 +20,7 @@ describe(".set(field, value)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.set("X-Number", 123);
       res.end(typeof res.get("X-Number"));
     });
@@ -39,7 +39,7 @@ describe(".set(field, values)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.set("Set-Cookie", ["type=ninja", "language=javascript"]);
       res.send(res.get("Set-Cookie"));
     });
@@ -54,7 +54,7 @@ describe(".set(field, values)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.set("X-Numbers", [123, 456]);
       res.end(JSON.stringify(res.get("X-Numbers")));
     });
@@ -70,7 +70,7 @@ describe(".set(field, values)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.set("Content-Type", "text/html; charset=lol");
       res.end();
     });
@@ -88,7 +88,7 @@ describe(".set(object)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res
         .set({
           "X-Foo": "bar",
@@ -108,7 +108,7 @@ describe(".set(object)", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.set({ "X-Number": 123 });
       res.end(typeof res.get("X-Number"));
     });

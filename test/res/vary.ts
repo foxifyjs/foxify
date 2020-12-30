@@ -6,7 +6,7 @@ describe("with no arguments", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.vary();
       res.end();
     });
@@ -24,7 +24,7 @@ describe("with an empty array", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.vary([]);
       res.end();
     });
@@ -42,7 +42,7 @@ describe("with an array", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.vary(["Accept", "Accept-Language", "Accept-Encoding"]);
       res.end();
     });
@@ -62,7 +62,7 @@ describe("with a string", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.vary("Accept");
       res.end();
     });
@@ -80,7 +80,7 @@ describe("when the value is present", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.vary("Accept");
       res.vary("Accept-Encoding");
       res.vary("Accept-Encoding");

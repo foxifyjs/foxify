@@ -5,7 +5,7 @@ it("should set the response .statusCode", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.status(201).end("Created");
   });
 

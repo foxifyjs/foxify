@@ -7,7 +7,7 @@ it("should return true when the resource is not modified", async () => {
 
   const etag = '"12345"';
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.set("ETag", etag);
 
     res.send(res.fresh);
@@ -29,7 +29,7 @@ it("should return false when the resource is modified", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.set("ETag", '"123"');
 
     res.send(res.fresh);
@@ -53,7 +53,7 @@ it("should return false without response headers", async () => {
 
   app.disable("x-powered-by");
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.send(res.fresh);
   });
 

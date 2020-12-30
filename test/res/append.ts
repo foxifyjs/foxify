@@ -5,12 +5,12 @@ it("should append multiple headers", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res, next) => {
+  app.get("/", (req, res, next) => {
     res.append("Link", "<http://localhost/>");
     next();
   });
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.append("Link", "<http://localhost:80/>");
     res.end();
   });
@@ -28,7 +28,7 @@ it("should accept array of values", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res, next) => {
+  app.get("/", (req, res, next) => {
     res.append("Set-Cookie", ["foo=bar", "fizz=buzz"]);
     res.end();
   });
@@ -44,13 +44,13 @@ it("should get reset by res.set(field, val)", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res, next) => {
+  app.get("/", (req, res, next) => {
     res.append("Link", "<http://localhost/>");
     res.append("Link", "<http://localhost:80/>");
     next();
   });
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.set("Link", "<http://127.0.0.1/>");
     res.end();
   });
@@ -65,12 +65,12 @@ it("should work with res.set(field, val) first", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res, next) => {
+  app.get("/", (req, res, next) => {
     res.set("Link", "<http://localhost/>");
     next();
   });
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.append("Link", "<http://localhost:80/>");
     res.end();
   });
@@ -88,12 +88,12 @@ it("should work with cookies", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res, next) => {
+  app.get("/", (req, res, next) => {
     res.cookie("foo", "bar");
     next();
   });
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.append("Set-Cookie", ["bar=baz", "fizz=buzz"]);
     res.end();
   });

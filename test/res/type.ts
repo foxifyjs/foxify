@@ -5,7 +5,7 @@ it("should set the Content-Type based on a filename", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.type("foo.js").end('var name = "tj";');
   });
 
@@ -21,7 +21,7 @@ it("should default to application/octet-stream", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.type("rawr").end('var name = "tj";');
   });
 
@@ -35,7 +35,7 @@ it("should set the Content-Type with type/subtype", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.type("application/vnd.amazon.ebook").end('var name = "tj";');
   });
 

@@ -5,7 +5,7 @@ it("should return true when Accept is not present", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.accepts("json") ? "yes" : "no");
   });
 
@@ -19,7 +19,7 @@ it("should return true when present", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.accepts("json") ? "yes" : "no");
   });
 
@@ -38,7 +38,7 @@ it("should return false otherwise", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.accepts("json") ? "yes" : "no");
   });
 
@@ -57,7 +57,7 @@ it("should accept an argument list of type names", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.accepts("json", "html"));
   });
 
@@ -76,7 +76,7 @@ it("should return the first when Accept is not present", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.accepts("json", "html"));
   });
 
@@ -90,7 +90,7 @@ it("should return the first acceptable type", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.accepts("json", "html"));
   });
 
@@ -109,7 +109,7 @@ it("should return false when no match is made", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.accepts("text/html", "application/json") ? "yup" : "nope");
   });
 
@@ -128,7 +128,7 @@ it("should take quality into account", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.accepts("text/html", "application/json"));
   });
 
@@ -147,7 +147,7 @@ it("should return the first acceptable type with canonical mime types", async ()
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.accepts("application/json", "text/html"));
   });
 

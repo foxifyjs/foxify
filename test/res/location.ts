@@ -5,7 +5,7 @@ it("should set the header", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.location("http://google.com").end();
   });
 
@@ -20,7 +20,7 @@ it('should encode "url"', async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.location("https://google.com?q=\u2603 §10").end();
   });
 
@@ -37,7 +37,7 @@ it('should not touch already-encoded sequences in "url"', async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.location("https://google.com?q=%A710").end();
   });
 
@@ -53,7 +53,7 @@ describe('when url is "back"', () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.location("back").end();
     });
 
@@ -73,7 +73,7 @@ describe('when url is "back"', () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.location("back").end();
     });
 
@@ -93,7 +93,7 @@ describe('when url is "back"', () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.location("back").end();
     });
 
@@ -114,7 +114,7 @@ describe('when url is "back"', () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.location("back").end();
     });
 

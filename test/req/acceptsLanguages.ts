@@ -5,7 +5,7 @@ it("should be true if language accepted", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     expect(req.acceptsLanguages("en-us")).toBeTruthy();
     expect(req.acceptsLanguages("en")).toBeTruthy();
     res.end();
@@ -26,7 +26,7 @@ it("should be false if language not accepted", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     expect(req.acceptsLanguages("es")).toBeFalsy();
     res.end();
   });
@@ -47,7 +47,7 @@ describe("when Accept-Language is not present", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       expect(req.acceptsLanguages("en")).toBeTruthy();
       expect(req.acceptsLanguages("es")).toBeTruthy();
       expect(req.acceptsLanguages("jp")).toBeTruthy();

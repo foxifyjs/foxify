@@ -5,7 +5,7 @@ it("should return the Host when present", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.hostname);
   });
 
@@ -24,7 +24,7 @@ it("should strip port number", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.hostname);
   });
 
@@ -43,7 +43,7 @@ it("should return undefined otherwise", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     req.headers.host = undefined;
     res.end(String(req.hostname));
   });
@@ -58,7 +58,7 @@ it("should work with IPv6 Host", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.hostname);
   });
 
@@ -77,7 +77,7 @@ it("should work with IPv6 Host and port", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.hostname);
   });
 
@@ -99,7 +99,7 @@ describe("When 'trust.proxy' is enabled", () => {
 
     app.set("trust.proxy", true);
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.hostname);
     });
 
@@ -121,7 +121,7 @@ describe("When 'trust.proxy' is enabled", () => {
 
     app.set("trust.proxy", "10.0.0.1");
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.hostname);
     });
 
@@ -143,7 +143,7 @@ describe("When 'trust.proxy' is enabled", () => {
 
     app.set("trust.proxy", true);
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.hostname);
     });
 
@@ -165,7 +165,7 @@ describe("When 'trust.proxy' is enabled", () => {
 
       app.set("trust.proxy", true);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.hostname!);
       });
 
@@ -188,7 +188,7 @@ describe("When 'trust.proxy' is enabled", () => {
 
       app.set("trust.proxy", true);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.hostname!);
       });
 
@@ -211,7 +211,7 @@ describe("When 'trust.proxy' is enabled", () => {
 
       app.set("trust.proxy", true);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.send(req.hostname!);
       });
 
@@ -235,7 +235,7 @@ describe("when 'trust.proxy' is disabled", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.hostname);
     });
 

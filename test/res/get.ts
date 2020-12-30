@@ -5,7 +5,7 @@ it("should get the response header field", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.setHeader("Content-Type", "text/x-foo");
     res.send(res.get("Content-Type") as any);
   });

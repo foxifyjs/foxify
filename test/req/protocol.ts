@@ -5,7 +5,7 @@ it("should return the protocol string", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.end(req.protocol);
   });
 
@@ -24,7 +24,7 @@ describe("when 'trust.proxy' is enabled", () => {
 
     app.set("trust.proxy", true);
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.protocol);
     });
 
@@ -45,7 +45,7 @@ describe("when 'trust.proxy' is enabled", () => {
 
     app.set("trust.proxy", true);
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       (req.socket as any).encrypted = true;
 
       res.end(req.protocol);
@@ -65,7 +65,7 @@ describe("when 'trust.proxy' is enabled", () => {
 
     app.set("trust.proxy", "10.0.0.1");
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.protocol);
     });
 
@@ -86,7 +86,7 @@ describe("when 'trust.proxy' is enabled", () => {
 
     app.set("trust.proxy", true);
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.protocol);
     });
 
@@ -105,7 +105,7 @@ describe("when 'trust.proxy' is enabled", () => {
 
       app.set("trust.proxy", 1);
 
-      app.use((req, res) => {
+      app.get("/", (req, res) => {
         res.end(req.protocol);
       });
 
@@ -127,7 +127,7 @@ describe("when 'trust.proxy' is disabled", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.protocol);
     });
 

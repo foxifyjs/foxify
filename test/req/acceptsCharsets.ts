@@ -6,7 +6,7 @@ describe("when Accept-Charset is not present", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.acceptsCharsets("utf-8") ? "yes" : "no");
     });
 
@@ -22,7 +22,7 @@ describe("when Accept-Charset is not present", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.acceptsCharsets("utf-8") ? "yes" : "no");
     });
 
@@ -41,7 +41,7 @@ describe("when Accept-Charset is not present", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.end(req.acceptsCharsets("utf-8") ? "yes" : "no");
     });
 

@@ -5,7 +5,7 @@ it("should be true if encoding accepted", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     expect(req.acceptsEncodings("gzip")).toBeTruthy();
     expect(req.acceptsEncodings("deflate")).toBeTruthy();
     res.end();
@@ -26,7 +26,7 @@ it("should be false if encoding not accepted", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     expect(req.acceptsEncodings("bogus")).toBeFalsy();
     res.end();
   });

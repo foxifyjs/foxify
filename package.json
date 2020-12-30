@@ -62,6 +62,7 @@
   },
   "peerDependencies": {
     "@foxify/http": "^1",
+    "@foxify/router": "^1",
     "@types/node": "^14",
     "prototyped.js": "^1"
   },
@@ -78,6 +79,7 @@
   },
   "devDependencies": {
     "@foxify/http": "^1.0.0-beta.2",
+    "@foxify/router": "^1.0.0-beta.2",
     "@types/cookie": "^0.4.0",
     "@types/cookie-parser": "^1.4.1",
     "@types/dotenv": "^8.2.0",

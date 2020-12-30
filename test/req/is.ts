@@ -6,7 +6,7 @@ describe("when given a mime type", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       res.end(req.is("application/json"));
     });
 
@@ -28,7 +28,7 @@ describe("when given a mime type", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       expect(req.is("image/jpeg")).toBeFalsy();
       res.end();
     });
@@ -50,7 +50,7 @@ describe("when given a mime type", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       res.end(req.is("application/json"));
     });
 
@@ -74,7 +74,7 @@ describe("when content-type is not present", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       expect(req.is("application/json")).toBeFalsy();
       res.end();
     });
@@ -95,7 +95,7 @@ describe("when given an extension", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       res.end(req.is("json"));
     });
 
@@ -119,7 +119,7 @@ describe("when given */subtype", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       res.end(req.is("*/json"));
     });
 
@@ -141,7 +141,7 @@ describe("when given */subtype", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       expect(req.is("*/html")).toBeFalsy();
       res.end();
     });
@@ -163,7 +163,7 @@ describe("when given */subtype", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       res.end(req.is("*/json"));
     });
 
@@ -187,7 +187,7 @@ describe("when given type/*", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       res.end(req.is("application/*"));
     });
 
@@ -209,7 +209,7 @@ describe("when given type/*", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       expect(req.is("text/*")).toBeFalsy();
       res.end();
     });
@@ -231,7 +231,7 @@ describe("when given type/*", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.post("/", (req, res) => {
       res.end(req.is("application/*"));
     });
 

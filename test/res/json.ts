@@ -5,7 +5,7 @@ it("should not support jsonp callbacks", async () => {
 
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.json({ foo: "bar" });
   });
 
@@ -39,7 +39,7 @@ describe("when given primitives", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json(null);
     });
 
@@ -57,7 +57,7 @@ describe("when given primitives", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json(300);
     });
 
@@ -75,7 +75,7 @@ describe("when given primitives", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json("str");
     });
 
@@ -95,7 +95,7 @@ describe("when given an array", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json(["foo", "bar", "baz"]);
     });
 
@@ -115,7 +115,7 @@ describe("when given an object", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json({ name: "tobi" });
     });
 
@@ -145,7 +145,7 @@ describe('"json.escape" setting', () => {
 
     app.enable("json.escape");
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json({ "&": "<script>" });
     });
 
@@ -169,7 +169,7 @@ describe('"json.replacer" setting', () => {
       return key[0] === "_" ? undefined : val;
     });
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json({ name: "tobi", _id: 12345 });
     });
 
@@ -189,7 +189,7 @@ describe('"json.spaces" setting', () => {
 
     const app = new Foxify();
 
-    expect(app.get("json.spaces")).toBeUndefined();
+    expect(app.setting("json.spaces")).toBeUndefined();
   });
 
   it("should be passed to JSON.stringify()", async () => {
@@ -199,7 +199,7 @@ describe('"json.spaces" setting', () => {
 
     app.set("json.spaces", 2);
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.json({ name: "tobi", age: 2 });
     });
 

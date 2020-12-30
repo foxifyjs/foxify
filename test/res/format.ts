@@ -1,10 +1,11 @@
+import Router from "@foxify/router";
 import assert from "assert";
-import Foxify, { Router } from "../../src";
+import Foxify from "../../src";
 
 describe("with canonicalized mime types", () => {
   const app = new Foxify();
 
-  app.use((req, res, next) => {
+  app.get("/", (req, res, next) => {
     res.format({
       "text/plain": () => {
         res.send("hey");
@@ -23,7 +24,7 @@ describe("with canonicalized mime types", () => {
     });
   });
 
-  app.error((err: any, req, res) => {
+  app.catch((err: any, req, res) => {
     if (!err.types) throw err;
 
     res.status(err.status).send(`Supports: ${err.types.join(", ")}`);
@@ -35,7 +36,7 @@ describe("with canonicalized mime types", () => {
 describe("with extnames", () => {
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.format({
       text: () => {
         res.send("hey");
@@ -49,7 +50,7 @@ describe("with extnames", () => {
     });
   });
 
-  app.error((err: any, req, res) => {
+  app.catch((err: any, req, res) => {
     res.status(err.status).send(`Supports: ${err.types.join(", ")}`);
   });
 
@@ -59,7 +60,7 @@ describe("with extnames", () => {
 describe("with parameters", () => {
   const app = new Foxify();
 
-  app.use((req, res) => {
+  app.get("/", (req, res) => {
     res.format({
       "text/plain; charset=utf-8": () => {
         res.send("hey");
@@ -73,7 +74,7 @@ describe("with parameters", () => {
     });
   });
 
-  app.error((err: any, req, res) => {
+  app.catch((err: any, req, res) => {
     res.status(err.status).send(`Supports: ${err.types.join(", ")}`);
   });
 
@@ -86,7 +87,7 @@ describe("given .default", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.format({
         text: () => {
           res.send("hey");
@@ -112,7 +113,7 @@ describe("given .default", () => {
 
     const app = new Foxify();
 
-    app.use((req, res) => {
+    app.get("/", (req, res) => {
       res.format({
         default: () => {
           res.send("hey");
@@ -148,7 +149,7 @@ describe("in router", () => {
     });
   });
 
-  app.error((err: any, req, res) => {
+  app.catch((err: any, req, res) => {
     res.status(err.status).send(`Supports: ${err.types.join(", ")}`);
   });
 
@@ -173,7 +174,7 @@ describe("in router", () => {
     });
   });
 
-  app.error((err: any, req, res) => {
+  app.catch((err: any, req, res) => {
     res.status(err.status).send(`Supports: ${err.types.join(", ")}`);
   });
 
