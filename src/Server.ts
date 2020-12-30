@@ -1,13 +1,13 @@
+import {
+  Request,
+  requestSettings,
+  Response,
+  responseSettings,
+} from "@foxify/http";
 import * as cluster from "cluster";
 import * as http from "http";
 import * as https from "https";
 import Foxify from ".";
-import Request, {
-  createConstructor as createRequestConstructor,
-} from "./Request";
-import Response, {
-  createConstructor as createResponseConstructor,
-} from "./Response";
 import { Engine } from "./view";
 
 namespace Server {
@@ -35,10 +35,10 @@ class Server {
     const isHttps = settings.https;
     const SERVER: any = isHttps ? https : http;
 
-    const IncomingMessage = createRequestConstructor(settings);
-    const ServerResponse = createResponseConstructor(settings);
+    requestSettings(settings as any);
+    responseSettings(settings as any);
 
-    const OPTIONS: any = { IncomingMessage, ServerResponse };
+    const OPTIONS: any = { IncomingMessage: Request, ServerResponse: Response };
 
     if (isHttps) {
       OPTIONS.cert = settings["https.cert"];

@@ -1,8 +1,7 @@
+import { Request, Response } from "@foxify/http";
 import assert from "assert";
 import { Method, METHODS } from "../constants/METHOD";
 import { Encapsulation } from "../exceptions";
-import Request from "../Request";
-import Response from "../Response";
 
 const OPTIONS = { schema: { response: {} } };
 

@@ -1,3 +1,4 @@
+import { Request, Response } from "@foxify/http";
 import assert from "assert";
 import fastStringify from "fast-json-stringify";
 import isRegexSafe = require("safe-regex");
@@ -6,8 +7,6 @@ import { HTTP } from "../constants";
 import { Method, METHODS } from "../constants/METHOD";
 import { Encapsulation, HttpException } from "../exceptions";
 import { init } from "../middlewares";
-import Request from "../Request";
-import Response from "../Response";
 import {
   array,
   decodeURIComponent as fastDecode,
@@ -174,7 +173,7 @@ namespace Router {
   }
 
   export type PathMethods<T = any> = {
-    [method in Method]: Router.PathMethodFunction<T>
+    [method in Method]: Router.PathMethodFunction<T>;
   };
 }
 
@@ -231,22 +230,19 @@ class Router {
     /* apply built-in middlewares */
     this._use(init(app) as any);
 
-    const middlewares = this.middlewares.reduce(
-      (prev, { path, handlers }) => {
-        METHODS.forEach(method =>
-          prev.push({
-            method,
-            path,
-            handlers: [],
-            middlewares: handlers,
-            opts: OPTIONS,
-          }),
-        );
+    const middlewares = this.middlewares.reduce((prev, { path, handlers }) => {
+      METHODS.forEach(method =>
+        prev.push({
+          method,
+          path,
+          handlers: [],
+          middlewares: handlers,
+          opts: OPTIONS,
+        }),
+      );
 
-        return prev;
-      },
-      [] as Router.Route[],
-    );
+      return prev;
+    }, [] as Router.Route[]);
 
     let routes = this.routes.reduce(
       (prev, { method, path, opts, handlers }) => {
@@ -506,25 +502,22 @@ class Router {
   }
 
   public route(path: string): Router.PathMethods<Router.PathMethods> {
-    const ROUTE = METHODS.reduce(
-      (prev, method) => {
-        const methodName = method.toLowerCase();
+    const ROUTE = METHODS.reduce((prev, method) => {
+      const methodName = method.toLowerCase();
 
-        assert(!prev[methodName], `Method already exists: ${methodName}`);
+      assert(!prev[methodName], `Method already exists: ${methodName}`);
 
-        prev[methodName] = (
-          opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
-          ...handlers: Array<Layer.Handler | Layer.Handler[]>
-        ) => {
-          this.on(method, path, opts, ...handlers);
+      prev[methodName] = (
+        opts: Layer.RouteOptions | Layer.Handler | Layer.Handler[],
+        ...handlers: Array<Layer.Handler | Layer.Handler[]>
+      ) => {
+        this.on(method, path, opts, ...handlers);
 
-          return ROUTE;
-        };
+        return ROUTE;
+      };
 
-        return prev;
-      },
-      {} as any,
-    );
+      return prev;
+    }, {} as any);
 
     return ROUTE;
   }
@@ -630,7 +623,7 @@ class Router {
   public lookup(req: Request, res: Response) {
     const handle = this.find(req.method as Method, req.path);
 
-    req.params = handle.params;
+    (req as any).params = handle.params;
 
     res.stringify = handle.options.schema.response;
 

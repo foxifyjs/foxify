@@ -1,12 +1,16 @@
-import inject from "@foxify/inject";
+import {
+  Request,
+  requestSettings,
+  Response,
+  responseSettings,
+} from "@foxify/http";
+import inject, { OptionsI as InjectOptionsI } from "@foxify/inject";
 import assert from "assert";
 import proxyAddr from "proxy-addr";
 import qs from "qs";
 import serveStatic from "serve-static";
 import { METHODS } from "./constants/METHOD";
 import { Encapsulation } from "./exceptions";
-import { createConstructor as createRequestConstructor } from "./Request";
-import { createConstructor as createResponseConstructor } from "./Response";
 import { Layer, Router } from "./routing";
 import Server from "./Server";
 import * as utils from "./utils";
@@ -100,6 +104,7 @@ namespace Foxify {
 
 interface Foxify extends Router.MethodFunctions<Foxify> {
   get(setting: string): any;
+
   get(
     path: string,
     options: Layer.RouteOptions | Layer.Handler,
@@ -328,7 +333,7 @@ class Foxify {
     return this;
   }
 
-  public inject(options: inject.Options | string, callback?: inject.Callback) {
+  public inject(options: InjectOptionsI | string) {
     assert(
       this.get("env") === "test",
       "Inject only works on the testing environment",
@@ -338,21 +343,17 @@ class Foxify {
 
     if (typeof options === "string") options = { url: options };
 
-    const IncomingMessage = createRequestConstructor(this._settings);
-    const ServerResponse = createResponseConstructor({
+    requestSettings(this._settings as any);
+    responseSettings({
       ...this._settings,
       view: this._view,
-    });
+    } as any);
 
-    return inject(
-      this._router.lookup.bind(this._router) as any,
-      {
-        ...options,
-        ServerResponse,
-        IncomingMessage,
-      },
-      callback,
-    );
+    return inject(this._router.lookup.bind(this._router) as any, {
+      ...options,
+      Response,
+      Request,
+    });
   }
 
   public start(callback?: Server.Callback) {

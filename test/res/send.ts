@@ -1,5 +1,5 @@
-import { METHODS } from "http";
-import Foxify, { Request, Response } from "../../src";
+import { METHODS, Request, Response } from "@foxify/http";
+import Foxify from "../../src";
 
 describe(".send()", () => {
   it('should set body to ""', async () => {
@@ -193,10 +193,7 @@ describe(".send(Buffer)", () => {
     const app = new Foxify();
 
     app.use((req, res) => {
-      res
-        .type("text/plain")
-        .set("ETag", '"foo"')
-        .send(Buffer.from("hey"));
+      res.type("text/plain").set("ETag", '"foo"').send(Buffer.from("hey"));
     });
 
     const result = await app.inject("/");
@@ -254,10 +251,7 @@ describe("when .statusCode is 204", () => {
     const app = new Foxify();
 
     app.use((req, res) => {
-      res
-        .status(204)
-        .set("Transfer-Encoding", "chunked")
-        .send("foo");
+      res.status(204).set("Transfer-Encoding", "chunked").send("foo");
     });
 
     const result = await app.inject("/");
@@ -277,10 +271,7 @@ describe("when .statusCode is 304", () => {
     const app = new Foxify();
 
     app.use((req, res) => {
-      res
-        .status(304)
-        .set("Transfer-Encoding", "chunked")
-        .send("foo");
+      res.status(304).set("Transfer-Encoding", "chunked").send("foo");
     });
 
     const result = await app.inject("/");
@@ -409,7 +400,7 @@ describe('"etag" setting', () => {
       expect(result.headers.etag).toBe('W/"c-IgR/L5SF7CJQff4wxKGF/vfPuZ0"');
     });
 
-    METHODS.forEach(method => {
+    METHODS.forEach((method) => {
       if (method.toLowerCase() === "connect") return;
 
       it(`should send ETag in response to ${method} request`, async () => {

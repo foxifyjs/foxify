@@ -1,9 +1,6 @@
 import { STATUS_CODES } from "http";
 import { HTTP } from "../constants";
-// import Request from "../Request";
-// import Response from "../Response";
 import * as utils from "../utils";
-// import htmlError from "./htmlError";
 
 class HttpException extends Error {
   public static isHttpException = (arg: any): arg is HttpException =>

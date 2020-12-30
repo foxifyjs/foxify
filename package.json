@@ -1,6 +1,6 @@
 {
   "name": "foxify",
-  "version": "0.10.20",
+  "version": "1.0.0-beta.1",
   "description": "The fast, easy to use & typescript ready web framework for Node.js",
   "author": {
     "name": "Ardalan Amini",
@@ -12,6 +12,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/foxifyjs/foxify.git"
+  },
+  "funding": {
+    "url": "https://opencollective.com/foxify"
   },
   "collective": {
     "type": "opencollective",
@@ -54,59 +57,44 @@
     "typedoc": "typedoc --out docs/ --mode file --module commonjs --target ES6 --plugin typedoc-plugin-example-tag src/",
     "doc": "node scripts/doc.js",
     "test": "jest",
-    "coverage": "npm test -- --coverage",
-    "codecov": "npm run coverage -- --runInBand && codecov"
+    "coverage": "npm test -- --coverage"
+  },
+  "peerDependencies": {
+    "@foxify/http": "^1",
+    "@types/node": "^14",
+    "prototyped.js": "^1"
   },
   "dependencies": {
-    "@foxify/events": "^1.1.4",
-    "@foxify/fresh": "^1.0.0",
-    "@foxify/inject": "^1.0.3",
-    "@types/node": "^14.11.10",
-    "async": "^2.6.3",
-    "content-disposition": "^0.5.3",
-    "content-type": "^1.0.4",
-    "cookie": "^0.4.1",
-    "cookie-signature": "^1.1.0",
+    "@foxify/inject": "^1.1.0",
     "dotenv": "^8.1.0",
     "escape-html": "^1.0.3",
     "etag": "^1.8.1",
     "fast-json-stringify": "^1.21.0",
-    "mime-types": "^2.1.27",
-    "negotiator": "^0.6.2",
-    "on-finished": "^2.3.0",
-    "prototyped.js": "^1.0.1",
     "proxy-addr": "^2.0.6",
     "qs": "^6.9.4",
     "safe-regex": "^2.1.1",
-    "send": "^0.17.1",
-    "serve-static": "^1.14.1",
-    "type-is": "^1.6.18"
+    "serve-static": "^1.14.1"
   },
   "devDependencies": {
-    "@types/async": "^2.4.2",
-    "@types/content-disposition": "^0.5.3",
-    "@types/content-type": "^1.1.3",
+    "@foxify/http": "^1.0.0-beta.2",
     "@types/cookie": "^0.4.0",
     "@types/cookie-parser": "^1.4.1",
-    "@types/cookie-signature": "^1.0.3",
     "@types/dotenv": "^6.1.1",
     "@types/escape-html": "1.0.0",
     "@types/etag": "^1.8.0",
     "@types/jest": "^24.9.1",
-    "@types/mime-types": "^2.1.0",
-    "@types/negotiator": "^0.6.1",
-    "@types/on-finished": "^2.3.1",
+    "@types/node": "^14.11.10",
     "@types/proxy-addr": "^2.0.0",
     "@types/qs": "^6.9.5",
     "@types/safe-regex": "^1.1.2",
-    "@types/send": "^0.14.5",
-    "@types/type-is": "^1.6.3",
-    "body-parser": "^1.19.0",
-    "codecov": "^3.8.0",
+    "cookie": "^0.4.1",
+    "cookie-parser": "^1.4.5",
     "ejs": "^2.7.4",
     "esdoc-typescript-plugin": "^1.0.1",
     "jest": "^24.9.0",
     "morgan": "^1.10.0",
+    "prettier": "^2.2.1",
+    "prototyped.js": "^1.0.1",
     "rimraf": "^2.7.1",
     "ts-jest": "^24.3.0",
     "tslint": "^5.20.1",

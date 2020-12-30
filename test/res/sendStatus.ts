@@ -22,7 +22,7 @@ describe(".sendStatus(statusCode)", () => {
     const app = new Foxify();
 
     app.use((req, res) => {
-      res.sendStatus(599);
+      res.sendStatus(599 as any);
     });
 
     const result = await app.inject("/");

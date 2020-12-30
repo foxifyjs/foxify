@@ -1,9 +1,8 @@
+import { Request, Response } from "@foxify/http";
 import assert from "assert";
 import escapeHtml from "escape-html";
 import { STATUS_CODES } from "http";
 import { HTTP } from "../constants";
-import Request from "../Request";
-import Response from "../Response";
 import * as utils from "../utils";
 
 const HANDLERS: Encapsulation.Handler[] = [];

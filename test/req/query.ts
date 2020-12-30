@@ -6,7 +6,7 @@ it("should default to {}", async () => {
   const app = new Foxify();
 
   app.use((req, res) => {
-    res.send(req.query);
+    res.send(req.query as any);
   });
 
   const result = await app.inject("/");
@@ -21,7 +21,7 @@ it("should default to parse complex keys", async () => {
   const app = new Foxify();
 
   app.use((req, res) => {
-    res.send(req.query);
+    res.send(req.query as any);
   });
 
   const result = await app.inject("/?user[name]=tj");

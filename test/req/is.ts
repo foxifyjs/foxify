@@ -232,7 +232,7 @@ describe("when given type/*", () => {
     const app = new Foxify();
 
     app.use((req, res) => {
-      res.end(req.is(["application/*"]));
+      res.end(req.is("application/*"));
     });
 
     const result = await app.inject({

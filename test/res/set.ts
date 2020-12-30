@@ -80,22 +80,6 @@ describe(".set(field, values)", () => {
     expect(result.statusCode).toBe(200);
     expect(result.headers["content-type"]).toBe("text/html; charset=lol");
   });
-
-  it("should throw when Content-Type is an array", async () => {
-    expect.assertions(2);
-
-    const app = new Foxify();
-
-    app.use((req, res) => {
-      res.set("Content-Type", ["text/html"]);
-      res.end();
-    });
-
-    const result = await app.inject("/");
-
-    expect(result.statusCode).toBe(500);
-    expect(result.body).toMatch(/Content-Type cannot be set to an Array/);
-  });
 });
 
 describe(".set(object)", () => {
