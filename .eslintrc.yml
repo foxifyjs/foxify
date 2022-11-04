@@ -1,0 +1,10 @@
+env:
+  browser: true
+  es2021: true
+  node: true
+extends: noir/all
+parserOptions:
+  project: ./tsconfig.eslint.json
+  ecmaVersion: latest
+  sourceType: module
+rules: {}
