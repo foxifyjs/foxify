@@ -57,8 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 
-dist/
-framework/
+.build/
 
 .idea/
 .vscode/

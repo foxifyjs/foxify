@@ -15,9 +15,9 @@ The **fast**, **easy to use** & **typescript ready** web framework for [Node.js]
 [![Known Vulnerabilities](https://snyk.io/test/github/foxifyjs/foxify/badge.svg?targetFile=package.json)](https://snyk.io/test/github/foxifyjs/foxify?targetFile=package.json)
 [![Dependencies Status](https://david-dm.org/foxifyjs/foxify.svg)](https://david-dm.org/foxifyjs/foxify)
 [![Pull Requests](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/foxifyjs/foxify/pulls)
-[![License](https://img.shields.io/github/license/foxifyjs/foxify.svg)](https://github.com/foxifyjs/foxify/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/foxifyjs/foxify.svg)](https://github.com/foxifyjs/foxify/blob/main/LICENSE)
 [![Build Status](https://github.com/foxifyjs/foxify/workflows/Test/badge.svg)](https://github.com/foxifyjs/foxify/actions)
-[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/master/graph/badge.svg)](https://codecov.io/gh/foxifyjs/foxify)
+[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg)](https://codecov.io/gh/foxifyjs/foxify)
 [![Backers on Open Collective](https://opencollective.com/foxify/backers/badge.svg)](#backers)
 [![Sponsors on Open Collective](https://opencollective.com/foxify/sponsors/badge.svg)](#sponsors)
 [![Github Stars](https://img.shields.io/github/stars/foxifyjs/foxify.svg?style=social&label=Stars)](https://github.com/foxifyjs/foxify)
@@ -80,7 +80,7 @@ app.get('/404', (req, res) => {
 app.start();
 ```
 
-More detailed [sample](https://github.com/foxifyjs/foxify/tree/master/demo) is available.
+More detailed [sample](https://github.com/foxifyjs/foxify/tree/main/demo) is available.
 
 You can also find all the documents [here](https://foxify.js.org).
 

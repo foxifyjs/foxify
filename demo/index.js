@@ -1,6 +1,6 @@
 const path = require("path");
 const morgan = require("morgan");
-const Foxify = require("../framework").default;
+const Foxify = require("..").default;
 const index = require("./routes");
 
 Foxify.dotenv(path.join(__dirname, ".env"));

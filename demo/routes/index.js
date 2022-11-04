@@ -1,4 +1,4 @@
-const { Router, HttpException, HTTP } = require("../../framework");
+const { Router, HttpException, HTTP } = require("../..");
 
 const routes = new Router()
 

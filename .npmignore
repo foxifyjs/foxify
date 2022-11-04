@@ -1,0 +1,17 @@
+.idea/
+.vscode/
+.github/
+test/
+coverage/
+docs/
+demo/
+scripts/
+jest.config.js
+nodemon.json
+tsconfig*.json
+*.tsbuildinfo
+.gitattributes
+.eslintrc.yml
+CONTRIBUTING.md
+CHANGELOG.md
+ROADMAP.md
