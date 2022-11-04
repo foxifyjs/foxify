@@ -1,103 +1,131 @@
-name: Create Release
+name: Release
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+env:
+  NODE_VERSION: 18
 
 jobs:
-  build:
+  test:
+    uses: ./.github/workflows/test.yml
+
+  release:
     name: Create Release
+
+    needs:
+      - test
+
+    environment:
+      name: release
+      url: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}
+
+    concurrency:
+      group: ${{ github.workflow }}-release-${{ github.ref_name }}
+      cancel-in-progress: true
+
     runs-on: ubuntu-latest
-    env:
-      RELEASE: ${{ github.ref }}
+
+    outputs:
+      release-id: ${{ steps.changelog.outputs.release-id }}
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - name: Changelog
+        uses: ardalanamini/auto-changelog@v3
+        id: changelog
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            ${{ steps.changelog.outputs.changelog }}
+          prerelease: ${{ steps.changelog.outputs.prerelease }}
+
+  publish-gpr:
+    name: Publish to GitHub Packages
+
+    needs:
+      - release
+
+    permissions:
+      contents: read
+      packages: write
+
+    environment:
+      name: gpr
+      url: https://github.com/${{ github.repository }}/pkgs/npm/foxify
+
+    concurrency:
+      group: ${{ github.workflow }}-gpr-${{ github.ref_name }}
+      cancel-in-progress: true
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Use PNPM
         uses: pnpm/action-setup@v2
         with:
           version: 7
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
           cache: pnpm
-          node-version: 14
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://npm.pkg.github.com/
+          scope: '@foxifyjs'
 
-      - run: pnpm i
-      - run: pnpm lint
-      - run: pnpm build
-      - run: pnpm test:coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          env_vars: RELEASE
-          fail_ci_if_error: true
+      - run: sed -i 's/foxify/@foxifyjs\/foxify/g' package.json
 
-      - name: Changelog
-        id: changelog
-        uses: ardalanamini/auto-changelog@v1.1.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install dependencies
+        run: pnpm i
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Publish the package
+        run: pnpm publish --no-git-checks --tag ${{ needs.release.outputs.release-id }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: |
-            ${{ steps.changelog.outputs.changelog }}
+          NODE_AUTH_TOKEN: ${{ github.token }}
 
   publish-npm:
     name: Publish to NPM
-    needs: build
+
+    needs:
+      - release
+
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/foxify
+
+    concurrency:
+      group: ${{ github.workflow }}-npm-${{ github.ref_name }}
+      cancel-in-progress: true
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Use PNPM
         uses: pnpm/action-setup@v2
         with:
           version: 7
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
           cache: pnpm
-          node-version: 14
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: https://registry.npmjs.org/
 
-      - run: pnpm i
-      - run: pnpm build
-      - run: pnpm publish
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Publish the package
+        run: pnpm publish --no-git-checks --tag ${{ needs.release.outputs.release-id }}
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-  publish-gpr:
-    name: Publish to Github
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Use PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          cache: pnpm
-          node-version: 14
-          registry-url: https://npm.pkg.github.com/
-
-      - run: pnpm i
-      - run: pnpm build
-      - run: pnpm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
