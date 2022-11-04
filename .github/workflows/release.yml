@@ -13,9 +13,18 @@ jobs:
       RELEASE: ${{ github.ref }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+
+      - name: Use PNPM
+        uses: pnpm/action-setup@v2
         with:
+          version: 7
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          cache: pnpm
           node-version: 14
+
       - run: pnpm i
       - run: pnpm lint
       - run: pnpm build
@@ -49,10 +58,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+
+      - name: Use PNPM
+        uses: pnpm/action-setup@v2
         with:
+          version: 7
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          cache: pnpm
           node-version: 14
           registry-url: https://registry.npmjs.org/
+
       - run: pnpm i
       - run: pnpm build
       - run: pnpm publish
@@ -65,10 +83,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+
+      - name: Use PNPM
+        uses: pnpm/action-setup@v2
         with:
+          version: 7
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          cache: pnpm
           node-version: 14
           registry-url: https://npm.pkg.github.com/
+
       - run: pnpm i
       - run: pnpm build
       - run: pnpm publish
