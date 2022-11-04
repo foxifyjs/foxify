@@ -69,6 +69,7 @@ jobs:
           NODE_VERSION: ${{ matrix.node-version }}
           REF: ${{ github.ref_name }}
         with:
+          flags: foxify
           env_vars: OS,ARCH,NODE_VERSION,REF
           fail_ci_if_error: true
 
