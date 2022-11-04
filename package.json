@@ -1,24 +1,19 @@
 {
   "name": "foxify",
-  "version": "1.0.0-beta.1",
+  "version": "0.10.20",
   "description": "The fast, easy to use & typescript ready web framework for Node.js",
-  "author": {
-    "name": "Ardalan Amini",
-    "email": "ardalanamini22@gmail.com",
-    "url": "https://ardalanamini.com"
-  },
-  "license": "MIT",
   "homepage": "https://foxify.js.org",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/foxifyjs/foxify.git"
-  },
-  "funding": {
-    "url": "https://opencollective.com/foxify"
-  },
-  "collective": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/foxify"
+  "author": "Ardalan Amini <ardalanamini22@gmail.com> (https://ardalanamini.com)",
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/foxify"
+    }
+  ],
+  "license": "MIT",
+  "repository": "github:foxifyjs/foxify",
+  "bugs": {
+    "url": "https://github.com/foxifyjs/foxify/issues"
   },
   "keywords": [
     "node",
@@ -40,16 +35,7 @@
     "framework",
     "foxify"
   ],
-  "engines": {
-    "node": ">= 8.12"
-  },
-  "files": [
-    "framework"
-  ],
-  "main": "framework/index.js",
-  "types": "framework/index.d.ts",
   "scripts": {
-    "postinstall": "node -e \"console.log('\\u001b[35m\\u001b[1mLove Foxify? You can now donate to our open collective:\\u001b[22m\\u001b[39m\\n > \\u001b[34mhttps://opencollective.com/foxify/donate\\u001b[0m\\n')\"",
     "prepublishOnly": "npm run lint && npm test && npm run build",
     "build": "tsc",
     "build:watch": "tsc --watch",
@@ -60,6 +46,14 @@
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
+  "engines": {
+    "node": ">= 8.12"
+  },
+  "files": [
+    "framework"
+  ],
+  "main": "framework/index.js",
+  "types": "framework/index.d.ts",
   "peerDependencies": {
     "@foxify/http": "^1",
     "@foxify/router": "^1",
@@ -68,44 +62,43 @@
   },
   "dependencies": {
     "@foxify/inject": "^1.1.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^16.0.3",
     "escape-html": "^1.0.3",
     "etag": "^1.8.1",
-    "fast-json-stringify": "^1.21.0",
-    "proxy-addr": "^2.0.6",
-    "qs": "^6.9.4",
+    "fast-json-stringify": "^5.4.0",
+    "proxy-addr": "^2.0.7",
+    "qs": "^6.11.0",
     "safe-regex": "^2.1.1",
-    "serve-static": "^1.14.1"
+    "serve-static": "^1.15.0"
   },
   "devDependencies": {
     "@foxify/http": "^1.0.0-beta.2",
     "@foxify/router": "^1.0.0-beta.2",
-    "@types/cookie": "^0.4.0",
-    "@types/cookie-parser": "^1.4.1",
+    "@types/cookie": "^0.5.1",
+    "@types/cookie-parser": "^1.4.3",
     "@types/dotenv": "^8.2.0",
-    "@types/escape-html": "1.0.0",
-    "@types/etag": "^1.8.0",
-    "@types/jest": "^26.0.19",
-    "@types/node": "^14.14.17",
+    "@types/escape-html": "^1.0.2",
+    "@types/etag": "^1.8.1",
+    "@types/jest": "^29.2.2",
+    "@types/node": "^18.11.9",
     "@types/proxy-addr": "^2.0.0",
-    "@types/qs": "^6.9.5",
-    "@types/safe-regex": "^1.1.2",
-    "@typescript-eslint/eslint-plugin": "^4.11.1",
-    "@typescript-eslint/parser": "^4.11.1",
-    "cookie": "^0.4.1",
-    "cookie-parser": "^1.4.5",
-    "ejs": "^2.7.4",
+    "@types/qs": "^6.9.7",
+    "@types/safe-regex": "^1.1.4",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "cookie": "^0.5.0",
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.8",
     "esdoc-typescript-plugin": "^1.0.1",
-    "eslint": "^7.16.0",
-    "jest": "^26.6.3",
+    "eslint": "^8.26.0",
+    "jest": "^29.2.2",
     "morgan": "^1.10.0",
-    "prettier": "^2.2.1",
-    "prototyped.js": "^1.0.1",
-    "rimraf": "^2.7.1",
-    "ts-jest": "^26.4.4",
-    "typedoc": "^0.15.0",
-    "typedoc-plugin-example-tag": "^1.0.2",
-    "typescript": "^4.1.3"
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^29.0.3",
+    "typedoc": "^0.23.20",
+    "typedoc-plugin-example-tag": "^1.0.4",
+    "typescript": "^4.8.4"
   },
   "jest": {
     "moduleFileExtensions": [

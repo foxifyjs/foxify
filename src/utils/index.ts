@@ -1,6 +1,5 @@
 import etag from "etag";
 
-export * from "prototyped.js/es6/methods";
 export * from "./assertions";
 
 export { default as decodeURIComponent } from "./fast-decode-uri-component";

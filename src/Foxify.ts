@@ -298,8 +298,13 @@ class Foxify extends Router<Request, Response> {
       view: this._view,
     } as any);
 
+    // TODO: fix typescript issues
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return inject(this.lookup.bind(this), {
       ...options,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       Response,
       Request,
     });

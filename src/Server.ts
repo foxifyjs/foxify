@@ -4,9 +4,9 @@ import {
   Response,
   responseSettings,
 } from "@foxify/http";
-import * as cluster from "cluster";
-import * as http from "http";
-import * as https from "https";
+import cluster from "cluster";
+import http from "http";
+import https from "https";
 import Foxify from ".";
 import { Engine } from "./view";
 
