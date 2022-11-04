@@ -29,10 +29,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
-      - run: npm run test:coverage
+      - run: pnpm i
+      - run: pnpm lint
+      - run: pnpm build
+      - run: pnpm test:coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:

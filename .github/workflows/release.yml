@@ -16,10 +16,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
-      - run: npm run test:coverage
+      - run: pnpm i
+      - run: pnpm lint
+      - run: pnpm build
+      - run: pnpm test:coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -53,9 +53,9 @@ jobs:
         with:
           node-version: 14
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm run build
-      - run: npm publish --access public
+      - run: pnpm i
+      - run: pnpm build
+      - run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
@@ -69,8 +69,8 @@ jobs:
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
-      - run: npm ci
-      - run: npm run build
-      - run: npm publish
+      - run: pnpm i
+      - run: pnpm build
+      - run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
