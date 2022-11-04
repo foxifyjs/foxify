@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should get the response header field", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.setHeader("Content-Type", "text/x-foo");

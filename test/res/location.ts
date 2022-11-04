@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should set the header", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.location("http://google.com").end();
@@ -18,7 +18,7 @@ it("should set the header", async () => {
 it('should encode "url"', async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.location("https://google.com?q=\u2603 §10").end();
@@ -27,15 +27,13 @@ it('should encode "url"', async () => {
   const result = await app.inject("/");
 
   expect(result.statusCode).toBe(200);
-  expect(result.headers.location).toBe(
-    "https://google.com?q=%E2%98%83%20%C2%A710",
-  );
+  expect(result.headers.location).toBe("https://google.com?q=%E2%98%83%20%C2%A710");
 });
 
 it('should not touch already-encoded sequences in "url"', async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.location("https://google.com?q=%A710").end();
@@ -51,14 +49,14 @@ describe('when url is "back"', () => {
   it('should set location from "Referer" header', async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.location("back").end();
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         referer: "/some/page.html",
       },
@@ -71,14 +69,14 @@ describe('when url is "back"', () => {
   it('should set location from "Referrer" header', async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.location("back").end();
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         referrer: "/some/page.html",
       },
@@ -91,16 +89,16 @@ describe('when url is "back"', () => {
   it('should prefer "Referrer" header', async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.location("back").end();
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
-        referer: "/some/page1.html",
+        referer : "/some/page1.html",
         referrer: "/some/page2.html",
       },
     });
@@ -112,7 +110,7 @@ describe('when url is "back"', () => {
   it('should set the header to "/" without referrer', async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.location("back").end();

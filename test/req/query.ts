@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should default to {}", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.send(req.query as any);
@@ -18,7 +18,7 @@ it("should default to {}", async () => {
 it("should default to parse complex keys", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.send(req.query as any);

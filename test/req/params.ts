@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should return an empty object", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(JSON.stringify(req.params));
@@ -17,7 +17,7 @@ it("should return an empty object", async () => {
 it("should return the url params", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/:foo", (req, res) => {
     res.end(req.params.foo);

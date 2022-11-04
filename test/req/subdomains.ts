@@ -4,14 +4,14 @@ describe("when present", () => {
   it("should return an array", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send(req.subdomains);
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         host: "tobi.ferrets.example.com",
       },
@@ -24,14 +24,14 @@ describe("when present", () => {
   it("should work with IPv4 address", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send(req.subdomains);
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         host: "127.0.0.1",
       },
@@ -44,14 +44,14 @@ describe("when present", () => {
   it("should work with IPv6 address", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send(req.subdomains);
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         host: "[::1]",
       },
@@ -66,14 +66,14 @@ describe("otherwise", () => {
   it("should return an empty array", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send(req.subdomains);
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         host: "example.com",
       },
@@ -88,9 +88,10 @@ describe("with no host", () => {
   it("should return an empty array", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
+      // eslint-disable-next-line no-undefined
       req.headers.host = undefined;
       res.send(req.subdomains);
     });
@@ -106,7 +107,7 @@ describe("with trusted X-Forwarded-Host", () => {
   it("should return an array", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.set("trust.proxy", true);
 
@@ -115,7 +116,7 @@ describe("with trusted X-Forwarded-Host", () => {
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         "x-forwarded-host": "tobi.ferrets.example.com",
       },
@@ -131,7 +132,7 @@ describe("when subdomain offset is set", () => {
     it("should return an array with the whole domain", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("subdomain.offset", 0);
 
@@ -140,7 +141,7 @@ describe("when subdomain offset is set", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
           host: "tobi.ferrets.sub.example.com",
         },
@@ -153,7 +154,7 @@ describe("when subdomain offset is set", () => {
     it("should return an array with the whole IPv4", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("subdomain.offset", 0);
 
@@ -162,7 +163,7 @@ describe("when subdomain offset is set", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
           host: "127.0.0.1",
         },
@@ -175,7 +176,7 @@ describe("when subdomain offset is set", () => {
     it("should return an array with the whole IPv6", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("subdomain.offset", 0);
 
@@ -184,7 +185,7 @@ describe("when subdomain offset is set", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
           host: "[::1]",
         },
@@ -199,7 +200,7 @@ describe("when subdomain offset is set", () => {
     it("should return an array", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("subdomain.offset", 3);
 
@@ -208,7 +209,7 @@ describe("when subdomain offset is set", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
           host: "tobi.ferrets.sub.example.com",
         },
@@ -223,7 +224,7 @@ describe("when subdomain offset is set", () => {
     it("should return an empty array", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("subdomain.offset", 3);
 
@@ -232,7 +233,7 @@ describe("when subdomain offset is set", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
           host: "sub.example.com",
         },

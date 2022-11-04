@@ -1,4 +1,4 @@
-import cookie from "cookie";
+import * as cookie from "cookie";
 import cookieParser from "cookie-parser";
 import Foxify from "../../src";
 
@@ -6,7 +6,7 @@ describe(".cookie(name, object)", () => {
   it("should generate a JSON cookie", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.cookie("user", { name: "tobi" }).end();
@@ -15,9 +15,7 @@ describe(".cookie(name, object)", () => {
     const result = await app.inject("/");
 
     expect(result.statusCode).toBe(200);
-    expect(result.headers["set-cookie"]).toBe(
-      "user=j%3A%7B%22name%22%3A%22tobi%22%7D; Path=/",
-    );
+    expect(result.headers["set-cookie"]).toBe("user=j%3A%7B%22name%22%3A%22tobi%22%7D; Path=/");
   });
 });
 
@@ -25,7 +23,7 @@ describe(".cookie(name, string)", () => {
   it("should set a cookie", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.cookie("name", "tobi").end();
@@ -40,7 +38,7 @@ describe(".cookie(name, string)", () => {
   it("should allow multiple calls", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.cookie("name", "tobi");
@@ -64,26 +62,27 @@ describe(".cookie(name, string, options)", () => {
   it("should set params", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
-      res.cookie("name", "tobi", { httpOnly: true, secure: true });
+      res.cookie("name", "tobi", {
+        httpOnly: true,
+        secure  : true,
+      });
       res.end();
     });
 
     const result = await app.inject("/");
 
     expect(result.statusCode).toBe(200);
-    expect(result.headers["set-cookie"]).toBe(
-      "name=tobi; Path=/; HttpOnly; Secure",
-    );
+    expect(result.headers["set-cookie"]).toBe("name=tobi; Path=/; HttpOnly; Secure");
   });
 
   describe("maxAge", () => {
     it("should set relative expires", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         res.cookie("name", "tobi", { maxAge: 1000 });
@@ -93,15 +92,13 @@ describe(".cookie(name, string, options)", () => {
       const result = await app.inject("/");
 
       expect(result.statusCode).toBe(200);
-      expect((result.headers["set-cookie"] as any)[0]).not.toBe(
-        "Thu, 01 Jan 1970 00:00:01 GMT",
-      );
+      expect((result.headers["set-cookie"] as any)[0]).not.toBe("Thu, 01 Jan 1970 00:00:01 GMT");
     });
 
     it("should set max-age", async () => {
       expect.assertions(1);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         res.cookie("name", "tobi", { maxAge: 1000 });
@@ -116,10 +113,10 @@ describe(".cookie(name, string, options)", () => {
     it("should not mutate the options object", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       const options = { maxAge: 1000 };
-      const optionsCopy = Object.assign({}, options);
+      const optionsCopy = { ...options };
 
       app.get("/", (req, res) => {
         res.cookie("name", "tobi", options);
@@ -137,7 +134,7 @@ describe(".cookie(name, string, options)", () => {
     it("should generate a signed JSON cookie", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", cookieParser("foo bar baz") as any);
 
@@ -148,9 +145,7 @@ describe(".cookie(name, string, options)", () => {
       const result = await app.inject("/");
 
       expect(result.statusCode).toBe(200);
-      expect(
-        cookie.parse((result.headers["set-cookie"] as any).split(".")[0]).user,
-      ).toBe('s:j:{"name":"tobi"}');
+      expect(cookie.parse((result.headers["set-cookie"] as any).split(".")[0]).user).toBe('s:j:{"name":"tobi"}');
     });
   });
 
@@ -158,7 +153,7 @@ describe(".cookie(name, string, options)", () => {
     it("should throw an error", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", cookieParser() as any);
 
@@ -177,7 +172,7 @@ describe(".cookie(name, string, options)", () => {
     it("should set a signed cookie", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", cookieParser("foo bar baz") as any);
 
@@ -188,9 +183,7 @@ describe(".cookie(name, string, options)", () => {
       const result = await app.inject("/");
 
       expect(result.statusCode).toBe(200);
-      expect(result.headers["set-cookie"]).toBe(
-        "name=s%3Atobi.xJjV2iZ6EI7C8E5kzwbfA9PVLl1ZR07UTnuTgQQ4EnQ; Path=/",
-      );
+      expect(result.headers["set-cookie"]).toBe("name=s%3Atobi.xJjV2iZ6EI7C8E5kzwbfA9PVLl1ZR07UTnuTgQQ4EnQ; Path=/");
     });
   });
 });

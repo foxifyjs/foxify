@@ -1,4 +1,4 @@
-import * as path from "path";
+import { join } from "path";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Engine {
@@ -6,11 +6,14 @@ namespace Engine {
 }
 
 class Engine {
-  protected _path: string;
+
   protected _ext: string;
+
   protected _handler: (...args: any[]) => void;
 
-  constructor(path: string, ext: string, handler: () => void) {
+  protected _path: string;
+
+  public constructor(path: string, ext: string, handler: () => void) {
     this._path = path;
     this._ext = ext;
     this._handler = handler;
@@ -20,9 +23,10 @@ class Engine {
     filename: string,
     opts: Record<string, unknown> = {},
     cb?: Engine.Callback,
-  ) {
-    this._handler(path.join(this._path, `${filename}.${this._ext}`), opts, cb);
+  ): void {
+    this._handler(join(this._path, `${ filename }.${ this._ext }`), opts, cb);
   }
+
 }
 
 export default Engine;

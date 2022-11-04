@@ -4,7 +4,7 @@ describe(".set(field, value)", () => {
   it("should set the response header field", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.set("Content-Type", "text/x-foo; charset=utf-8").end();
@@ -18,7 +18,7 @@ describe(".set(field, value)", () => {
   it("should coerce to a string", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.set("X-Number", 123);
@@ -37,7 +37,7 @@ describe(".set(field, values)", () => {
   it("should set multiple response header fields", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.set("Set-Cookie", ["type=ninja", "language=javascript"]);
@@ -52,7 +52,7 @@ describe(".set(field, values)", () => {
   it("should coerce to an array of strings", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.set("X-Numbers", [123, 456]);
@@ -68,7 +68,7 @@ describe(".set(field, values)", () => {
   it("should not set a charset of one is already set", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.set("Content-Type", "text/html; charset=lol");
@@ -86,7 +86,7 @@ describe(".set(object)", () => {
   it("should set multiple fields", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res
@@ -106,7 +106,7 @@ describe(".set(object)", () => {
   it("should coerce to a string", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.set({ "X-Number": 123 });

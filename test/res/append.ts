@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should append multiple headers", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res, next) => {
     res.append("Link", "<http://localhost/>");
@@ -26,7 +26,7 @@ it("should append multiple headers", async () => {
 it("should accept array of values", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res, next) => {
     res.append("Set-Cookie", ["foo=bar", "fizz=buzz"]);
@@ -42,7 +42,7 @@ it("should accept array of values", async () => {
 it("should get reset by res.set(field, val)", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res, next) => {
     res.append("Link", "<http://localhost/>");
@@ -63,7 +63,7 @@ it("should get reset by res.set(field, val)", async () => {
 it("should work with res.set(field, val) first", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res, next) => {
     res.set("Link", "<http://localhost/>");
@@ -86,7 +86,7 @@ it("should work with res.set(field, val) first", async () => {
 it("should work with cookies", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res, next) => {
     res.cookie("foo", "bar");

@@ -1,14 +1,15 @@
+import cluster from "cluster";
+import http from "http";
+import https from "https";
 import {
   Request,
   requestSettings,
   Response,
   responseSettings,
 } from "@foxify/http";
-import cluster from "cluster";
-import http from "http";
-import https from "https";
-import Foxify from ".";
 import { Engine } from "./view";
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import type Foxify from ".";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Server {
@@ -22,14 +23,16 @@ namespace Server {
 }
 
 class Server {
+
   protected _host: string;
-  protected _port: number;
 
   protected _listening = false;
 
-  private _instance?: http.Server | https.Server;
+  protected _port: number;
 
-  constructor(settings: Server.Settings, listener: Server.Listener) {
+  private readonly _instance?: http.Server | https.Server;
+
+  public constructor(settings: Server.Settings, listener: Server.Listener) {
     this._host = settings.url;
     this._port = settings.port;
 
@@ -39,7 +42,10 @@ class Server {
     requestSettings(settings as any);
     responseSettings(settings as any);
 
-    const OPTIONS: any = { IncomingMessage: Request, ServerResponse: Response };
+    const OPTIONS: any = {
+      IncomingMessage: Request,
+      ServerResponse : Response,
+    };
 
     if (isHttps) {
       OPTIONS.cert = settings["https.cert"];
@@ -49,25 +55,31 @@ class Server {
     const workers = settings.workers;
 
     if (workers > 1) {
-      if (cluster.isMaster) {
+      if (cluster.isPrimary) {
         for (let i = 0; i < workers; i++) cluster.fork();
 
-        return this;
+        return;
       }
 
       this._instance = SERVER.createServer(OPTIONS, listener);
 
-      return this;
+      return;
     }
 
     this._instance = SERVER.createServer(OPTIONS, listener);
   }
 
-  public get listening() {
+  public get listening(): boolean {
     return this._listening;
   }
 
-  public start(callback?: Server.Callback) {
+  public reload(callback?: Server.Callback): this {
+    if (this._listening) return this.stop(server => server.start(callback));
+
+    return this.start(callback);
+  }
+
+  public start(callback?: Server.Callback): this {
     this._listening = true;
 
     const instance = this._instance;
@@ -76,28 +88,23 @@ class Server {
       instance.listen(
         this._port,
         this._host,
-        callback && (() => callback(this)),
+        callback && ((): unknown => callback(this)),
       );
     }
 
     return this;
   }
 
-  public stop(callback?: Server.Callback) {
+  public stop(callback?: Server.Callback): this {
     this._listening = false;
 
     const instance = this._instance;
 
-    if (instance) instance.close(callback && (() => callback(this)));
+    if (instance) instance.close(callback && ((): unknown => callback(this)));
 
     return this;
   }
 
-  public reload(callback?: Server.Callback) {
-    if (this._listening) return this.stop(server => server.start(callback));
-
-    return this.start(callback);
-  }
 }
 
 export = Server;

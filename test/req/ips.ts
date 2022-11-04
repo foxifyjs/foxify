@@ -5,7 +5,7 @@ describe("when X-Forwarded-For is present", () => {
     it("should return an array of the specified addresses", async () => {
       expect.assertions(1);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("trust.proxy", true);
 
@@ -14,7 +14,7 @@ describe("when X-Forwarded-For is present", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
           "x-forwarded-for": "client, p1, p2",
         },
@@ -26,7 +26,7 @@ describe("when X-Forwarded-For is present", () => {
     it("should stop at first untrusted", async () => {
       expect.assertions(1);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("trust.proxy", 2);
 
@@ -35,7 +35,7 @@ describe("when X-Forwarded-For is present", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
           "x-forwarded-for": "client, p1, p2",
         },
@@ -49,14 +49,14 @@ describe("when X-Forwarded-For is present", () => {
     it("should return an empty array", async () => {
       expect.assertions(1);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         res.send(req.ips);
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
           "x-forwarded-for": "client, p1, p2",
         },
@@ -71,7 +71,7 @@ describe("when X-Forwarded-For is not present", () => {
   it("should return []", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send(req.ips);

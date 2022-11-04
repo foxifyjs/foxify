@@ -4,7 +4,7 @@ describe(".download(path)", () => {
   it("should transfer as an attachment", async () => {
     expect.assertions(4);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.download("test/fixtures/user.html");
@@ -14,9 +14,7 @@ describe(".download(path)", () => {
 
     expect(result.statusCode).toBe(200);
     expect(result.headers["content-type"]).toBe("text/html; charset=UTF-8");
-    expect(result.headers["content-disposition"]).toBe(
-      'attachment; filename="user.html"',
-    );
+    expect(result.headers["content-disposition"]).toBe('attachment; filename="user.html"');
     expect(result.body).toBe("<p>{{user.name}}</p>");
   });
 });
@@ -25,7 +23,7 @@ describe(".download(path, filename)", () => {
   it("should provide an alternate filename", async () => {
     expect.assertions(4);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.download("test/fixtures/user.html", "document");
@@ -35,9 +33,7 @@ describe(".download(path, filename)", () => {
 
     expect(result.statusCode).toBe(200);
     expect(result.headers["content-type"]).toBe("text/html; charset=UTF-8");
-    expect(result.headers["content-disposition"]).toBe(
-      'attachment; filename="document"',
-    );
+    expect(result.headers["content-disposition"]).toBe('attachment; filename="document"');
     expect(result.body).toBe("<p>{{user.name}}</p>");
   });
 });
@@ -46,7 +42,7 @@ describe(".download(path, fn)", () => {
   it("should invoke the callback", async () => {
     expect.assertions(5);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     const cb = jest.fn();
 
@@ -59,9 +55,7 @@ describe(".download(path, fn)", () => {
     expect(cb).toBeCalledTimes(1);
     expect(result.statusCode).toBe(200);
     expect(result.headers["content-type"]).toBe("text/html; charset=UTF-8");
-    expect(result.headers["content-disposition"]).toBe(
-      'attachment; filename="user.html"',
-    );
+    expect(result.headers["content-disposition"]).toBe('attachment; filename="user.html"');
     expect(result.body).toBe("<p>{{user.name}}</p>");
   });
 });
@@ -70,7 +64,7 @@ describe(".download(path, filename, fn)", () => {
   it("should invoke the callback", async () => {
     expect.assertions(5);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     const cb = jest.fn();
 
@@ -83,9 +77,7 @@ describe(".download(path, filename, fn)", () => {
     expect(cb).toBeCalledTimes(1);
     expect(result.statusCode).toBe(200);
     expect(result.headers["content-type"]).toBe("text/html; charset=UTF-8");
-    expect(result.headers["content-disposition"]).toBe(
-      'attachment; filename="document"',
-    );
+    expect(result.headers["content-disposition"]).toBe('attachment; filename="document"');
     expect(result.body).toBe("<p>{{user.name}}</p>");
   });
 });
@@ -94,7 +86,7 @@ describe(".download(path, filename, options, fn)", () => {
   it("should invoke the callback", async () => {
     expect.assertions(5);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     const cb = jest.fn();
     const options = {};
@@ -108,21 +100,19 @@ describe(".download(path, filename, options, fn)", () => {
     expect(cb).toBeCalledTimes(1);
     expect(result.statusCode).toBe(200);
     expect(result.headers["content-type"]).toBe("text/html; charset=UTF-8");
-    expect(result.headers["content-disposition"]).toBe(
-      'attachment; filename="document"',
-    );
+    expect(result.headers["content-disposition"]).toBe('attachment; filename="document"');
     expect(result.body).toBe("<p>{{user.name}}</p>");
   });
 
   it("should allow options to res.sendFile()", async () => {
     expect.assertions(4);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.download("test/fixtures/.name", "document", {
         dotfiles: "allow",
-        maxAge: "4h",
+        maxAge  : "4h",
       });
     });
 
@@ -130,9 +120,7 @@ describe(".download(path, filename, options, fn)", () => {
 
     expect(result.statusCode).toBe(200);
     expect(result.headers["cache-control"]).toBe("public, max-age=14400");
-    expect(result.headers["content-disposition"]).toBe(
-      'attachment; filename="document"',
-    );
+    expect(result.headers["content-disposition"]).toBe('attachment; filename="document"');
     expect(result.body).toEqual("tobi");
   });
 
@@ -140,12 +128,12 @@ describe(".download(path, filename, options, fn)", () => {
     it("should be ignored", async () => {
       expect.assertions(4);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         res.download("test/fixtures/user.html", "document", {
           headers: {
-            "Content-Type": "text/x-custom",
+            "Content-Type"       : "text/x-custom",
             "Content-Disposition": "inline",
           },
         });
@@ -155,21 +143,19 @@ describe(".download(path, filename, options, fn)", () => {
 
       expect(result.statusCode).toBe(200);
       expect(result.headers["content-type"]).toBe("text/x-custom");
-      expect(result.headers["content-disposition"]).toBe(
-        'attachment; filename="document"',
-      );
+      expect(result.headers["content-disposition"]).toBe('attachment; filename="document"');
       expect(result.body).toEqual("<p>{{user.name}}</p>");
     });
 
     it("should be ignored case-insensitively", async () => {
       expect.assertions(4);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         res.download("test/fixtures/user.html", "document", {
           headers: {
-            "content-type": "text/x-custom",
+            "content-type"       : "text/x-custom",
             "content-disposition": "inline",
           },
         });
@@ -179,9 +165,7 @@ describe(".download(path, filename, options, fn)", () => {
 
       expect(result.statusCode).toBe(200);
       expect(result.headers["content-type"]).toBe("text/x-custom");
-      expect(result.headers["content-disposition"]).toBe(
-        'attachment; filename="document"',
-      );
+      expect(result.headers["content-disposition"]).toBe('attachment; filename="document"');
       expect(result.body).toEqual("<p>{{user.name}}</p>");
     });
   });
@@ -191,12 +175,15 @@ describe("on failure", () => {
   it("should invoke the callback", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res, next) => {
-      res.download("test/fixtures/foobar.html", err => {
-        if (!err) return next(new Error("expected error"));
-        res.send(`got ${err.status}`);
+      res.download("test/fixtures/foobar.html", (err) => {
+        if (!err) {
+          next(new Error("expected error"));
+          return;
+        }
+        res.send(`got ${ err.status }`);
       });
     });
 
@@ -209,11 +196,14 @@ describe("on failure", () => {
   it("should remove Content-Disposition", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res, next) => {
-      res.download("test/fixtures/foobar.html", err => {
-        if (!err) return next(new Error("expected error"));
+      res.download("test/fixtures/foobar.html", (err) => {
+        if (!err) {
+          next(new Error("expected error"));
+          return;
+        }
         res.end("failed");
       });
     });

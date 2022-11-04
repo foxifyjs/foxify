@@ -2,6 +2,7 @@
  * @see https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
  */
 const enum HTTP {
+
   // 1xx Informational responses
   CONTINUE = 100,
   SWITCHING_PROTOCOL = 101,
@@ -78,11 +79,13 @@ const enum HTTP {
 export default HTTP;
 
 export type Status =
+
   // 1xx Informational responses
   | 100
   | 101
   | 102
   | 103
+
   // 2xx Success
   | 200
   | 201
@@ -94,6 +97,7 @@ export type Status =
   | 207
   | 208
   | 226
+
   // 3xx Redirection
   | 300
   | 301
@@ -104,6 +108,7 @@ export type Status =
   | 306
   | 307
   | 308
+
   // 4xx Client errors
   | 400
   | 401
@@ -133,6 +138,7 @@ export type Status =
   | 429
   | 431
   | 451
+
   // 5xx Server errors
   | 500
   | 501
@@ -152,6 +158,7 @@ export const STATUSES: Status[] = [
   101,
   102,
   103,
+
   // 2xx Success
   200,
   201,
@@ -163,6 +170,7 @@ export const STATUSES: Status[] = [
   207,
   208,
   226,
+
   // 3xx Redirection
   300,
   301,
@@ -173,6 +181,7 @@ export const STATUSES: Status[] = [
   306,
   307,
   308,
+
   // 4xx Client errors
   400,
   401,
@@ -202,6 +211,7 @@ export const STATUSES: Status[] = [
   429,
   431,
   451,
+
   // 5xx Server errors
   500,
   501,

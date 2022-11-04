@@ -1,0 +1,15 @@
+env:
+  browser: true
+  es2021: true
+  node: true
+extends: noir/all
+parserOptions:
+  project: ./tsconfig.eslint.json
+  ecmaVersion: latest
+  sourceType: module
+rules:
+  multiline-comment-style: off
+  max-nested-callbacks: off
+  import/extensions: off
+  import/no-relative-parent-imports: off
+  "@typescript-eslint/no-magic-numbers": off

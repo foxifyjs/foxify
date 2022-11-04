@@ -440,13 +440,13 @@ const HEX = {
   f: 15,
 };
 
-const hexCodeToInt = (c: string, shift: number) => {
+const hexCodeToInt = (c: string, shift: number): number => {
   const i = (HEX as any)[c];
 
-  return i === undefined ? 255 : i << shift;
+  return i == null ? 255 : i << shift;
 };
 
-const decodeURIComponent = (uri: string) => {
+const decodeURIComponent = (uri: string): string | null => {
   let percentPosition = uri.indexOf("%");
 
   if (percentPosition === -1) return uri;
@@ -470,8 +470,8 @@ const decodeURIComponent = (uri: string) => {
     if (state === UTF8_ACCEPT) {
       decoded += uri.slice(last, startOfOctets);
 
-      decoded +=
-        codepoint <= 0xffff
+      decoded
+        += codepoint <= 0xffff
           ? String.fromCharCode(codepoint)
           : String.fromCharCode(
             0xd7c0 + (codepoint >> 10),
@@ -486,9 +486,8 @@ const decodeURIComponent = (uri: string) => {
     } else {
       percentPosition += 3;
 
-      if (percentPosition < length && uri.charCodeAt(percentPosition) === 37) {
-        continue;
-      }
+      if (percentPosition < length && uri.charCodeAt(percentPosition) === 37) continue;
+
 
       return null;
     }

@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should return true when Accept is not present", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.accepts("json") ? "yes" : "no");
@@ -17,14 +17,14 @@ it("should return true when Accept is not present", async () => {
 it("should return true when present", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.accepts("json") ? "yes" : "no");
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       accept: "application/json",
     },
@@ -36,14 +36,14 @@ it("should return true when present", async () => {
 it("should return false otherwise", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.accepts("json") ? "yes" : "no");
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       accept: "text/html",
     },
@@ -55,14 +55,14 @@ it("should return false otherwise", async () => {
 it("should accept an argument list of type names", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.accepts("json", "html"));
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       accept: "application/json",
     },
@@ -74,7 +74,7 @@ it("should accept an argument list of type names", async () => {
 it("should return the first when Accept is not present", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.accepts("json", "html"));
@@ -88,14 +88,14 @@ it("should return the first when Accept is not present", async () => {
 it("should return the first acceptable type", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.accepts("json", "html"));
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       accept: "text/html",
     },
@@ -107,14 +107,14 @@ it("should return the first acceptable type", async () => {
 it("should return false when no match is made", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.accepts("text/html", "application/json") ? "yup" : "nope");
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       accept: "foo/bar, bar/baz",
     },
@@ -126,14 +126,14 @@ it("should return false when no match is made", async () => {
 it("should take quality into account", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.accepts("text/html", "application/json"));
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       accept: "*/html; q=.5, application/json",
     },
@@ -145,14 +145,14 @@ it("should take quality into account", async () => {
 it("should return the first acceptable type with canonical mime types", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.accepts("application/json", "text/html"));
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       accept: "*/html",
     },

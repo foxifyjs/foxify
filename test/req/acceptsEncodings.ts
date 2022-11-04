@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should be true if encoding accepted", async () => {
   expect.assertions(3);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     expect(req.acceptsEncodings("gzip")).toBeTruthy();
@@ -12,7 +12,7 @@ it("should be true if encoding accepted", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "accept-encoding": " gzip, deflate",
     },
@@ -24,7 +24,7 @@ it("should be true if encoding accepted", async () => {
 it("should be false if encoding not accepted", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     expect(req.acceptsEncodings("bogus")).toBeFalsy();
@@ -32,7 +32,7 @@ it("should be false if encoding not accepted", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "accept-encoding": " gzip, deflate",
     },
