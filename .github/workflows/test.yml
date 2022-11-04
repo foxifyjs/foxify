@@ -50,6 +50,9 @@ jobs:
       - name: Build the project
         run: pnpm build
 
+      - name: Generate code documents
+        run: pnpm document
+
       - name: Get number of CPU cores
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1

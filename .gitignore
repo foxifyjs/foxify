@@ -63,3 +63,5 @@ typings/
 .vscode/
 
 *.tsbuildinfo
+
+docs/

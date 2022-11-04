@@ -45,6 +45,59 @@ jobs:
             ${{ steps.changelog.outputs.changelog }}
           prerelease: ${{ steps.changelog.outputs.prerelease }}
 
+  publish-documents:
+    name: Publish Documents
+
+    needs:
+      - release
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: documents
+      url: ${{ steps.github-pages-deployment.outputs.page_url }}
+
+    concurrency:
+      group: ${{ github.workflow }}-documents-${{ github.ref_name }}
+      cancel-in-progress: true
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Generate code documents
+        run: pnpm document
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: 'docs/'
+
+      - name: Deploy to GitHub Pages
+        id: github-pages-deployment
+        uses: actions/deploy-pages@v1
+
   publish-gpr:
     name: Publish to GitHub Packages
 
