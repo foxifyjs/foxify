@@ -106,7 +106,7 @@
   },
   "devDependencies": {
     "@foxify/http": "^1.0.0-beta.2",
-    "@foxify/router": "^1.0.0-beta.2",
+    "@foxify/router": "^1.0.0-beta.3",
     "@types/cookie": "^0.5.1",
     "@types/cookie-parser": "^1.4.3",
     "@types/escape-html": "^1.0.2",
