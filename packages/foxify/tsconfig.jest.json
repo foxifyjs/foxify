@@ -2,6 +2,6 @@
   "extends": "./tsconfig.cjs.json",
   "include": [
     "src",
-    "test"
+    "tests"
   ]
 }

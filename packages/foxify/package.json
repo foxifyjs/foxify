@@ -1,0 +1,128 @@
+{
+  "name": "foxify",
+  "version": "1.0.0-beta.0",
+  "description": "The fast, easy to use & typescript ready web framework for Node.js",
+  "homepage": "https://foxify.js.org",
+  "author": "Ardalan Amini <ardalanamini22@gmail.com> (https://ardalanamini.com)",
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/foxify"
+    }
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxifyjs/foxify.git",
+    "directory": "packages/foxify"
+  },
+  "bugs": {
+    "url": "https://github.com/foxifyjs/foxify/issues"
+  },
+  "keywords": [
+    "node",
+    "fast",
+    "speed",
+    "typescript",
+    "api",
+    "web",
+    "app",
+    "application",
+    "route",
+    "router",
+    "routing",
+    "middleware",
+    "cluster",
+    "clustering",
+    "database",
+    "model",
+    "framework",
+    "foxify"
+  ],
+  "scripts": {
+    "build": "pnpm build:esm && pnpm build:cjs",
+    "build:watch": "nodemon",
+    "build:esm": "tsc",
+    "build:esm:watch": "pnpm build:esm --watch",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:cjs:watch": "pnpm build:cjs --watch",
+    "lint": "eslint --cache src tests jest.config.js",
+    "lint:fix": "pnpm lint --fix",
+    "document": "typedoc",
+    "test": "node --no-compilation-cache --expose-gc ../../node_modules/jest/bin/jest --logHeapUsage",
+    "test:coverage": "pnpm test -- --coverage",
+    "test:ci": "pnpm test:coverage --ci --verbose --no-cache",
+    "prepack": "pnpm build:pre && pnpm build && pnpm build:post",
+    "build:pre": "scripts/pre-build.sh",
+    "build:post": "scripts/post-build.sh"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "module": ".build/esm/index.js",
+  "main": ".build/cjs/index.js",
+  "types": ".build/cjs/index.d.ts",
+  "imports": {
+    "#src/*": {
+      "import": {
+        "types": "./.build/esm/*.d.ts",
+        "default": "./.build/esm/*.js"
+      },
+      "default": {
+        "types": "./.build/cjs/*.d.ts",
+        "default": "./.build/cjs/*.js"
+      }
+    }
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./.build/esm/index.d.ts",
+        "default": "./.build/esm/index.js"
+      },
+      "default": {
+        "types": "./.build/cjs/index.d.ts",
+        "default": "./.build/cjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@foxify/http": "^1",
+    "@foxify/router": "^1",
+    "@types/node": "^14",
+    "prototyped.js": "^1"
+  },
+  "dependencies": {
+    "@foxify/inject": "^1.1.0",
+    "dotenv": "^16.0.3",
+    "escape-html": "^1.0.3",
+    "etag": "^1.8.1",
+    "fast-json-stringify": "^5.4.0",
+    "proxy-addr": "^2.0.7",
+    "qs": "^6.11.0",
+    "safe-regex": "^2.1.1",
+    "serve-static": "^1.15.0"
+  },
+  "devDependencies": {
+    "@foxify/http": "^1.0.0-beta.2",
+    "@foxify/router": "^1.0.0-beta.2",
+    "@types/cookie": "^0.5.1",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/escape-html": "^1.0.2",
+    "@types/etag": "^1.8.1",
+    "@types/node": "^18.11.9",
+    "@types/proxy-addr": "^2.0.0",
+    "@types/qs": "^6.9.7",
+    "@types/safe-regex": "^1.1.4",
+    "cookie": "^0.5.0",
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.8",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.20",
+    "prototyped.js": "^1.0.1"
+  }
+}
