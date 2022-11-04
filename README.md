@@ -4,6 +4,8 @@ The **fast**, **easy to use** & **typescript ready** web framework for [Node.js]
 
 > Inspired by [Express](https://expressjs.com) & [Fastify](https://www.fastify.io/)
 
+[![Build Status](https://github.com/foxifyjs/foxify/workflows/Test/badge.svg)](https://github.com/foxifyjs/foxify/actions)
+[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg)](https://codecov.io/gh/foxifyjs/foxify)
 [![Npm Version](https://img.shields.io/npm/v/foxify.svg)](https://www.npmjs.com/package/foxify)
 [![Node Version](https://img.shields.io/node/v/foxify.svg)](https://nodejs.org)
 [![TypeScript Version](https://img.shields.io/npm/types/foxify.svg)](https://www.typescriptlang.org)
@@ -13,11 +15,8 @@ The **fast**, **easy to use** & **typescript ready** web framework for [Node.js]
 [![Open Issues](https://img.shields.io/github/issues-raw/foxifyjs/foxify.svg)](https://github.com/foxifyjs/foxify/issues?q=is%3Aopen+is%3Aissue)
 [![Closed Issues](https://img.shields.io/github/issues-closed-raw/foxifyjs/foxify.svg)](https://github.com/foxifyjs/foxify/issues?q=is%3Aissue+is%3Aclosed)
 [![Known Vulnerabilities](https://snyk.io/test/github/foxifyjs/foxify/badge.svg?targetFile=package.json)](https://snyk.io/test/github/foxifyjs/foxify?targetFile=package.json)
-[![Dependencies Status](https://david-dm.org/foxifyjs/foxify.svg)](https://david-dm.org/foxifyjs/foxify)
 [![Pull Requests](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/foxifyjs/foxify/pulls)
 [![License](https://img.shields.io/github/license/foxifyjs/foxify.svg)](https://github.com/foxifyjs/foxify/blob/main/LICENSE)
-[![Build Status](https://github.com/foxifyjs/foxify/workflows/Test/badge.svg)](https://github.com/foxifyjs/foxify/actions)
-[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg)](https://codecov.io/gh/foxifyjs/foxify)
 [![Backers on Open Collective](https://opencollective.com/foxify/backers/badge.svg)](#backers)
 [![Sponsors on Open Collective](https://opencollective.com/foxify/sponsors/badge.svg)](#sponsors)
 [![Github Stars](https://img.shields.io/github/stars/foxifyjs/foxify.svg?style=social&label=Stars)](https://github.com/foxifyjs/foxify)
@@ -27,12 +26,15 @@ An efficient server implies a lower cost of the infrastructure, a better respons
 
 Enter Foxify. Foxify is a web framework highly focused on providing the best developer experience with the least overhead and a powerful plugin architecture. It is inspired by Fastify and Express and as far as we know, it is one of the fastest web frameworks in town.
 
-## Table of Contents <!-- omit in toc -->
+## Table of Content
 
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-  - [Usage](#usage)
+    - [NPM](#npm)
+    - [PNPM](#pnpm)
+    - [Yarn](#yarn)
+    - [Usage](#usage)
 - [Features](#features)
 - [Benchmarks](#benchmarks)
 - [Roadmap](#roadmap)
@@ -52,8 +54,25 @@ Enter Foxify. Foxify is a web framework highly focused on providing the best dev
 
 ### Installation
 
-```bash
+> In case of using GitHub package registry,
+> the package name will be `@foxifyjs/foxify`.
+
+#### NPM
+
+```shell
 npm i foxify
+```
+
+#### PNPM
+
+```shell
+pnpm add foxify
+```
+
+#### Yarn
+
+```shell
+yarn add foxify
 ```
 
 ### Usage
