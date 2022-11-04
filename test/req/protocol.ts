@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should return the protocol string", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.protocol);
@@ -20,7 +20,7 @@ describe("when 'trust.proxy' is enabled", () => {
   it("should respect X-Forwarded-Proto", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.set("trust.proxy", true);
 
@@ -29,7 +29,7 @@ describe("when 'trust.proxy' is enabled", () => {
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         "x-forwarded-proto": "https",
       },
@@ -41,7 +41,7 @@ describe("when 'trust.proxy' is enabled", () => {
   it("should default to the socket addr if X-Forwarded-Proto not present", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.set("trust.proxy", true);
 
@@ -61,7 +61,7 @@ describe("when 'trust.proxy' is enabled", () => {
   it("should ignore X-Forwarded-Proto if socket addr not trusted", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.set("trust.proxy", "10.0.0.1");
 
@@ -70,7 +70,7 @@ describe("when 'trust.proxy' is enabled", () => {
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         "x-forwarded-proto": "https",
       },
@@ -82,7 +82,7 @@ describe("when 'trust.proxy' is enabled", () => {
   it("should default to http", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.set("trust.proxy", true);
 
@@ -101,7 +101,7 @@ describe("when 'trust.proxy' is enabled", () => {
     it("should respect X-Forwarded-Proto", async () => {
       expect.assertions(1);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("trust.proxy", 1);
 
@@ -110,7 +110,7 @@ describe("when 'trust.proxy' is enabled", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
           "x-forwarded-proto": "https",
         },
@@ -125,14 +125,14 @@ describe("when 'trust.proxy' is disabled", () => {
   it("should ignore X-Forwarded-Proto", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.end(req.protocol);
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         "x-forwarded-proto": "https",
       },

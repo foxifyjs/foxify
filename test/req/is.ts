@@ -4,16 +4,16 @@ describe("when given a mime type", () => {
   it("should return the type when matching", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       res.end(req.is("application/json"));
     });
 
     const result = await app.inject({
-      method: "POST",
-      url: "/",
-      body: {},
+      method : "POST",
+      url    : "/",
+      body   : {},
       headers: {
         "content-type": "application/json",
       },
@@ -26,7 +26,7 @@ describe("when given a mime type", () => {
   it("should return false when not matching", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       expect(req.is("image/jpeg")).toBeFalsy();
@@ -34,9 +34,9 @@ describe("when given a mime type", () => {
     });
 
     const result = await app.inject({
-      method: "POST",
-      url: "/",
-      body: {},
+      method : "POST",
+      url    : "/",
+      body   : {},
       headers: {
         "content-type": "application/json",
       },
@@ -48,16 +48,16 @@ describe("when given a mime type", () => {
   it("should ignore charset", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       res.end(req.is("application/json"));
     });
 
     const result = await app.inject({
-      method: "POST",
-      url: "/",
-      body: {},
+      method : "POST",
+      url    : "/",
+      body   : {},
       headers: {
         "content-type": "application/json; charset=UTF-8",
       },
@@ -72,7 +72,7 @@ describe("when content-type is not present", () => {
   it("should return false", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       expect(req.is("application/json")).toBeFalsy();
@@ -81,8 +81,8 @@ describe("when content-type is not present", () => {
 
     const result = await app.inject({
       method: "POST",
-      url: "/",
-      body: "{}",
+      url   : "/",
+      body  : "{}",
     });
 
     expect(result.statusCode).toBe(200);
@@ -93,16 +93,16 @@ describe("when given an extension", () => {
   it("should lookup the mime type", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       res.end(req.is("json"));
     });
 
     const result = await app.inject({
-      method: "POST",
-      url: "/",
-      body: "{}",
+      method : "POST",
+      url    : "/",
+      body   : "{}",
       headers: {
         "content-type": "application/json",
       },
@@ -117,16 +117,16 @@ describe("when given */subtype", () => {
   it("should return the full type when matching", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       res.end(req.is("*/json"));
     });
 
     const result = await app.inject({
-      method: "POST",
-      url: "/",
-      body: "{}",
+      method : "POST",
+      url    : "/",
+      body   : "{}",
       headers: {
         "content-type": "application/json",
       },
@@ -139,7 +139,7 @@ describe("when given */subtype", () => {
   it("should return false when not matching", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       expect(req.is("*/html")).toBeFalsy();
@@ -147,9 +147,9 @@ describe("when given */subtype", () => {
     });
 
     const result = await app.inject({
-      method: "POST",
-      url: "/",
-      body: "{}",
+      method : "POST",
+      url    : "/",
+      body   : "{}",
       headers: {
         "content-type": "application/json",
       },
@@ -161,16 +161,16 @@ describe("when given */subtype", () => {
   it("should ignore charset", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       res.end(req.is("*/json"));
     });
 
     const result = await app.inject({
-      method: "POST",
-      url: "/",
-      body: "{}",
+      method : "POST",
+      url    : "/",
+      body   : "{}",
       headers: {
         "content-type": "application/json; charset=UTF-8",
       },
@@ -185,16 +185,16 @@ describe("when given type/*", () => {
   it("should return the full type when matching", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       res.end(req.is("application/*"));
     });
 
     const result = await app.inject({
-      method: "POST",
-      url: "/",
-      body: "{}",
+      method : "POST",
+      url    : "/",
+      body   : "{}",
       headers: {
         "content-type": "application/json",
       },
@@ -207,7 +207,7 @@ describe("when given type/*", () => {
   it("should return false when not matching", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       expect(req.is("text/*")).toBeFalsy();
@@ -215,9 +215,9 @@ describe("when given type/*", () => {
     });
 
     const result = await app.inject({
-      method: "POST",
-      url: "/",
-      body: "{}",
+      method : "POST",
+      url    : "/",
+      body   : "{}",
       headers: {
         "content-type": "application/json",
       },
@@ -229,16 +229,16 @@ describe("when given type/*", () => {
   it("should ignore charset", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.post("/", (req, res) => {
       res.end(req.is("application/*"));
     });
 
     const result = await app.inject({
-      method: "POST",
-      url: "/",
-      body: "{}",
+      method : "POST",
+      url    : "/",
+      body   : "{}",
       headers: {
         "content-type": "application/json; charset=UTF-8",
       },

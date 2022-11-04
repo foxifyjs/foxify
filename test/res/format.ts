@@ -1,194 +1,13 @@
-import Router from "@foxify/router";
 import assert from "assert";
+import Router from "@foxify/router";
 import Foxify from "../../src";
 
-describe("with canonicalized mime types", () => {
-  const app = new Foxify();
-
-  app.get("/", (req, res, next) => {
-    res.format({
-      "text/plain": () => {
-        res.send("hey");
-      },
-
-      "text/html": () => {
-        res.send("<p>hey</p>");
-      },
-
-      "application/json": (a, b, c) => {
-        assert(req === a);
-        assert(res === b);
-        assert(next === c);
-        res.send({ message: "hey" });
-      },
-    });
-  });
-
-  app.catch((err: any, req, res) => {
-    if (!err.types) throw err;
-
-    res.status(err.status).send(`Supports: ${err.types.join(", ")}`);
-  });
-
-  test(app);
-});
-
-describe("with extnames", () => {
-  const app = new Foxify();
-
-  app.get("/", (req, res) => {
-    res.format({
-      text: () => {
-        res.send("hey");
-      },
-      html: () => {
-        res.send("<p>hey</p>");
-      },
-      json: () => {
-        res.send({ message: "hey" });
-      },
-    });
-  });
-
-  app.catch((err: any, req, res) => {
-    res.status(err.status).send(`Supports: ${err.types.join(", ")}`);
-  });
-
-  test(app);
-});
-
-describe("with parameters", () => {
-  const app = new Foxify();
-
-  app.get("/", (req, res) => {
-    res.format({
-      "text/plain; charset=utf-8": () => {
-        res.send("hey");
-      },
-      "text/html; foo=bar; bar=baz": () => {
-        res.send("<p>hey</p>");
-      },
-      "application/json; q=0.5": () => {
-        res.send({ message: "hey" });
-      },
-    });
-  });
-
-  app.catch((err: any, req, res) => {
-    res.status(err.status).send(`Supports: ${err.types.join(", ")}`);
-  });
-
-  test(app);
-});
-
-describe("given .default", () => {
-  it("should be invoked instead of auto-responding", async () => {
-    expect.assertions(1);
-
-    const app = new Foxify();
-
-    app.get("/", (req, res) => {
-      res.format({
-        text: () => {
-          res.send("hey");
-        },
-        default: () => {
-          res.send("default");
-        },
-      });
-    });
-
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        accept: "text/html",
-      },
-    });
-
-    expect(result.body).toBe("default");
-  });
-
-  it("should work when only .default is provided", async () => {
-    expect.assertions(1);
-
-    const app = new Foxify();
-
-    app.get("/", (req, res) => {
-      res.format({
-        default: () => {
-          res.send("hey");
-        },
-      });
-    });
-
-    const result = await app.inject({
-      url: "/",
-      headers: {
-        accept: "*/*",
-      },
-    });
-
-    expect(result.body).toBe("hey");
-  });
-});
-
-describe("in router", () => {
-  const app = new Foxify();
-
-  app.get("/", (req, res, next) => {
-    res.format({
-      text: () => {
-        res.send("hey");
-      },
-      html: () => {
-        res.send("<p>hey</p>");
-      },
-      json: () => {
-        res.send({ message: "hey" });
-      },
-    });
-  });
-
-  app.catch((err: any, req, res) => {
-    res.status(err.status).send(`Supports: ${err.types.join(", ")}`);
-  });
-
-  test(app);
-});
-
-describe("in router", () => {
-  const app = new Foxify();
-  const router = new Router();
-
-  router.get("/", (req, res) => {
-    res.format({
-      text: () => {
-        res.send("hey");
-      },
-      html: () => {
-        res.send("<p>hey</p>");
-      },
-      json: () => {
-        res.send({ message: "hey" });
-      },
-    });
-  });
-
-  app.catch((err: any, req, res) => {
-    res.status(err.status).send(`Supports: ${err.types.join(", ")}`);
-  });
-
-  app.use(router);
-
-  test(app);
-});
-
-function test(app: Foxify) {
+function test(app: Foxify): void {
   it("should utilize qvalues in negotiation", async () => {
     expect.assertions(1);
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         accept: "text/html; q=.5, application/json, */*; q=.1",
       },
@@ -201,7 +20,7 @@ function test(app: Foxify) {
     expect.assertions(1);
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         accept: "text/html; q=.5, application/*, */*; q=.1",
       },
@@ -214,7 +33,7 @@ function test(app: Foxify) {
     expect.assertions(2);
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         accept: "text/html; q=.5, text/plain",
       },
@@ -228,7 +47,7 @@ function test(app: Foxify) {
     expect.assertions(3);
 
     const result1 = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         accept: "text/html",
       },
@@ -237,7 +56,7 @@ function test(app: Foxify) {
     expect(result1.headers["content-type"]).toBe("text/html; charset=utf-8");
 
     const result2 = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         accept: "text/plain",
       },
@@ -246,22 +65,20 @@ function test(app: Foxify) {
     expect(result2.headers["content-type"]).toBe("text/plain; charset=utf-8");
 
     const result3 = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         accept: "application/json",
       },
     });
 
-    expect(result3.headers["content-type"]).toBe(
-      "application/json; charset=utf-8",
-    );
+    expect(result3.headers["content-type"]).toBe("application/json; charset=utf-8");
   });
 
   it("should Vary: Accept", async () => {
     expect.assertions(1);
 
     const result1 = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         accept: "text/html; q=.5, text/plain",
       },
@@ -285,16 +102,195 @@ function test(app: Foxify) {
       expect.assertions(2);
 
       const result1 = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
           accept: "foo/bar",
         },
       });
 
       expect(result1.statusCode).toBe(406);
-      expect(result1.body).toBe(
-        "Supports: text/plain, text/html, application/json",
-      );
+      expect(result1.body).toBe("Supports: text/plain, text/html, application/json");
     });
   });
 }
+
+describe("with canonicalized mime types", () => {
+  const app = (new Foxify);
+
+  app.get("/", (req, res, next) => {
+    res.format({
+      "text/plain": () => {
+        res.send("hey");
+      },
+
+      "text/html": () => {
+        res.send("<p>hey</p>");
+      },
+
+      "application/json": (a, b, c) => {
+        assert(req === a);
+        assert(res === b);
+        assert(next === c);
+        res.send({ message: "hey" });
+      },
+    });
+  });
+
+  app.catch((err: any, req, res) => {
+    if (!err.types) throw err;
+
+    res.status(err.status).send(`Supports: ${ err.types.join(", ") }`);
+  });
+
+  test(app);
+});
+
+describe("with extnames", () => {
+  const app = (new Foxify);
+
+  app.get("/", (req, res) => {
+    res.format({
+      text: () => {
+        res.send("hey");
+      },
+      html: () => {
+        res.send("<p>hey</p>");
+      },
+      json: () => {
+        res.send({ message: "hey" });
+      },
+    });
+  });
+
+  app.catch((err: any, req, res) => {
+    res.status(err.status).send(`Supports: ${ err.types.join(", ") }`);
+  });
+
+  test(app);
+});
+
+describe("with parameters", () => {
+  const app = (new Foxify);
+
+  app.get("/", (req, res) => {
+    res.format({
+      "text/plain; charset=utf-8": () => {
+        res.send("hey");
+      },
+      "text/html; foo=bar; bar=baz": () => {
+        res.send("<p>hey</p>");
+      },
+      "application/json; q=0.5": () => {
+        res.send({ message: "hey" });
+      },
+    });
+  });
+
+  app.catch((err: any, req, res) => {
+    res.status(err.status).send(`Supports: ${ err.types.join(", ") }`);
+  });
+
+  test(app);
+});
+
+describe("given .default", () => {
+  it("should be invoked instead of auto-responding", async () => {
+    expect.assertions(1);
+
+    const app = (new Foxify);
+
+    app.get("/", (req, res) => {
+      res.format({
+        text: () => {
+          res.send("hey");
+        },
+        default: () => {
+          res.send("default");
+        },
+      });
+    });
+
+    const result = await app.inject({
+      url    : "/",
+      headers: {
+        accept: "text/html",
+      },
+    });
+
+    expect(result.body).toBe("default");
+  });
+
+  it("should work when only .default is provided", async () => {
+    expect.assertions(1);
+
+    const app = (new Foxify);
+
+    app.get("/", (req, res) => {
+      res.format({
+        default: () => {
+          res.send("hey");
+        },
+      });
+    });
+
+    const result = await app.inject({
+      url    : "/",
+      headers: {
+        accept: "*/*",
+      },
+    });
+
+    expect(result.body).toBe("hey");
+  });
+});
+
+describe("in router", () => {
+  const app = (new Foxify);
+
+  app.get("/", (req, res, next) => {
+    res.format({
+      text: () => {
+        res.send("hey");
+      },
+      html: () => {
+        res.send("<p>hey</p>");
+      },
+      json: () => {
+        res.send({ message: "hey" });
+      },
+    });
+  });
+
+  app.catch((err: any, req, res) => {
+    res.status(err.status).send(`Supports: ${ err.types.join(", ") }`);
+  });
+
+  test(app);
+});
+
+describe("in router", () => {
+  const app = (new Foxify);
+  const router = (new Router);
+
+  router.get("/", (req, res) => {
+    res.format({
+      text: () => {
+        res.send("hey");
+      },
+      html: () => {
+        res.send("<p>hey</p>");
+      },
+      json: () => {
+        res.send({ message: "hey" });
+      },
+    });
+  });
+
+  app.catch((err: any, req, res) => {
+    res.status(err.status).send(`Supports: ${ err.types.join(", ") }`);
+  });
+
+  app.use(router);
+
+  test(app);
+});

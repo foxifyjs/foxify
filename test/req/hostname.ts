@@ -3,14 +3,14 @@ import Foxify from "../../src";
 it("should return the Host when present", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.hostname);
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       host: "example.com",
     },
@@ -22,14 +22,14 @@ it("should return the Host when present", async () => {
 it("should strip port number", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.hostname);
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       host: "example.com:3000",
     },
@@ -41,9 +41,10 @@ it("should strip port number", async () => {
 it("should return undefined otherwise", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
+    // eslint-disable-next-line no-undefined
     req.headers.host = undefined;
     res.end(String(req.hostname));
   });
@@ -56,14 +57,14 @@ it("should return undefined otherwise", async () => {
 it("should work with IPv6 Host", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.hostname);
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       host: "[::1]",
     },
@@ -75,14 +76,14 @@ it("should work with IPv6 Host", async () => {
 it("should work with IPv6 Host and port", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.end(req.hostname);
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       host: "[::1]:3000",
     },
@@ -95,7 +96,7 @@ describe("When 'trust.proxy' is enabled", () => {
   it("should respect X-Forwarded-Host", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.set("trust.proxy", true);
 
@@ -104,9 +105,9 @@ describe("When 'trust.proxy' is enabled", () => {
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
-        host: "localhost",
+        host              : "localhost",
         "x-forwarded-host": "example.com:3000",
       },
     });
@@ -117,7 +118,7 @@ describe("When 'trust.proxy' is enabled", () => {
   it("should ignore X-Forwarded-Host if socket addr not trusted", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.set("trust.proxy", "10.0.0.1");
 
@@ -126,9 +127,9 @@ describe("When 'trust.proxy' is enabled", () => {
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
-        host: "localhost",
+        host              : "localhost",
         "x-forwarded-host": "example.com",
       },
     });
@@ -139,7 +140,7 @@ describe("When 'trust.proxy' is enabled", () => {
   it("should default to Host", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.set("trust.proxy", true);
 
@@ -148,7 +149,7 @@ describe("When 'trust.proxy' is enabled", () => {
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
         host: "example.com",
       },
@@ -161,7 +162,7 @@ describe("When 'trust.proxy' is enabled", () => {
     it("should use the first value", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("trust.proxy", true);
 
@@ -170,9 +171,9 @@ describe("When 'trust.proxy' is enabled", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
-          host: "localhost",
+          host              : "localhost",
           "x-forwarded-host": "example.com, foobar.com",
         },
       });
@@ -184,7 +185,7 @@ describe("When 'trust.proxy' is enabled", () => {
     it("should remove OWS around comma", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("trust.proxy", true);
 
@@ -193,9 +194,9 @@ describe("When 'trust.proxy' is enabled", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
-          host: "localhost",
+          host              : "localhost",
           "x-forwarded-host": "example.com , foobar.com",
         },
       });
@@ -207,7 +208,7 @@ describe("When 'trust.proxy' is enabled", () => {
     it("should strip port number", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("trust.proxy", true);
 
@@ -216,9 +217,9 @@ describe("When 'trust.proxy' is enabled", () => {
       });
 
       const result = await app.inject({
-        url: "/",
+        url    : "/",
         headers: {
-          host: "localhost",
+          host              : "localhost",
           "x-forwarded-host": "example.com:8080 , foobar.com:8080",
         },
       });
@@ -233,16 +234,16 @@ describe("when 'trust.proxy' is disabled", () => {
   it("should ignore X-Forwarded-Host", async () => {
     expect.assertions(1);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.end(req.hostname);
     });
 
     const result = await app.inject({
-      url: "/",
+      url    : "/",
       headers: {
-        host: "localhost",
+        host              : "localhost",
         "x-forwarded-host": "evil",
       },
     });

@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should return true when the resource is not modified", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   const etag = '"12345"';
 
@@ -14,7 +14,7 @@ it("should return true when the resource is not modified", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "if-none-match": etag,
     },
@@ -27,7 +27,7 @@ it("should return true when the resource is not modified", async () => {
 it("should return false when the resource is modified", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.set("ETag", '"123"');
@@ -36,7 +36,7 @@ it("should return false when the resource is modified", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "if-none-match": '"12345"',
     },
@@ -49,7 +49,7 @@ it("should return false when the resource is modified", async () => {
 it("should return false without response headers", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.disable("x-powered-by");
 

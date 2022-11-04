@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should return true when X-Requested-With is xmlhttprequest", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     expect(req.xhr).toBe(true);
@@ -11,7 +11,7 @@ it("should return true when X-Requested-With is xmlhttprequest", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "x-requested-with": "xmlhttprequest",
     },
@@ -23,7 +23,7 @@ it("should return true when X-Requested-With is xmlhttprequest", async () => {
 it("should case-insensitive", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     expect(req.xhr).toBe(true);
@@ -31,7 +31,7 @@ it("should case-insensitive", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "x-requested-with": "XMLHttpRequest",
     },
@@ -43,7 +43,7 @@ it("should case-insensitive", async () => {
 it("should return false otherwise", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     expect(req.xhr).toBe(false);
@@ -51,7 +51,7 @@ it("should return false otherwise", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "x-requested-with": "blahblah",
     },
@@ -63,7 +63,7 @@ it("should return false otherwise", async () => {
 it("should return false when not present", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     expect(req.xhr).toBe(false);

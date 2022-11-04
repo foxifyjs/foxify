@@ -1,14 +1,14 @@
+import assert from "assert";
 import {
   Request,
   requestSettings,
   Response,
   responseSettings,
 } from "@foxify/http";
-import inject, { OptionsI as InjectOptionsI } from "@foxify/inject";
+import inject, { InjectResultI, OptionsI as InjectOptionsI } from "@foxify/inject";
 import Router from "@foxify/router";
-import assert from "assert";
-import proxyAddr from "proxy-addr";
-import qs from "qs";
+import * as proxyAddr from "proxy-addr";
+import * as qs from "qs";
 import serveStatic from "serve-static";
 import Server from "./Server";
 import * as utils from "./utils";
@@ -41,90 +41,83 @@ const SETTINGS: Array<keyof Foxify.UserSettings> = [
 namespace Foxify {
   export interface UserSettings {
     env: string;
-    url: string;
-    port: number;
-    workers: number;
-    etag?:
-      | null
-      | boolean
-      | "weak"
-      | "strong"
-      | ((
-          body: string | Buffer,
-          encoding?: BufferEncoding,
-        ) => string | undefined);
+    etag?: boolean | "strong" | "weak"
+    | ((body: Buffer | string, encoding?: BufferEncoding) => string | undefined) | null;
     https: boolean;
     "https.cert"?: string;
     "https.key"?: string;
-    "x-powered-by": boolean;
-    "routing.case-sensitive": boolean;
-    "routing.ignore-trailing-slash": boolean;
-    "routing.allow-unsafe-regex": boolean;
-    "routing.max-param-length": number;
     "json.escape": boolean;
-    "json.replacer"?: (...args: any[]) => any;
     "json.spaces"?: number;
     "jsonp.callback": string;
+    port: number;
+    "query.parser": boolean | "extended" | "simple" | ((str: string) => Record<string, unknown>);
+    "routing.allow-unsafe-regex": boolean;
+    "routing.case-sensitive": boolean;
+    "routing.ignore-trailing-slash": boolean;
+    "routing.max-param-length": number;
     "subdomain.offset": number;
-    "trust.proxy":
-      | boolean
-      | number
-      | string
-      | ((ip: string, hopIndex: number) => boolean);
-    "query.parser":
-      | boolean
-      | "simple"
-      | "extended"
-      | ((str: string) => Record<string, unknown>);
+    "trust.proxy": boolean | number | string | ((ip: string, hopIndex: number) => boolean);
+    url: string;
+    workers: number;
+    "x-powered-by": boolean;
+    "json.replacer"?(...args: any[]): any;
   }
 
   export interface Settings {
     env: string;
-    url: string;
-    port: number;
-    workers: number;
-    etag: (
-      body: string | Buffer,
-      encoding?: BufferEncoding,
-    ) => string | undefined;
     https: boolean;
     "https.cert"?: string;
     "https.key"?: string;
-    "x-powered-by": boolean;
-    "routing.case-sensitive": boolean;
-    "routing.ignore-trailing-slash": boolean;
-    "routing.allow-unsafe-regex": boolean;
-    "routing.max-param-length": number;
     "json.escape": boolean;
-    "json.replacer"?: (...args: any[]) => any;
     "json.spaces"?: number;
     "jsonp.callback": string;
+    port: number;
+    "routing.allow-unsafe-regex": boolean;
+    "routing.case-sensitive": boolean;
+    "routing.ignore-trailing-slash": boolean;
+    "routing.max-param-length": number;
     "subdomain.offset": number;
-    "trust.proxy": (ip: string, hopIndex: number) => boolean;
-    "query.parser": (str: string) => Record<string, unknown>;
+    url: string;
+    workers: number;
+    "x-powered-by": boolean;
+
+    etag(
+      body: Buffer | string,
+      encoding?: BufferEncoding,
+    ): string | undefined;
+
+    "json.replacer"?(...args: any[]): any;
+
+    "query.parser"(str: string): Record<string, unknown>;
+
+    "trust.proxy"(ip: string, hopIndex: number): boolean;
   }
 }
 
-class Foxify extends Router<Request, Response> {
+class Foxify extends Router {
+
   public static static = serveStatic;
 
   private _settings: Foxify.Settings = {
-    env: process.env.NODE_ENV || "development",
-    url: process.env.APP_URL || "localhost",
-    port: process.env.APP_PORT ? +process.env.APP_PORT : 3000,
-    workers: process.env.WORKERS ? +process.env.WORKERS : 1,
-    https: false,
-    "x-powered-by": true,
-    "routing.allow-unsafe-regex": false,
-    "routing.case-sensitive": true,
+    env                            : process.env.NODE_ENV ?? "development",
+    url                            : process.env.APP_URL ?? "localhost",
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    port                           : process.env.APP_PORT ? +process.env.APP_PORT : 3000,
+    workers                        : process.env.WORKERS ? +process.env.WORKERS : 1,
+    https                          : false,
+    "x-powered-by"                 : true,
+    "routing.allow-unsafe-regex"   : false,
+    "routing.case-sensitive"       : true,
     "routing.ignore-trailing-slash": false,
-    "routing.max-param-length": 100,
-    "json.escape": false,
-    "jsonp.callback": "callback",
-    "subdomain.offset": 2,
-    "query.parser": qs.parse,
-    "trust.proxy": undefined as any,
-    etag: undefined as any,
+    "routing.max-param-length"     : 100,
+    "json.escape"                  : false,
+    "jsonp.callback"               : "callback",
+    "subdomain.offset"             : 2,
+    "query.parser"                 : qs.parse,
+    // eslint-disable-next-line no-undefined
+    "trust.proxy"                  : undefined as any,
+    // eslint-disable-next-line no-undefined
+    etag                           : undefined as any,
   };
 
   private _view?: Engine;
@@ -136,18 +129,14 @@ class Foxify extends Router<Request, Response> {
     this.disable("trust.proxy");
   }
 
-  public static dotenv(path: string) {
+  public static dotenv(path: string): void {
     utils.assertType("path", "string", path);
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-require-imports
     require("dotenv").config({ path });
   }
 
-  public enable(setting: keyof Foxify.Settings) {
-    return this.set(setting, true);
-  }
-
-  public disable(setting: keyof Foxify.Settings) {
+  public disable(setting: keyof Foxify.Settings): this {
     return this.set(setting, false);
   }
 
@@ -155,14 +144,54 @@ class Foxify extends Router<Request, Response> {
     return !this.setting(setting);
   }
 
+  public enable(setting: keyof Foxify.Settings): this {
+    return this.set(setting, true);
+  }
+
   public enabled(setting: keyof Foxify.Settings): boolean {
     return !this.disabled(setting);
+  }
+
+  /**
+   * Handle view
+   * @param extension view template file extension
+   * @param path the directory containing view templates
+   * @param handler
+   */
+  public engine(extension: string, path: string, handler: () => void): this {
+    this._view = new Engine(path, extension, handler);
+
+    return this;
+  }
+
+  public async inject(options: InjectOptionsI | string): Promise<InjectResultI<Request, Response>> {
+    assert(
+      this.setting("env") === "test",
+      "Inject only works on the testing environment",
+    );
+
+    if (typeof options === "string") options = { url: options };
+
+    requestSettings(this._settings as any);
+    responseSettings({
+      ...this._settings,
+      view: this._view,
+    } as any);
+
+    // TODO: fix typescript issues
+    return inject(this.lookup.bind(this), {
+      ...options,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      Response,
+      Request,
+    });
   }
 
   public set<T extends keyof Foxify.UserSettings>(
     setting: T,
     value: Foxify.UserSettings[T],
-  ) {
+  ): this {
     switch (setting) {
       case "env":
         utils.assertType(setting, "string", value);
@@ -178,14 +207,12 @@ class Foxify extends Router<Request, Response> {
         break;
       case "etag":
         if (value == null || typeof value === "function") break;
+        // eslint-disable-next-line no-undefined
         if (value === false) value = undefined as any;
-        else if (value === true || value === "weak") {
-          value = utils.createETagGenerator(true) as any;
-        } else if (value === "strong") {
-          value = utils.createETagGenerator(false) as any;
-        } else {
-          throw new TypeError(`Unknown value for ${setting} setting: ${value}`);
-        }
+        else if (value === true || value === "weak") value = utils.createETagGenerator(true) as any;
+        else if (value === "strong") value = utils.createETagGenerator(false) as any;
+        else throw new TypeError(`Unknown value for ${ setting } setting: ${ value }`);
+
         break;
       case "https":
         utils.assertType(setting, "boolean", value);
@@ -233,9 +260,8 @@ class Foxify extends Router<Request, Response> {
           const num = value;
           value = ((ip: string, i: number) => i < num) as any;
         } else if (typeof value !== "function") {
-          if (typeof value === "string") {
-            value = value.split(/ *, */) as any;
-          }
+          if (typeof value === "string") value = value.split(/ *, */) as any;
+
 
           value = proxyAddr.compile((value as any) || []) as any;
         }
@@ -244,17 +270,12 @@ class Foxify extends Router<Request, Response> {
         if (typeof value === "function") break;
         if (value === true || value === "simple") value = qs.parse as any;
         else if (value === false) value = (() => ({})) as any;
-        else if (value === "extended") {
-          value = ((str: string) =>
-            qs.parse(str, { allowPrototypes: true })) as any;
-        } else {
-          throw new TypeError(`Unknown value for ${setting} setting: ${value}`);
-        }
+        else if (value === "extended") value = ((str: string) => qs.parse(str, { allowPrototypes: true })) as any;
+        else throw new TypeError(`Unknown value for ${ setting } setting: ${ value }`);
+
         break;
       default:
-        throw new TypeError(
-          `Expected setting to be one of [${SETTINGS}], got ${setting}`,
-        );
+        throw new TypeError(`Expected setting to be one of [${ SETTINGS }], got ${ setting }`);
     }
 
     this._settings[setting] = value as any;
@@ -262,60 +283,20 @@ class Foxify extends Router<Request, Response> {
     return this;
   }
 
-  public setting<T extends keyof Foxify.Settings>(
-    setting: T,
-  ): Foxify.Settings[T] {
+  public setting<T extends keyof Foxify.Settings>(setting: T): Foxify.Settings[T] {
     assert(
       SETTINGS.includes(setting),
-      `Expected setting to be one of [${SETTINGS}], got ${setting}`,
+      `Expected setting to be one of [${ SETTINGS }], got ${ setting }`,
     );
 
     return this._settings[setting];
   }
 
-  /**
-   * handle view
-   * @param extension view template file extension
-   * @param path the directory containing view templates
-   */
-  public engine(extension: string, path: string, handler: () => void) {
-    this._view = new Engine(path, extension, handler);
+  public start(callback?: Server.Callback): Server {
+    if (callback != null) utils.assertType("callback", "function", callback);
 
-    return this;
-  }
 
-  public inject(options: InjectOptionsI | string) {
-    assert(
-      this.setting("env") === "test",
-      "Inject only works on the testing environment",
-    );
-
-    if (typeof options === "string") options = { url: options };
-
-    requestSettings(this._settings as any);
-    responseSettings({
-      ...this._settings,
-      view: this._view,
-    } as any);
-
-    // TODO: fix typescript issues
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return inject(this.lookup.bind(this), {
-      ...options,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      Response,
-      Request,
-    });
-  }
-
-  public start(callback?: Server.Callback) {
-    if (callback !== undefined) {
-      utils.assertType("callback", "function", callback);
-    }
-
-    /* set node env */
+    /* Set node env */
     process.env.NODE_ENV = this.setting("env");
 
     const server = new Server(
@@ -328,6 +309,7 @@ class Foxify extends Router<Request, Response> {
 
     return server.start(callback);
   }
+
 }
 
 export default Foxify;

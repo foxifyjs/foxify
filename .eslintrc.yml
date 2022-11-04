@@ -7,4 +7,9 @@ parserOptions:
   project: ./tsconfig.eslint.json
   ecmaVersion: latest
   sourceType: module
-rules: {}
+rules:
+  multiline-comment-style: off
+  max-nested-callbacks: off
+  import/extensions: off
+  import/no-relative-parent-imports: off
+  "@typescript-eslint/no-magic-numbers": off

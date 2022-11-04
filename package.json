@@ -39,7 +39,7 @@
     "prepublishOnly": "npm run lint && npm test && npm run build",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "lint": "eslint .",
+    "lint": "eslint src test scripts",
     "lint:fix": "npm run lint -- --fix",
     "lint:format": "prettier -w src test && eslint --fix src test",
     "typedoc": "typedoc --out docs/ --mode file --module commonjs --target ES6 --plugin typedoc-plugin-example-tag src/",
@@ -48,7 +48,7 @@
     "test:coverage": "jest --coverage"
   },
   "engines": {
-    "node": ">= 8.12"
+    "node": ">=16"
   },
   "files": [
     "framework"
@@ -98,6 +98,7 @@
     "jest": "^29.2.2",
     "morgan": "^1.10.0",
     "prettier": "^2.7.1",
+    "prototyped.js": "^1.0.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.0.3",
     "typedoc": "^0.23.20",

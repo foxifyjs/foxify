@@ -3,7 +3,7 @@ import Foxify from "../../src";
 it("should be true if language accepted", async () => {
   expect.assertions(3);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     expect(req.acceptsLanguages("en-us")).toBeTruthy();
@@ -12,7 +12,7 @@ it("should be true if language accepted", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "accept-language": "en;q=.5, en-us",
     },
@@ -24,7 +24,7 @@ it("should be true if language accepted", async () => {
 it("should be false if language not accepted", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     expect(req.acceptsLanguages("es")).toBeFalsy();
@@ -32,7 +32,7 @@ it("should be false if language not accepted", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "accept-language": "en;q=.5, en-us",
     },
@@ -45,7 +45,7 @@ describe("when Accept-Language is not present", () => {
   it("should always return true", async () => {
     expect.assertions(4);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       expect(req.acceptsLanguages("en")).toBeTruthy();

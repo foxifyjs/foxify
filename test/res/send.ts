@@ -5,7 +5,7 @@ describe(".send()", () => {
   it('should set body to ""', async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send();
@@ -22,7 +22,7 @@ describe(".send(null)", () => {
   it('should set body to ""', async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send(null);
@@ -39,9 +39,10 @@ describe(".send(undefined)", () => {
   it('should set body to ""', async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
+      // eslint-disable-next-line no-undefined
       res.send(undefined);
     });
 
@@ -56,7 +57,7 @@ describe(".send(String)", () => {
   it("should send as html", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send("<p>hey</p>");
@@ -72,7 +73,7 @@ describe(".send(String)", () => {
   it("should set ETag", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       const str = Array(1000).join("-");
@@ -89,7 +90,7 @@ describe(".send(String)", () => {
   it("should not override Content-Type", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.set("Content-Type", "text/plain").send("hey");
@@ -105,7 +106,7 @@ describe(".send(String)", () => {
   it("should override charset in Content-Type", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.set("Content-Type", "text/plain; charset=iso-8859-1").send("hey");
@@ -121,7 +122,7 @@ describe(".send(String)", () => {
   it("should keep charset in Content-Type for Buffers", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res
@@ -132,9 +133,7 @@ describe(".send(String)", () => {
     const result = await app.inject("/");
 
     expect(result.statusCode).toBe(200);
-    expect(result.headers["content-type"]).toBe(
-      "text/plain; charset=iso-8859-1",
-    );
+    expect(result.headers["content-type"]).toBe("text/plain; charset=iso-8859-1");
     expect(result.body).toBe("hi");
   });
 });
@@ -143,7 +142,7 @@ describe(".send(Buffer)", () => {
   it("should send as octet-stream", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send(Buffer.from("hello"));
@@ -159,7 +158,7 @@ describe(".send(Buffer)", () => {
   it("should set ETag", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send(Buffer.alloc(999, "-"));
@@ -174,7 +173,7 @@ describe(".send(Buffer)", () => {
   it("should not override Content-Type", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.set("Content-Type", "text/plain").send(Buffer.from("hey"));
@@ -190,10 +189,11 @@ describe(".send(Buffer)", () => {
   it("should not override ETag", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
-      res.type("text/plain").set("ETag", '"foo"').send(Buffer.from("hey"));
+      res.type("text/plain").set("ETag", '"foo"')
+        .send(Buffer.from("hey"));
     });
 
     const result = await app.inject("/");
@@ -208,7 +208,7 @@ describe(".send(Object)", () => {
   it("should send as application/json", async () => {
     expect.assertions(3);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
       res.send({ name: "tobi" });
@@ -217,9 +217,7 @@ describe(".send(Object)", () => {
     const result = await app.inject("/");
 
     expect(result.statusCode).toBe(200);
-    expect(result.headers["content-type"]).toBe(
-      "application/json; charset=utf-8",
-    );
+    expect(result.headers["content-type"]).toBe("application/json; charset=utf-8");
     expect(result.body).toBe('{"name":"tobi"}');
   });
 });
@@ -228,14 +226,14 @@ describe("when the request method is HEAD", () => {
   it("should ignore the body", async () => {
     expect.assertions(2);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.head("/", (req, res) => {
       res.send("yay");
     });
 
     const result = await app.inject({
-      url: "/",
+      url   : "/",
       method: "HEAD",
     });
 
@@ -248,10 +246,11 @@ describe("when .statusCode is 204", () => {
   it("should strip Content-* fields, Transfer-Encoding field, and body", async () => {
     expect.assertions(5);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
-      res.status(204).set("Transfer-Encoding", "chunked").send("foo");
+      res.status(204).set("Transfer-Encoding", "chunked")
+        .send("foo");
     });
 
     const result = await app.inject("/");
@@ -268,10 +267,11 @@ describe("when .statusCode is 304", () => {
   it("should strip Content-* fields, Transfer-Encoding field, and body", async () => {
     expect.assertions(5);
 
-    const app = new Foxify();
+    const app = (new Foxify);
 
     app.get("/", (req, res) => {
-      res.status(304).set("Transfer-Encoding", "chunked").send("foo");
+      res.status(304).set("Transfer-Encoding", "chunked")
+        .send("foo");
     });
 
     const result = await app.inject("/");
@@ -287,7 +287,7 @@ describe("when .statusCode is 304", () => {
 it("should always check regardless of length", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
   const etag = '"asdf"';
 
   app.get("/", (req, res) => {
@@ -296,7 +296,7 @@ it("should always check regardless of length", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "if-none-match": etag,
     },
@@ -308,7 +308,7 @@ it("should always check regardless of length", async () => {
 it("should respond with 304 Not Modified when fresh", async () => {
   expect.assertions(1);
 
-  const app = new Foxify();
+  const app = (new Foxify);
   const etag = '"asdf"';
 
   app.get("/", (req, res) => {
@@ -319,7 +319,7 @@ it("should respond with 304 Not Modified when fresh", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "if-none-match": etag,
     },
@@ -331,7 +331,7 @@ it("should respond with 304 Not Modified when fresh", async () => {
 it("should not perform freshness check unless 2xx or 304", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
   const etag = '"asdf"';
 
   app.get("/", (req, res) => {
@@ -341,7 +341,7 @@ it("should not perform freshness check unless 2xx or 304", async () => {
   });
 
   const result = await app.inject({
-    url: "/",
+    url    : "/",
     headers: {
       "if-none-match": etag,
     },
@@ -354,7 +354,7 @@ it("should not perform freshness check unless 2xx or 304", async () => {
 it("should not support jsonp callbacks", async () => {
   expect.assertions(2);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     res.send({ foo: "bar" });
@@ -369,7 +369,7 @@ it("should not support jsonp callbacks", async () => {
 it("should be chainable", async () => {
   expect.assertions(3);
 
-  const app = new Foxify();
+  const app = (new Foxify);
 
   app.get("/", (req, res) => {
     expect(res.send("hey")).toEqual(res);
@@ -386,7 +386,7 @@ describe('"etag" setting', () => {
     it("should send ETag", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         res.send("kajdslfkasdf");
@@ -400,13 +400,13 @@ describe('"etag" setting', () => {
       expect(result.headers.etag).toBe('W/"c-IgR/L5SF7CJQff4wxKGF/vfPuZ0"');
     });
 
-    METHODS.forEach(method => {
+    METHODS.forEach((method) => {
       if (method.toLowerCase() === "connect") return;
 
-      it(`should send ETag in response to ${method} request`, async () => {
+      it(`should send ETag in response to ${ method } request`, async () => {
         expect.assertions(2);
 
-        const app = new Foxify();
+        const app = (new Foxify);
 
         (app as any)[method.toLowerCase()](
           "/",
@@ -428,7 +428,7 @@ describe('"etag" setting', () => {
     it("should send ETag for empty string response", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         res.send("");
@@ -445,7 +445,7 @@ describe('"etag" setting', () => {
     it("should send ETag for long response", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         const str = Array(1000).join("-");
@@ -464,7 +464,7 @@ describe('"etag" setting', () => {
     it("should not override ETag when manually set", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         res.set("etag", '"asdf"');
@@ -483,7 +483,7 @@ describe('"etag" setting', () => {
     it("should not send ETag for res.send()", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         res.send();
@@ -502,7 +502,7 @@ describe('"etag" setting', () => {
     it("should send no ETag", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.get("/", (req, res) => {
         const str = Array(1000).join("-");
@@ -521,7 +521,7 @@ describe('"etag" setting', () => {
     it("should send ETag when manually set", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.disable("etag");
 
@@ -542,7 +542,7 @@ describe('"etag" setting', () => {
     it("should send strong ETag", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("etag", "strong");
 
@@ -561,7 +561,7 @@ describe('"etag" setting', () => {
     it("should send weak ETag", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("etag", "weak");
 
@@ -580,12 +580,12 @@ describe('"etag" setting', () => {
     it("should send custom ETag", async () => {
       expect.assertions(3);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
       app.set("etag", (body, encoding) => {
-        const chunk = !Buffer.isBuffer(body)
-          ? Buffer.from(body, encoding)
-          : body;
+        const chunk = Buffer.isBuffer(body)
+          ? body
+          : Buffer.from(body, encoding);
 
         expect(chunk.toString()).toBe("hello, world!");
 
@@ -605,11 +605,10 @@ describe('"etag" setting', () => {
     it("should not send falsy ETag", async () => {
       expect.assertions(2);
 
-      const app = new Foxify();
+      const app = (new Foxify);
 
-      app.set("etag", (body, encoding) => {
-        return undefined;
-      });
+      // eslint-disable-next-line no-undefined
+      app.set("etag", (body, encoding) => undefined);
 
       app.get("/", (req, res) => {
         res.send("hello, world!");
