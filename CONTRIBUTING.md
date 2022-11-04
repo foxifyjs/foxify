@@ -12,13 +12,13 @@ git clone git@github.com:foxifyjs/foxify.git && cd foxify
 Install dependencies:
 
 ```bash
-npm i
+pnpm i
 ```
 
 Run tests:
 
 ```bash
-npm test
+pnpm test
 ```
 
 ## Financial contributions

@@ -15,7 +15,7 @@ const outDir = path.join(cwd, "docs");
 
 rimraf.sync(outDir);
 
-console.log(execSync("npm run typedoc", {
+console.log(execSync("pnpm typedoc", {
   cwd,
 }).toString());
 

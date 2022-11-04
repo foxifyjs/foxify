@@ -36,19 +36,22 @@
     "foxify"
   ],
   "scripts": {
-    "prepublishOnly": "npm run lint && npm test && npm run build",
+    "prepublishOnly": "pnpm lint && pnpm test && pnpm build",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "lint": "eslint src test scripts",
-    "lint:fix": "npm run lint -- --fix",
-    "lint:format": "prettier -w src test && eslint --fix src test",
+    "lint:fix": "pnpm lint --fix",
     "typedoc": "typedoc --out docs/ --mode file --module commonjs --target ES6 --plugin typedoc-plugin-example-tag src/",
     "doc": "node scripts/doc.js",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "pnpm test -- --coverage"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=16",
+    "pnpm": ">=7"
   },
   "files": [
     "framework"
@@ -77,7 +80,6 @@
     "@foxify/router": "^1.0.0-beta.2",
     "@types/cookie": "^0.5.1",
     "@types/cookie-parser": "^1.4.3",
-    "@types/dotenv": "^8.2.0",
     "@types/escape-html": "^1.0.2",
     "@types/etag": "^1.8.1",
     "@types/jest": "^29.2.2",
@@ -97,12 +99,10 @@
     "eslint-plugin-import": "^2.26.0",
     "jest": "^29.2.2",
     "morgan": "^1.10.0",
-    "prettier": "^2.7.1",
     "prototyped.js": "^1.0.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.0.3",
     "typedoc": "^0.23.20",
-    "typedoc-plugin-example-tag": "^1.0.4",
     "typescript": "^4.8.4"
   },
   "jest": {

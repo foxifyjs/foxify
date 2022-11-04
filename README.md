@@ -53,7 +53,7 @@ Enter Foxify. Foxify is a web framework highly focused on providing the best dev
 ### Installation
 
 ```bash
-npm i -s foxify
+npm i foxify
 ```
 
 ### Usage
