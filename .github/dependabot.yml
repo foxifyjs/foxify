@@ -1,0 +1,27 @@
+version: 2
+
+updates:
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+      day: monday
+    commit-message:
+      prefix: deps(CI)
+    reviewers:
+      - foxifyjs/maintainers
+
+  # Maintain dependencies for NPM
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+      day: monday
+    versioning-strategy: increase
+    commit-message:
+      prefix: deps
+      prefix-development: deps(Dev)
+    reviewers:
+      - foxifyjs/maintainers
