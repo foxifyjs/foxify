@@ -34,7 +34,7 @@ Enter Foxify. Foxify is a web framework highly focused on providing the best dev
     - [NPM](#npm)
     - [PNPM](#pnpm)
     - [Yarn](#yarn)
-    - [Usage](#usage)
+  - [Usage](#usage)
 - [Features](#features)
 - [Benchmarks](#benchmarks)
 - [Credits](#credits)
