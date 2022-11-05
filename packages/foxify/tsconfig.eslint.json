@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "include": [
     "src",
-    "test",
+    "tests",
     "scripts",
     "jest.config.js"
   ],

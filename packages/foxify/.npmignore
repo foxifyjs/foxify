@@ -1,0 +1,11 @@
+tests/
+coverage/
+docs/
+demo/
+scripts/
+jest.config.js
+nodemon.json
+tsconfig*.json
+*.tsbuildinfo
+typedoc.json
+.eslintcache

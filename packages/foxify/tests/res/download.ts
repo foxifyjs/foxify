@@ -7,7 +7,7 @@ describe(".download(path)", () => {
     const app = (new Foxify);
 
     app.get("/", (req, res) => {
-      res.download("test/fixtures/user.html");
+      res.download("tests/fixtures/user.html");
     });
 
     const result = await app.inject("/");
@@ -26,7 +26,7 @@ describe(".download(path, filename)", () => {
     const app = (new Foxify);
 
     app.get("/", (req, res) => {
-      res.download("test/fixtures/user.html", "document");
+      res.download("tests/fixtures/user.html", "document");
     });
 
     const result = await app.inject("/");
@@ -47,7 +47,7 @@ describe(".download(path, fn)", () => {
     const cb = jest.fn();
 
     app.get("/", (req, res) => {
-      res.download("test/fixtures/user.html", cb);
+      res.download("tests/fixtures/user.html", cb);
     });
 
     const result = await app.inject("/");
@@ -69,7 +69,7 @@ describe(".download(path, filename, fn)", () => {
     const cb = jest.fn();
 
     app.get("/", (req, res) => {
-      res.download("test/fixtures/user.html", "document", cb);
+      res.download("tests/fixtures/user.html", "document", cb);
     });
 
     const result = await app.inject("/");
@@ -92,7 +92,7 @@ describe(".download(path, filename, options, fn)", () => {
     const options = {};
 
     app.get("/", (req, res) => {
-      res.download("test/fixtures/user.html", "document", options, cb);
+      res.download("tests/fixtures/user.html", "document", options, cb);
     });
 
     const result = await app.inject("/");
@@ -110,7 +110,7 @@ describe(".download(path, filename, options, fn)", () => {
     const app = (new Foxify);
 
     app.get("/", (req, res) => {
-      res.download("test/fixtures/.name", "document", {
+      res.download("tests/fixtures/.name", "document", {
         dotfiles: "allow",
         maxAge  : "4h",
       });
@@ -131,7 +131,7 @@ describe(".download(path, filename, options, fn)", () => {
       const app = (new Foxify);
 
       app.get("/", (req, res) => {
-        res.download("test/fixtures/user.html", "document", {
+        res.download("tests/fixtures/user.html", "document", {
           headers: {
             "Content-Type"       : "text/x-custom",
             "Content-Disposition": "inline",
@@ -153,7 +153,7 @@ describe(".download(path, filename, options, fn)", () => {
       const app = (new Foxify);
 
       app.get("/", (req, res) => {
-        res.download("test/fixtures/user.html", "document", {
+        res.download("tests/fixtures/user.html", "document", {
           headers: {
             "content-type"       : "text/x-custom",
             "content-disposition": "inline",
@@ -178,7 +178,7 @@ describe("on failure", () => {
     const app = (new Foxify);
 
     app.get("/", (req, res, next) => {
-      res.download("test/fixtures/foobar.html", (err) => {
+      res.download("tests/fixtures/foobar.html", (err) => {
         if (!err) {
           next(new Error("expected error"));
           return;
@@ -199,7 +199,7 @@ describe("on failure", () => {
     const app = (new Foxify);
 
     app.get("/", (req, res, next) => {
-      res.download("test/fixtures/foobar.html", (err) => {
+      res.download("tests/fixtures/foobar.html", (err) => {
         if (!err) {
           next(new Error("expected error"));
           return;
