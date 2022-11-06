@@ -184,6 +184,8 @@ class Foxify extends Router {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       Response,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       Request,
     });
   }
