@@ -6,14 +6,14 @@ test("returns payload", async () => {
 
   const output = "example.com:8080|/hello";
 
-  const dispatch = (req: IncomingMessage, res: ServerResponse) => {
+  const dispatch = (req: IncomingMessage, res: ServerResponse): void => {
     res.statusMessage = "Super";
     res.setHeader("x-extra", "hello");
     res.writeHead(200, {
-      "Content-Type": "text/plain",
+      "Content-Type"  : "text/plain",
       "Content-Length": output.length,
     });
-    res.end(`${req.headers.host}|${req.url}`);
+    res.end(`${ req.headers.host }|${ req.url }`);
   };
 
   const result = await inject(dispatch, "http://example.com:8080/hello");
@@ -22,8 +22,8 @@ test("returns payload", async () => {
   expect(result.statusMessage).toBe("Super");
   expect(result.headers).toEqual({
     "content-length": output.length,
-    "content-type": "text/plain",
-    "x-extra": "hello",
+    "content-type"  : "text/plain",
+    "x-extra"       : "hello",
   });
   expect(result.body).toBe(output);
 });
