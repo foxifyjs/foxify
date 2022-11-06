@@ -93,7 +93,7 @@
   "peerDependencies": {
     "@foxify/http": "^1",
     "@foxify/router": "^1",
-    "@types/node": "^14",
+    "@types/node": ">=16",
     "prototyped.js": "^1"
   },
   "dependencies": {

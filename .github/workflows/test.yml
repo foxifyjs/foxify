@@ -79,7 +79,7 @@ jobs:
     needs:
       - test
 
-    if: ${{ always() }}
+    if: ${{ always() && github.event_name == 'pull_request' }}
 
     runs-on: ubuntu-latest
 
