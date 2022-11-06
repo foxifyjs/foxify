@@ -10,3 +10,7 @@ flag_management:
       paths:
         - packages/inject/
       carryforward: false
+    - name: fresh
+      paths:
+        - packages/fresh/
+      carryforward: false
