@@ -1,0 +1,8 @@
+{
+  "restartable": "rs",
+  "exec": "pnpm build",
+  "watch": [
+    "src/"
+  ],
+  "ext": "*"
+}
