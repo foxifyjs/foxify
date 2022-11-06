@@ -6,6 +6,5 @@
     "scripts",
     "benchmarks",
     "jest.config.js"
-  ],
-  "exclude": []
+  ]
 }

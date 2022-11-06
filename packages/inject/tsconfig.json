@@ -6,6 +6,7 @@
     "baseUrl": "./",
     "paths": {
       "@foxify/inject/package.json": ["./package.json"],
+      "@foxify/inject": ["./src/index.ts"],
       "#src/*": ["./src/*"]
     },
     "outDir": "./.build/esm"

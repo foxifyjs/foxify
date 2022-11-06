@@ -5,6 +5,5 @@
     "tests",
     "scripts",
     "jest.config.js"
-  ],
-  "exclude": []
+  ]
 }
