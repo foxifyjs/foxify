@@ -56,15 +56,9 @@
     "build:pre": "scripts/pre-build.sh",
     "build:post": "scripts/post-build.sh"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "engines": {
     "node": ">=16"
   },
-  "module": ".build/esm/index.js",
-  "main": ".build/cjs/index.js",
-  "types": ".build/cjs/index.d.ts",
   "imports": {
     "#src/*": {
       "import": {
@@ -77,6 +71,12 @@
       }
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "module": ".build/esm/index.js",
+  "main": ".build/cjs/index.js",
+  "types": ".build/cjs/index.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -97,7 +97,7 @@
     "prototyped.js": "^1"
   },
   "dependencies": {
-    "@foxify/inject": "^1.1.0",
+    "@foxify/inject": "workspace:^",
     "dotenv": "^16.0.3",
     "escape-html": "^1.0.3",
     "etag": "^1.8.1",

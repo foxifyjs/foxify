@@ -6,3 +6,7 @@ flag_management:
       paths:
         - packages/foxify/
       carryforward: false
+    - name: inject
+      paths:
+        - packages/inject/
+      carryforward: false
