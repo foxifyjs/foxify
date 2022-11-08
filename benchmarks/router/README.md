@@ -1,4 +1,4 @@
-# Benchmarks: @foxify/fresh
+# Benchmarks: @foxify/router
 
 > Machine: MacBook Pro 2021 (M1 Max, 32GB RAM, Node.js v16.14.0)
 

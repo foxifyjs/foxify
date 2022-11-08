@@ -1,5 +1,6 @@
 {
   "name": "fresh-benchmarks",
+  "version": "0.0.0",
   "private": true,
   "description": "Foxify Fresh Benchmarks",
   "type": "module",
