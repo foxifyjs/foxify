@@ -3,7 +3,8 @@
   "tag": "beta",
   "initialVersions": {
     "foxify": "1.0.0-beta.0",
-    "@foxify/http": "1.0.0-beta.2"
+    "@foxify/http": "1.0.0-beta.2",
+    "@foxify/router": "1.0.0-beta.3"
   },
   "changesets": []
 }

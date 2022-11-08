@@ -22,3 +22,7 @@ flag_management:
       paths:
         - packages/inject/
       carryforward: true
+    - name: router
+      paths:
+        - packages/router/
+      carryforward: true

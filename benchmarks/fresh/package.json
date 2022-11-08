@@ -9,11 +9,11 @@
     "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {
-    "@foxify/fresh": "workspace:^",
+    "@foxify/fresh": "workspace:*",
     "fresh": "^0.5.2"
   },
   "devDependencies": {
-    "@foxify/benchmark": "workspace:^",
+    "@foxify/benchmark": "workspace:*",
     "@types/fresh": "^0.5.0"
   }
 }

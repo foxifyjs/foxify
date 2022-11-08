@@ -133,6 +133,20 @@ jobs:
           env_vars: OS,ARCH,NODE_VERSION,REF
           fail_ci_if_error: true
 
+      - name: Upload router coverage to CodeCov
+        uses: codecov/codecov-action@v3
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        env:
+          OS: ${{ runner.os }}
+          ARCH: ${{ runner.arch }}
+          NODE_VERSION: ${{ matrix.node-version }}
+          REF: ${{ github.ref_name }}
+        with:
+          files: ./packages/router/coverage/clover.xml,./packages/router/coverage/coverage-final.json,./packages/router/coverage/lcov.info
+          flags: router
+          env_vars: OS,ARCH,NODE_VERSION,REF
+          fail_ci_if_error: true
+
   test-summary:
     name: Test Summary
 
