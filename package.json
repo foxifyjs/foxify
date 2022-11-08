@@ -12,14 +12,14 @@
     "foxify"
   ],
   "scripts": {
-    "build": "pnpm -r --filter './packages/*' build",
-    "lint": "pnpm -r --filter './benchmarks/*' --filter './packages/*' lint",
-    "lint:fix": "pnpm -r --filter './benchmarks/*' --filter './packages/*' lint:fix",
-    "document": "pnpm -r --filter './packages/*' document",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint:fix",
+    "document": "turbo document",
     "benchmark": "pnpm -r --filter './benchmarks/*' start",
-    "test": "pnpm -r --filter './packages/*' test",
-    "test:coverage": "pnpm -r --filter './packages/*' test:coverage",
-    "test:ci": "pnpm -r --filter './packages/*' test:ci"
+    "test": "turbo test",
+    "test:coverage": "turbo test:coverage",
+    "test:ci": "turbo test:ci"
   },
   "engines": {
     "node": ">=16",
@@ -40,6 +40,7 @@
     "jest": "^29.2.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
+    "turbo": "^1.6.3",
     "typedoc": "^0.23.20",
     "typescript": "^4.8.4"
   },
