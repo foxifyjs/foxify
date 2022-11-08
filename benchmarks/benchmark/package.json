@@ -1,0 +1,21 @@
+{
+  "name": "@foxify/benchmark",
+  "private": true,
+  "description": "Foxify Benchmark",
+  "type": "module",
+  "bin": {
+    "benchmark": "index.ts"
+  },
+  "scripts": {
+    "lint": "eslint --cache .",
+    "lint:fix": "pnpm lint --fix"
+  },
+  "dependencies": {
+    "beautify-benchmark": "^0.2.4",
+    "benchmark": "^2.1.4",
+    "log-symbols": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/benchmark": "^2.1.2"
+  }
+}

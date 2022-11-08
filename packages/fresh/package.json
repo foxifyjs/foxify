@@ -38,7 +38,6 @@
     "test": "node --no-compilation-cache --expose-gc ../../node_modules/jest/bin/jest --logHeapUsage",
     "test:coverage": "pnpm test -- --coverage",
     "test:ci": "pnpm test:coverage --ci --verbose --no-cache",
-    "benchmarks": "find benchmarks -name '*.js' -exec benchmarks/start.sh {} \\;",
     "prepack": "pnpm build:pre && pnpm build && pnpm build:post",
     "build:pre": "scripts/pre-build.sh",
     "build:post": "scripts/post-build.sh"
@@ -84,10 +83,5 @@
   },
   "peerDependencies": {
     "@types/node": ">=16"
-  },
-  "devDependencies": {
-    "@types/node": "^18.11.9",
-    "benchmark": "^2.1.4",
-    "fresh": "^0.5.2"
   }
 }

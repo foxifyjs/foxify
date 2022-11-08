@@ -1,0 +1,19 @@
+{
+  "name": "fresh-benchmarks",
+  "private": true,
+  "description": "Foxify Fresh Benchmarks",
+  "type": "module",
+  "scripts": {
+    "start": "benchmark",
+    "lint": "eslint --cache .",
+    "lint:fix": "pnpm lint --fix"
+  },
+  "dependencies": {
+    "@foxify/fresh": "workspace:^",
+    "fresh": "^0.5.2"
+  },
+  "devDependencies": {
+    "@foxify/benchmark": "workspace:^",
+    "@types/fresh": "^0.5.0"
+  }
+}

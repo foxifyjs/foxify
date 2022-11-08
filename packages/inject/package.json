@@ -89,7 +89,6 @@
     "readable-stream": "^4.2.0"
   },
   "devDependencies": {
-    "@types/node": "^18.11.9",
     "@types/readable-stream": "^2.3.15"
   }
 }
