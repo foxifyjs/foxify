@@ -9,6 +9,9 @@ on:
   pull_request:
   workflow_call:
 
+env:
+  DEFAULT_NODE_VERSION: 18
+
 jobs:
   test:
     name: Test
@@ -87,3 +90,32 @@ jobs:
       - name: Check test matrix status
         if  : ${{ needs.test.result != 'success' }}
         run : exit 1
+
+  release-pr:
+    name: Create Release Pull Request
+
+    if: ${{ github.event_name == 'push' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Use Node.js ${{ env.DEFAULT_NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+          node-version: ${{ env.DEFAULT_NODE_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Create Release Pull Request
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
