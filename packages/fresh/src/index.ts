@@ -1,4 +1,4 @@
-import { IncomingHttpHeaders, OutgoingHttpHeaders } from "http";
+import { IncomingHttpHeaders, OutgoingHttpHeaders } from "node:http";
 
 /**
  * RegExp to check for no-cache token in Cache-Control.
@@ -46,9 +46,7 @@ function isStale(etag: string, noneMatch: string): boolean {
     }
   }
 
-  if (compareETags(etag, noneMatch.substring(start, end))) return false;
-
-  return true;
+  return !compareETags(etag, noneMatch.substring(start, end));
 }
 
 /**
