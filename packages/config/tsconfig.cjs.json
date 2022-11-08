@@ -3,7 +3,8 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./.build/.cjs.tsbuildinfo",
     "rootDir": "./src",
-    "outDir": "./.build/cjs",
+    "outDir": "./.build/cjs"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/config.esm.ts"]
 }

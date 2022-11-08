@@ -60,34 +60,11 @@
     "node": ">=16"
   },
   "imports": {
-    "#src/*": {
-      "import": {
-        "types": "./.build/esm/*.d.ts",
-        "default": "./.build/esm/*.js"
-      },
-      "default": {
-        "types": "./.build/cjs/*.d.ts",
-        "default": "./.build/cjs/*.js"
-      }
-    }
+    "#src/*": "./src/*.ts"
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "module": ".build/esm/index.js",
-  "main": ".build/cjs/index.js",
-  "types": ".build/cjs/index.d.ts",
+  "main": "src/index.ts",
   "exports": {
-    ".": {
-      "import": {
-        "types": "./.build/esm/index.d.ts",
-        "default": "./.build/esm/index.js"
-      },
-      "default": {
-        "types": "./.build/cjs/index.d.ts",
-        "default": "./.build/cjs/index.js"
-      }
-    },
+    ".": "./src/index.ts",
     "./package.json": "./package.json"
   },
   "peerDependencies": {
@@ -124,5 +101,36 @@
     "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
     "prototyped.js": "^1.0.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "module": ".build/esm/index.js",
+    "main": ".build/cjs/index.js",
+    "types": ".build/cjs/index.d.ts",
+    "exports": {
+      ".": {
+        "import": {
+          "types": "./.build/esm/index.d.ts",
+          "default": "./.build/esm/index.js"
+        },
+        "default": {
+          "types": "./.build/cjs/index.d.ts",
+          "default": "./.build/cjs/index.js"
+        }
+      },
+      "./package.json": "./package.json"
+    },
+    "imports": {
+      "#src/*": {
+        "import": {
+          "types": "./.build/esm/*.d.ts",
+          "default": "./.build/esm/*.js"
+        },
+        "default": {
+          "types": "./.build/cjs/*.d.ts",
+          "default": "./.build/cjs/*.js"
+        }
+      }
+    }
   }
 }

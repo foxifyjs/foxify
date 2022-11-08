@@ -3,12 +3,6 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./.build/.esm.tsbuildinfo",
     "rootDir": "./src",
-    "baseUrl": "./",
-    "paths": {
-      "@foxify/fresh/package.json": ["./package.json"],
-      "@foxify/fresh": ["./src/index.ts"],
-      "#src/*": ["./src/*"]
-    },
     "outDir": "./.build/esm"
   },
   "include": ["src"]

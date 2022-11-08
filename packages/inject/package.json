@@ -47,16 +47,21 @@
     "node": ">=16"
   },
   "imports": {
-    "#src/*": {
-      "import": {
-        "types": "./.build/esm/*.d.ts",
-        "default": "./.build/esm/*.js"
-      },
-      "default": {
-        "types": "./.build/cjs/*.d.ts",
-        "default": "./.build/cjs/*.js"
-      }
-    }
+    "#src/*": "./src/*.ts"
+  },
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@types/node": ">=16"
+  },
+  "dependencies": {
+    "readable-stream": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/readable-stream": "^2.3.15"
   },
   "publishConfig": {
     "access": "public",
@@ -75,20 +80,18 @@
         }
       },
       "./package.json": "./package.json"
+    },
+    "imports": {
+      "#src/*": {
+        "import": {
+          "types": "./.build/esm/*.d.ts",
+          "default": "./.build/esm/*.js"
+        },
+        "default": {
+          "types": "./.build/cjs/*.d.ts",
+          "default": "./.build/cjs/*.js"
+        }
+      }
     }
-  },
-  "main": "src/index.ts",
-  "exports": {
-    ".": "./src/index.ts",
-    "./package.json": "./package.json"
-  },
-  "peerDependencies": {
-    "@types/node": ">=16"
-  },
-  "dependencies": {
-    "readable-stream": "^4.2.0"
-  },
-  "devDependencies": {
-    "@types/readable-stream": "^2.3.15"
   }
 }

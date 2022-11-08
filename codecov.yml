@@ -2,15 +2,19 @@ flag_management:
   default_rules: # the rules that will be followed for any flag added, generally
     carryforward: false
   individual_flags: # exceptions to the default rules above, stated flag by flag
+    - name: config
+      paths:
+        - packages/config/
+      carryforward: false
     - name: foxify
       paths:
         - packages/foxify/
       carryforward: false
-    - name: inject
-      paths:
-        - packages/inject/
-      carryforward: false
     - name: fresh
       paths:
         - packages/fresh/
+      carryforward: false
+    - name: inject
+      paths:
+        - packages/inject/
       carryforward: false

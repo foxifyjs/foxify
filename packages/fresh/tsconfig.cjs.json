@@ -1,9 +1,9 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.cjs.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./.build/.cjs.tsbuildinfo",
-    "module": "CommonJS",
-    "moduleResolution": "Node16",
+    "rootDir": "./src",
     "outDir": "./.build/cjs"
-  }
+  },
+  "include": ["src"]
 }
