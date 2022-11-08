@@ -63,7 +63,7 @@ jobs:
       - name: Test the project
         run: pnpm test:ci --maxWorkers ${{ steps.cpu-cores.outputs.count }}
 
-      - name: Upload coverage to CodeCov
+      - name: Upload config coverage to CodeCov
         uses: codecov/codecov-action@v3
         if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
         env:
@@ -72,7 +72,64 @@ jobs:
           NODE_VERSION: ${{ matrix.node-version }}
           REF: ${{ github.ref_name }}
         with:
-          flags: config,foxify,fresh,http,inject
+          files: ./packages/config/coverage/clover.xml,./packages/config/coverage/coverage-final.json,./packages/config/coverage/lcov.info
+          flags: config
+          env_vars: OS,ARCH,NODE_VERSION,REF
+          fail_ci_if_error: true
+
+      - name: Upload foxify coverage to CodeCov
+        uses: codecov/codecov-action@v3
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        env:
+          OS: ${{ runner.os }}
+          ARCH: ${{ runner.arch }}
+          NODE_VERSION: ${{ matrix.node-version }}
+          REF: ${{ github.ref_name }}
+        with:
+          files: ./packages/foxify/coverage/clover.xml,./packages/foxify/coverage/coverage-final.json,./packages/foxify/coverage/lcov.info
+          flags: foxify
+          env_vars: OS,ARCH,NODE_VERSION,REF
+          fail_ci_if_error: true
+
+      - name: Upload fresh coverage to CodeCov
+        uses: codecov/codecov-action@v3
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        env:
+          OS: ${{ runner.os }}
+          ARCH: ${{ runner.arch }}
+          NODE_VERSION: ${{ matrix.node-version }}
+          REF: ${{ github.ref_name }}
+        with:
+          files: ./packages/fresh/coverage/clover.xml,./packages/fresh/coverage/coverage-final.json,./packages/fresh/coverage/lcov.info
+          flags: fresh
+          env_vars: OS,ARCH,NODE_VERSION,REF
+          fail_ci_if_error: true
+
+      - name: Upload http coverage to CodeCov
+        uses: codecov/codecov-action@v3
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        env:
+          OS: ${{ runner.os }}
+          ARCH: ${{ runner.arch }}
+          NODE_VERSION: ${{ matrix.node-version }}
+          REF: ${{ github.ref_name }}
+        with:
+          files: ./packages/http/coverage/clover.xml,./packages/http/coverage/coverage-final.json,./packages/http/coverage/lcov.info
+          flags: http
+          env_vars: OS,ARCH,NODE_VERSION,REF
+          fail_ci_if_error: true
+
+      - name: Upload inject coverage to CodeCov
+        uses: codecov/codecov-action@v3
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        env:
+          OS: ${{ runner.os }}
+          ARCH: ${{ runner.arch }}
+          NODE_VERSION: ${{ matrix.node-version }}
+          REF: ${{ github.ref_name }}
+        with:
+          files: ./packages/inject/coverage/clover.xml,./packages/inject/coverage/coverage-final.json,./packages/inject/coverage/lcov.info
+          flags: inject
           env_vars: OS,ARCH,NODE_VERSION,REF
           fail_ci_if_error: true
 
