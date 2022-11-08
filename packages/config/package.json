@@ -1,8 +1,8 @@
 {
-  "name": "@foxify/fresh",
+  "name": "@foxify/config",
   "version": "1.1.0",
-  "description": "HTTP response freshness testing",
-  "homepage": "https://github.com/foxifyjs/foxify/tree/main/packages/fresh#readme",
+  "description": "Foxify framework config",
+  "homepage": "https://github.com/foxifyjs/foxify/tree/main/packages/config#readme",
   "author": "Ardalan Amini <ardalanamini22@gmail.com> (https://ardalanamini.com)",
   "funding": [
     {
@@ -14,16 +14,16 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/foxifyjs/foxify.git",
-    "directory": "packages/fresh"
+    "directory": "packages/config"
   },
   "bugs": {
     "url": "https://github.com/foxifyjs/foxify/issues"
   },
   "keywords": [
-    "fresh",
-    "http",
-    "conditional",
-    "cache"
+    "node.js",
+    "foxify",
+    "framework",
+    "config"
   ],
   "scripts": {
     "build": "pnpm build:esm && pnpm build:cjs",
@@ -46,6 +46,10 @@
     "node": ">=16"
   },
   "imports": {
+    "#src/config": {
+      "import": "./src/config.esm.ts",
+      "default": "./src/config.cjs.ts"
+    },
     "#src/*": "./src/*.ts"
   },
   "main": "src/index.ts",
@@ -55,6 +59,12 @@
   },
   "peerDependencies": {
     "@types/node": ">=16"
+  },
+  "dependencies": {
+    "joi": "^17.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   },
   "publishConfig": {
     "access": "public",
@@ -75,6 +85,16 @@
       "./package.json": "./package.json"
     },
     "imports": {
+      "#src/config": {
+        "import": {
+          "types": "./.build/esm/config.esm.d.ts",
+          "default": "./.build/esm/config.esm.js"
+        },
+        "default": {
+          "types": "./.build/cjs/config.cjs.d.ts",
+          "default": "./.build/cjs/config.cjs.js"
+        }
+      },
       "#src/*": {
         "import": {
           "types": "./.build/esm/*.d.ts",
