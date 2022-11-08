@@ -1,8 +1,8 @@
 {
-  "name": "foxify",
-  "version": "1.0.0-beta.0",
-  "description": "The fast, easy to use & typescript ready web framework for Node.js",
-  "homepage": "https://foxify.js.org",
+  "name": "@foxify/router",
+  "version": "1.0.0-beta.3",
+  "description": "Foxify HTTP router",
+  "homepage": "https://github.com/foxifyjs/foxify/tree/main/packages/router#readme",
   "author": "Ardalan Amini <ardalanamini22@gmail.com> (https://ardalanamini.com)",
   "funding": [
     {
@@ -14,30 +14,18 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/foxifyjs/foxify.git",
-    "directory": "packages/foxify"
+    "directory": "packages/router"
   },
   "bugs": {
     "url": "https://github.com/foxifyjs/foxify/issues"
   },
   "keywords": [
-    "node",
-    "fast",
-    "speed",
-    "typescript",
-    "api",
-    "web",
-    "app",
-    "application",
-    "route",
+    "foxify",
     "router",
-    "routing",
-    "middleware",
-    "cluster",
-    "clustering",
-    "database",
-    "model",
-    "framework",
-    "foxify"
+    "nodejs",
+    "http",
+    "request",
+    "response"
   ],
   "scripts": {
     "build": "pnpm build:esm && pnpm build:cjs",
@@ -69,38 +57,19 @@
   },
   "peerDependencies": {
     "@foxify/http": "^1",
-    "@foxify/router": "^1",
     "@types/node": ">=16",
-    "prototyped.js": "^1"
+    "prototyped.js": "^3"
   },
   "dependencies": {
-    "@foxify/inject": "workspace:^",
-    "dotenv": "^16.0.3",
     "escape-html": "^1.0.3",
-    "etag": "^1.8.1",
-    "fast-json-stringify": "^5.4.0",
-    "proxy-addr": "^2.0.7",
-    "qs": "^6.11.0",
-    "safe-regex": "^2.1.1",
-    "serve-static": "^1.15.0"
+    "fast-json-stringify": "^5.4.1"
   },
   "devDependencies": {
     "@foxify/http": "workspace:^",
-    "@foxify/router": "workspace:^",
-    "@types/cookie": "^0.5.1",
-    "@types/cookie-parser": "^1.4.3",
+    "@foxify/inject": "workspace:^",
     "@types/escape-html": "^1.0.2",
-    "@types/etag": "^1.8.1",
     "@types/node": "^18.11.9",
-    "@types/proxy-addr": "^2.0.0",
-    "@types/qs": "^6.9.7",
-    "@types/safe-regex": "^1.1.4",
-    "cookie": "^0.5.0",
-    "cookie-parser": "^1.4.6",
-    "ejs": "^3.1.8",
-    "morgan": "^1.10.0",
-    "nodemon": "^2.0.20",
-    "prototyped.js": "^1.0.1"
+    "prototyped.js": "^3.0.5"
   },
   "publishConfig": {
     "access": "public",
