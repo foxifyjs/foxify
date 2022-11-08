@@ -1,0 +1,32 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".build/**"]
+    },
+    "lint": {
+      "outputs": [".eslintcache"]
+    },
+    "lint:fix": {
+      "cache": false,
+      "outputs": [".eslintcache"]
+    },
+    "document": {
+      "inputs": ["src/**/*.tsx", "src/**/*.ts"],
+      "outputs": ["docs/**"]
+    },
+    "test": {
+      "inputs": ["src/**/*.tsx", "src/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx"],
+      "outputs": []
+    },
+    "test:coverage": {
+      "inputs": ["src/**/*.tsx", "src/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx"],
+      "outputs": ["coverage/**"]
+    },
+    "test:ci": {
+      "inputs": ["src/**/*.tsx", "src/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx"],
+      "outputs": ["coverage/**"]
+    }
+  }
+}

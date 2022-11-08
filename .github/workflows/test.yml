@@ -61,7 +61,7 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
 
       - name: Test the project
-        run: pnpm test:ci --maxWorkers ${{ steps.cpu-cores.outputs.count }}
+        run: pnpm test:ci -- --maxWorkers ${{ steps.cpu-cores.outputs.count }}
 
       - name: Upload config coverage to CodeCov
         uses: codecov/codecov-action@v3
