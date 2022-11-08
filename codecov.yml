@@ -1,24 +1,24 @@
 flag_management:
   default_rules: # the rules that will be followed for any flag added, generally
-    carryforward: false
+    carryforward: true
   individual_flags: # exceptions to the default rules above, stated flag by flag
     - name: config
       paths:
         - packages/config/
-      carryforward: false
+      carryforward: true
     - name: foxify
       paths:
         - packages/foxify/
-      carryforward: false
+      carryforward: true
     - name: fresh
       paths:
         - packages/fresh/
-      carryforward: false
+      carryforward: true
     - name: http
       paths:
         - packages/http/
-      carryforward: false
+      carryforward: true
     - name: inject
       paths:
         - packages/inject/
-      carryforward: false
+      carryforward: true
