@@ -1,8 +1,8 @@
 {
-  "name": "foxify",
-  "version": "1.0.0-beta.0",
-  "description": "The fast, easy to use & typescript ready web framework for Node.js",
-  "homepage": "https://foxify.js.org",
+  "name": "@foxify/http",
+  "version": "1.0.0-beta.2",
+  "description": "Foxify HTTP module",
+  "homepage": "https://github.com/foxifyjs/foxify/tree/main/packages/http#readme",
   "author": "Ardalan Amini <ardalanamini22@gmail.com> (https://ardalanamini.com)",
   "funding": [
     {
@@ -14,30 +14,18 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/foxifyjs/foxify.git",
-    "directory": "packages/foxify"
+    "directory": "packages/http"
   },
   "bugs": {
     "url": "https://github.com/foxifyjs/foxify/issues"
   },
   "keywords": [
+    "foxify",
+    "http",
+    "request",
+    "response",
     "node",
-    "fast",
-    "speed",
-    "typescript",
-    "api",
-    "web",
-    "app",
-    "application",
-    "route",
-    "router",
-    "routing",
-    "middleware",
-    "cluster",
-    "clustering",
-    "database",
-    "model",
-    "framework",
-    "foxify"
+    "nodejs"
   ],
   "scripts": {
     "build": "pnpm build:esm && pnpm build:cjs",
@@ -68,39 +56,41 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "@foxify/http": "^1",
-    "@foxify/router": "^1",
-    "@types/node": ">=16",
-    "prototyped.js": "^1"
+    "@types/node": ">=16"
   },
   "dependencies": {
-    "@foxify/inject": "workspace:^",
-    "dotenv": "^16.0.3",
+    "@foxify/fresh": "workspace:^",
+    "content-disposition": "^0.5.4",
+    "content-type": "^1.0.4",
+    "cookie": "^0.5.0",
+    "cookie-signature": "^1.2.0",
     "escape-html": "^1.0.3",
     "etag": "^1.8.1",
-    "fast-json-stringify": "^5.4.0",
+    "mime-types": "^2.1.35",
+    "negotiator": "^0.6.3",
+    "on-finished": "^2.4.1",
     "proxy-addr": "^2.0.7",
     "qs": "^6.11.0",
-    "safe-regex": "^2.1.1",
-    "serve-static": "^1.15.0"
+    "send": "^0.18.0",
+    "type-is": "^1.6.18"
   },
   "devDependencies": {
-    "@foxify/http": "workspace:^",
-    "@foxify/router": "^1.0.0-beta.2",
+    "@foxify/inject": "workspace:^",
+    "@types/content-disposition": "^0.5.5",
+    "@types/content-type": "^1.1.5",
     "@types/cookie": "^0.5.1",
     "@types/cookie-parser": "^1.4.3",
+    "@types/cookie-signature": "^1.0.4",
     "@types/escape-html": "^1.0.2",
     "@types/etag": "^1.8.1",
-    "@types/node": "^18.11.9",
+    "@types/mime-types": "^2.1.1",
+    "@types/negotiator": "^0.6.1",
+    "@types/on-finished": "^2.3.1",
     "@types/proxy-addr": "^2.0.0",
     "@types/qs": "^6.9.7",
-    "@types/safe-regex": "^1.1.4",
-    "cookie": "^0.5.0",
-    "cookie-parser": "^1.4.6",
-    "ejs": "^3.1.8",
-    "morgan": "^1.10.0",
-    "nodemon": "^2.0.20",
-    "prototyped.js": "^1.0.1"
+    "@types/send": "^0.17.1",
+    "@types/type-is": "^1.6.3",
+    "cookie-parser": "^1.4.6"
   },
   "publishConfig": {
     "access": "public",

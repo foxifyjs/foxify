@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./.build/.esm.tsbuildinfo",
+    "rootDir": "./src",
+    "outDir": "./.build/esm"
+  },
+  "include": ["src"]
+}

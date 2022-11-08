@@ -14,6 +14,10 @@ flag_management:
       paths:
         - packages/fresh/
       carryforward: false
+    - name: http
+      paths:
+        - packages/http/
+      carryforward: false
     - name: inject
       paths:
         - packages/inject/
