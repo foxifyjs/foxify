@@ -4,7 +4,16 @@
   "initialVersions": {
     "foxify": "1.0.0-beta.0",
     "@foxify/http": "1.0.0-beta.2",
-    "@foxify/router": "1.0.0-beta.3"
+    "@foxify/router": "1.0.0-beta.3",
+    "@foxify/benchmark": "0.0.0",
+    "fresh-benchmarks": "0.0.0",
+    "router-benchmarks": "0.0.0",
+    "@foxify/config": "1.1.0",
+    "@foxify/fresh": "1.1.0",
+    "@foxify/inject": "1.1.0"
   },
-  "changesets": []
+  "changesets": [
+    "long-hairs-train",
+    "weak-pets-rescue"
+  ]
 }
