@@ -1,0 +1,37 @@
+name: Create Release Pull Request
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: 18
+
+jobs:
+  release-pr:
+    name: Create Release Pull Request
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Create Release Pull Request
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

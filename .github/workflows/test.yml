@@ -1,16 +1,10 @@
 name: Test
 
 on:
-  schedule:
-    - cron: "0 0 1 * *"
   push:
     branches:
       - main
   pull_request:
-  workflow_call:
-
-env:
-  DEFAULT_NODE_VERSION: 18
 
 jobs:
   test:
@@ -65,7 +59,7 @@ jobs:
 
       - name: Upload config coverage to CodeCov
         uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
         env:
           OS: ${{ runner.os }}
           ARCH: ${{ runner.arch }}
@@ -79,7 +73,7 @@ jobs:
 
       - name: Upload foxify coverage to CodeCov
         uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
         env:
           OS: ${{ runner.os }}
           ARCH: ${{ runner.arch }}
@@ -93,7 +87,7 @@ jobs:
 
       - name: Upload fresh coverage to CodeCov
         uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
         env:
           OS: ${{ runner.os }}
           ARCH: ${{ runner.arch }}
@@ -107,7 +101,7 @@ jobs:
 
       - name: Upload http coverage to CodeCov
         uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
         env:
           OS: ${{ runner.os }}
           ARCH: ${{ runner.arch }}
@@ -121,7 +115,7 @@ jobs:
 
       - name: Upload inject coverage to CodeCov
         uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
         env:
           OS: ${{ runner.os }}
           ARCH: ${{ runner.arch }}
@@ -135,7 +129,7 @@ jobs:
 
       - name: Upload router coverage to CodeCov
         uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' && github.event_name != 'schedule'}}
+        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
         env:
           OS: ${{ runner.os }}
           ARCH: ${{ runner.arch }}
@@ -161,32 +155,3 @@ jobs:
       - name: Check test matrix status
         if  : ${{ needs.test.result != 'success' }}
         run : exit 1
-
-  release-pr:
-    name: Create Release Pull Request
-
-    if: ${{ github.event_name == 'push' }}
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Use PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7
-
-      - name: Use Node.js ${{ env.DEFAULT_NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          cache: pnpm
-          node-version: ${{ env.DEFAULT_NODE_VERSION }}
-
-      - name: Install dependencies
-        run: pnpm i
-
-      - name: Create Release Pull Request
-        uses: changesets/action@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
