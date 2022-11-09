@@ -1,51 +1,57 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+*'
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - main
 
 env:
   NODE_VERSION: 18
 
 jobs:
-  test:
-    uses: ./.github/workflows/test.yml
-
   release:
     name: Create Release
 
-    needs:
-      - test
+    if: ${{ github.event.pull_request.merged == true && startsWith(github.head_ref, 'changeset-release/') }}
 
     environment:
       name: release
-      url: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}
+      url: https://github.com/${{ github.repository }}/releases
 
     concurrency:
-      group: ${{ github.workflow }}-release-${{ github.ref_name }}
+      group: ${{ github.workflow }}-release-${{ github.sha }}
       cancel-in-progress: true
 
     runs-on: ubuntu-latest
 
-    outputs:
-      release-id: ${{ steps.changelog.outputs.release-id }}
-
     steps:
       - uses: actions/checkout@v3
 
-      - name: Changelog
-        uses: ardalanamini/auto-changelog@v3
-        id: changelog
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
+      - name: Use PNPM
+        uses: pnpm/action-setup@v2
         with:
-          body: |
-            ${{ steps.changelog.outputs.changelog }}
-          prerelease: ${{ steps.changelog.outputs.prerelease }}
+          version: 7
 
-  publish-documents:
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Create Release Pull Request
+        uses: changesets/action@v1
+        with:
+          publish: pnpm changeset publish
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  documents:
     name: Publish Documents
 
     needs:
@@ -61,7 +67,7 @@ jobs:
       url: ${{ steps.github-pages-deployment.outputs.page_url }}
 
     concurrency:
-      group: ${{ github.workflow }}-documents-${{ github.ref_name }}
+      group: ${{ github.workflow }}-documents-${{ github.sha }}
       cancel-in-progress: true
 
     runs-on: ubuntu-latest
@@ -84,7 +90,7 @@ jobs:
         run: pnpm i
 
       - name: Generate code documents
-        run: pnpm document
+        run: pnpm --filter foxify document
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
@@ -92,93 +98,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: 'docs/'
+          path: 'packages/foxify/docs/'
 
       - name: Deploy to GitHub Pages
         id: github-pages-deployment
         uses: actions/deploy-pages@v1
-
-  publish-gpr:
-    name: Publish to GitHub Packages
-
-    needs:
-      - release
-
-    permissions:
-      contents: read
-      packages: write
-
-    environment:
-      name: gpr
-      url: https://github.com/${{ github.repository }}/pkgs/npm/foxify
-
-    concurrency:
-      group: ${{ github.workflow }}-gpr-${{ github.ref_name }}
-      cancel-in-progress: true
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Use PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7
-
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          cache: pnpm
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: https://npm.pkg.github.com/
-          scope: '@foxifyjs'
-
-      - run: sed -i 's/foxify/@foxifyjs\/foxify/g' package.json
-
-      - name: Install dependencies
-        run: pnpm i
-
-      - name: Publish the package
-        run: pnpm publish --no-git-checks --tag ${{ needs.release.outputs.release-id }}
-        env:
-          NODE_AUTH_TOKEN: ${{ github.token }}
-
-  publish-npm:
-    name: Publish to NPM
-
-    needs:
-      - release
-
-    environment:
-      name: npm
-      url: https://www.npmjs.com/package/foxify
-
-    concurrency:
-      group: ${{ github.workflow }}-npm-${{ github.ref_name }}
-      cancel-in-progress: true
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Use PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7
-
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          cache: pnpm
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: https://registry.npmjs.org/
-
-      - name: Install dependencies
-        run: pnpm i
-
-      - name: Publish the package
-        run: pnpm publish --no-git-checks --tag ${{ needs.release.outputs.release-id }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
