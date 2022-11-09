@@ -2,9 +2,10 @@ import { IncomingHttpHeaders, OutgoingHttpHeaders } from "node:http";
 
 /**
  * RegExp to check for no-cache token in Cache-Control.
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#max-age_2
  * @private
  */
-const CACHE_CONTROL_NO_CACHE_REGEXP = /(?:^|,)\s*?no-cache\s*?(?:,|$)/;
+const CACHE_CONTROL_NO_CACHE_REGEXP = /(?:^|,)\s*?(?:no-cache|max-age=0)\s*?(?:,|$)/;
 
 /**
  * Parse an HTTP Date into a number.
@@ -28,25 +29,30 @@ function compareETags(etag: string, str: string): boolean {
  * @private
  */
 function isStale(etag: string, noneMatch: string): boolean {
+  const length = noneMatch.length;
   let start = 0;
   let end = 0;
 
-  for (let i = 0, len = noneMatch.length; i < len; i++) {
+  for (let i = 0; i < length; i++) {
     switch (noneMatch.charCodeAt(i)) {
       case 0x20: /*   */
         if (start === end) start = end = i + 1;
+
         break;
       case 0x2c: /* , */
-        if (compareETags(etag, noneMatch.substring(start, end))) return false;
+        if (compareETags(etag, noneMatch.slice(start, end))) return false;
+
         start = end = i + 1;
+
         break;
       default:
         end = i + 1;
+
         break;
     }
   }
 
-  return !compareETags(etag, noneMatch.substring(start, end));
+  return !compareETags(etag, noneMatch.slice(start, end));
 }
 
 /**
@@ -81,10 +87,7 @@ export default function fresh(
   if (modifiedSince) {
     const lastModified = resHeaders["last-modified"] as string | undefined;
 
-    if (
-      !lastModified
-      || !(parseHttpDate(lastModified) <= parseHttpDate(modifiedSince))
-    ) return false;
+    if (!lastModified || !(parseHttpDate(lastModified) <= parseHttpDate(modifiedSince))) return false;
   }
 
   return true;
