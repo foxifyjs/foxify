@@ -6,30 +6,30 @@
 ℹ Benchmark: etag-several
   2 tests completed.
 
-  @foxify/fresh x 46,643,956 ops/sec ±0.08% (99 runs sampled)
-  fresh         x  6,464,804 ops/sec ±0.15% (99 runs sampled)
+  @foxify/fresh x 48,316,492 ops/sec ±0.82% (97 runs sampled)
+  fresh         x  6,563,885 ops/sec ±0.41% (100 runs sampled)
 
 ℹ Benchmark: etag-single
   2 tests completed.
 
-  @foxify/fresh x 59,921,046 ops/sec ±0.22% (97 runs sampled)
-  fresh         x 26,579,845 ops/sec ±1.25% (95 runs sampled)
+  @foxify/fresh x 73,500,837 ops/sec ±0.70% (94 runs sampled)
+  fresh         x 28,929,002 ops/sec ±1.01% (98 runs sampled)
 
 ℹ Benchmark: etag-star
   2 tests completed.
 
-  @foxify/fresh x 149,770,865 ops/sec ±0.24% (100 runs sampled)
-  fresh         x 149,440,474 ops/sec ±0.30% (98 runs sampled)
+  @foxify/fresh x 155,464,271 ops/sec ±0.10% (102 runs sampled)
+  fresh         x 155,992,396 ops/sec ±0.10% (97 runs sampled)
 
 ℹ Benchmark: modified
   2 tests completed.
 
-  @foxify/fresh x 3,101,171 ops/sec ±0.08% (97 runs sampled)
-  fresh         x 3,029,379 ops/sec ±0.14% (99 runs sampled)
+  @foxify/fresh x 3,204,772 ops/sec ±0.12% (101 runs sampled)
+  fresh         x 3,137,808 ops/sec ±0.19% (96 runs sampled)
 
 ℹ Benchmark: not-modified
   2 tests completed.
 
-  @foxify/fresh x 3,125,705 ops/sec ±0.10% (100 runs sampled)
-  fresh         x 3,058,272 ops/sec ±0.09% (99 runs sampled)
+  @foxify/fresh x 3,226,916 ops/sec ±0.16% (99 runs sampled)
+  fresh         x 3,164,220 ops/sec ±0.12% (99 runs sampled)
 ```
