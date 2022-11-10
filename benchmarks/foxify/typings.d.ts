@@ -1,5 +1,3 @@
-declare module "beautify-benchmark";
-declare module "trek-router";
 declare module "hsts";
 declare module "router";
 declare module "rayo";

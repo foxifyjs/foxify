@@ -8,8 +8,8 @@ import {
 import * as Url from "url";
 import { Writable } from "readable-stream";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment,@typescript-eslint/prefer-ts-expect-error
+// @ts-ignore
 import { version } from "@foxify/inject/package.json";
 
 function getNullSocket(): Writable {

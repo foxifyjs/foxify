@@ -12,11 +12,18 @@
     "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {
+    "autocannon": "^7.10.0",
     "beautify-benchmark": "^0.2.4",
     "benchmark": "^2.1.4",
-    "log-symbols": "^5.1.0"
+    "commander": "^9.4.1",
+    "inquirer": "^9.1.4",
+    "log-symbols": "^5.1.0",
+    "ora": "^6.1.2",
+    "table": "^6.8.1"
   },
   "devDependencies": {
-    "@types/benchmark": "^2.1.2"
+    "@types/autocannon": "^7.9.0",
+    "@types/benchmark": "^2.1.2",
+    "@types/inquirer": "^9.0.3"
   }
 }
