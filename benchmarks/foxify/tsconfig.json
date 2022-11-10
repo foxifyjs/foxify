@@ -5,12 +5,5 @@
     "rootDir": ".",
     "baseUrl": ".",
     "noEmit": true
-  },
-  "files": [
-    "index.ts",
-    "typings.d.ts",
-    "commands/index.ts",
-    "commands/suites.ts",
-    "commands/servers.ts"
-  ]
+  }
 }

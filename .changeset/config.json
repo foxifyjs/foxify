@@ -1,11 +1,21 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.2.0/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "foxifyjs/foxify" }],
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "foxifyjs/foxify"
+    }
+  ],
   "commit": false,
   "fixed": [],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@foxify/benchmark", "fresh-benchmarks", "router-benchmarks"]
+  "ignore": [
+    "@foxify/benchmark",
+    "foxify-benchmarks",
+    "fresh-benchmarks",
+    "router-benchmarks"
+  ]
 }

@@ -5,7 +5,7 @@
   "description": "Foxify Router Benchmarks",
   "type": "module",
   "scripts": {
-    "start": "benchmark",
+    "start": "benchmark suites",
     "lint": "eslint --cache .",
     "lint:fix": "pnpm lint --fix"
   },
