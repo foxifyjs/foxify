@@ -724,8 +724,12 @@ class Response extends ServerResponse<Request> {
    * res.json({ user: "tj" });
    */
   public json(body: JsonT): this {
-    if (!this.hasHeader("content-type")) this.setHeader("Content-Type", "application/json; charset=utf-8");
+    const encoding = "utf-8";
+    const type = this.get("content-type");
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (typeof type === "string") this.setHeader("Content-Type", setCharset(type, encoding)!);
+    else this.setHeader("Content-Type", "application/json; charset=utf-8");
 
     const {
       "json.replacer": replacer,
@@ -733,13 +737,16 @@ class Response extends ServerResponse<Request> {
       "json.escape": escape,
     } = SETTINGS;
 
-    return this.send(stringify(
-      this.stringify[this.statusCode],
-      body,
-      replacer,
-      spaces,
-      escape,
-    ));
+    return this.#send(
+      stringify(
+        this.stringify[this.statusCode],
+        body,
+        replacer,
+        spaces,
+        escape,
+      ),
+      encoding,
+    );
   }
 
   /**
@@ -936,12 +943,22 @@ class Response extends ServerResponse<Request> {
     } else if (Buffer.isBuffer(body)) {
       if (!this.hasHeader("content-type")) this.type("bin");
     } else if (body === null) {
-      body = "";
+      return this.#send("");
       // eslint-disable-next-line no-undefined
     } else if (body !== undefined) {
       return this.json(body);
     }
 
+    return this.#send(body, encoding);
+  }
+
+  /**
+   * Finalize the response.
+   * @param body
+   * @param encoding
+   * @private
+   */
+  #send(body?: Buffer | string, encoding?: BufferEncoding): this {
     // eslint-disable-next-line no-undefined
     if (body !== undefined) {
       const { etag } = SETTINGS;
