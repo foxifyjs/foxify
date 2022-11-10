@@ -1,5 +1,6 @@
 #!/usr/bin/env ts-node-esm
 
+// eslint-disable-next-line import/no-named-as-default
 import fastify from "fastify";
 
 const app = fastify.default();

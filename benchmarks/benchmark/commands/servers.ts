@@ -8,7 +8,6 @@ import { Command } from "commander";
 import inquirer from "inquirer";
 import ora from "ora";
 import { table, getBorderCharacters } from "table";
-import { servers } from "./index.js";
 
 interface OptionsI {
   all: boolean;
