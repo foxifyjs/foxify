@@ -1,6 +1,7 @@
 # Benchmarks: foxify
 
 > Machine: MacBook Pro 2021 (M1 Max, 32GB RAM, Node.js v16.18.1)
+
 > Method: `autocannon -c 100 -d 5 -p 10 localhost:3000` (two rounds; one to warm-up, one to measure)
 
 ```shell
