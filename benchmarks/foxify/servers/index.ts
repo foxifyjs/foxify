@@ -1,6 +1,7 @@
 import connect from "connect/package.json" assert { type: "json" };
 import express from "express/package.json" assert { type: "json" };
 import fastify from "fastify/package.json" assert { type: "json" };
+import foxifyOld from "foxify-old/package.json" assert { type: "json" };
 import foxify from "foxify/package.json" assert { type: "json" };
 import hapi from "hapi/package.json" assert { type: "json" };
 import koaRouter from "koa-router/package.json" assert { type: "json" };
@@ -35,6 +36,10 @@ const PACKAGES = {
   },
   foxify: {
     version: foxify.version,
+    router : true,
+  },
+  foxifyOld: {
+    version: foxifyOld.version,
     router : true,
   },
   hapi: {
@@ -92,25 +97,27 @@ const PACKAGES = {
 };
 
 export default {
-  bare                      : PACKAGES.bare,
-  connect                   : PACKAGES.connect,
-  "connect-router"          : PACKAGES.router,
-  express                   : PACKAGES.express,
-  "express-with-middlewares": PACKAGES.express,
-  fastify                   : PACKAGES.fastify,
-  "fastify-with-middlewares": PACKAGES.fastify,
-  foxify                    : PACKAGES.foxify,
-  "foxify-with-middlewares" : PACKAGES.foxify,
-  hapi                      : PACKAGES.hapi,
-  koa                       : PACKAGES.koa,
-  "koa-router"              : PACKAGES.koaRouter,
-  micro                     : PACKAGES.micro,
-  "micro-router"            : PACKAGES.microRouter,
-  polka                     : PACKAGES.polka,
-  rayo                      : PACKAGES.rayo,
-  restify                   : PACKAGES.restify,
-  "take-five"               : PACKAGES.takeFive,
-  "total.js"                : PACKAGES.total,
-  "trek-engine"             : PACKAGES.trekEngine,
-  "trek-engine-router"      : PACKAGES.trekEngineRouter,
+  bare                         : PACKAGES.bare,
+  connect                      : PACKAGES.connect,
+  "connect-router"             : PACKAGES.router,
+  express                      : PACKAGES.express,
+  "express-with-middlewares"   : PACKAGES.express,
+  fastify                      : PACKAGES.fastify,
+  "fastify-with-middlewares"   : PACKAGES.fastify,
+  foxify                       : PACKAGES.foxify,
+  "foxify-with-middlewares"    : PACKAGES.foxify,
+  "foxify-old"                 : PACKAGES.foxifyOld,
+  "foxify-old-with-middlewares": PACKAGES.foxifyOld,
+  hapi                         : PACKAGES.hapi,
+  koa                          : PACKAGES.koa,
+  "koa-router"                 : PACKAGES.koaRouter,
+  micro                        : PACKAGES.micro,
+  "micro-router"               : PACKAGES.microRouter,
+  polka                        : PACKAGES.polka,
+  rayo                         : PACKAGES.rayo,
+  restify                      : PACKAGES.restify,
+  "take-five"                  : PACKAGES.takeFive,
+  "total.js"                   : PACKAGES.total,
+  "trek-engine"                : PACKAGES.trekEngine,
+  "trek-engine-router"         : PACKAGES.trekEngineRouter,
 };

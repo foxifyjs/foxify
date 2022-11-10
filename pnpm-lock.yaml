@@ -85,6 +85,7 @@ importers:
       express: ^4.18.2
       fastify: ^4.9.2
       foxify: workspace:*
+      foxify-old: npm:foxify@0.10.20
       frameguard: ^4.0.0
       hapi: ^18.1.0
       hide-powered-by: ^1.1.0
@@ -110,6 +111,7 @@ importers:
       express: 4.18.2
       fastify: 4.9.2
       foxify: link:../../packages/foxify
+      foxify-old: /foxify/0.10.20
       hapi: 18.1.0
       koa: 2.13.4
       koa-router: 12.0.0
