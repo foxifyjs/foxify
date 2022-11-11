@@ -1,37 +1,202 @@
-# @foxify/inject
+# Foxify Inject
 
 Injects a fake HTTP request/response into a node HTTP server for simulating server logic, writing tests, or debugging.
 Does not use a socket connection so can be run against an inactive server (server not in listen mode).
 
-[![Build Status](https://github.com/foxifyjs/foxify/workflows/Test/badge.svg)](https://github.com/foxifyjs/foxify/actions)
-[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg?flag=inject)](https://codecov.io/gh/foxifyjs/foxify)
-[![NPM Version](https://img.shields.io/npm/v/@foxify/inject.svg)](https://www.npmjs.com/package/@foxify/inject)
-[![Node Version](https://img.shields.io/node/v/@foxify/inject.svg)](https://nodejs.org)
-[![TypeScript Version](https://img.shields.io/npm/types/@foxify/inject.svg)](https://www.typescriptlang.org)
-[![Tested With Jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
-[![Pull Requests](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/foxifyjs/foxify/pulls)
-[![License](https://img.shields.io/github/license/foxifyjs/inject.svg)](https://github.com/foxifyjs/foxify/blob/main/packages/inject/LICENSE)
-[![Package Quality](http://npm.packagequality.com/shield/%40foxify%2Finject.svg)](http://packagequality.com/#?package=@foxify/inject)
-[![NPM Total Downloads](https://img.shields.io/npm/dt/@foxify/inject.svg)](https://www.npmjs.com/package/@foxify/inject)
-[![NPM Monthly Downloads](https://img.shields.io/npm/dm/@foxify/inject.svg)](https://www.npmjs.com/package/@foxify/inject)
-[![known vulnerabilities](https://snyk.io/test/github/foxifyjs/foxify/badge.svg?targetFile=packages/inject/package.json)](https://snyk.io/test/github/foxifyjs/foxify?targetFile=packages/inject/package.json)
+[![Npm Version][NPM_VERSION_BADGE]][NPM_PACKAGE_URL]
+[![Build Status][GITHUB_ACTIONS_BADGE]][GITHUB_ACTIONS_URL]
+[![Coverage Status][CODE_COVERAGE_BADGE]][CODE_COVERAGE_URL]
+[![License][LICENSE_BADGE]][LICENSE_URL]
+[![Node.js Version][NODEJS_VERSION_BADGE]][NODEJS_WEBSITE]
+[![Npm Monthly Downloads][NPM_MONTHLY_DOWNLOAD_BADGE]][NPM_PACKAGE_URL]
+[![Npm Total Downloads][NPM_TOTAL_DOWNLOAD_BADGE]][NPM_PACKAGE_URL]
+[![Known Vulnerabilities][VULNERABILITIES_BADGE]][VULNERABILITIES_URL]
+[![Open Issues][OPEN_ISSUES_BADGE]][OPEN_ISSUES_URL]
+[![Pull Requests][PRS_BADGE]][PRS_URL]
+[![Sponsors on Open Collective][OPENCOLLECTIVE_SPONSORS_COUNT_BADGE]](#sponsors)
+[![Backers on Open Collective][OPENCOLLECTIVE_BACKERS_COUNT_BADGE]](#backers)
+[![Built with TypeScript][TYPES_BADGE]][TYPESCRIPT_WEBSITE]
+[![Tested With Jest][JEST_BADGE]][JEST_URL]
+[![Github Stars][GITHUB_STARS_BADGE]][GITHUB_PROJECT_URL]
+[![Github Forks][GITHUB_FORKS_BADGE]][GITHUB_PROJECT_URL]
 
-## Example
+## Table of Contents
 
-```javascript
-const http = require('http')
-const inject = require('@foxify/inject').default
+- [Installation](#installation)
+    - [NPM](#npm)
+    - [PNPM](#pnpm)
+    - [Yarn](#yarn)
+- [Usage](#usage)
+- [Credits](#credits)
+    - [Authors](#authors)
+    - [Contributors](#contributors)
+    - [Sponsors](#sponsors)
+    - [Backers](#backers)
+- [Versioning](#versioning)
+- [License](#license)
 
-const dispatch = function (req, res) {
-  const reply = 'Hello World'
-  res.writeHead(200, { 'Content-Type': 'text/plain', 'Content-Length': reply.length })
+## Installation
+
+### NPM
+
+```shell
+npm i @foxify/inject
+```
+
+### PNPM
+
+```shell
+pnpm add @foxify/inject
+```
+
+### Yarn
+
+```shell
+yarn add @foxify/inject
+```
+
+## Usage
+
+```typescript
+import http from "node:http";
+import inject from "@foxify/inject";
+
+function dispatch(req, res) {
+  const reply = "Hello World";
+
+  res.writeHead(200, { "Content-Type": "text/plain", "Content-Length": reply.length });
+
   res.end(reply)
 }
 
-// Nah, you don't need this anymore :)
+// You don't need this anymore!
 // const server = http.createServer(dispatch)
 
-inject(dispatch, { method: 'get', url: '/' }, (err, res) => {
-  console.log(res.body)
-})
+inject(dispatch, { method: "get", url: "/" }, (err, res) => {
+  console.log(res.body);
+});
 ```
+
+## Credits
+
+### Authors
+
+- [**Ardalan Amini**](https://ardalanamini.com) - *Core Maintainer* - [@ardalanamini](https://github.com/ardalanamini)
+
+### Contributors
+
+This project exists thanks to all the people who
+contribute. [[Contribute][CONTRIBUTORS_GUIDE_URL]].
+
+[![Contributors][CONTRIBUTORS_BADGE]][CONTRIBUTORS_URL]
+
+_Made with [contrib.rocks](https://contrib.rocks)._
+
+### Sponsors
+
+Support Foxify by becoming a sponsor. Your logo will show up
+here. [[Become a sponsor][OPENCOLLECTIVE_SPONSOR_URL]]
+
+[![Sponsors][OPENCOLLECTIVE_SPONSORS_BADGE]][OPENCOLLECTIVE_SPONSORS_URL]
+
+### Backers
+
+Thanks to all Foxify backers! [[Become a backer][OPENCOLLECTIVE_BACKER_URL]]
+
+[![Backers][OPENCOLLECTIVE_BACKERS_BADGE]][OPENCOLLECTIVE_BACKERS_URL]
+
+## Versioning
+
+We use [SemVer][SEMVER_WEBSITE] for versioning. For the versions available, see
+the [releases on this repository][RELEASES_URL].
+
+## License
+
+This project is licensed under the _[MIT License][LICENSE_URL]_.
+
+
+<!-- Package Links -->
+
+[NPM_VERSION_BADGE]: https://img.shields.io/npm/v/@foxify/inject.svg
+
+[NPM_MONTHLY_DOWNLOAD_BADGE]: https://img.shields.io/npm/dm/@foxify/inject.svg
+
+[NPM_TOTAL_DOWNLOAD_BADGE]: https://img.shields.io/npm/dt/@foxify/inject.svg
+
+[NODEJS_VERSION_BADGE]: https://img.shields.io/node/v/@foxify/inject.svg
+
+[CODE_COVERAGE_BADGE]: https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg?flag=inject
+
+[VULNERABILITIES_BADGE]: https://snyk.io/test/github/foxifyjs/foxify/badge.svg?targetFile=packages/inject/package.json
+
+[LICENSE_BADGE]: https://img.shields.io/npm/l/@foxify/inject
+
+[TYPES_BADGE]: https://img.shields.io/npm/types/@foxify/inject.svg
+
+[NPM_PACKAGE_URL]: https://www.npmjs.com/package/@foxify/inject
+
+[VULNERABILITIES_URL]: https://snyk.io/test/github/foxifyjs/foxify?targetFile=packages/inject/package.json
+
+[LICENSE_URL]: https://github.com/foxifyjs/foxify/tree/main/packages/inject/LICENSE
+
+
+<!-- Project Links -->
+
+[GITHUB_ACTIONS_BADGE]: https://github.com/foxifyjs/foxify/workflows/Test/badge.svg
+
+[GITHUB_STARS_BADGE]: https://img.shields.io/github/stars/foxifyjs/foxify.svg?style=social&label=Stars
+
+[GITHUB_FORKS_BADGE]: https://img.shields.io/github/forks/foxifyjs/foxify.svg?style=social&label=Fork
+
+[OPEN_ISSUES_BADGE]: https://img.shields.io/github/issues-raw/foxifyjs/foxify.svg
+
+[PRS_BADGE]: https://img.shields.io/badge/PRs-Welcome-brightgreen.svg
+
+[OPENCOLLECTIVE_SPONSORS_COUNT_BADGE]: https://opencollective.com/foxify/sponsors/badge.svg
+
+[OPENCOLLECTIVE_SPONSORS_BADGE]: https://opencollective.com/foxify/sponsors.svg?width=890
+
+[OPENCOLLECTIVE_BACKERS_COUNT_BADGE]: https://opencollective.com/foxify/backers/badge.svg
+
+[OPENCOLLECTIVE_BACKERS_BADGE]: https://opencollective.com/foxify/backers.svg?width=890
+
+[CONTRIBUTORS_BADGE]: https://contrib.rocks/image?repo=foxifyjs/foxify
+
+[CODE_COVERAGE_URL]: https://codecov.io/gh/foxifyjs/foxify
+
+[DOCUMENTS_URL]: https://foxify.js.org
+
+[RELEASES_URL]: https://github.com/foxifyjs/foxify/releases
+
+[GITHUB_PROJECT_URL]: https://github.com/foxifyjs/foxify
+
+[GITHUB_ACTIONS_URL]: https://github.com/foxifyjs/foxify/actions
+
+[OPEN_ISSUES_URL]: https://github.com/foxifyjs/foxify/issues?q=is%3Aopen+is%3Aissue
+
+[PRS_URL]: https://github.com/foxifyjs/foxify/pulls
+
+[CONTRIBUTORS_URL]: https://github.com/foxifyjs/foxify/graphs/contributors
+
+[CONTRIBUTORS_GUIDE_URL]: https://github.com/foxifyjs/foxify/tree/main/CONTRIBUTING.md
+
+[OPENCOLLECTIVE_SPONSORS_URL]: https://opencollective.com/foxify#sponsors
+
+[OPENCOLLECTIVE_SPONSOR_URL]: https://opencollective.com/foxify#sponsor
+
+[OPENCOLLECTIVE_BACKERS_URL]: https://opencollective.com/foxify#backers
+
+[OPENCOLLECTIVE_BACKER_URL]: https://opencollective.com/foxify#backer
+
+
+<!-- Other Links -->
+
+[JEST_BADGE]: https://img.shields.io/badge/tested_with-jest-99424f.svg
+
+[JEST_URL]: https://jestjs.io
+
+[NODEJS_WEBSITE]: https://nodejs.org
+
+[TYPESCRIPT_WEBSITE]: https://www.typescriptlang.org
+
+[SEMVER_WEBSITE]: http://semver.org
