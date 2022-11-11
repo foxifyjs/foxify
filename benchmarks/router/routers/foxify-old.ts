@@ -1,4 +1,4 @@
-import Foxify from "foxify";
+import Foxify from "foxify-old";
 import { routes, noop } from "./common.js";
 
 const app = (new Foxify);

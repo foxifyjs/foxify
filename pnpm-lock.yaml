@@ -166,7 +166,7 @@ importers:
       '@types/koa-router': ^7.4.4
       express: ^4.18.2
       find-my-way: ^7.3.1
-      foxify: npm:foxify@0.10.20
+      foxify-old: npm:foxify@0.10.20
       koa-router: ^12.0.0
       koa-tree-router: ^0.12.1
       trek-router: ^1.2.0
@@ -175,7 +175,7 @@ importers:
       '@hapi/call': 9.0.0
       express: 4.18.2
       find-my-way: 7.3.1
-      foxify: 0.10.20
+      foxify-old: /foxify/0.10.20
       koa-router: 12.0.0
       koa-tree-router: 0.12.1
       trek-router: 1.2.0
