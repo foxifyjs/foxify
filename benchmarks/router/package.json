@@ -13,7 +13,7 @@
     "@foxify/router": "workspace:*",
     "@hapi/call": "^9.0.0",
     "express": "^4.18.2",
-    "foxify": "^0.10.20",
+    "foxify": "npm:foxify@0.10.20",
     "find-my-way": "^7.3.1",
     "koa-router": "^12.0.0",
     "koa-tree-router": "^0.12.1",

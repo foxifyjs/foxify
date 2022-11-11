@@ -1,9 +1,9 @@
+import hapi from "@hapi/hapi/package.json" assert { type: "json" };
 import connect from "connect/package.json" assert { type: "json" };
 import express from "express/package.json" assert { type: "json" };
 import fastify from "fastify/package.json" assert { type: "json" };
 import foxifyOld from "foxify-old/package.json" assert { type: "json" };
 import foxify from "foxify/package.json" assert { type: "json" };
-import hapi from "hapi/package.json" assert { type: "json" };
 import koaRouter from "koa-router/package.json" assert { type: "json" };
 import koa from "koa/package.json" assert { type: "json" };
 import micro from "micro/package.json" assert { type: "json" };

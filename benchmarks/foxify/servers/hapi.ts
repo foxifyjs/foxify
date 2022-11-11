@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node-esm
 
-import { Server } from "hapi";
+import { Server } from "@hapi/hapi";
 
 const server = new Server({
   port : 3000,
