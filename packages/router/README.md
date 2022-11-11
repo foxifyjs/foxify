@@ -3,6 +3,8 @@
 A fast HTTP router,
 using a highly performant [Radix Tree](https://en.wikipedia.org/wiki/Radix_tree).
 
+[![Build Status](https://github.com/foxifyjs/foxify/workflows/Test/badge.svg)](https://github.com/foxifyjs/foxify/actions)
+[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg?flag=router)](https://codecov.io/gh/foxifyjs/foxify)
 [![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/foxifyjs/foxify)](https://snyk.io/test/github/foxifyjs/foxify)
 [![License](https://img.shields.io/github/license/foxifyjs/router.svg)](https://github.com/foxifyjs/foxify/blob/main/packages/router/LICENSE)
 [![NPM Version](https://img.shields.io/npm/v/@foxify/router.svg)](https://www.npmjs.com/package/@foxify/router)

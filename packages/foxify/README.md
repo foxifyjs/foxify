@@ -5,7 +5,7 @@ The **fast**, **easy to use** & **typescript ready** web framework for [Node.js]
 > Inspired by [Express](https://expressjs.com) & [Fastify](https://www.fastify.io/)
 
 [![Build Status](https://github.com/foxifyjs/foxify/workflows/Test/badge.svg)](https://github.com/foxifyjs/foxify/actions)
-[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg)](https://codecov.io/gh/foxifyjs/foxify)
+[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg?flag=foxify)](https://codecov.io/gh/foxifyjs/foxify)
 [![Npm Version](https://img.shields.io/npm/v/foxify.svg)](https://www.npmjs.com/package/foxify)
 [![Node Version](https://img.shields.io/node/v/foxify.svg)](https://nodejs.org)
 [![TypeScript Version](https://img.shields.io/npm/types/foxify.svg)](https://www.typescriptlang.org)

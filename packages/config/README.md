@@ -2,6 +2,9 @@
 
 Foxify framework config
 
+[![Build Status](https://github.com/foxifyjs/foxify/workflows/Test/badge.svg)](https://github.com/foxifyjs/foxify/actions)
+[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg?flag=config)](https://codecov.io/gh/foxifyjs/foxify)
+
 ## Table of Content
 
 - [Installation](#installation)

@@ -1,5 +1,8 @@
 # Fresh <!-- omit in toc -->
 
+
+[![Build Status](https://github.com/foxifyjs/foxify/workflows/Test/badge.svg)](https://github.com/foxifyjs/foxify/actions)
+[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg?flag=fresh)](https://codecov.io/gh/foxifyjs/foxify)
 [![NPM Version][npm-image]][npm-url]
 [![Node Version][node-version-image]][node-version-url]
 [![TypeScript Version][typescript-version-image]][typescript-version-url]

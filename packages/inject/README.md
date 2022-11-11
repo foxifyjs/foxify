@@ -3,6 +3,8 @@
 Injects a fake HTTP request/response into a node HTTP server for simulating server logic, writing tests, or debugging.
 Does not use a socket connection so can be run against an inactive server (server not in listen mode).
 
+[![Build Status](https://github.com/foxifyjs/foxify/workflows/Test/badge.svg)](https://github.com/foxifyjs/foxify/actions)
+[![Coverage Status](https://codecov.io/gh/foxifyjs/foxify/branch/main/graph/badge.svg?flag=inject)](https://codecov.io/gh/foxifyjs/foxify)
 [![NPM Version](https://img.shields.io/npm/v/@foxify/inject.svg)](https://www.npmjs.com/package/@foxify/inject)
 [![Node Version](https://img.shields.io/node/v/@foxify/inject.svg)](https://nodejs.org)
 [![TypeScript Version](https://img.shields.io/npm/types/@foxify/inject.svg)](https://www.typescriptlang.org)
