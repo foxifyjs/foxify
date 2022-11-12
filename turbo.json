@@ -6,15 +6,11 @@
       "outputs": [".build/**"]
     },
     "lint": {
-      "outputs": [".eslintcache"]
+      "outputs": []
     },
     "lint:fix": {
       "cache": false,
-      "outputs": [".eslintcache"]
-    },
-    "document": {
-      "inputs": ["src/**/*.tsx", "src/**/*.ts"],
-      "outputs": ["docs/**"]
+      "outputs": []
     },
     "test": {
       "inputs": ["src/**/*.tsx", "src/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx"],

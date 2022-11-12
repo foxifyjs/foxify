@@ -2,7 +2,7 @@
   "name": "@foxify/config",
   "version": "1.1.0",
   "description": "Foxify framework config",
-  "homepage": "https://github.com/foxifyjs/foxify/tree/main/packages/config#readme",
+  "homepage": "https://foxify.js.org",
   "author": "Ardalan Amini <ardalanamini22@gmail.com> (https://ardalanamini.com)",
   "funding": [
     {
@@ -32,9 +32,8 @@
     "build:esm:watch": "pnpm build:esm --watch",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:cjs:watch": "pnpm build:cjs --watch",
-    "lint": "eslint --cache src tests jest.config.js",
+    "lint": "eslint src tests jest.config.js",
     "lint:fix": "pnpm lint --fix",
-    "document": "typedoc",
     "test": "node --no-compilation-cache --expose-gc ../../node_modules/jest/bin/jest --logHeapUsage",
     "test:coverage": "pnpm test -- --coverage",
     "test:ci": "pnpm test:coverage --ci --verbose --no-cache",

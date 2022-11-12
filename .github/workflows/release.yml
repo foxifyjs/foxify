@@ -90,7 +90,7 @@ jobs:
         run: pnpm i
 
       - name: Generate code documents
-        run: pnpm --filter foxify document
+        run: pnpm document
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
@@ -98,7 +98,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: 'packages/foxify/docs/'
+          path: 'docs/'
 
       - name: Deploy to GitHub Pages
         id: github-pages-deployment

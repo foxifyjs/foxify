@@ -1,9 +1,9 @@
 {
-  "entryPoints": [
-    "src/index.ts"
-  ],
-  "entryPointStrategy": "resolve",
+  "entryPointStrategy": "packages",
   "out": "docs",
+  "entryPoints": [
+    "packages/*"
+  ],
   "includeVersion": true,
   "searchInComments": true,
   "githubPages": true,

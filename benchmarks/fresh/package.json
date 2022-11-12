@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "benchmark suites",
-    "lint": "eslint --cache .",
+    "lint": "eslint .",
     "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {

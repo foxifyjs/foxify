@@ -1,6 +1,5 @@
 {
-  "name": "foxify-monorepo",
-  "version": "0.0.0",
+  "name": "foxify",
   "private": true,
   "description": "FoxifyJS monorepo",
   "homepage": "https://foxify.js.org",
@@ -16,7 +15,7 @@
     "build": "turbo build",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
-    "document": "turbo document",
+    "document": "typedoc",
     "benchmark": "pnpm -r --filter './benchmarks/*' start",
     "test": "turbo test",
     "test:coverage": "turbo test:coverage",
