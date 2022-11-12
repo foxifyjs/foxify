@@ -40,8 +40,8 @@
     "test:coverage": "pnpm test -- --coverage",
     "test:ci": "pnpm test:coverage --ci --verbose --no-cache",
     "prepack": "pnpm build:pre && pnpm build && pnpm build:post",
-    "build:pre": "scripts/pre-build.sh",
-    "build:post": "scripts/post-build.sh"
+    "build:pre": "ts-node-esm ../../scripts/pre-build.mts",
+    "build:post": "ts-node-esm ../../scripts/post-build.mts"
   },
   "engines": {
     "node": ">=16"
