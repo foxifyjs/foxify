@@ -1,2 +1,2 @@
-export * from "./constants";
-export { default } from "./Foxify";
+export * from "./constants/index.js";
+export { default } from "./Foxify.js";

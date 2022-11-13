@@ -1,5 +1,7 @@
 packages:
-  # all packages in direct subdirectories of packages/
-  - 'packages/*'
   # all packages in direct subdirectories of benchmarks/
   - 'benchmarks/*'
+  # all packages in direct subdirectories of examples/
+  - 'examples/*'
+  # all packages in direct subdirectories of packages/
+  - 'packages/*'

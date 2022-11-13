@@ -46,7 +46,8 @@
     "typescript": "^4.8.4"
   },
   "workspaces": [
-    "packages/*",
-    "benchmarks/*"
+    "benchmarks/*",
+    "examples/*",
+    "packages/*"
   ]
 }

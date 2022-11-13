@@ -9,10 +9,10 @@ import { sign } from "cookie-signature";
 import escapeHtml from "escape-html";
 import onFinished from "on-finished";
 import send, { mime as sendMime } from "send";
-import Request from "./Request";
-import { JsonT, METHOD, STATUS, StatusT, StringifyT } from "./constants";
-import { createETagGenerator, encodeUrl, vary } from "./utils";
-import { CallbackT as EngineCallbackT, Engine } from "./view";
+import Request from "./Request.js";
+import { JsonT, METHOD, STATUS, StatusT, StringifyT } from "./constants/index.js";
+import { createETagGenerator, encodeUrl, vary } from "./utils/index.js";
+import { CallbackT as EngineCallbackT, Engine } from "./view/index.js";
 
 /**
  * Set the charset in a given Content-Type string.

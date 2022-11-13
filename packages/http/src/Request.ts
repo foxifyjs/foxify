@@ -4,14 +4,14 @@ import { UrlWithStringQuery } from "url";
 import proxyAddr, { compile as proxyAddrCompile, all as proxyAddrAll } from "proxy-addr";
 import * as qs from "qs";
 import typeIs from "type-is";
-import { MethodT, ProtocolT } from "./constants";
+import { MethodT, ProtocolT } from "./constants/index.js";
 import {
   Accepts,
   parseUrl,
   RANGE_PARSER_RESULT,
   rangeParser,
   RangeParserRangesI,
-} from "./utils";
+} from "./utils/index.js";
 
 // eslint-disable-next-line import/exports-last
 export const DEFAULT_SETTINGS: SettingsI = {

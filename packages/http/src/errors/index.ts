@@ -1,3 +1,3 @@
-export { default as HttpError } from "./HttpError";
-export { default as MethodNotAllowed } from "./MethodNotAllowed";
-export { default as NotFound } from "./NotFound";
+export { default as HttpError } from "./HttpError.js";
+export { default as MethodNotAllowed } from "./MethodNotAllowed.js";
+export { default as NotFound } from "./NotFound.js";

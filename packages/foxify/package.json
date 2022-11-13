@@ -53,6 +53,7 @@
     "build:pre": "ts-node-esm ../../scripts/pre-build.mts",
     "build:post": "ts-node-esm ../../scripts/post-build.mts"
   },
+  "type": "module",
   "engines": {
     "node": ">=16"
   },
@@ -94,8 +95,6 @@
     "@types/safe-regex": "^1.1.4",
     "cookie": "^0.5.0",
     "cookie-parser": "^1.4.6",
-    "ejs": "^3.1.8",
-    "morgan": "^1.10.0",
     "prototyped.js": "^1.0.1"
   },
   "publishConfig": {

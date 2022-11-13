@@ -34,7 +34,7 @@
 import * as mime from "mime-types";
 import Negotiator from "negotiator";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import type { default as Request, HeadersI } from "../Request";
+import type { default as Request, HeadersI } from "../Request.js";
 
 /**
  * Convert extnames to mime.

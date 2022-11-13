@@ -10,9 +10,9 @@ import Router from "@foxify/router";
 import * as proxyAddr from "proxy-addr";
 import * as qs from "qs";
 import serveStatic from "serve-static";
-import Server from "./Server";
-import * as utils from "./utils";
-import { Engine } from "./view";
+import Server from "./Server.js";
+import * as utils from "./utils/index.js";
+import { Engine } from "./view/index.js";
 
 const SETTINGS: Array<keyof Foxify.UserSettings> = [
   "env",

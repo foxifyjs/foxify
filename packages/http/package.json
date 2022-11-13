@@ -41,6 +41,7 @@
     "build:pre": "ts-node-esm ../../scripts/pre-build.mts",
     "build:post": "ts-node-esm ../../scripts/post-build.mts"
   },
+  "type": "module",
   "engines": {
     "node": ">=16"
   },

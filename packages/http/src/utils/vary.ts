@@ -29,7 +29,7 @@
 
 import assert from "assert";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import type Response from "../Response";
+import type Response from "../Response.js";
 
 /**
  * RegExp to match field-name in RFC 7230 sec 3.2

@@ -3,8 +3,7 @@
 import { SchemaOptionsI } from "@foxify/router";
 import Foxify from "foxify";
 
-// eslint-disable-next-line new-cap
-const app = (new Foxify.default);
+const app = (new Foxify);
 
 app.disable("x-powered-by");
 

@@ -7,9 +7,9 @@ import {
 } from "@foxify/http";
 import { Schema as JsonSchemaT } from "fast-json-stringify";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import type NodeT from "./Node";
+import type NodeT from "./Node.js";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import type RouterT from "./Router";
+import type RouterT from "./Router.js";
 
 export const PARAM_LABEL = ":" as const;
 

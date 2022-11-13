@@ -5,8 +5,8 @@ import {
   StatusT,
 } from "@foxify/http";
 import fastJson from "fast-json-stringify";
-import Handlers from "./Handlers";
-import Options from "./Options";
+import Handlers from "./Handlers.js";
+import Options from "./Options.js";
 import {
   HandlersResultT,
   HandlerT,
@@ -19,7 +19,7 @@ import {
   PARAM_LABEL,
   ParamsT,
   WILDCARD_LABEL,
-} from "./constants";
+} from "./constants.js";
 
 interface Node<Request extends RequestT = RequestT,
   Response extends ResponseT = ResponseT> {

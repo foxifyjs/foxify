@@ -1,7 +1,5 @@
-import foxify from "@foxify/fresh";
+import foxifyFresh from "@foxify/fresh";
 import fresh from "fresh";
-
-const foxifyFresh = foxify.default;
 
 export default [
   [

@@ -1,4 +1,4 @@
-import { NodeOptionsT } from "./constants";
+import { NodeOptionsT } from "./constants.js";
 
 export default class Options implements NodeOptionsT {
 

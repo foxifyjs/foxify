@@ -7,9 +7,9 @@ import {
   Response,
   responseSettings,
 } from "@foxify/http";
-import { Engine } from "./view";
+import { Engine } from "./view/index.js";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import type Foxify from ".";
+import type Foxify from "./index.js";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Server {
@@ -107,4 +107,4 @@ class Server {
 
 }
 
-export = Server;
+export default Server;

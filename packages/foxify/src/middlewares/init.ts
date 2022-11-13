@@ -1,5 +1,5 @@
 import { HandlerT } from "@foxify/router";
-import Foxify from "..";
+import Foxify from "../index.js";
 
 const init = (app: Foxify): HandlerT | null => {
   if (app.disabled("x-powered-by")) return null;

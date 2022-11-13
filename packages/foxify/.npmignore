@@ -1,5 +1,4 @@
 tests/
 coverage/
-demo/
 tsconfig*.json
 *.tsbuildinfo

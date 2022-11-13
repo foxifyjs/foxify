@@ -11,8 +11,7 @@ import hsts from "hsts";
 import ienoopen from "ienoopen";
 import xXssProtection from "x-xss-protection";
 
-// eslint-disable-next-line new-cap
-const app = (new Foxify.default);
+const app = (new Foxify);
 
 app.disable("x-powered-by");
 

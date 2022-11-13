@@ -3,8 +3,8 @@ import {
   Request as RequestT,
   Response as ResponseT,
 } from "@foxify/http";
-import Node from "./Node";
-import { RoutesT } from "./constants";
+import Node from "./Node.js";
+import { RoutesT } from "./constants.js";
 
 // eslint-disable-next-line @typescript-eslint/no-shadow
 function color(string: string, color: COLOR): string {

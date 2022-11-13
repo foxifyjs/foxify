@@ -16,6 +16,7 @@
     "@foxify/benchmark",
     "foxify-benchmarks",
     "fresh-benchmarks",
-    "router-benchmarks"
+    "router-benchmarks",
+    "foxify-example"
   ]
 }

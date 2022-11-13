@@ -1,6 +1,6 @@
 import { STATUS_CODES } from "http";
-import { STATUS } from "../constants";
-import HttpError from "./HttpError";
+import { STATUS } from "../constants/index.js";
+import HttpError from "./HttpError.js";
 
 export default class NotFound extends HttpError {
 

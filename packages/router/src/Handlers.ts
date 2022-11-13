@@ -1,5 +1,5 @@
 import { Request as RequestT, Response as ResponseT } from "@foxify/http";
-import { NodeHandlersT } from "./constants";
+import { NodeHandlersT } from "./constants.js";
 
 export default class Handlers<Request extends RequestT = RequestT,
   Response extends ResponseT = ResponseT> implements NodeHandlersT<Request, Response> {

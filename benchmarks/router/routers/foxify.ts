@@ -1,7 +1,5 @@
-import foxify from "@foxify/router";
+import Router from "@foxify/router";
 import { routes, noop } from "./common.js";
-
-const Router = foxify.default;
 
 const router = (new Router);
 

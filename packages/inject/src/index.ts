@@ -10,7 +10,7 @@ import { Writable } from "readable-stream";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment,@typescript-eslint/prefer-ts-expect-error
 // @ts-ignore
-import { version } from "@foxify/inject/package.json";
+import pkg from "@foxify/inject/package.json" assert { type: "json" };
 
 function getNullSocket(): Writable {
   return new Writable({
@@ -74,7 +74,7 @@ export default async function inject<
   // Readonly
   req.headers = headers;
 
-  req.headers["user-agent"] = req.headers["user-agent"] ?? `foxify-inject/${ version }`;
+  req.headers["user-agent"] = req.headers["user-agent"] ?? `foxify-inject/${ pkg.version }`;
 
   const hostHeaderFromUri = (): string | null => {
     if (uri.port) return uri.host;

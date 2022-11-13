@@ -13,7 +13,7 @@ import {
 } from "@foxify/http";
 import escapeHtml from "escape-html";
 import { array } from "prototyped.js";
-import Node from "./Node";
+import Node from "./Node.js";
 import {
   EMPTY_RESULT,
   ErrorHandlersT,
@@ -32,13 +32,13 @@ import {
   RoutesT,
   ShortHandRouteT,
   WILDCARD_LABEL,
-} from "./constants";
+} from "./constants.js";
 import {
   assignMatchAllNode,
   assignParamNode,
   prettyPrint,
   routes,
-} from "./utils";
+} from "./utils.js";
 
 const { compact, deepFlatten } = array;
 

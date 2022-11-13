@@ -1,2 +1,2 @@
-export { default as HTTP } from "./HTTP";
-export { default as METHOD } from "./METHOD";
+export { default as HTTP } from "./HTTP.js";
+export { default as METHOD } from "./METHOD.js";

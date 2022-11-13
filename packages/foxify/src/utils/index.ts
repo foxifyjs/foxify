@@ -1,8 +1,8 @@
 import etag from "etag";
 
-export * from "./assertions";
+export * from "./assertions.js";
 
-export { default as decodeURIComponent } from "./fast-decode-uri-component";
+export { default as decodeURIComponent } from "./fast-decode-uri-component.js";
 
 export const isHandler = (arg: unknown): boolean => typeof arg === "function" || arg instanceof Promise;
 
