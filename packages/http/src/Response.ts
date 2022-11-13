@@ -931,16 +931,9 @@ class Response extends ServerResponse<Request> {
    * res.send("<p>some html</p>");
    */
   public send(body?: Buffer | JsonT | string): this {
-    let encoding: BufferEncoding | undefined;
+    if (typeof body === "string") return this.text(body);
 
-    if (typeof body === "string") {
-      encoding = "utf-8";
-      const type = this.get("content-type");
-
-      // Reflect this in content-type
-      if (typeof type === "string") this.set("Content-Type", setCharset(type, encoding));
-      else this.set("Content-Type", setCharset("text/html", encoding));
-    } else if (Buffer.isBuffer(body)) {
+    if (Buffer.isBuffer(body)) {
       if (!this.hasHeader("content-type")) this.type("bin");
     } else if (body === null) {
       return this.#send("");
@@ -949,7 +942,7 @@ class Response extends ServerResponse<Request> {
       return this.json(body);
     }
 
-    return this.#send(body, encoding);
+    return this.#send(body);
   }
 
   /**
@@ -1103,6 +1096,23 @@ class Response extends ServerResponse<Request> {
     this.statusCode = statusCode;
 
     return this;
+  }
+
+  /**
+   * Send text response
+   * @param body
+   * @example
+   * res.send("<p>some html</p>");
+   */
+  public text(body: string): this {
+    const encoding = "utf-8";
+    const type = this.get("content-type");
+
+    // Reflect this in content-type
+    if (typeof type === "string") this.set("Content-Type", setCharset(type, encoding));
+    else this.set("Content-Type", setCharset("text/html", encoding));
+
+    return this.#send(body);
   }
 
   /**
