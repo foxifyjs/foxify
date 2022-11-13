@@ -5,9 +5,7 @@
   "description": "Foxify Router Benchmarks",
   "type": "module",
   "scripts": {
-    "start": "benchmark suites",
-    "lint": "eslint .",
-    "lint:fix": "pnpm lint --fix"
+    "start": "benchmark suites"
   },
   "dependencies": {
     "@foxify/router": "workspace:*",

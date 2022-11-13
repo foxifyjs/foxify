@@ -1,47 +1,48 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
 const { Router, HttpException, HTTP } = require("../..");
 
-const routes = new Router()
+const routes = (new Router);
 
-routes.get('/', (req, res) => {
-  res.render('index', {
-    logo: 'https://avatars1.githubusercontent.com/u/36167886?s=200&v=4',
-    title: 'Foxify'
-  })
-})
+routes.get("/", (req, res) => {
+  res.render("index", {
+    logo : "https://avatars1.githubusercontent.com/u/36167886?s=200&v=4",
+    title: "Foxify",
+  });
+});
 
-routes.get('/greet', (req, res) => {
+routes.get("/greet", (req, res) => {
   res.json({
-    hello: 'world'
-  })
-})
+    hello: "world",
+  });
+});
 
 const schema = {
   response: {
     200: {
-      type: 'object',
+      type      : "object",
       properties: {
         hello: {
-          type: 'string'
-        }
-      }
-    }
-  }
+          type: "string",
+        },
+      },
+    },
+  },
 };
 
-routes.get('/greet-fast', {
-  schema
+routes.get("/greet-fast", {
+  schema,
 }, (req, res) => {
   res.json({
-    hello: 'world'
-  })
-})
+    hello: "world",
+  });
+});
 
-routes.get('/404', (req, res) => {
+routes.get("/404", (req, res) => {
   throw new HttpException("This is a demo", HTTP.NOT_FOUND);
-})
+});
 
-routes.get('/error', async (req, res) => {
-  throw new Error('Oops!')
-})
+routes.get("/error", async (req, res) => {
+  throw new Error("Oops!");
+});
 
-module.exports = routes
+module.exports = routes;

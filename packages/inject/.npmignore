@@ -1,6 +1,4 @@
 tests/
 coverage/
-jest.config.js
-nodemon.json
 tsconfig*.json
 *.tsbuildinfo

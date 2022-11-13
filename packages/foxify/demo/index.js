@@ -1,24 +1,31 @@
+/* eslint-disable @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires */
 const path = require("path");
 const morgan = require("morgan");
 const Foxify = require("..").default;
-const index = require("./routes");
+const routes = require("./routes");
 
 Foxify.dotenv(path.join(__dirname, ".env"));
 
-const app = new Foxify();
+const app = (new Foxify);
 
-// template engine support
-app.engine("ejs", path.join(__dirname, "views"), require("ejs").__express)
+// Template engine support
+// eslint-disable-next-line no-underscore-dangle
+app.engine("ejs", path.join(__dirname, "views"), require("ejs").__express);
 
-// middlewares & routes
+// Middlewares & routes
 app.use(
-  Foxify.static(path.join(__dirname, "public")), // static serve support
-  morgan("dev"), // express middleware support
-  index // routes
+
+  // Static serve support
+  Foxify.static(path.join(__dirname, "public")),
+
+  // Express middleware support
+  morgan("dev"),
+
+  // Routes
+  routes,
 );
 
-// start the app
-app.start(() =>
-  console.log(`Foxify server running at http://${app.get("url")}:${app.get("port")} (worker: ${process.pid})`));
+// Start the app
+app.start(() => console.info(`Foxify server running at http://${ app.get("url") }:${ app.get("port") } (worker: ${ process.pid })`));
 
-console.log(app.prettyPrint());
+console.info(app.prettyPrint());

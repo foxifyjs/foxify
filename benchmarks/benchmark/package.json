@@ -8,8 +8,6 @@
     "benchmark": "index.ts"
   },
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {
     "autocannon": "^7.10.0",

@@ -5,13 +5,6 @@
       "dependsOn": ["^build"],
       "outputs": [".build/**"]
     },
-    "lint": {
-      "outputs": []
-    },
-    "lint:fix": {
-      "cache": false,
-      "outputs": []
-    },
     "test": {
       "inputs": ["src/**/*.tsx", "src/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx"],
       "outputs": []

@@ -1,7 +1,7 @@
-import { fileURLToPath } from "node:url";
 import { stat, readFile, writeFile } from "node:fs/promises";
 import { resolve, relative, dirname } from "node:path";
 import { cwd, exit } from "node:process";
+import { fileURLToPath } from "node:url";
 
 const ENCODING = "utf-8" as const;
 
@@ -23,7 +23,7 @@ if (originalPKG.type === "module") exit();
 
 const original = JSON.stringify(originalPKG.publishConfig.imports);
 
-for (const [dir, type, condition] of BUILDS) {
+await Promise.all(BUILDS.map(async ([dir, type, condition]) => {
   const regex = new RegExp(`^./${ OUTPUT_DIR }/${ dir }/`);
 
   const imports = JSON.parse(original, (key, value) => {
@@ -38,7 +38,10 @@ for (const [dir, type, condition] of BUILDS) {
     return value;
   });
 
-  const pkg = JSON.stringify({ type, imports });
+  const pkg = JSON.stringify({
+    type,
+    imports,
+  });
 
-  await writeFile(resolve(BUILD_DIR, dir, "package.json"), pkg, ENCODING);
-}
+  return writeFile(resolve(BUILD_DIR, dir, "package.json"), pkg, ENCODING);
+}));

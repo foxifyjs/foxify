@@ -5,9 +5,7 @@
   "description": "Foxify Fresh Benchmarks",
   "type": "module",
   "scripts": {
-    "start": "benchmark suites",
-    "lint": "eslint .",
-    "lint:fix": "pnpm lint --fix"
+    "start": "benchmark suites"
   },
   "dependencies": {
     "@foxify/fresh": "workspace:*",
