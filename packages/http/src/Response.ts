@@ -410,6 +410,18 @@ class Response extends ServerResponse<Request> {
   }
 
   /**
+   * Send Buffer response
+   * @param body
+   * @example
+   * res.send(Buffer.from("wahoo"));
+   */
+  public bin(body: Buffer): this {
+    if (!this.hasHeader("content-type")) this.type("bin");
+
+    return this.#send(body);
+  }
+
+  /**
    * Clear cookie `name`.
    *
    * @returns for chaining
@@ -933,14 +945,12 @@ class Response extends ServerResponse<Request> {
   public send(body?: Buffer | JsonT | string): this {
     if (typeof body === "string") return this.text(body);
 
-    if (Buffer.isBuffer(body)) {
-      if (!this.hasHeader("content-type")) this.type("bin");
-    } else if (body === null) {
-      return this.#send("");
-      // eslint-disable-next-line no-undefined
-    } else if (body !== undefined) {
-      return this.json(body);
-    }
+    if (Buffer.isBuffer(body)) return this.bin(body);
+
+    if (body === null) return this.#send("");
+
+    // eslint-disable-next-line no-undefined
+    if (body !== undefined) return this.json(body);
 
     return this.#send(body);
   }
