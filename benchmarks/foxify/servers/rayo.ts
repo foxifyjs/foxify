@@ -8,4 +8,4 @@ const app = rayo({ port: 3000 });
 
 app.get("/", (req: any, res: any) => res.end(JSON.stringify({ hello: "world" })));
 
-app.start();
+app.start(() => process.send?.("READY"));

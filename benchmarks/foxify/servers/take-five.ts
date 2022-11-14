@@ -8,4 +8,4 @@ const app = (new Five);
 
 app.get("/", (req: any, res: any) => res.send({ hello: "world" }));
 
-app.listen(3000);
+app.listen(3000, () => process.send?.("READY"));

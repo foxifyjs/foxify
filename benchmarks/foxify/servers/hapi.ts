@@ -22,4 +22,6 @@ server.route({
   handler: () => ({ hello: "world" }),
 });
 
-server.start();
+await server.start();
+
+process.send?.("READY");

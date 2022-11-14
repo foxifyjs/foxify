@@ -79,6 +79,10 @@ async function action({ all, connections, duration, pipelining }: OptionsI): Pro
 
     const forked = fork(resolve(SERVERS_PATH, SERVER_PATH));
 
+    await new Promise((r) => {
+      forked.once("message", r);
+    });
+
     spinner.color = "magenta";
     spinner.text = `Warming ${ server } ${ progress }`;
 
@@ -121,7 +125,11 @@ async function action({ all, connections, duration, pipelining }: OptionsI): Pro
     spinner.color = "green";
     spinner.text = `Benchmarked ${ server } ${ progress }`;
 
-    forked.kill("SIGINT");
+    await new Promise((r) => {
+      forked.once("close", r);
+
+      forked.kill("SIGINT");
+    });
   }
 
   spinner.succeed("Benchmark completed");

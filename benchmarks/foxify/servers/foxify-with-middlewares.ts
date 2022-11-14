@@ -41,4 +41,4 @@ const schema: SchemaOptionsI = {
 
 app.get("/", { schema }, (req, res) => res.json({ hello: "world" }));
 
-app.start();
+app.start(() => process.send?.("READY"));

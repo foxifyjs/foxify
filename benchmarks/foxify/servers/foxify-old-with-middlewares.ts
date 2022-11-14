@@ -39,4 +39,4 @@ const schema = {
 
 app.get("/", { schema } as any, (req, res) => res.json({ hello: "world" }));
 
-app.start();
+app.start(() => process.send?.("READY"));

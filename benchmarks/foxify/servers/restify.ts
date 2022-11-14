@@ -6,4 +6,4 @@ const app = createServer();
 
 app.get("/", (req, res) => res.send({ hello: "world" }));
 
-app.listen(3000);
+app.listen(3000, () => process.send?.("READY"));

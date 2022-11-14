@@ -4,4 +4,4 @@ import micro from "micro";
 
 const server = micro.default(async () => ({ hello: "world" }));
 
-(server as any).listen(3000);
+(server as any).listen(3000, () => process.send?.("READY"));

@@ -8,4 +8,4 @@ const server = http.createServer((req, res) => {
   res.end(JSON.stringify({ hello: "world" }));
 });
 
-server.listen(3000);
+server.listen(3000, () => process.send?.("READY"));

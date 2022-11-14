@@ -25,4 +25,4 @@ app.use((xXssProtection as any)());
 
 app.get("/", (req, res) => res.json({ hello: "world" }));
 
-app.listen(3000);
+app.listen(3000, () => process.send?.("READY"));

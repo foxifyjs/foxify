@@ -12,3 +12,5 @@ total.http("release", {
 total.route("/", function handler(this: any) {
   this.json({ hello: "world" });
 });
+
+process.send?.("READY");

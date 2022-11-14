@@ -18,4 +18,4 @@ router.get("/", (req: any, res: any) => {
 
 app.use(router);
 
-app.listen(3000);
+app.listen(3000, () => process.send?.("READY"));

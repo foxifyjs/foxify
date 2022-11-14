@@ -28,4 +28,4 @@ app.on("error", (err: any) => {
   console.error();
 });
 
-app.run(3000);
+app.run(3000, () => process.send?.("READY"));

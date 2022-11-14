@@ -20,4 +20,4 @@ const schema = {
 
 app.get("/", { schema }, (req, reply) => reply.send({ hello: "world" }));
 
-app.listen({ port: 3000 });
+app.listen({ port: 3000 }, () => process.send?.("READY"));
