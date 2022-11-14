@@ -1,4 +1,4 @@
-import { join } from "path";
+import { join } from "node:path";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Engine {

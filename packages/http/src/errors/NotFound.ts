@@ -1,4 +1,4 @@
-import { STATUS_CODES } from "http";
+import { STATUS_CODES } from "node:http";
 import { STATUS } from "../constants/index.js";
 import HttpError from "./HttpError.js";
 

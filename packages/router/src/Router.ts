@@ -1,5 +1,5 @@
-import assert from "assert";
-import { STATUS_CODES } from "http";
+import assert from "node:assert";
+import { STATUS_CODES } from "node:http";
 import {
   HttpError,
   MethodNotAllowed,

@@ -1,6 +1,6 @@
-import assert from "assert";
-import { OutgoingHttpHeaders, ServerResponse, STATUS_CODES } from "http";
-import { extname, resolve } from "path";
+import assert from "node:assert";
+import { OutgoingHttpHeaders, ServerResponse, STATUS_CODES } from "node:http";
+import { extname, resolve } from "node:path";
 import fresh from "@foxify/fresh";
 import contentDisposition from "content-disposition";
 import * as contentType from "content-type";
@@ -950,9 +950,9 @@ class Response extends ServerResponse<Request> {
     if (body === null) return this.#send("");
 
     // eslint-disable-next-line no-undefined
-    if (body !== undefined) return this.json(body);
+    if (body === undefined) return this.#send();
 
-    return this.#send(body);
+    return this.json(body);
   }
 
   /**

@@ -1,4 +1,4 @@
-import http from "http";
+import http from "node:http";
 
 const enum METHOD {
   ACL = "ACL",

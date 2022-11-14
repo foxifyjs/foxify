@@ -1,4 +1,4 @@
-import { STATUS_CODES } from "http";
+import { STATUS_CODES } from "node:http";
 import { STATUS, StatusT } from "../constants/index.js";
 
 export default class HttpError extends Error {

@@ -4,8 +4,8 @@ import {
   OutgoingHttpHeader,
   OutgoingHttpHeaders,
   ServerResponse,
-} from "http";
-import * as Url from "url";
+} from "node:http";
+import * as Url from "node:url";
 import { Writable } from "readable-stream";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment,@typescript-eslint/prefer-ts-expect-error

@@ -28,7 +28,7 @@
  * This module is modified and optimized for this project specifically
  */
 
-import { parse, UrlWithStringQuery } from "url";
+import { parse, UrlWithStringQuery } from "node:url";
 
 /**
  * Parse the `url` with fast-path short-cut.

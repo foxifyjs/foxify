@@ -1,6 +1,6 @@
-import { IncomingHttpHeaders, IncomingMessage } from "http";
-import { isIP } from "net";
-import { UrlWithStringQuery } from "url";
+import { IncomingHttpHeaders, IncomingMessage } from "node:http";
+import { isIP } from "node:net";
+import { UrlWithStringQuery } from "node:url";
 import proxyAddr, { compile as proxyAddrCompile, all as proxyAddrAll } from "proxy-addr";
 import * as qs from "qs";
 import typeIs from "type-is";

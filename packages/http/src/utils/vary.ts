@@ -27,7 +27,7 @@
  * This module is modified and optimized for Foxify specifically
  */
 
-import assert from "assert";
+import assert from "node:assert";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type Response from "../Response.js";
 
