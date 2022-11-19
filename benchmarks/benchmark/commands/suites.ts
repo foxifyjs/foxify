@@ -7,15 +7,21 @@ import benchmark from "benchmark";
 import { Command } from "commander";
 import logSymbol from "log-symbols";
 
-async function action(): Promise<void> {
+interface OptionsI {
+  suites: string[];
+}
+
+async function action({ suites }: OptionsI): Promise<void> {
 // eslint-disable-next-line import/no-named-as-default-member
   const { Suite } = benchmark;
 
   const SUITES_PATH = resolve(cwd(), "suites");
 
-  const SUITES = await readdir(SUITES_PATH);
+  let SUITES = await readdir(SUITES_PATH);
 
   SUITES.sort((a, b) => a.localeCompare(b));
+
+  if (suites.length > 0) SUITES = SUITES.filter(suite => suites.includes(suite));
 
   for (const SUITE_PATH of SUITES) {
     const SUITE: Array<[name: string, fn: () => unknown]> = (await import(resolve(SUITES_PATH, SUITE_PATH))).default;
@@ -37,4 +43,10 @@ async function action(): Promise<void> {
 
 export default new Command("suites")
   .action(action)
+  .option(
+    "--suites <suites>",
+    "List of suites to benchmark (comma separated)",
+    value => value.split(","),
+    [],
+  )
   .helpOption();

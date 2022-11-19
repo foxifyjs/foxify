@@ -10,20 +10,24 @@ import ora from "ora";
 import { table, getBorderCharacters } from "table";
 
 interface OptionsI {
-  all: boolean;
   connections: number;
   duration: number;
   pipelining: number;
+  servers: string[];
+  silent: boolean;
 }
 
 type ResultT = [name: string, version: string, router: string, rps: string, latency: string, throughput: string];
 
-async function action({ all, connections, duration, pipelining }: OptionsI): Promise<void> {
+async function action({ connections, duration, pipelining, servers, silent }: OptionsI): Promise<void> {
   const SERVERS_PATH = resolve(cwd(), "servers");
 
   const INFO = (await import(resolve(SERVERS_PATH, "index.ts"))).default;
 
   const choices = Object.keys(INFO).sort((a, b) => a.localeCompare(b));
+
+  if (servers.includes("all")) servers = choices;
+  else servers = servers.filter(server => choices.includes(server));
 
   const { selected } = await inquirer.prompt<{ selected: string[] }>(
     [
@@ -41,7 +45,7 @@ async function action({ all, connections, duration, pipelining }: OptionsI): Pro
       },
     ],
     // eslint-disable-next-line no-undefined
-    { selected: all ? choices : undefined },
+    { selected: servers.length > 0 ? servers : undefined },
   );
 
   const spinner = ora("Locating servers").start();
@@ -50,7 +54,7 @@ async function action({ all, connections, duration, pipelining }: OptionsI): Pro
 
   SERVERS = SERVERS.filter(name => selected.includes(basename(name, extname(name))));
 
-  SERVERS.sort((a, b) => a.localeCompare(b));
+  SERVERS.sort((a, b) => basename(a, extname(a)).localeCompare(basename(b, extname(b))));
 
   const total = SERVERS.length;
 
@@ -77,7 +81,7 @@ async function action({ all, connections, duration, pipelining }: OptionsI): Pro
     spinner.color = "gray";
     spinner.text = `Starting ${ server } ${ progress }`;
 
-    const forked = fork(resolve(SERVERS_PATH, SERVER_PATH));
+    const forked = fork(resolve(SERVERS_PATH, SERVER_PATH), { silent });
 
     await new Promise((r) => {
       forked.once("message", r);
@@ -161,26 +165,32 @@ async function action({ all, connections, duration, pipelining }: OptionsI): Pro
 export default new Command("servers")
   .action(action)
   .option(
-    "-c, --connections",
+    "-c, --connections <connections>",
     "The number of concurrent connections",
     value => +value,
     100,
   )
   .option(
-    "-p, --pipelining",
+    "-p, --pipelining <pipelining>",
     "The number of pipelined requests  for each connection. Will cause the Client API to throw when greater than 1",
     value => +value,
     10,
   )
   .option(
-    "-d, --duration",
+    "-d, --duration <duration>",
     "The number of seconds to run the autocannon",
     value => +value,
-    5,
+    40,
   )
   .option(
-    "--all",
-    "Run all benchmarks",
+    "--servers <servers>",
+    "List of servers to benchmark (comma separated or 'all' for all servers)",
+    value => value.split(","),
+    [],
+  )
+  .option(
+    "--silent",
+    "Don't print the server logs",
     false,
   )
   .helpOption();
