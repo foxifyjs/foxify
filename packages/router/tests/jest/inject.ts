@@ -1,6 +1,6 @@
 import { Request, Response } from "@foxify/http";
 import foxifyInject, { InjectResultI, OptionsI } from "@foxify/inject";
-import Router from "../../src";
+import Router from "#src/index";
 
 export default async function inject(
   router: Router,

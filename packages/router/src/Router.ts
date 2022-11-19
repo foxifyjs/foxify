@@ -6,8 +6,8 @@ import {
   METHODS,
   MethodT,
   NotFound,
-  Request as RequestT,
-  Response as ResponseT,
+  Request,
+  Response,
   STATUS,
   StatusT,
 } from "@foxify/http";
@@ -42,73 +42,70 @@ import {
 
 const { compact, deepFlatten } = array;
 
-interface Router<Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT> {
-  acl: ShortHandRouteT<Request, Response, this>;
-  bind: ShortHandRouteT<Request, Response, this>;
-  checkout: ShortHandRouteT<Request, Response, this>;
-  connect: ShortHandRouteT<Request, Response, this>;
-  copy: ShortHandRouteT<Request, Response, this>;
-  delete: ShortHandRouteT<Request, Response, this>;
-  get: ShortHandRouteT<Request, Response, this>;
-  head: ShortHandRouteT<Request, Response, this>;
-  link: ShortHandRouteT<Request, Response, this>;
-  lock: ShortHandRouteT<Request, Response, this>;
-  "m-search": ShortHandRouteT<Request, Response, this>;
-  merge: ShortHandRouteT<Request, Response, this>;
-  mkactivity: ShortHandRouteT<Request, Response, this>;
-  mkcalendar: ShortHandRouteT<Request, Response, this>;
-  mkcol: ShortHandRouteT<Request, Response, this>;
-  move: ShortHandRouteT<Request, Response, this>;
-  notify: ShortHandRouteT<Request, Response, this>;
-  options: ShortHandRouteT<Request, Response, this>;
-  patch: ShortHandRouteT<Request, Response, this>;
-  post: ShortHandRouteT<Request, Response, this>;
-  pri: ShortHandRouteT<Request, Response, this>;
-  propfind: ShortHandRouteT<Request, Response, this>;
-  proppatch: ShortHandRouteT<Request, Response, this>;
-  purge: ShortHandRouteT<Request, Response, this>;
-  put: ShortHandRouteT<Request, Response, this>;
-  rebind: ShortHandRouteT<Request, Response, this>;
-  report: ShortHandRouteT<Request, Response, this>;
-  search: ShortHandRouteT<Request, Response, this>;
-  source: ShortHandRouteT<Request, Response, this>;
-  subscribe: ShortHandRouteT<Request, Response, this>;
-  trace: ShortHandRouteT<Request, Response, this>;
-  unbind: ShortHandRouteT<Request, Response, this>;
-  unlink: ShortHandRouteT<Request, Response, this>;
-  unlock: ShortHandRouteT<Request, Response, this>;
-  unsubscribe: ShortHandRouteT<Request, Response, this>;
+interface Router {
+  acl: ShortHandRouteT;
+  bind: ShortHandRouteT;
+  checkout: ShortHandRouteT;
+  connect: ShortHandRouteT;
+  copy: ShortHandRouteT;
+  delete: ShortHandRouteT;
+  get: ShortHandRouteT;
+  head: ShortHandRouteT;
+  link: ShortHandRouteT;
+  lock: ShortHandRouteT;
+  "m-search": ShortHandRouteT;
+  merge: ShortHandRouteT;
+  mkactivity: ShortHandRouteT;
+  mkcalendar: ShortHandRouteT;
+  mkcol: ShortHandRouteT;
+  move: ShortHandRouteT;
+  notify: ShortHandRouteT;
+  options: ShortHandRouteT;
+  patch: ShortHandRouteT;
+  post: ShortHandRouteT;
+  pri: ShortHandRouteT;
+  propfind: ShortHandRouteT;
+  proppatch: ShortHandRouteT;
+  purge: ShortHandRouteT;
+  put: ShortHandRouteT;
+  rebind: ShortHandRouteT;
+  report: ShortHandRouteT;
+  search: ShortHandRouteT;
+  source: ShortHandRouteT;
+  subscribe: ShortHandRouteT;
+  trace: ShortHandRouteT;
+  unbind: ShortHandRouteT;
+  unlink: ShortHandRouteT;
+  unlock: ShortHandRouteT;
+  unsubscribe: ShortHandRouteT;
 }
 
-class Router<Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT> {
+class Router {
 
-  protected catchers: Array<ErrorHandlerT<Request, Response>> = [];
+  protected catchers: ErrorHandlerT[] = [];
 
-  protected middlewares: Array<HandlerT<Request, Response>> = [];
+  protected middlewares: HandlerT[] = [];
 
-  protected readonly paramHandlers: ParamHandlerI<Request, Response> = {};
+  protected readonly paramHandlers: ParamHandlerI = {};
 
-  protected readonly tree = (new Node<Request, Response>);
+  protected readonly tree = new Node;
 
   public constructor(protected readonly prefix = "/") {}
 
   public all(
     path: string,
-    options?:
-    HandlersT<Request, Response> | HandlerT<Request, Response> | OptionsI | false | null,
-    ...handlers: HandlersT<Request, Response>
+    options?: HandlersT | HandlerT | OptionsI | false | null,
+    ...handlers: HandlersT
   ): this {
     return this.on(METHODS, path, options, handlers);
   }
 
-  public catch(...handlers: ErrorHandlersT<Request, Response>): this {
+  public catch(...handlers: ErrorHandlersT): this {
     handlers = compact(deepFlatten(handlers));
 
     if (handlers.length === 0) return this;
 
-    this.catchers = this.catchers.concat(handlers as Array<ErrorHandlerT<Request, Response>>);
+    this.catchers = this.catchers.concat(handlers as ErrorHandlerT[]);
 
     return this;
   }
@@ -116,8 +113,8 @@ class Router<Request extends RequestT = RequestT,
   public find(
     method: MethodT,
     path: string,
-  ): HandlersResultT<Request, Response> {
-    let node: Node<Request, Response> | undefined = this.tree;
+  ): HandlersResultT {
+    let node: Node | undefined = this.tree;
     let position = 0;
 
     if (path.startsWith("/")) {
@@ -214,9 +211,8 @@ class Router<Request extends RequestT = RequestT,
   public on(
     method: MethodT | MethodT[],
     path: string,
-    options:
-    HandlersT<Request, Response> | HandlerT<Request, Response> | OptionsI | false | null | undefined = {},
-    ...handlers: HandlersT<Request, Response>
+    options: HandlersT | HandlerT | OptionsI | false | null | undefined = {},
+    ...handlers: HandlersT
   ): this {
     if (
       options == null
@@ -224,7 +220,7 @@ class Router<Request extends RequestT = RequestT,
       || typeof options === "function"
       || Array.isArray(options)
     ) {
-      handlers = [options as HandlerT<Request, Response>, ...handlers];
+      handlers = [options as HandlerT, ...handlers];
       options = {};
     }
 
@@ -248,10 +244,10 @@ class Router<Request extends RequestT = RequestT,
 
     const params: string[] = [];
 
-    let node: Node<Request, Response> | undefined = this.tree;
+    let node: Node | undefined = this.tree;
 
-    let currentNode: Node<Request, Response> = node;
-    let matchAllNode: Node<Request, Response> | undefined;
+    let currentNode: Node = node;
+    let matchAllNode: Node | undefined;
 
     // eslint-disable-next-line no-constant-condition,@typescript-eslint/no-unnecessary-condition
     while (true) {
@@ -288,7 +284,7 @@ class Router<Request extends RequestT = RequestT,
         node.addHandlers(
           method,
           options,
-          middlewares.concat(handlers as Array<HandlerT<Request, Response>>),
+          middlewares.concat(handlers as HandlerT[]),
         );
 
         return this;
@@ -381,7 +377,7 @@ class Router<Request extends RequestT = RequestT,
     }
   }
 
-  public param(name: string, handler: HandlerT<Request, Response>): this {
+  public param(name: string, handler: HandlerT): this {
     const { paramHandlers } = this;
 
     // eslint-disable-next-line no-undefined
@@ -399,8 +395,8 @@ class Router<Request extends RequestT = RequestT,
     return prettyPrint(this.tree, "", true);
   }
 
-  public route(path: string): RouteMethodsT<Request, Response> {
-    const ROUTER = METHODS.reduce<RouteMethodsT<Request, Response>>((router, method) => {
+  public route(path: string): RouteMethodsT {
+    const ROUTER = METHODS.reduce<RouteMethodsT>((router, method) => {
       const name = method.toLowerCase() as Lowercase<MethodT>;
 
       router[name] = (options, ...handlers): any => {
@@ -416,12 +412,12 @@ class Router<Request extends RequestT = RequestT,
     return ROUTER;
   }
 
-  public use(...handlers: MiddlewaresT<Request, Response>): this {
+  public use(...handlers: MiddlewaresT): this {
     handlers = compact(deepFlatten(handlers));
 
     if (handlers.length === 0) return this;
 
-    const routers: Array<Router<Request, Response>> = handlers.filter(handler => handler instanceof Router) as any;
+    const routers: Router[] = handlers.filter(handler => handler instanceof Router) as any;
 
     for (const router of routers) {
       // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -431,7 +427,7 @@ class Router<Request extends RequestT = RequestT,
       for (const [method, path, options, handlers] of routes) this.on(method, path, options, handlers);
     }
 
-    const middlewares: Array<HandlerT<Request, Response>> = handlers
+    const middlewares: HandlerT[] = handlers
       .filter(handler => !(handler instanceof Router)) as any;
 
     if (middlewares.length > 0) this.middlewares = this.middlewares.concat(middlewares);
@@ -517,7 +513,7 @@ class Router<Request extends RequestT = RequestT,
     error: Error,
     req: Request,
     res: Response,
-    catchers: Array<ErrorHandlerT<Request, Response>> = [],
+    catchers: ErrorHandlerT[] = [],
   ): NextT {
     const length = catchers.length;
     let index = 0;
@@ -555,7 +551,7 @@ class Router<Request extends RequestT = RequestT,
     res: Response,
     method: MethodT,
     allowHeader: string,
-    handlers: Array<HandlerT<Request, Response>> = [],
+    handlers: HandlerT[] = [],
   ): NextT {
     const length = handlers.length;
     let index = 0;
@@ -593,7 +589,7 @@ class Router<Request extends RequestT = RequestT,
     return next;
   }
 
-  protected routes(): RoutesT<Request, Response> {
+  protected routes(): RoutesT {
     return routes(this.tree);
   }
 

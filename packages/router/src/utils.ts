@@ -1,8 +1,4 @@
-import {
-  METHODS,
-  Request as RequestT,
-  Response as ResponseT,
-} from "@foxify/http";
+import { METHODS } from "@foxify/http";
 import Node from "./Node.js";
 import { RoutesT } from "./constants.js";
 
@@ -17,14 +13,7 @@ const enum COLOR {
   CYAN = "\x1b[36m",
 }
 
-export function assignMatchAllNode<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
->(
-  node: Node<Request, Response>,
-  matchAllNode?: Node<Request, Response>,
-  check = false,
-): void {
+export function assignMatchAllNode(node: Node, matchAllNode?: Node, check = false): void {
   const { children, childrenCount } = node;
 
   const labels = Object.keys(children);
@@ -40,10 +29,7 @@ export function assignMatchAllNode<
   }
 }
 
-export function assignParamNode<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
->(node: Node<Request, Response>, paramNode?: Node<Request, Response>): void {
+export function assignParamNode(node: Node, paramNode?: Node): void {
   const { children } = node;
 
   const labels = Object.keys(children).filter(label => label !== ":");
@@ -56,10 +42,7 @@ export function assignParamNode<
   }
 }
 
-export function routes<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
->(node: Node<Request, Response>, prefix = ""): RoutesT<Request, Response> {
+export function routes(node: Node, prefix = ""): RoutesT {
   const {
     prefix: nodePath,
     children,
@@ -71,7 +54,7 @@ export function routes<
 
   const path = `${ prefix }${ nodePath }`;
 
-  let result: RoutesT<Request, Response> = [];
+  let result: RoutesT = [];
 
   for (const method of methods) result.push([method, path, options[method], handlers[method]!]);
 
@@ -85,8 +68,7 @@ export function routes<
 }
 
 export function prettyPrint(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  node: Node<any, any>,
+  node: Node,
   prefix = "",
   tail = false,
 ): string {

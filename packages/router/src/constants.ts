@@ -1,15 +1,7 @@
-import {
-  MethodT,
-  Request as RequestT,
-  Response as ResponseT,
-  StatusT,
-  StringifyT,
-} from "@foxify/http";
+import { MethodT, Request, Response, StatusT, StringifyT } from "@foxify/http";
 import { Schema as JsonSchemaT } from "fast-json-stringify";
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import type NodeT from "./Node.js";
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import type RouterT from "./Router.js";
+import type Node from "./Node.js";
+import type Router from "./Router.js";
 
 export const PARAM_LABEL = ":" as const;
 
@@ -17,8 +9,7 @@ export const WILDCARD_LABEL = "*" as const;
 
 export const EMPTY_OPTIONS: NodeMethodOptionsI = { schema: { response: {} } };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const EMPTY_RESULT: HandlersResultT<any, any> = {
+export const EMPTY_RESULT: HandlersResultT = {
   handlers   : [],
   allowHeader: "",
   options    : EMPTY_OPTIONS,
@@ -58,112 +49,56 @@ export interface SchemaOptionsI {
 
 export type NextT = (error?: Error) => void;
 
-export type ParamHandlerI<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> = Record<string, HandlerT<Request, Response> | undefined>;
+export type ParamHandlerI = Record<string, HandlerT | undefined>;
 
-export type RoutesT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> = Array<[
+export type RoutesT = Array<[
   method: MethodT,
   path: string,
   options: NodeMethodOptionsI,
-  handlers: Array<HandlerT<Request, Response>>,
+  handlers: HandlerT[],
 ]>;
 
-export type HandlerT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> = (request: Request, response: Response, next: NextT) => unknown;
+export type HandlerT = (request: Request, response: Response, next: NextT) => unknown;
 
-export type HandlersT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> = Array<
-HandlersT<Request, Response> | HandlerT<Request, Response> | false | null | undefined
->;
+export type HandlersT = Array<HandlersT | HandlerT | false | null | undefined>;
 
-export type MiddlewaresT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> = Array<
-HandlersT<Request, Response> | HandlerT<Request, Response> | RouterT<Request, Response> | false | null | undefined
->;
+export type MiddlewaresT = Array<HandlersT | HandlerT | Router | false | null | undefined>;
 
-export type ErrorHandlerT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> = (
+export type ErrorHandlerT = (
   error: Error,
   request: Request,
   response: Response,
   next: NextT,
 ) => unknown;
 
-export type ErrorHandlersT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> = Array<
-ErrorHandlersT<Request, Response> | ErrorHandlerT<Request, Response> | false | null | undefined
->;
+export type ErrorHandlersT = Array<ErrorHandlersT | ErrorHandlerT | false | null | undefined>;
 
-export interface HandlersResultT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> {
+export interface HandlersResultT {
   allowHeader: string;
-  handlers: Array<HandlerT<Request, Response>>;
+  handlers: HandlerT[];
   options: NodeMethodOptionsI;
   params: ParamsT;
 }
 
-export type NodeHandlersT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> = {
-  readonly [Method in MethodT]-?: Array<HandlerT<Request, Response>>;
+export type NodeHandlersT = {
+  readonly [Method in MethodT]-?: HandlerT[];
 };
 
-export type NodeChildrenT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> = {
-  [Label in string]?: NodeT<Request, Response>;
+export type NodeChildrenT = {
+  [Label in string]?: Node;
 };
 
-export type ShortHandRouteT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-  Router extends RouterT<Request, Response> = RouterT<Request, Response>,
-> = (
+export type ShortHandRouteT = (
   path: string,
-  options?:
-  HandlersT<Request, Response> | HandlerT<Request, Response> | OptionsI | false | null,
-  ...handlers: HandlersT<Request, Response>
+  options?: HandlersT | HandlerT | OptionsI | false | null,
+  ...handlers: HandlersT
 ) => Router;
 
-export type RouteMethodT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-  This extends RouteMethodsT<Request, Response> = RouteMethodsT<
-  Request,
-  Response
-  >,
-> = (
-  options?:
-  HandlersT<Request, Response> | HandlerT<Request, Response> | OptionsI | false | null,
-  ...handlers: HandlersT<Request, Response>
-) => This;
+export type RouteMethodT = (
+  options?: HandlersT | HandlerT | OptionsI | false | null,
+  ...handlers: HandlersT
+) => RouteMethodsT;
 
-export type RouteMethodsT<
-  Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT,
-> = {
-  [method in Lowercase<MethodT>]: RouteMethodT<
-  Request,
-  Response,
-  RouteMethodsT<Request, Response>
-  >;
+export type RouteMethodsT = {
+  [method in Lowercase<MethodT>]: RouteMethodT;
 };

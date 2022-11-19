@@ -1,9 +1,4 @@
-import {
-  MethodT,
-  Request as RequestT,
-  Response as ResponseT,
-  StatusT,
-} from "@foxify/http";
+import { MethodT, StatusT } from "@foxify/http";
 import fastJson from "fast-json-stringify";
 import Handlers from "./Handlers.js";
 import Options from "./Options.js";
@@ -21,21 +16,19 @@ import {
   WILDCARD_LABEL,
 } from "./constants.js";
 
-interface Node<Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT> {
+interface Node {
   constructor: typeof Node;
 }
 
-class Node<Request extends RequestT = RequestT,
-  Response extends ResponseT = ResponseT> {
+class Node {
 
   public allowHeader = "";
 
-  public readonly children: NodeChildrenT<Request, Response> = {};
+  public readonly children: NodeChildrenT = {};
 
   public childrenCount = 0;
 
-  public readonly handlers: NodeHandlersT<Request, Response> = (new Handlers<Request, Response>);
+  public readonly handlers: NodeHandlersT = new Handlers;
 
   public label!: string;
 
@@ -43,14 +36,14 @@ class Node<Request extends RequestT = RequestT,
   public matchAllParamRegExp?: RegExp = undefined;
 
   // eslint-disable-next-line no-undefined
-  public matchingWildcardNode?: Node<Request, Response> = undefined;
+  public matchingWildcardNode?: Node = undefined;
 
   public readonly methods: MethodT[] = [];
 
   // eslint-disable-next-line no-undefined
-  public neighborParamNode?: Node<Request, Response> = undefined;
+  public neighborParamNode?: Node = undefined;
 
-  public readonly options: NodeOptionsT = (new Options);
+  public readonly options: NodeOptionsT = new Options;
 
   // eslint-disable-next-line no-undefined
   public param?: string = undefined;
@@ -63,17 +56,16 @@ class Node<Request extends RequestT = RequestT,
     this.init(prefix);
   }
 
-  public static isNode<Request extends RequestT = RequestT,
-    Response extends ResponseT = ResponseT>(value: unknown): value is Node<Request, Response> {
+  public static isNode(value: unknown): value is Node {
     return value instanceof this;
   }
 
-  public addChild(node: Node<Request, Response>): Node<Request, Response>;
-  public addChild(prefix?: string): Node<Request, Response>;
-  public addChild(prefix: Node<Request, Response> | string = "/"): Node<Request, Response> {
-    let node: Node<Request, Response>;
+  public addChild(node: Node): Node;
+  public addChild(prefix?: string): Node;
+  public addChild(prefix: Node | string = "/"): Node {
+    let node: Node;
 
-    if (Node.isNode<Request, Response>(prefix)) node = prefix;
+    if (this.constructor.isNode(prefix)) node = prefix;
     else node = new this.constructor(prefix);
 
     const label = node.label;
@@ -88,7 +80,7 @@ class Node<Request extends RequestT = RequestT,
   public addHandlers(
     method: MethodT,
     options: OptionsI,
-    handlers: Array<HandlerT<Request, Response>>,
+    handlers: HandlerT[],
   ): this {
     if (handlers.length === 0) return this;
 
@@ -131,17 +123,17 @@ class Node<Request extends RequestT = RequestT,
     return this;
   }
 
-  public findChild(path: string, index = 0): Node<Request, Response> | undefined {
+  public findChild(path: string, index = 0): Node | undefined {
     const children = this.children;
 
     return children[path[index]] ?? children[PARAM_LABEL] ?? children[WILDCARD_LABEL];
   }
 
-  public findChildByLabel(label: string): Node<Request, Response> | undefined {
+  public findChildByLabel(label: string): Node | undefined {
     return this.children[label];
   }
 
-  public findHandlers(method: MethodT, params: ParamsT = {}): HandlersResultT<Request, Response> {
+  public findHandlers(method: MethodT, params: ParamsT = {}): HandlersResultT {
     const {
       handlers: { [method]: handlers },
       allowHeader,

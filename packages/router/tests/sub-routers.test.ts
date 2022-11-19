@@ -1,4 +1,4 @@
-import Router from "../src";
+import Router from "#src/index";
 
 it("should add sub-router", () => {
   const router = (new Router);

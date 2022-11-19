@@ -1,5 +1,5 @@
 import { MethodT } from "@foxify/http";
-import Router from "../src";
+import Router from "#src/index";
 
 it("should return the visual representation of tree nodes", () => {
   const router = (new Router);

@@ -1,4 +1,4 @@
-import Router from "../src";
+import Router from "#src/index";
 
 it("should find match all route", () => {
   const router = (new Router);

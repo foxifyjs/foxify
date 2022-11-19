@@ -13,3 +13,4 @@ rules:
   import/extensions: off
   import/no-relative-parent-imports: off
   "@typescript-eslint/no-magic-numbers": off
+  "@typescript-eslint/consistent-type-imports": off

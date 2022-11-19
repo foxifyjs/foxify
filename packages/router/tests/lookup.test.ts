@@ -1,5 +1,5 @@
-import Router from "../src";
-import { inject } from "./__internals__";
+import Router from "#src/index";
+import { inject } from "./jest/index.js";
 
 it("should call the handler", async () => {
   expect.assertions(2);

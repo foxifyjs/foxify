@@ -1,5 +1,5 @@
 import { METHODS, MethodT } from "@foxify/http";
-import Router from "../src";
+import Router from "#src/index";
 
 it("should find index route", () => {
   const router = (new Router);
