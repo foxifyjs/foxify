@@ -21,7 +21,7 @@ async function action({ suites }: OptionsI): Promise<void> {
 
   SUITES.sort((a, b) => a.localeCompare(b));
 
-  if (suites.length > 0) SUITES = SUITES.filter(suite => suites.includes(suite));
+  if (suites.length > 0) SUITES = SUITES.filter(suite => suites.includes(basename(suite, extname(suite))));
 
   for (const SUITE_PATH of SUITES) {
     const SUITE: Array<[name: string, fn: () => unknown]> = (await import(resolve(SUITES_PATH, SUITE_PATH))).default;
