@@ -61,14 +61,14 @@ jobs:
         run: pnpm nx affected --target=build --parallel=3
 
       - name: Test the project
-        run: pnpm nx affected --target=test --parallel=3 -- -- --coverage --ci --verbose --runInBand
+        run: pnpm nx affected --target=test --parallel=3 -- --coverage --ci --verbose --runInBand
 
       - name: Stop all running agents for this CI run
         if: ${{ always() }}
         run: pnpm nx-cloud stop-all-agents
 
   agents:
-    name: Agent - Init
+    name: Agent
 
     runs-on: ubuntu-latest
 
