@@ -10,9 +10,7 @@
           "build",
           "build:esm",
           "build:cjs",
-          "test",
-          "test:coverage",
-          "test:ci"
+          "test"
         ]
       }
     }
@@ -116,25 +114,6 @@
     "test": {
       "dependsOn": [
         "^test"
-      ],
-      "inputs": [
-        "tests"
-      ]
-    },
-    "test:coverage": {
-      "dependsOn": [
-        "^test:coverage"
-      ],
-      "inputs": [
-        "tests"
-      ],
-      "outputs": [
-        "{projectRoot}/coverage"
-      ]
-    },
-    "test:ci": {
-      "dependsOn": [
-        "^test:ci"
       ],
       "inputs": [
         "tests"
