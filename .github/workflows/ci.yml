@@ -19,7 +19,7 @@ jobs:
       parallel-commands-on-agents: |
         pnpm exec nx affected --target=lint --parallel=3
         pnpm exec nx affected --target=build --parallel=3
-        pnpm exec nx affected --target=test --parallel=3 --coverage --ci --verbose
+        pnpm exec nx affected --target=test --parallel=3 -- --coverage --ci --verbose
       number-of-agents: 3
 
   agents:

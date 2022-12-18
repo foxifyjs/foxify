@@ -63,17 +63,11 @@
   },
   "targetDefaults": {
     "lint": {
-      "dependsOn": [
-        "^lint"
-      ],
       "inputs": [
         "lint"
       ]
     },
     "lint:fix": {
-      "dependsOn": [
-        "^lint:fix"
-      ],
       "inputs": [
         "lint"
       ]
