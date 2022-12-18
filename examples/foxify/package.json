@@ -5,7 +5,9 @@
   "description": "Foxify Benchmarks",
   "type": "module",
   "scripts": {
-    "start": "ts-node-esm src/index.ts"
+    "start": "ts-node-esm src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {
     "@foxify/http": "workspace:^",

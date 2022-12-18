@@ -1,0 +1,147 @@
+{
+  "defaultBase": "main",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "accessToken": "Njg1NTUwYzItODAyMy00NTQ4LWI3M2MtYTk0MWJiYWVlZjRjfHJlYWQ=",
+        "cacheableOperations": [
+          "lint",
+          "build",
+          "build:esm",
+          "build:cjs",
+          "test",
+          "test:coverage",
+          "test:ci"
+        ]
+      }
+    }
+  },
+  "workspaceLayout": {
+    "appsDir": "examples",
+    "libsDir": "packages"
+  },
+  "namedInputs": {
+    "typescript": [
+      "{workspaceRoot}/tsconfig.json",
+      "{projectRoot}/tsconfig.json",
+      "{workspaceRoot}/tsconfig.cjs.json",
+      "{projectRoot}/tsconfig.cjs.json"
+    ],
+    "typescript:eslint": [
+      "typescript",
+      "{workspaceRoot}/tsconfig.eslint.json",
+      "{projectRoot}/tsconfig.eslint.json"
+    ],
+    "typescript:jest": [
+      "typescript",
+      "{workspaceRoot}/tsconfig.jest.json",
+      "{projectRoot}/tsconfig.jest.json"
+    ],
+    "eslint": [
+      "typescript:eslint",
+      "{workspaceRoot}/.eslintrc.yml",
+      "{projectRoot}/.eslintrc.yml"
+    ],
+    "jest": [
+      "typescript:jest",
+      "{workspaceRoot}/jest.config.js",
+      "{projectRoot}/jest.config.js"
+    ],
+    "src": [
+      "typescript",
+      "{projectRoot}/src/**/*"
+    ],
+    "tests": [
+      "jest",
+      "src",
+      "{projectRoot}/tests/**/*"
+    ],
+    "lint": [
+      "eslint",
+      "src",
+      "tests"
+    ]
+  },
+  "targetDefaults": {
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ],
+      "inputs": [
+        "lint"
+      ]
+    },
+    "lint:fix": {
+      "dependsOn": [
+        "^lint:fix"
+      ],
+      "inputs": [
+        "lint"
+      ]
+    },
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "src"
+      ],
+      "outputs": [
+        "{projectRoot}/.build"
+      ]
+    },
+    "build:esm": {
+      "dependsOn": [
+        "^build:esm"
+      ],
+      "inputs": [
+        "src"
+      ],
+      "outputs": [
+        "{projectRoot}/.build"
+      ]
+    },
+    "build:cjs": {
+      "dependsOn": [
+        "^build:cjs"
+      ],
+      "inputs": [
+        "src"
+      ],
+      "outputs": [
+        "{projectRoot}/.build"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "^test"
+      ],
+      "inputs": [
+        "tests"
+      ]
+    },
+    "test:coverage": {
+      "dependsOn": [
+        "^test:coverage"
+      ],
+      "inputs": [
+        "tests"
+      ],
+      "outputs": [
+        "{projectRoot}/coverage"
+      ]
+    },
+    "test:ci": {
+      "dependsOn": [
+        "^test:ci"
+      ],
+      "inputs": [
+        "tests"
+      ],
+      "outputs": [
+        "{projectRoot}/coverage"
+      ]
+    }
+  }
+}

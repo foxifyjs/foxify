@@ -12,14 +12,16 @@
     "foxify"
   ],
   "scripts": {
-    "build": "turbo build",
-    "lint": "eslint --cache .",
-    "lint:fix": "pnpm lint --fix",
     "document": "typedoc",
     "benchmark": "pnpm -r --filter './benchmarks/*' start",
-    "test": "turbo test",
-    "test:coverage": "turbo test:coverage",
-    "test:ci": "turbo test:ci"
+    "lint": "nx run-many --target=lint",
+    "lint:fix": "nx run-many --target=lint:fix",
+    "build": "nx run-many --target=build",
+    "build:esm": "nx run-many --target=build:esm",
+    "build:cjs": "nx run-many --target=build:cjs",
+    "test": "nx run-many --target=test",
+    "test:coverage": "nx run-many --target=test:coverage",
+    "test:ci": "nx run-many --target=test:ci"
   },
   "engines": {
     "node": ">=16",
@@ -29,6 +31,7 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.7",
     "@changesets/cli": "^2.25.2",
+    "@nrwl/nx-cloud": "15.0.2",
     "@types/jest": "^29.2.2",
     "@types/node": "^18.11.9",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
@@ -39,9 +42,9 @@
     "eslint-plugin-import": "^2.26.0",
     "jest": "^29.3.1",
     "nodemon": "^2.0.20",
+    "nx": "15.3.3",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
-    "turbo": "^1.6.3",
     "typedoc": "^0.23.20",
     "typescript": "^4.8.4"
   },
