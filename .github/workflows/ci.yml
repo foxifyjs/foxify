@@ -12,14 +12,14 @@ jobs:
     uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.11
     with:
       init-commands: |
-        pnpm exec nx-cloud start-ci-run --stop-agents-after="test" --agent-count=3
+        pnpm nx-cloud start-ci-run --stop-agents-after="test" --agent-count=3
       parallel-commands: |
-        pnpm exec nx-cloud record -- pnpm exec nx workspace-lint
-        pnpm exec nx-cloud record -- pnpm exec nx format:check
+        pnpm nx-cloud record -- pnpm nx workspace-lint
+        pnpm nx-cloud record -- pnpm nx format:check
       parallel-commands-on-agents: |
-        pnpm exec nx affected --target=lint --parallel=3
-        pnpm exec nx affected --target=build --parallel=3
-        pnpm exec nx affected --target=test --parallel=3 -- --coverage --ci --verbose
+        pnpm nx affected --target=lint --parallel=3
+        pnpm nx affected --target=build --parallel=3
+        pnpm nx affected --target=test --parallel=3 -- --coverage --ci --verbose --runInBand
       number-of-agents: 2
 
   agents:
