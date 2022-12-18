@@ -24,6 +24,9 @@ jobs:
       contents: read
       actions: read
 
+    env:
+      NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
+
     steps:
       - uses: actions/checkout@v3
         if: ${{ github.event_name == 'pull_request' }}
@@ -82,6 +85,9 @@ jobs:
           - 1
           - 2
           - 3
+
+    env:
+      NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
 
     steps:
       - uses: actions/checkout@v3
