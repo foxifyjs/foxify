@@ -18,21 +18,21 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      actions: read
+
     steps:
       - uses: actions/checkout@v3
         if: ${{ github.event_name == 'pull_request' }}
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
 
       - uses: actions/checkout@v3
         if: ${{ github.event_name != 'pull_request' }}
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
-        with:
-          main-branch-name: main
+          fetch-depth: 0
 
       - name: Use PNPM
         uses: pnpm/action-setup@v2
@@ -47,6 +47,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm i
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
 
       - name: Initialize the Nx Cloud distributed CI run
         run: pnpm nx-cloud start-ci-run --stop-agents-after="test" --agent-count=${{ env.NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT }}
