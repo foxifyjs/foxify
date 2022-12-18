@@ -5,7 +5,9 @@
   "description": "Foxify Benchmarks",
   "type": "module",
   "scripts": {
-    "start": "benchmark servers"
+    "start": "benchmark servers",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {
     "@foxify/http": "workspace:*",

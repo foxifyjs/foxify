@@ -1,0 +1,91 @@
+{
+  "defaultBase": "main",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "accessToken": "Njg1NTUwYzItODAyMy00NTQ4LWI3M2MtYTk0MWJiYWVlZjRjfHJlYWQ=",
+        "cacheableOperations": [
+          "lint",
+          "build",
+          "test"
+        ]
+      }
+    }
+  },
+  "workspaceLayout": {
+    "appsDir": "examples",
+    "libsDir": "packages"
+  },
+  "namedInputs": {
+    "typescript": [
+      "{workspaceRoot}/tsconfig.json",
+      "{projectRoot}/tsconfig.json",
+      "{workspaceRoot}/tsconfig.cjs.json",
+      "{projectRoot}/tsconfig.cjs.json"
+    ],
+    "typescript:eslint": [
+      "typescript",
+      "{workspaceRoot}/tsconfig.eslint.json",
+      "{projectRoot}/tsconfig.eslint.json"
+    ],
+    "typescript:jest": [
+      "typescript",
+      "{workspaceRoot}/tsconfig.jest.json",
+      "{projectRoot}/tsconfig.jest.json"
+    ],
+    "eslint": [
+      "typescript:eslint",
+      "{workspaceRoot}/.eslintrc.yml",
+      "{projectRoot}/.eslintrc.yml"
+    ],
+    "jest": [
+      "typescript:jest",
+      "{workspaceRoot}/jest.config.js",
+      "{projectRoot}/jest.config.js"
+    ],
+    "src": [
+      "typescript",
+      "{projectRoot}/src/**/*"
+    ],
+    "tests": [
+      "jest",
+      "src",
+      "{projectRoot}/tests/**/*"
+    ],
+    "lint": [
+      "eslint",
+      "src",
+      "tests"
+    ]
+  },
+  "targetDefaults": {
+    "lint": {
+      "inputs": [
+        "lint"
+      ]
+    },
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "src"
+      ],
+      "outputs": [
+        "{projectRoot}/.build"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "^test"
+      ],
+      "inputs": [
+        "tests"
+      ],
+      "outputs": [
+        "{projectRoot}/coverage"
+      ]
+    }
+  }
+}

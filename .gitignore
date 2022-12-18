@@ -61,6 +61,7 @@ typings/
 
 .idea/
 .vscode/
+.fleet/
 
 *.tsbuildinfo
 

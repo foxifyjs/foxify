@@ -40,6 +40,8 @@
     "foxify"
   ],
   "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
     "build": "pnpm build:esm && pnpm build:cjs",
     "build:watch": "nodemon -x 'pnpm build' -w 'src/' -e '*'",
     "build:esm": "tsc",

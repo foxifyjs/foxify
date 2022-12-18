@@ -10,6 +10,10 @@ jobs:
   test:
     name: Test
 
+    permissions:
+      contents: read
+      actions: read
+
     strategy:
       matrix:
         os:
@@ -26,6 +30,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: actions/checkout@v3
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          fetch-depth: 0
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
 
       - name: Use PNPM
         uses: pnpm/action-setup@v2
@@ -41,21 +57,25 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Check code styles
-        run: pnpm lint
-
-      - name: Build the project
-        run: pnpm build
-
-      - name: Generate code documents
-        run: pnpm document
-
       - name: Get number of CPU cores
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
 
+      - name: Check code styles
+        run: pnpm nx affected --target=lint --parallel=${{ steps.cpu-cores.outputs.count }}
+
+      - name: Build the project
+        run: pnpm nx affected --target=build --parallel=${{ steps.cpu-cores.outputs.count }}
+
+      - name: Generate code documents
+        run: pnpm document
+
       - name: Test the project
-        run: pnpm test:ci -- --maxWorkers ${{ steps.cpu-cores.outputs.count }}
+        run: pnpm test:ci --maxWorkers ${{ steps.cpu-cores.outputs.count }}
+
+# TODO: this would work better with a better CodeCov integration!
+#      - name: Test the project
+#        run: pnpm nx affected --target=test --parallel=${{ steps.cpu-cores.outputs.count }} -- --coverage --ci --verbose --runInBand
 
       - name: Upload config coverage to CodeCov
         uses: codecov/codecov-action@v3
