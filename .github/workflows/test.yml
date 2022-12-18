@@ -41,18 +41,18 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Get number of CPU cores
-        id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
-
       - name: Check code styles
-        run: pnpm nx affected --target=lint --parallel=${{ steps.cpu-cores.outputs.count }}
+        run: pnpm lint
 
       - name: Build the project
-        run: pnpm nx affected --target=build --parallel=${{ steps.cpu-cores.outputs.count }}
+        run: pnpm build
 
       - name: Generate code documents
         run: pnpm document
+
+      - name: Get number of CPU cores
+        id: cpu-cores
+        uses: SimenB/github-actions-cpu-cores@v1
 
       - name: Test the project
         run: pnpm test:ci --maxWorkers ${{ steps.cpu-cores.outputs.count }}
