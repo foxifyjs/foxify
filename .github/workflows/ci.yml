@@ -6,6 +6,9 @@ on:
       - main
   pull_request:
 
+env:
+  NX_CLOUD_DE_AGENT_COUNT: 3
+
 jobs:
   main:
     name: Nx Cloud - Main Job
@@ -14,14 +17,12 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       init-commands: |
-        pnpm nx-cloud start-ci-run --stop-agents-after="test" --agent-count=3
-      parallel-commands: |
-        pnpm nx-cloud record -- pnpm nx workspace-lint
+        pnpm nx-cloud start-ci-run --stop-agents-after="test" --agent-count=${{ env.NX_CLOUD_DE_AGENT_COUNT }}
       parallel-commands-on-agents: |
         pnpm nx affected --target=lint --parallel=3
         pnpm nx affected --target=build --parallel=3
         pnpm nx affected --target=test --parallel=3 -- --coverage --ci --verbose --runInBand
-      number-of-agents: 3
+      number-of-agents: ${{ env.NX_CLOUD_DE_AGENT_COUNT }}
       node-version: 16
       pnpm-version: 7
 
@@ -31,6 +32,6 @@ jobs:
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
-      number-of-agents: 3
+      number-of-agents: ${{ env.NX_CLOUD_DE_AGENT_COUNT }}
       node-version: 16
       pnpm-version: 7
