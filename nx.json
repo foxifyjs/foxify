@@ -8,8 +8,6 @@
         "cacheableOperations": [
           "lint",
           "build",
-          "build:esm",
-          "build:cjs",
           "test"
         ]
       }
@@ -67,36 +65,9 @@
         "lint"
       ]
     },
-    "lint:fix": {
-      "inputs": [
-        "lint"
-      ]
-    },
     "build": {
       "dependsOn": [
         "^build"
-      ],
-      "inputs": [
-        "src"
-      ],
-      "outputs": [
-        "{projectRoot}/.build"
-      ]
-    },
-    "build:esm": {
-      "dependsOn": [
-        "^build:esm"
-      ],
-      "inputs": [
-        "src"
-      ],
-      "outputs": [
-        "{projectRoot}/.build"
-      ]
-    },
-    "build:cjs": {
-      "dependsOn": [
-        "^build:cjs"
       ],
       "inputs": [
         "src"

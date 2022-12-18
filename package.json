@@ -15,12 +15,10 @@
     "document": "typedoc",
     "benchmark": "pnpm -r --filter './benchmarks/*' start",
     "lint": "nx run-many --target=lint",
-    "lint:fix": "nx run-many --target=lint:fix",
+    "lint:fix": "pnpm -r lint:fix",
     "build": "nx run-many --target=build",
-    "build:esm": "nx run-many --target=build:esm",
-    "build:cjs": "nx run-many --target=build:cjs",
     "test": "nx run-many --target=test",
-    "test:coverage": "pnpm test -- --coverage",
+    "test:coverage": "pnpm test -- -- --coverage",
     "test:ci": "pnpm test:coverage --ci --verbose"
   },
   "engines": {

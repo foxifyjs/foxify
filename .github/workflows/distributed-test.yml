@@ -1,0 +1,101 @@
+name: Distributed Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  NX_CLOUD_DISTRIBUTED_EXECUTION: true
+  NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT: 3
+  NX_BRANCH: ${{ github.ref_name }}
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+jobs:
+  main:
+    name: Main
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/checkout@v3
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: main
+
+      - name: Use PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+          node-version: 16
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Initialize the Nx Cloud distributed CI run
+        run: pnpm nx-cloud start-ci-run --stop-agents-after="test" --agent-count=${{ env.NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT }}
+
+      - name: Check code styles
+        run: pnpm nx affected --target=lint --parallel=3
+
+      - name: Build the project
+        run: pnpm nx affected --target=build --parallel=3
+
+      - name: Test the project
+        run: pnpm nx affected --target=test --parallel=3 -- -- --coverage --ci --verbose --runInBand
+
+      - name: Stop all running agents for this CI run
+        if: ${{ always() }}
+        run: pnpm nx-cloud stop-all-agents
+
+  agents:
+    name: Agent - Init
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 15
+
+    strategy:
+      matrix:
+        agent:
+          - 1
+          - 2
+          - 3
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+          node-version: 16
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Start Nx Agent ${{ matrix.agent }}
+        run: pnpm nx-cloud start-agent
+        env:
+          NX_AGENT_NAME: ${{ matrix.agent }}
