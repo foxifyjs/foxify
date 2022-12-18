@@ -16,7 +16,17 @@ jobs:
   main:
     name: Main
 
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+        node-version:
+          - 16
+          - 18
+
+    runs-on: ${{ matrix.os }}
 
     timeout-minutes: 30
 
@@ -25,7 +35,7 @@ jobs:
       actions: read
 
     env:
-      NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
+      NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.os }}-{{ matrix.node-version }}
 
     steps:
       - uses: actions/checkout@v3
@@ -44,11 +54,11 @@ jobs:
         with:
           version: 7
 
-      - name: Use Node.js 16
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           cache: pnpm
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: pnpm i
@@ -75,19 +85,26 @@ jobs:
   agents:
     name: Agent ${{ matrix.agent }}
 
-    runs-on: ubuntu-latest
-
-    timeout-minutes: 15
-
     strategy:
       matrix:
         agent:
           - 1
           - 2
           - 3
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+        node-version:
+          - 16
+          - 18
+
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 15
 
     env:
-      NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
+      NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.os }}-{{ matrix.node-version }}
 
     steps:
       - uses: actions/checkout@v3
@@ -97,11 +114,11 @@ jobs:
         with:
           version: 7
 
-      - name: Use Node.js 16
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           cache: pnpm
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: pnpm i
