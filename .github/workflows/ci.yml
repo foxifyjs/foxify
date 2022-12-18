@@ -1,13 +1,11 @@
 name: Nx Test CI
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-
-env:
-  NX_CLOUD_DE_AGENT_COUNT: 3
+#  push:
+#    branches:
+#      - main
+#  pull_request:
+  workflow_call:
 
 jobs:
   main:
@@ -17,12 +15,12 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       init-commands: |
-        pnpm nx-cloud start-ci-run --stop-agents-after="test" --agent-count=${{ env.NX_CLOUD_DE_AGENT_COUNT }}
+        pnpm nx-cloud start-ci-run --stop-agents-after="test" --agent-count=3
       parallel-commands-on-agents: |
         pnpm nx affected --target=lint --parallel=3
         pnpm nx affected --target=build --parallel=3
         pnpm nx affected --target=test --parallel=3 -- --coverage --ci --verbose --runInBand
-      number-of-agents: ${{ env.NX_CLOUD_DE_AGENT_COUNT }}
+      number-of-agents: 3
       node-version: 16
       pnpm-version: 7
 
@@ -32,6 +30,6 @@ jobs:
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
-      number-of-agents: ${{ env.NX_CLOUD_DE_AGENT_COUNT }}
+      number-of-agents: 3
       node-version: 16
       pnpm-version: 7
