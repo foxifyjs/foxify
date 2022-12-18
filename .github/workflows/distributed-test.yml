@@ -14,7 +14,7 @@ env:
 
 jobs:
   main:
-    name: Main
+    name: Main (${{ matrix.os }}, {{ matrix.node-version }})
 
     strategy:
       matrix:
@@ -35,7 +35,7 @@ jobs:
       actions: read
 
     env:
-      NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.os }}-{{ matrix.node-version }}
+      NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.os }}-${{ matrix.node-version }}
 
     steps:
       - uses: actions/checkout@v3
@@ -83,7 +83,7 @@ jobs:
         run: pnpm nx-cloud stop-all-agents
 
   agents:
-    name: Agent ${{ matrix.agent }}
+    name: Agent ${{ matrix.agent }} (${{ matrix.os }}, {{ matrix.node-version }})
 
     strategy:
       matrix:
@@ -104,7 +104,7 @@ jobs:
     timeout-minutes: 15
 
     env:
-      NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.os }}-{{ matrix.node-version }}
+      NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.os }}-${{ matrix.node-version }}
 
     steps:
       - uses: actions/checkout@v3
