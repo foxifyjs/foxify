@@ -93,7 +93,7 @@ jobs:
         run: pnpm document
 
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v3
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
