@@ -9,7 +9,7 @@ updates:
       interval: monthly
       day: monday
     commit-message:
-      prefix: deps(CI)
+      prefix: ci(deps)
     reviewers:
       - foxifyjs/maintainers
 
@@ -20,8 +20,5 @@ updates:
       interval: monthly
       day: monday
     versioning-strategy: increase
-    commit-message:
-      prefix: deps
-      prefix-development: deps(Dev)
     reviewers:
       - foxifyjs/maintainers
