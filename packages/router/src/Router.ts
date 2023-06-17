@@ -452,8 +452,8 @@ class Router {
       response.setHeader("Allow", message);
 
       message = STATUS_CODES[STATUS.METHOD_NOT_ALLOWED]!;
-    } else if (!message) {
-      message = STATUS_CODES[STATUS.INTERNAL_SERVER_ERROR]!;
+    } else {
+      message ||= STATUS_CODES[STATUS.INTERNAL_SERVER_ERROR]!;
     }
 
     const stackDetails = stack

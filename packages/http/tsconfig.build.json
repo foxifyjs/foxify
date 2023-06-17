@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": false,
+    "tsBuildInfoFile": "./.build/.esm.tsbuildinfo",
+    "rootDir": "./src",
+    "outDir": "./.build/esm"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", ".build", "docs", "tests/**/*", "jest.config.ts","src/config.cjs.ts"],
+}

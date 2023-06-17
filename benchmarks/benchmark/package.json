@@ -8,7 +8,7 @@
     "benchmark": "index.ts"
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {

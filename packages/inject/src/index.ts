@@ -46,7 +46,7 @@ export default async function inject<
     if (typeof body !== "string") {
       body = JSON.stringify(body);
 
-      headers["content-type"] = headers["content-type"] ?? "application/json";
+      headers["content-type"] ??= "application/json";
     }
 
     headers["content-length"] = Buffer.byteLength(body).toString();
@@ -74,7 +74,7 @@ export default async function inject<
   // Readonly
   req.headers = headers;
 
-  req.headers["user-agent"] = req.headers["user-agent"] ?? `foxify-inject/${ pkg.version }`;
+  req.headers["user-agent"] ??= `foxify-inject/${ pkg.version }`;
 
   const hostHeaderFromUri = (): string | null => {
     if (uri.port) return uri.host;

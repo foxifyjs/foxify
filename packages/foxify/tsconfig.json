@@ -1,9 +1,5 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "tsBuildInfoFile": "./.build/.esm.tsbuildinfo",
-    "rootDir": "./src",
-    "outDir": "./.build/esm"
-  },
-  "include": ["src"]
+  "include": ["src/**/*", "tests/**/*", "jest.config.ts"],
+  "exclude": ["node_modules", ".build", "docs"]
 }

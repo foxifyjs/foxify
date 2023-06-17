@@ -102,8 +102,7 @@ export default class Request extends IncomingMessage {
    * Short-hand for `url.parseUrl(req.url).pathname`.
    */
   public get path(): string {
-    return (this._parsedUrl ?? (this._parsedUrl = parseUrl(this.url)))
-      .pathname!;
+    return (this._parsedUrl ??= parseUrl(this.url)).pathname!;
   }
 
   /**
@@ -133,10 +132,7 @@ export default class Request extends IncomingMessage {
 
   public get query(): Record<string, unknown> {
     return (
-      this._queryCache
-      ?? (
-        this._queryCache = SETTINGS["query.parser"]((this._parsedUrl ?? (this._parsedUrl = parseUrl(this.url))).query!)
-      )
+      this._queryCache ??= SETTINGS["query.parser"]((this._parsedUrl ??= parseUrl(this.url)).query!)
     );
   }
 
@@ -178,7 +174,7 @@ export default class Request extends IncomingMessage {
   }
 
   protected get _accepts(): Accepts {
-    return this._acceptsCache ?? (this._acceptsCache = new Accepts(this));
+    return (this._acceptsCache ??= new Accepts(this));
   }
 
   /**
