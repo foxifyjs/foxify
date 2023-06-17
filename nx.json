@@ -21,26 +21,18 @@
     "typescript": [
       "{workspaceRoot}/tsconfig.json",
       "{projectRoot}/tsconfig.json",
-      "{workspaceRoot}/tsconfig.cjs.json",
-      "{projectRoot}/tsconfig.cjs.json"
-    ],
-    "typescript:eslint": [
-      "typescript",
-      "{workspaceRoot}/tsconfig.eslint.json",
-      "{projectRoot}/tsconfig.eslint.json"
-    ],
-    "typescript:jest": [
-      "typescript",
-      "{workspaceRoot}/tsconfig.jest.json",
-      "{projectRoot}/tsconfig.jest.json"
+      "{workspaceRoot}/tsconfig.build.json",
+      "{projectRoot}/tsconfig.build.json",
+      "{workspaceRoot}/tsconfig.build.cjs.json",
+      "{projectRoot}/tsconfig.build.cjs.json"
     ],
     "eslint": [
-      "typescript:eslint",
+      "typescript",
       "{workspaceRoot}/.eslintrc.yml",
       "{projectRoot}/.eslintrc.yml"
     ],
     "jest": [
-      "typescript:jest",
+      "typescript",
       "{workspaceRoot}/jest.config.ts",
       "{projectRoot}/jest.config.ts"
     ],
@@ -61,8 +53,15 @@
   },
   "targetDefaults": {
     "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "eslintConfig": ".eslintrc.yml"
+      },
       "inputs": [
         "lint"
+      ],
+      "outputs": [
+        "{options.outputFile}"
       ]
     },
     "build": {
@@ -77,6 +76,10 @@
       ]
     },
     "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "{projectRoot}/jest.config.ts"
+      },
       "dependsOn": [
         "^test"
       ],

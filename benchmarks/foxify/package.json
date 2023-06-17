@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "benchmark servers",
-    "lint": "eslint .",
+    "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {

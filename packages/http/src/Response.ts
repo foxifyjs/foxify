@@ -89,9 +89,7 @@ const isAbsolute = (path: string): boolean => {
   if (path[1] === ":" && (path[2] === "\\" || path[2] === "/")) return true;
 
   // Microsoft Azure absolute path
-  if (path.startsWith("\\\\")) return true;
-
-  return false;
+  return path.startsWith("\\\\");
 };
 
 /**
@@ -514,7 +512,7 @@ class Response extends ServerResponse<Request> {
       options.maxAge /= 1000;
     }
 
-    if (!options.path) options.path = "/";
+    options.path ||= "/";
 
     return this.append("Set-Cookie", cookie.serialize(name, value, options));
   }
@@ -916,18 +914,16 @@ class Response extends ServerResponse<Request> {
       data = undefined;
     }
 
-    if (!callback) {
-      callback = (err, str): void => {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (err != null) {
-          this.next(err);
+    callback ??= (err, str): void => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (err != null) {
+        this.next(err);
 
-          return;
-        }
+        return;
+      }
 
-        this.send(str);
-      };
-    }
+      this.send(str);
+    };
 
     engine.render(view, data, callback);
   }
@@ -953,48 +949,6 @@ class Response extends ServerResponse<Request> {
     if (body === undefined) return this.#send();
 
     return this.json(body);
-  }
-
-  /**
-   * Finalize the response.
-   * @param body
-   * @param encoding
-   * @private
-   */
-  #send(body?: Buffer | string, encoding?: BufferEncoding): this {
-    // eslint-disable-next-line no-undefined
-    if (body !== undefined) {
-      const { etag } = SETTINGS;
-
-      if (etag && !this.hasHeader("etag")) {
-        const generatedETag = etag(body, encoding);
-
-        if (generatedETag) this.setHeader("ETag", generatedETag);
-      }
-    }
-
-    // Freshness
-    if (this.fresh) this.statusCode = STATUS.NOT_MODIFIED;
-
-    const { statusCode } = this;
-
-    // Strip irrelevant headers
-    if (
-      STATUS.NO_CONTENT === statusCode
-      || STATUS.NOT_MODIFIED === statusCode
-    ) {
-      this.removeHeader("content-type");
-      this.removeHeader("content-length");
-      this.removeHeader("transfer-encoding");
-
-      body = "";
-    }
-
-    // Skip body for HEAD
-    if (this.req.method === METHOD.HEAD) this.end();
-    else this.end(body, encoding as any);
-
-    return this;
   }
 
   /**
@@ -1133,6 +1087,48 @@ class Response extends ServerResponse<Request> {
    */
   public vary(field: string[] | string = []): this {
     return vary(this, field);
+  }
+
+  /**
+   * Finalize the response.
+   * @param body
+   * @param encoding
+   * @private
+   */
+  #send(body?: Buffer | string, encoding?: BufferEncoding): this {
+    // eslint-disable-next-line no-undefined
+    if (body !== undefined) {
+      const { etag } = SETTINGS;
+
+      if (etag && !this.hasHeader("etag")) {
+        const generatedETag = etag(body, encoding);
+
+        if (generatedETag) this.setHeader("ETag", generatedETag);
+      }
+    }
+
+    // Freshness
+    if (this.fresh) this.statusCode = STATUS.NOT_MODIFIED;
+
+    const { statusCode } = this;
+
+    // Strip irrelevant headers
+    if (
+      STATUS.NO_CONTENT === statusCode
+      || STATUS.NOT_MODIFIED === statusCode
+    ) {
+      this.removeHeader("content-type");
+      this.removeHeader("content-length");
+      this.removeHeader("transfer-encoding");
+
+      body = "";
+    }
+
+    // Skip body for HEAD
+    if (this.req.method === METHOD.HEAD) this.end();
+    else this.end(body, encoding as any);
+
+    return this;
   }
 
 }

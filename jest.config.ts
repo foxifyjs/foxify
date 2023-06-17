@@ -188,7 +188,7 @@ export default {
     "^.+\\.tsx?$": [
       "ts-jest",
       {
-        tsconfig: "<rootDir>/tsconfig.jest.json",
+        tsconfig: "<rootDir>/tsconfig.json",
         isolatedModules: true,
       },
     ],
