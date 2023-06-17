@@ -7,171 +7,33 @@ on:
   pull_request:
 
 jobs:
-  test:
-    name: Test
+  main:
+    name: Nx Cloud - Main Job
+    uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.13.0
+    with:
+      main-branch-name: main
+      number-of-agents: 3
+      node-version: 16
+      pnpm-version: 8
+      artifacts-name: coverage
+      artifacts-path: packages/*/coverage/**
+      init-commands: |
+        pnpm nx-cloud start-ci-run --stop-agents-after test --agent-count 3
+      parallel-commands-on-agents: |
+        pnpm nx affected -t lint --parallel 2
+        pnpm nx affected -t build --parallel 2
+        pnpm nx affected -t test --parallel 2 -- --ci --coverage --verbose --runInBand
 
-    permissions:
-      contents: read
-      actions: read
+  agents:
+    name: Nx Cloud - Agents
+    uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.13.0
+    with:
+      number-of-agents: 3
+      node-version: 16
+      pnpm-version: 8
 
-    strategy:
-      matrix:
-        os:
-          - macos-latest
-          - ubuntu-latest
-          - windows-latest
-        node-version:
-          - 16
-          - 18
-
-    runs-on: ${{ matrix.os }}
-
-    timeout-minutes: 15
-
-    steps:
-      - uses: actions/checkout@v3
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-
-      - uses: actions/checkout@v3
-        if: ${{ github.event_name != 'pull_request' }}
-        with:
-          fetch-depth: 0
-
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
-
-      - name: Use PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          cache: pnpm
-          node-version: ${{ matrix.node-version }}
-
-      - name: Install dependencies
-        run: pnpm i
-
-      - name: Get number of CPU cores
-        id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
-
-      - name: Check code styles
-        run: pnpm nx affected --target=lint --parallel=${{ steps.cpu-cores.outputs.count }}
-
-      - name: Build the project
-        run: pnpm nx affected --target=build --parallel=${{ steps.cpu-cores.outputs.count }}
-
-      - name: Generate code documents
-        run: pnpm document
-
-      - name: Test the project
-        run: pnpm test:ci --maxWorkers ${{ steps.cpu-cores.outputs.count }}
-
-# TODO: this would work better with a better CodeCov integration!
-#      - name: Test the project
-#        run: pnpm nx affected --target=test --parallel=${{ steps.cpu-cores.outputs.count }} -- --coverage --ci --verbose --runInBand
-
-      - name: Upload config coverage to CodeCov
-        uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
-        env:
-          OS: ${{ runner.os }}
-          ARCH: ${{ runner.arch }}
-          NODE_VERSION: ${{ matrix.node-version }}
-          REF: ${{ github.ref_name }}
-        with:
-          files: ./packages/config/coverage/clover.xml,./packages/config/coverage/coverage-final.json,./packages/config/coverage/lcov.info
-          flags: config
-          env_vars: OS,ARCH,NODE_VERSION,REF
-          fail_ci_if_error: true
-
-      - name: Upload foxify coverage to CodeCov
-        uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
-        env:
-          OS: ${{ runner.os }}
-          ARCH: ${{ runner.arch }}
-          NODE_VERSION: ${{ matrix.node-version }}
-          REF: ${{ github.ref_name }}
-        with:
-          files: ./packages/foxify/coverage/clover.xml,./packages/foxify/coverage/coverage-final.json,./packages/foxify/coverage/lcov.info
-          flags: foxify
-          env_vars: OS,ARCH,NODE_VERSION,REF
-          fail_ci_if_error: true
-
-      - name: Upload fresh coverage to CodeCov
-        uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
-        env:
-          OS: ${{ runner.os }}
-          ARCH: ${{ runner.arch }}
-          NODE_VERSION: ${{ matrix.node-version }}
-          REF: ${{ github.ref_name }}
-        with:
-          files: ./packages/fresh/coverage/clover.xml,./packages/fresh/coverage/coverage-final.json,./packages/fresh/coverage/lcov.info
-          flags: fresh
-          env_vars: OS,ARCH,NODE_VERSION,REF
-          fail_ci_if_error: true
-
-      - name: Upload http coverage to CodeCov
-        uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
-        env:
-          OS: ${{ runner.os }}
-          ARCH: ${{ runner.arch }}
-          NODE_VERSION: ${{ matrix.node-version }}
-          REF: ${{ github.ref_name }}
-        with:
-          files: ./packages/http/coverage/clover.xml,./packages/http/coverage/coverage-final.json,./packages/http/coverage/lcov.info
-          flags: http
-          env_vars: OS,ARCH,NODE_VERSION,REF
-          fail_ci_if_error: true
-
-      - name: Upload inject coverage to CodeCov
-        uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
-        env:
-          OS: ${{ runner.os }}
-          ARCH: ${{ runner.arch }}
-          NODE_VERSION: ${{ matrix.node-version }}
-          REF: ${{ github.ref_name }}
-        with:
-          files: ./packages/inject/coverage/clover.xml,./packages/inject/coverage/coverage-final.json,./packages/inject/coverage/lcov.info
-          flags: inject
-          env_vars: OS,ARCH,NODE_VERSION,REF
-          fail_ci_if_error: true
-
-      - name: Upload router coverage to CodeCov
-        uses: codecov/codecov-action@v3
-        if: ${{ runner.os == 'Linux' && runner.arch == 'X64' }}
-        env:
-          OS: ${{ runner.os }}
-          ARCH: ${{ runner.arch }}
-          NODE_VERSION: ${{ matrix.node-version }}
-          REF: ${{ github.ref_name }}
-        with:
-          files: ./packages/router/coverage/clover.xml,./packages/router/coverage/coverage-final.json,./packages/router/coverage/lcov.info
-          flags: router
-          env_vars: OS,ARCH,NODE_VERSION,REF
-          fail_ci_if_error: true
-
-  test-summary:
-    name: Test Summary
-
+  codecov:
+    name: CodeCov
+    uses: ./.github/workflows/codecov.yml
     needs:
-      - test
-
-    if: ${{ always() && github.event_name == 'pull_request' }}
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check test matrix status
-        if  : ${{ needs.test.result != 'success' }}
-        run : exit 1
+      - main

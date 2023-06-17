@@ -1,0 +1,42 @@
+name: CodeCov
+
+on:
+  workflow_call:
+
+jobs:
+  codecov:
+    name: ${{ matrix.package }} Coverage
+
+    strategy:
+      matrix:
+        package:
+          - config
+          - foxify
+          - fresh
+          - http
+          - inject
+          - router
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage
+          path: coverage
+
+      - name: "Check file existence"
+        id: check_coverage_files
+        uses: andstor/file-existence-action@v2
+        with:
+          files: coverage/${{ matrix.package }}
+
+      - name: Upload coverage to CodeCov
+        uses: codecov/codecov-action@v3
+        if: steps.check_coverage_files.outputs.files_exists == 'true'
+        with:
+          files: coverage/${{ matrix.package }}/coverage/clover.xml,coverage/${{ matrix.package }}/coverage/coverage-final.json,coverage/${{ matrix.package }}/coverage/lcov.info
+          flags: ${{ matrix.package }}
+          fail_ci_if_error: true

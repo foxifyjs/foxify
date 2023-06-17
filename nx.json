@@ -2,7 +2,7 @@
   "defaultBase": "main",
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/nx-cloud",
+      "runner": "nx-cloud",
       "options": {
         "accessToken": "Njg1NTUwYzItODAyMy00NTQ4LWI3M2MtYTk0MWJiYWVlZjRjfHJlYWQ=",
         "cacheableOperations": [
