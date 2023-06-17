@@ -1,9 +1,11 @@
 /*
- * For a detailed explanation regarding each configuration property, visit:
+ * For a detailed explanation regarding each configuration property and type check, visit:
  * https://jestjs.io/docs/configuration
  */
 
-module.exports = {
+import { type Config } from "jest";
+
+export default {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -14,7 +16,7 @@ module.exports = {
   // cacheDirectory: "/private/var/folders/dp/t3bs9gd575qfbxts2_vk6cm80000gn/T/jest_dx",
 
   // Automatically clear mock calls, instances, contexts and results before every test
-  // clearMocks: false,
+  clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test
   // collectCoverage: false,
@@ -116,13 +118,13 @@ module.exports = {
   reporters: ["default", "github-actions"],
 
   // Automatically reset mock state before every test
-  // resetMocks: false,
+  resetMocks: true,
 
   // Reset the module registry before running each individual test
   // resetModules: false,
 
   // A path to a custom resolver
-  resolver: "<rootDir>/../../resolver.jest.js",
+  // resolver: undefined,
 
   // Automatically restore mock state and implementation before every test
   // restoreMocks: false,
@@ -186,7 +188,7 @@ module.exports = {
     "^.+\\.tsx?$": [
       "ts-jest",
       {
-        tsconfig       : "<rootDir>/tsconfig.jest.json",
+        tsconfig: "<rootDir>/tsconfig.jest.json",
         isolatedModules: true,
       },
     ],
@@ -211,4 +213,6 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-};
+
+  logHeapUsage: true,
+} satisfies Config;

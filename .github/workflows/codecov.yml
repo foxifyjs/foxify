@@ -5,7 +5,7 @@ on:
 
 jobs:
   codecov:
-    name: ${{ matrix.package }} Coverage
+    name: ${{ matrix.package }}
 
     strategy:
       matrix:

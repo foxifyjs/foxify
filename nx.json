@@ -41,8 +41,8 @@
     ],
     "jest": [
       "typescript:jest",
-      "{workspaceRoot}/jest.config.js",
-      "{projectRoot}/jest.config.js"
+      "{workspaceRoot}/jest.config.ts",
+      "{projectRoot}/jest.config.ts"
     ],
     "src": [
       "typescript",
