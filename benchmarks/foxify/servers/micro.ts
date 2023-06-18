@@ -1,7 +1,8 @@
 #!/usr/bin/env ts-node-esm
 
-import micro from "micro";
+import http from "node:http";
+import { serve } from "micro";
 
-const server = micro.default(async () => ({ hello: "world" }));
+const server = new http.Server(serve(async () => ({ hello: "world" })));
 
-(server as any).listen(3000, () => process.send?.("READY"));
+server.listen(3000, () => process.send?.("READY"));

@@ -4,7 +4,7 @@ import connect from "connect";
 
 const app = connect();
 
-app.use((req, res) => {
+app.use((req: any, res: any) => {
   res.setHeader("Content-Type", "application/json");
 
   res.end(JSON.stringify({ hello: "world" }));

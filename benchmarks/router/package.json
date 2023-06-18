@@ -13,14 +13,15 @@
     "@foxify/router": "workspace:*",
     "@hapi/call": "^9.0.1",
     "express": "^4.18.2",
-    "foxify-old": "npm:foxify@0.10.20",
     "find-my-way": "^7.6.2",
+    "foxify-old": "npm:foxify@0.10.20",
     "koa-router": "^12.0.0",
     "koa-tree-router": "^0.12.1",
     "trek-router": "^1.2.0"
   },
   "devDependencies": {
     "@foxify/benchmark": "workspace:*",
+    "@types/express": "^4.17.17",
     "@types/hapi__call": "^9.0.0",
     "@types/koa-router": "^7.4.4"
   }

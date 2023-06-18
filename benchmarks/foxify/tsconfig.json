@@ -4,6 +4,6 @@
     "allowImportingTsExtensions": false,
     "baseUrl": ".",
     "noEmit": true,
-    "types": ["./typings.d.ts"]
+    "types": ["./typings.d.ts", "node"]
   }
 }

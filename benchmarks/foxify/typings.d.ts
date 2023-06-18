@@ -1,3 +1,4 @@
+declare module "connect";
 declare module "hsts";
 declare module "router";
 declare module "rayo";
