@@ -13,12 +13,12 @@
     "@foxify/http": "workspace:^",
     "@foxify/router": "workspace:^",
     "foxify": "workspace:^",
-    "ejs": "^3.1.8",
+    "ejs": "^3.1.9",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "@types/ejs": "^3.1.1",
-    "@types/morgan": "^1.9.3",
-    "@types/node": "^18.11.9"
+    "@types/ejs": "^3.1.2",
+    "@types/morgan": "^1.9.4",
+    "@types/node": "^20.3.1"
   }
 }

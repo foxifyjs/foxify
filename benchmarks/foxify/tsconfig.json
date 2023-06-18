@@ -3,6 +3,7 @@
   "compilerOptions": {
     "allowImportingTsExtensions": false,
     "baseUrl": ".",
-    "noEmit": true
+    "noEmit": true,
+    "types": ["./typings.d.ts"]
   }
 }

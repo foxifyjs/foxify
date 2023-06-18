@@ -5,3 +5,4 @@ declare module "take-five";
 declare module "total.js";
 declare module "trek-engine";
 declare module "trek-router";
+declare module "serve-static";

@@ -62,13 +62,13 @@
   },
   "dependencies": {
     "escape-html": "^1.0.3",
-    "fast-json-stringify": "^5.4.1"
+    "fast-json-stringify": "^5.7.0"
   },
   "devDependencies": {
     "@foxify/http": "workspace:^",
     "@foxify/inject": "workspace:^",
     "@types/escape-html": "^1.0.2",
-    "@types/node": "^18.11.9",
+    "@types/node": "^20.3.1",
     "prototyped.js": "^3.0.5"
   },
   "publishConfig": {

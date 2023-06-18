@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node-esm
 
-import fastifyExpress from "@fastify/express";
+import * as fastifyExpress from "@fastify/express";
 import cors from "cors";
 import dnsPrefetchControl from "dns-prefetch-control";
 // eslint-disable-next-line import/no-named-as-default

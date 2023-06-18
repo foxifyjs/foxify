@@ -12,13 +12,13 @@
     "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {
-    "autocannon": "^7.10.0",
+    "autocannon": "^7.11.0",
     "beautify-benchmark": "^0.2.4",
     "benchmark": "^2.1.4",
-    "commander": "^9.4.1",
-    "inquirer": "^9.1.4",
+    "commander": "^11.0.0",
+    "inquirer": "^9.2.7",
     "log-symbols": "^5.1.0",
-    "ora": "^6.1.2",
+    "ora": "^6.3.1",
     "table": "^6.8.1"
   },
   "devDependencies": {

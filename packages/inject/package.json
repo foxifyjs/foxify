@@ -58,7 +58,7 @@
     "@types/node": ">=16"
   },
   "dependencies": {
-    "readable-stream": "^4.2.0"
+    "readable-stream": "^4.4.0"
   },
   "devDependencies": {
     "@types/readable-stream": "^2.3.15"
