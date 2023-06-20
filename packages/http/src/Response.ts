@@ -10,7 +10,7 @@ import escapeHtml from "escape-html";
 import onFinished from "on-finished";
 import send, { mime as sendMime } from "send";
 import Request from "./Request.js";
-import { JsonT, METHOD, STATUS, StatusT, StringifyT } from "./constants/index.js";
+import { ENCODING_UTF8, JsonT, METHOD, STATUS, StatusT, StringifyT } from "./constants/index.js";
 import { createETagGenerator, encodeUrl, vary } from "./utils/index.js";
 import { CallbackT as EngineCallbackT, Engine } from "./view/index.js";
 
@@ -416,7 +416,7 @@ class Response extends ServerResponse<Request> {
   public bin(body: Buffer): this {
     if (!this.hasHeader("content-type")) this.type("bin");
 
-    return this.#send(body);
+    return this.$end(body);
   }
 
   /**
@@ -734,11 +734,10 @@ class Response extends ServerResponse<Request> {
    * res.json({ user: "tj" });
    */
   public json(body: JsonT): this {
-    const encoding = "utf-8";
-    const type = this.get("content-type");
+    const type = this.get("Content-Type");
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (typeof type === "string") this.setHeader("Content-Type", setCharset(type, encoding)!);
+    if (typeof type === "string") this.setHeader("Content-Type", setCharset(type, ENCODING_UTF8)!);
     else this.setHeader("Content-Type", "application/json; charset=utf-8");
 
     const {
@@ -747,7 +746,7 @@ class Response extends ServerResponse<Request> {
       "json.escape": escape,
     } = SETTINGS;
 
-    return this.#send(
+    return this.$end(
       stringify(
         this.stringify[this.statusCode],
         body,
@@ -755,7 +754,7 @@ class Response extends ServerResponse<Request> {
         spaces,
         escape,
       ),
-      encoding,
+      ENCODING_UTF8,
     );
   }
 
@@ -943,10 +942,10 @@ class Response extends ServerResponse<Request> {
 
     if (Buffer.isBuffer(body)) return this.bin(body);
 
-    if (body === null) return this.#send("");
+    if (body === null) return this.$end("");
 
     // eslint-disable-next-line no-undefined
-    if (body === undefined) return this.#send();
+    if (body === undefined) return this.$end();
 
     return this.json(body);
   }
@@ -1069,14 +1068,13 @@ class Response extends ServerResponse<Request> {
    * res.send("<p>some html</p>");
    */
   public text(body: string): this {
-    const encoding = "utf-8";
     const type = this.get("content-type");
 
     // Reflect this in content-type
-    if (typeof type === "string") this.set("Content-Type", setCharset(type, encoding));
-    else this.set("Content-Type", setCharset("text/html", encoding));
+    if (typeof type === "string") this.set("Content-Type", setCharset(type, ENCODING_UTF8));
+    else this.set("Content-Type", setCharset("text/html", ENCODING_UTF8));
 
-    return this.#send(body);
+    return this.$end(body);
   }
 
   /**
@@ -1095,7 +1093,7 @@ class Response extends ServerResponse<Request> {
    * @param encoding
    * @private
    */
-  #send(body?: Buffer | string, encoding?: BufferEncoding): this {
+  private $end(body?: Buffer | string, encoding?: BufferEncoding): this {
     // eslint-disable-next-line no-undefined
     if (body !== undefined) {
       const { etag } = SETTINGS;
@@ -1110,18 +1108,18 @@ class Response extends ServerResponse<Request> {
     // Freshness
     if (this.fresh) this.statusCode = STATUS.NOT_MODIFIED;
 
-    const { statusCode } = this;
-
     // Strip irrelevant headers
-    if (
-      STATUS.NO_CONTENT === statusCode
-      || STATUS.NOT_MODIFIED === statusCode
-    ) {
-      this.removeHeader("content-type");
-      this.removeHeader("content-length");
-      this.removeHeader("transfer-encoding");
+    switch (this.statusCode) {
+      case STATUS.NO_CONTENT:
+      case STATUS.NOT_MODIFIED:
+        this.removeHeader("content-type");
+        this.removeHeader("content-length");
+        this.removeHeader("transfer-encoding");
 
-      body = "";
+        body = "";
+        break;
+      default:
+        break;
     }
 
     // Skip body for HEAD
