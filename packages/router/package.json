@@ -1,6 +1,6 @@
 {
   "name": "@foxify/router",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Foxify HTTP router",
   "homepage": "https://foxify.js.org",
   "author": "Ardalan Amini <ardalanamini22@gmail.com> (https://ardalanamini.com)",
@@ -56,7 +56,7 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "@foxify/http": "^1",
+    "@foxify/http": "^1.0.0-beta.4",
     "@types/node": ">=16",
     "prototyped.js": "^3"
   },

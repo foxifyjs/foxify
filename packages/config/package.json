@@ -1,6 +1,6 @@
 {
   "name": "@foxify/config",
-  "version": "1.1.0",
+  "version": "1.1.1-beta.0",
   "description": "Foxify framework config",
   "homepage": "https://foxify.js.org",
   "author": "Ardalan Amini <ardalanamini22@gmail.com> (https://ardalanamini.com)",
