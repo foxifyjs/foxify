@@ -355,8 +355,8 @@ class Response extends ServerResponse<Request> {
       || STATUS.NOT_MODIFIED === status
     ) {
       return fresh(req.headers, {
-        etag           : this.get("etag"),
-        "last-modified": this.getHeader("last-modified"),
+        etag           : this.get("ETag"),
+        "last-modified": this.getHeader("Last-Modified"),
       });
     }
 
@@ -414,7 +414,7 @@ class Response extends ServerResponse<Request> {
    * res.send(Buffer.from("wahoo"));
    */
   public bin(body: Buffer): this {
-    if (!this.hasHeader("content-type")) this.type("bin");
+    if (!this.hasHeader("Content-Type")) this.type("bin");
 
     return this.$end(body);
   }
@@ -662,7 +662,7 @@ class Response extends ServerResponse<Request> {
     this.vary("Accept");
 
     if (key) {
-      this.set("content-type", normalizeType(key).value);
+      this.set("Content-Type", normalizeType(key).value);
       types[key]!(req, this, next);
     } else if (fn) {
       fn(req, this, next);
@@ -740,19 +740,13 @@ class Response extends ServerResponse<Request> {
     if (typeof type === "string") this.setHeader("Content-Type", setCharset(type, ENCODING_UTF8)!);
     else this.setHeader("Content-Type", "application/json; charset=utf-8");
 
-    const {
-      "json.replacer": replacer,
-      "json.spaces": spaces,
-      "json.escape": escape,
-    } = SETTINGS;
-
     return this.$end(
       stringify(
         this.stringify[this.statusCode],
         body,
-        replacer,
-        spaces,
-        escape,
+        SETTINGS["json.replacer"],
+        SETTINGS["json.spaces"],
+        SETTINGS["json.escape"],
       ),
       ENCODING_UTF8,
     );
@@ -765,27 +759,19 @@ class Response extends ServerResponse<Request> {
    * res.jsonp({ user: "tj" });
    */
   public jsonp(body: JsonT): this {
-    // Settings
-    const {
-      "json.replacer": replacer,
-      "json.spaces": spaces,
-      "json.escape": escape,
-      "jsonp.callback": callbackName,
-    } = SETTINGS;
-
     let str = stringify(
       this.stringify[this.statusCode],
       body,
-      replacer,
-      spaces,
-      escape,
+      SETTINGS["json.replacer"],
+      SETTINGS["json.spaces"],
+      SETTINGS["json.escape"],
     );
-    let callback = this.req.query[callbackName];
+    let callback = this.req.query[SETTINGS["jsonp.callback"]];
 
     // Content-type
-    if (!this.get("content-type")) {
-      this.set("x-content-type-options", "nosniff");
-      this.set("content-type", "application/json");
+    if (!this.get("Content-Type")) {
+      this.set("X-Content-Type-Options", "nosniff");
+      this.set("Content-Type", "application/json");
     }
 
     // Fixup callback
@@ -793,8 +779,8 @@ class Response extends ServerResponse<Request> {
 
     // Jsonp
     if (typeof callback === "string" && callback.length !== 0) {
-      this.set("x-content-type-options", "nosniff");
-      this.set("content-type", "text/javascript");
+      this.set("X-Content-Type-Options", "nosniff");
+      this.set("Content-Type", "text/javascript");
 
       // Restrict callback charset
       callback = callback.replace(/[^[\]\w$.]/g, "");
@@ -892,7 +878,7 @@ class Response extends ServerResponse<Request> {
 
     // Respond
     this.statusCode = status;
-    this.set("content-length", Buffer.byteLength(body));
+    this.set("Content-Length", Buffer.byteLength(body));
 
     if (this.req.method === METHOD.HEAD) this.end();
     else this.end(body);
@@ -1068,7 +1054,7 @@ class Response extends ServerResponse<Request> {
    * res.send("<p>some html</p>");
    */
   public text(body: string): this {
-    const type = this.get("content-type");
+    const type = this.get("Content-Type");
 
     // Reflect this in content-type
     if (typeof type === "string") this.set("Content-Type", setCharset(type, ENCODING_UTF8));
@@ -1098,7 +1084,7 @@ class Response extends ServerResponse<Request> {
     if (body !== undefined) {
       const { etag } = SETTINGS;
 
-      if (etag && !this.hasHeader("etag")) {
+      if (etag && !this.hasHeader("ETag")) {
         const generatedETag = etag(body, encoding);
 
         if (generatedETag) this.setHeader("ETag", generatedETag);
@@ -1112,9 +1098,9 @@ class Response extends ServerResponse<Request> {
     switch (this.statusCode) {
       case STATUS.NO_CONTENT:
       case STATUS.NOT_MODIFIED:
-        this.removeHeader("content-type");
-        this.removeHeader("content-length");
-        this.removeHeader("transfer-encoding");
+        this.removeHeader("Content-Type");
+        this.removeHeader("Content-Length");
+        this.removeHeader("Transfer-Encoding");
 
         body = "";
         break;
