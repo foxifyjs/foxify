@@ -1,5 +1,11 @@
 # @foxify/fresh
 
+## 1.2.0-beta.1
+
+### Patch Changes
+
+- [`cde1fc7`](https://github.com/foxifyjs/foxify/commit/cde1fc7b1add1ff98af321c79a44794acb2ef5d4) Thanks [@ardalanamini](https://github.com/ardalanamini)! - Update package README.md
+
 ## 1.2.0-beta.0
 
 ### Minor Changes

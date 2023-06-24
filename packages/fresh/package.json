@@ -1,6 +1,6 @@
 {
   "name": "@foxify/fresh",
-  "version": "1.2.0-beta.0",
+  "version": "1.2.0-beta.1",
   "description": "HTTP response freshness testing",
   "homepage": "https://foxify.js.org",
   "author": "Ardalan Amini <ardalanamini22@gmail.com> (https://ardalanamini.com)",

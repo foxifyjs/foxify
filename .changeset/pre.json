@@ -10,10 +10,19 @@
     "router-benchmarks": "0.0.0",
     "@foxify/config": "1.1.0",
     "@foxify/fresh": "1.1.0",
-    "@foxify/inject": "1.1.0"
+    "@foxify/inject": "1.1.0",
+    "foxify-benchmarks": "0.0.0",
+    "foxify-example": "0.0.0"
   },
   "changesets": [
+    "cold-monkeys-change",
+    "good-rules-speak",
     "long-hairs-train",
+    "popular-deers-punch",
+    "popular-laws-draw",
+    "pretty-schools-wonder",
+    "swift-grapes-sleep",
+    "unlucky-steaks-dress",
     "weak-pets-rescue"
   ]
 }
