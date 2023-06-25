@@ -46,7 +46,7 @@
     "node": ">=16"
   },
   "imports": {
-    "#src/config": {
+    "#src/config-content": {
       "import": "./src/config.esm.ts",
       "default": "./src/config.cjs.ts"
     },
@@ -82,7 +82,7 @@
       "./package.json": "./package.json"
     },
     "imports": {
-      "#src/config": {
+      "#src/config-content": {
         "import": {
           "types": "./.build/esm/config.esm.d.ts",
           "default": "./.build/esm/config.esm.js"
