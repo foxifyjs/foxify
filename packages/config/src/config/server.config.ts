@@ -31,6 +31,7 @@ import { Node, Schema } from "#src/utils/index";
 export class ServerConfig extends Node {
 
   public static SCHEMA: Schema<ServerConfig> = {
+    etag    : Joi.function(),
     hostname: Joi.string().hostname()
       .default("localhost"),
     port: Joi.number().port()
@@ -38,6 +39,11 @@ export class ServerConfig extends Node {
     protocol: Joi.string().valid(...Object.values(SERVER_PROTOCOL))
       .default(SERVER_PROTOCOL.HTTP),
   };
+
+  /**
+   * ETag response header value generator.
+   */
+  public etag?: (body: Buffer | string, encoding?: BufferEncoding) => string;
 
   /**
    * Server hostname.
@@ -60,8 +66,9 @@ export class ServerConfig extends Node {
   public constructor(config: Partial<ServerConfig> = content?.server ?? {}) {
     super();
 
-    const { hostname, port, protocol } = config as Required<ServerConfig>;
+    const { etag, hostname, port, protocol } = config as Required<ServerConfig>;
 
+    this.etag = etag;
     this.hostname = hostname;
     this.port = port;
     this.protocol = protocol;

@@ -40,7 +40,6 @@ export class Config extends Node {
   public static SCHEMA: Schema<Config> = {
     env: Joi.string().valid(...Object.values(ENV))
       .default(process.env.NODE_ENV as ENV | undefined ?? ENV.DEVELOPMENT),
-    etag   : Joi.function(),
     workers: Joi.number().integer()
       .min(1)
       .max(os.cpus().length)
@@ -53,11 +52,6 @@ export class Config extends Node {
    * @default process.env.NODE_ENV ?? "development"
    */
   public env: ENV;
-
-  /**
-   * ETag response header value generator.
-   */
-  public etag?: (body: Buffer | string, encoding?: BufferEncoding) => string;
 
   /**
    * JSON config.
@@ -105,10 +99,9 @@ export class Config extends Node {
   public constructor(config: Partial<Config> = content ?? {}) {
     super();
 
-    const { env, etag, workers, xPoweredBy } = config as Required<Config>;
+    const { env, workers, xPoweredBy } = config as Required<Config>;
 
     this.env = env;
-    this.etag = etag;
     this.workers = workers;
     this.xPoweredBy = xPoweredBy;
   }

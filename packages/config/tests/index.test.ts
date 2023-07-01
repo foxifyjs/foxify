@@ -4,8 +4,6 @@ import { config } from "@foxify/config";
 it("should use default config", () => {
   expect(config).toMatchObject({
     env : "test",
-    // eslint-disable-next-line no-undefined
-    etag: undefined,
     json: {
       escape  : false,
       // eslint-disable-next-line no-undefined
@@ -21,6 +19,8 @@ it("should use default config", () => {
       parser: qs.parse,
     },
     server: {
+      // eslint-disable-next-line no-undefined
+      etag    : undefined,
       hostname: "localhost",
       port    : 3000,
       protocol: "http",
