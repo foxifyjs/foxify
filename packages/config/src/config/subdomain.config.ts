@@ -42,7 +42,7 @@ export class SubdomainConfig extends Node {
   public offset: number;
 
   public constructor(config: Partial<SubdomainConfig> = content?.subdomain ?? {}) {
-    super();
+    super("subdomain");
 
     const { offset } = config as Required<SubdomainConfig>;
 

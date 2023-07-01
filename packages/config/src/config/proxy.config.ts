@@ -42,7 +42,7 @@ export class ProxyConfig extends Node {
 
 
   public constructor(config: Partial<ProxyConfig> = content?.proxy ?? {}) {
-    super();
+    super("proxy");
 
     const { trust } = config as Required<ProxyConfig>;
 

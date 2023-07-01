@@ -23,30 +23,6 @@
  *
  */
 
-import Joi from "joi";
-import content from "#src/config-content";
-import { Node, Schema } from "#src/utils/index";
+import { EventEmitter } from "node:events";
 
-
-export class JsonpConfig extends Node {
-
-  public static SCHEMA: Schema<JsonpConfig> = {
-    callback: Joi.string().default("callback"),
-  };
-
-  /**
-   * The JSONP callback name.
-   * @default "callback"
-   */
-  public callback: number;
-
-
-  public constructor(config: Partial<JsonpConfig> = content?.jsonp ?? {}) {
-    super("jsonp");
-
-    const { callback } = config as Required<JsonpConfig>;
-
-    this.callback = callback;
-  }
-
-}
+export const events = new EventEmitter;

@@ -1,5 +1,5 @@
 import qs from "node:querystring";
-import { config } from "@foxify/config";
+import { config, events } from "@foxify/config";
 
 it("should use default config", () => {
   expect(config).toMatchObject({
@@ -37,13 +37,27 @@ it("should use default config", () => {
 });
 
 it("should update json.escape", () => {
+  const listener = jest.fn();
+
+  events.on("change", listener);
+
   expect(config.json.escape).toBe(false);
 
   config.json.escape = true;
 
+  expect(listener).toBeCalledTimes(1);
+  expect(listener).toBeCalledWith("json.escape", true, false);
+
+  listener.mockReset();
+
   expect(config.json.escape).toBe(true);
 
   config.json.escape = false;
+
+  expect(listener).toBeCalledTimes(1);
+  expect(listener).toBeCalledWith("json.escape", false, true);
+
+  events.off("change", listener);
 
   expect(config.json).toEqual({
     escape  : false,

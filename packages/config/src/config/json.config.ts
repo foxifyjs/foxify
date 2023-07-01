@@ -56,7 +56,7 @@ export class JsonConfig extends Node {
   public spaces: number;
 
   public constructor(config: Partial<JsonConfig> = content?.json ?? {}) {
-    super();
+    super("json");
 
     const { escape, replacer, spaces } = config as Required<JsonConfig>;
 

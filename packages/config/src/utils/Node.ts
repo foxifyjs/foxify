@@ -24,6 +24,7 @@
  */
 
 import Joi from "joi";
+import { events } from "#src/events";
 
 export type DirectConfigKey<T extends Node> = {
   [K in keyof T]: T[K] extends object ? never : K;
@@ -35,15 +36,19 @@ export abstract class Node {
 
   public static SCHEMA: Record<string, Joi.Schema>;
 
-  protected constructor() {
+  protected constructor(prefix = "") {
     const SCHEMA = (this.constructor as typeof Node).SCHEMA;
+
+    if (prefix !== "") prefix += ".";
 
     // eslint-disable-next-line no-constructor-return
     return new Proxy(this, {
       // eslint-disable-next-line max-params
       set(target: Node, p: string, newValue: unknown, receiver: unknown): boolean {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if ((target as any)[p] instanceof Node) throw new TypeError(`Config override for "${ p }" is not allowed.`);
+        const oldValue = (target as any)[p];
+
+        if (oldValue instanceof Node) throw new TypeError(`Config override for "${ p }" is not allowed.`);
 
         if (p in SCHEMA) {
           const { value, error } = SCHEMA[p].validate(newValue);
@@ -53,7 +58,11 @@ export abstract class Node {
           newValue = value;
         }
 
-        return Reflect.set(target, p, newValue, receiver);
+        const result = Reflect.set(target, p, newValue, receiver);
+
+        if (result) events.emit("change", `${ prefix }${ p }`, newValue, oldValue);
+
+        return result;
       },
     });
   }

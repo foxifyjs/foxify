@@ -43,7 +43,7 @@ export class QueryConfig extends Node {
 
 
   public constructor(config: Partial<QueryConfig> = content?.query ?? {}) {
-    super();
+    super("query");
 
     const { parser } = config as Required<QueryConfig>;
 

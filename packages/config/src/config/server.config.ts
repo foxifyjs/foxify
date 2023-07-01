@@ -64,7 +64,7 @@ export class ServerConfig extends Node {
   public protocol: SERVER_PROTOCOL;
 
   public constructor(config: Partial<ServerConfig> = content?.server ?? {}) {
-    super();
+    super("server");
 
     const { etag, hostname, port, protocol } = config as Required<ServerConfig>;
 
