@@ -32,6 +32,7 @@ import { JsonConfig } from "./json.config.js";
 import { JsonpConfig } from "./jsonp.config.js";
 import { ProxyConfig } from "./proxy.config.js";
 import { QueryConfig } from "./query.config.js";
+import { RouterConfig } from "./router.config.js";
 import { ServerConfig } from "./server.config.js";
 import { SubdomainConfig } from "./subdomain.config.js";
 
@@ -72,6 +73,11 @@ export class Config extends Node {
    * Request query string config.
    */
   public query = new QueryConfig;
+
+  /**
+   * Router config.
+   */
+  public router = new RouterConfig;
 
   /**
    * Server config.

@@ -24,21 +24,40 @@
  */
 
 import Joi from "joi";
+import { compile } from "proxy-addr";
 import content from "#src/config-content";
 import { Node, Schema } from "#src/utils/index";
 
-export class ProxyConfig extends Node {
-
-  public static SCHEMA: Schema<ProxyConfig> = {
-    trust: Joi.function().default(() => ((): boolean => false)),
-  };
+export interface ProxyConfig {
 
   /**
    * Indicates whether the app is behind a front-facing proxy,
    * and to use the X-Forwarded-* headers to determine the connection and the IP address of the client.
    * @default () => false
    */
-  public trust: (ip: string, hopIndex: number) => boolean;
+  get trust(): (ip: string, hopIndex: number) => boolean;
+
+  /**
+   * Indicates whether the app is behind a front-facing proxy,
+   * and to use the X-Forwarded-* headers to determine the connection and the IP address of the client.
+   * @default () => false
+   */
+  set trust(value: boolean | number | string | ((ip: string, hopIndex: number) => boolean));
+}
+
+export class ProxyConfig extends Node {
+
+  public static SCHEMA: Schema<ProxyConfig> = {
+    trust: Joi.alternatives().try(
+      Joi.function(),
+      Joi.boolean().custom(value => ((): boolean => value)),
+      Joi.string().custom(value => compile(value.split(/ *, */))),
+      Joi.number().integer()
+        .positive()
+        .custom(value => ((ip: string, hopIndex: number): boolean => hopIndex < value)),
+    )
+      .default(() => ((): boolean => false)),
+  };
 
 
   public constructor(config: Partial<ProxyConfig> = content?.proxy ?? {}) {

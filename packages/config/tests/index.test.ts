@@ -1,4 +1,4 @@
-import qs from "node:querystring";
+import { parse } from "qs";
 import { config, events } from "@foxify/config";
 
 it("should use default config", () => {
@@ -16,7 +16,7 @@ it("should use default config", () => {
     proxy: {
     },
     query: {
-      parser: qs.parse,
+      parser: parse,
     },
     server: {
       // eslint-disable-next-line no-undefined

@@ -23,23 +23,51 @@
  *
  */
 
-import qs from "node:querystring";
 import Joi from "joi";
+import { parse, ParsedQs } from "qs";
 import content from "#src/config-content";
 import { Node, Schema } from "#src/utils/index";
 
-export class QueryConfig extends Node {
-
-  public static SCHEMA: Schema<QueryConfig> = {
-    parser: Joi.function().default(() => qs.parse),
-  };
+export interface QueryConfig {
 
   /**
    * A custom query string parsing function will receive the complete query string,
    * and must return an object of query keys and their values.
    * @default qs.parse // node:querystring
    */
-  public parser: (str: string) => Record<string, unknown>;
+  get parser(): (str: string) => ParsedQs;
+
+  /**
+   * A custom query string parsing function will receive the complete query string,
+   * and must return an object of query keys and their values.
+   * @default qs.parse // node:querystring
+   */
+  set parser(parser: boolean | "extended" | "simple" | ((str: string) => ParsedQs));
+}
+
+export class QueryConfig extends Node {
+
+  public static SCHEMA: Schema<QueryConfig> = {
+    parser: Joi.alternatives().try(
+      Joi.function(),
+      Joi.boolean().custom((value) => {
+        if (value) return parse;
+
+        return (): ParsedQs => ({});
+      }),
+      Joi.string().custom((value) => {
+        switch (value) {
+          case "simple":
+            return parse;
+          case "extended":
+            return (str: string): ParsedQs => parse(str, { allowPrototypes: true });
+          default:
+            throw new Error(`Unexpected value: ${ value }`);
+        }
+      }),
+    )
+      .default(() => parse),
+  };
 
 
   public constructor(config: Partial<QueryConfig> = content?.query ?? {}) {

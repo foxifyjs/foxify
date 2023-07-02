@@ -27,26 +27,46 @@ import Joi from "joi";
 import content from "#src/config-content";
 import { Node, Schema } from "#src/utils/index";
 
+export class RouterConfig extends Node {
 
-export class JsonpConfig extends Node {
-
-  public static SCHEMA: Schema<JsonpConfig> = {
-    callback: Joi.string().default("callback"),
+  public static SCHEMA: Schema<RouterConfig> = {
+    allowUnsafeRegex   : Joi.boolean().default(false),
+    caseSensitive      : Joi.boolean().default(true),
+    ignoreTrailingSlash: Joi.boolean().default(false),
+    maxParamLength     : Joi.number().integer()
+      .positive()
+      .default(100),
   };
 
   /**
-   * The JSONP callback name.
-   * @default "callback"
+   * @default false
    */
-  public callback: string;
+  public allowUnsafeRegex: boolean;
 
+  /**
+   * @default true
+   */
+  public caseSensitive: boolean;
 
-  public constructor(config: Partial<JsonpConfig> = content?.jsonp ?? {}) {
-    super("jsonp");
+  /**
+   * @default false
+   */
+  public ignoreTrailingSlash: boolean;
 
-    const { callback } = config as Required<JsonpConfig>;
+  /**
+   * @default 100
+   */
+  public maxParamLength: number;
 
-    this.callback = callback;
+  public constructor(config: Partial<RouterConfig> = content?.subdomain ?? {}) {
+    super("router");
+
+    const { allowUnsafeRegex, caseSensitive, ignoreTrailingSlash, maxParamLength } = config as Required<RouterConfig>;
+
+    this.allowUnsafeRegex = allowUnsafeRegex;
+    this.caseSensitive = caseSensitive;
+    this.ignoreTrailingSlash = ignoreTrailingSlash;
+    this.maxParamLength = maxParamLength;
   }
 
 }

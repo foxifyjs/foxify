@@ -25,4 +25,6 @@
 
 import { Config } from "./config.js";
 
+export type { Config };
+
 export const config = new Config;

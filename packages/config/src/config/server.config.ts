@@ -23,17 +23,62 @@
  *
  */
 
+import createETag from "etag";
 import Joi from "joi";
 import content from "#src/config-content";
 import { SERVER_PROTOCOL } from "#src/constants/index";
 import { Node, Schema } from "#src/utils/index";
 
+const createETagGenerator = (weak: boolean) => function generateETag(
+  body: Buffer | string,
+  encoding?: BufferEncoding,
+): string {
+  return createETag(Buffer.isBuffer(body) ? body : Buffer.from(body, encoding), {
+    weak,
+  });
+};
+
+export interface ServerConfig {
+
+  /**
+   * ETag response header value generator.
+   */
+  get etag(): ((body: Buffer | string, encoding?: BufferEncoding) => string) | undefined;
+
+  /**
+   * ETag response header value generator.
+   */
+  set etag(
+    etag: boolean | "strong" | "weak" | ((body: Buffer | string, encoding?: BufferEncoding) => string) | undefined,
+  );
+}
+
 export class ServerConfig extends Node {
 
   public static SCHEMA: Schema<ServerConfig> = {
-    etag    : Joi.function(),
+    cert: Joi.string(),
+    etag: Joi.alternatives(
+      Joi.function(),
+      Joi.boolean().custom((value) => {
+        if (value) return createETagGenerator(true);
+
+        // eslint-disable-next-line no-undefined
+        return undefined;
+      }),
+      Joi.string().custom((value) => {
+        switch (value) {
+          case "weak":
+            return createETagGenerator(true);
+          case "strong":
+            return createETagGenerator(false);
+          default:
+            throw new Error(`Unexpected value: ${ value }`);
+        }
+      }),
+    ),
     hostname: Joi.string().hostname()
       .default("localhost"),
+    key : Joi.string(),
     port: Joi.number().port()
       .default(3_000),
     protocol: Joi.string().valid(...Object.values(SERVER_PROTOCOL))
@@ -41,15 +86,20 @@ export class ServerConfig extends Node {
   };
 
   /**
-   * ETag response header value generator.
+   * HTTP2/HTTPS cert chain in PEM format.
    */
-  public etag?: (body: Buffer | string, encoding?: BufferEncoding) => string;
+  public cert?: string;
 
   /**
    * Server hostname.
    * @default "localhost"
    */
   public hostname: string;
+
+  /**
+   * HTTP2/HTTPS private key in PEM format.
+   */
+  public key?: string;
 
   /**
    * Server port.
@@ -66,10 +116,12 @@ export class ServerConfig extends Node {
   public constructor(config: Partial<ServerConfig> = content?.server ?? {}) {
     super("server");
 
-    const { etag, hostname, port, protocol } = config as Required<ServerConfig>;
+    const { cert, etag, hostname, key, port, protocol } = config as Required<ServerConfig>;
 
+    this.cert = cert;
     this.etag = etag;
     this.hostname = hostname;
+    this.key = key;
     this.port = port;
     this.protocol = protocol;
   }

@@ -325,9 +325,28 @@ importers:
       '@types/node':
         specifier: '>=16'
         version: 18.11.9
+      etag:
+        specifier: ^1.8.1
+        version: 1.8.1
       joi:
         specifier: ^17.9.2
         version: 17.9.2
+      proxy-addr:
+        specifier: ^2.0.7
+        version: 2.0.7
+      qs:
+        specifier: ^6.11.2
+        version: 6.11.2
+    devDependencies:
+      '@types/etag':
+        specifier: ^1.8.1
+        version: 1.8.1
+      '@types/proxy-addr':
+        specifier: ^2.0.0
+        version: 2.0.0
+      '@types/qs':
+        specifier: ^6.9.7
+        version: 6.9.7
 
   packages/foxify:
     dependencies:
@@ -8984,7 +9003,7 @@ packages:
       once: 1.4.0
       pidusage: 3.0.2
       pino: 8.7.0
-      qs: 6.11.0
+      qs: 6.11.2
       restify-errors: 8.0.2
       semver: 7.3.8
       send: 0.18.0

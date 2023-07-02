@@ -61,7 +61,15 @@
     "@types/node": ">=16"
   },
   "dependencies": {
-    "joi": "^17.9.2"
+    "etag": "^1.8.1",
+    "joi": "^17.9.2",
+    "proxy-addr": "^2.0.7",
+    "qs": "^6.11.2"
+  },
+  "devDependencies": {
+    "@types/etag": "^1.8.1",
+    "@types/proxy-addr": "^2.0.0",
+    "@types/qs": "^6.9.7"
   },
   "publishConfig": {
     "access": "public",
