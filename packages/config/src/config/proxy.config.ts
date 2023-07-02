@@ -28,6 +28,16 @@ import { compile } from "proxy-addr";
 import content from "#src/config-content";
 import { Node, Schema } from "#src/utils/index";
 
+export interface ProxyConfigI {
+
+  /**
+   * Indicates whether the app is behind a front-facing proxy,
+   * and to use the X-Forwarded-* headers to determine the connection and the IP address of the client.
+   * @default () => false
+   */
+  trust?: boolean | number | string | ((ip: string, hopIndex: number) => boolean);
+}
+
 export interface ProxyConfig {
 
   /**

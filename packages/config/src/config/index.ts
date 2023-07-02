@@ -23,8 +23,8 @@
  *
  */
 
-import { Config } from "./config.js";
+import { Config, ConfigI } from "./config.js";
 
-export type { Config };
+export type { Config, ConfigI };
 
 export const config = new Config;

@@ -27,6 +27,27 @@ import Joi from "joi";
 import content from "#src/config-content";
 import { Node, Schema } from "#src/utils/index";
 
+export interface JsonConfigI {
+
+  /**
+   * Enable escaping JSON responses from the `res.json`, `res.jsonp`, and `res.send` APIs.
+   * @default false
+   */
+  escape?: boolean;
+
+  /**
+   * The `space` argument used by `JSON.stringify`.
+   * This is typically set to the number of spaces to use to indent prettified JSON.
+   * @default 0
+   */
+  spaces?: number;
+
+  /**
+   * The `replacer` argument used by `JSON.stringify`.
+   */
+  replacer?(key: string, value: unknown): unknown;
+}
+
 export class JsonConfig extends Node {
 
   public static SCHEMA: Schema<JsonConfig> = {

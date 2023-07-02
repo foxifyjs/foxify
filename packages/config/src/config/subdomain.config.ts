@@ -27,6 +27,15 @@ import Joi from "joi";
 import content from "#src/config-content";
 import { Node, Schema } from "#src/utils/index";
 
+export interface SubdomainConfigI {
+
+  /**
+   * The number of dot-separated parts of the host to remove to access subdomain.
+   * @default 2
+   */
+  offset?: number;
+}
+
 export class SubdomainConfig extends Node {
 
   public static SCHEMA: Schema<SubdomainConfig> = {

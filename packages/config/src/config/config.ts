@@ -23,18 +23,75 @@
  *
  */
 
-import os from "node:os";
+import { cpus } from "node:os";
 import Joi from "joi";
 import content from "#src/config-content";
 import { ENV } from "#src/constants/index";
-import { Node, Schema } from "#src/utils/index";
-import { JsonConfig } from "./json.config.js";
-import { JsonpConfig } from "./jsonp.config.js";
-import { ProxyConfig } from "./proxy.config.js";
-import { QueryConfig } from "./query.config.js";
-import { RouterConfig } from "./router.config.js";
-import { ServerConfig } from "./server.config.js";
-import { SubdomainConfig } from "./subdomain.config.js";
+import { Node, type Schema } from "#src/utils/index";
+import { JsonConfig, type JsonConfigI } from "./json.config.js";
+import { JsonpConfig, type JsonpConfigI } from "./jsonp.config.js";
+import { ProxyConfig, type ProxyConfigI } from "./proxy.config.js";
+import { QueryConfig, type QueryConfigI } from "./query.config.js";
+import { RouterConfig, type RouterConfigI } from "./router.config.js";
+import { ServerConfig, type ServerConfigI } from "./server.config.js";
+import { SubdomainConfig, type SubdomainConfigI } from "./subdomain.config.js";
+
+export interface ConfigI {
+
+  /**
+   * Node.js environment.
+   * @default process.env.NODE_ENV ?? "development"
+   */
+  env?: ENV;
+
+  /**
+   * JSON config.
+   */
+  readonly json?: JsonConfigI;
+
+  /**
+   * JSONP config.
+   */
+  readonly jsonp?: JsonpConfigI;
+
+  /**
+   * Proxy config.
+   */
+  readonly proxy?: ProxyConfigI;
+
+  /**
+   * Request query string config.
+   */
+  readonly query?: QueryConfigI;
+
+  /**
+   * Router config.
+   */
+  readonly router?: RouterConfigI;
+
+  /**
+   * Server config.
+   */
+  readonly server?: ServerConfigI;
+
+  /**
+   * Subdomain config.
+   */
+  readonly subdomain?: SubdomainConfigI;
+
+  /**
+   * Number of Node.js cluster workers to be created.
+   * In case of `1` Node.js cluster workers won't be used.
+   * @default 1
+   */
+  workers?: number;
+
+  /**
+   * Indicates whether the "X-Powered-By" header should be present or not.
+   * @default true
+   */
+  xPoweredBy?: boolean;
+}
 
 export class Config extends Node {
 
@@ -43,7 +100,7 @@ export class Config extends Node {
       .default(process.env.NODE_ENV as ENV | undefined ?? ENV.DEVELOPMENT),
     workers: Joi.number().integer()
       .min(1)
-      .max(os.cpus().length)
+      .max(cpus().length)
       .default(1),
     xPoweredBy: Joi.boolean().default(true),
   };

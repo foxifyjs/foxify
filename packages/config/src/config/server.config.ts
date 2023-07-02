@@ -38,6 +38,42 @@ const createETagGenerator = (weak: boolean) => function generateETag(
   });
 };
 
+export interface ServerConfigI {
+
+  /**
+   * HTTP2/HTTPS cert chain in PEM format.
+   */
+  cert?: string;
+
+  /**
+   * ETag response header value generator.
+   */
+  etag?: boolean | "strong" | "weak" | ((body: Buffer | string, encoding?: BufferEncoding) => string);
+
+  /**
+   * Server hostname.
+   * @default "localhost"
+   */
+  hostname?: string;
+
+  /**
+   * HTTP2/HTTPS private key in PEM format.
+   */
+  key?: string;
+
+  /**
+   * Server port.
+   * @default 3000
+   */
+  port?: number;
+
+  /**
+   * Server protocol.
+   * @default "http"
+   */
+  protocol?: SERVER_PROTOCOL;
+}
+
 export interface ServerConfig {
 
   /**

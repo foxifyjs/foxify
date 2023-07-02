@@ -27,6 +27,15 @@ import Joi from "joi";
 import content from "#src/config-content";
 import { Node, Schema } from "#src/utils/index";
 
+export interface JsonpConfigI {
+
+  /**
+   * The JSONP callback name.
+   * @default "callback"
+   */
+  callback?: string;
+}
+
 
 export class JsonpConfig extends Node {
 

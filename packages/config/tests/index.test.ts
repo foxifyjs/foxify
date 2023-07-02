@@ -1,9 +1,9 @@
 import { parse } from "qs";
-import { config, events } from "@foxify/config";
+import { config, ConfigI, ENV, events, SERVER_PROTOCOL } from "@foxify/config";
 
 it("should use default config", () => {
   expect(config).toMatchObject({
-    env : "test",
+    env : "test" as ENV,
     json: {
       escape  : false,
       // eslint-disable-next-line no-undefined
@@ -23,14 +23,20 @@ it("should use default config", () => {
       etag    : undefined,
       hostname: "localhost",
       port    : 3000,
-      protocol: "http",
+      protocol: "http" as SERVER_PROTOCOL,
     },
     subdomain: {
       offset: 2,
     },
+    router: {
+      allowUnsafeRegex   : false,
+      caseSensitive      : true,
+      ignoreTrailingSlash: false,
+      maxParamLength     : 100,
+    },
     workers   : 1,
     xPoweredBy: true,
-  });
+  } satisfies ConfigI);
 
   expect(config.proxy.trust).toBeInstanceOf(Function);
   expect(config.proxy.trust.toString()).toBe("() => false");

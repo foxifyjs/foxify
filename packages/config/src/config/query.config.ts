@@ -28,19 +28,29 @@ import { parse, ParsedQs } from "qs";
 import content from "#src/config-content";
 import { Node, Schema } from "#src/utils/index";
 
+export interface QueryConfigI {
+
+  /**
+   * A custom query string parsing function will receive the complete query string,
+   * and must return an object of query keys and their values.
+   * @default qs.parse
+   */
+  parser?: boolean | "extended" | "simple" | ((str: string) => ParsedQs);
+}
+
 export interface QueryConfig {
 
   /**
    * A custom query string parsing function will receive the complete query string,
    * and must return an object of query keys and their values.
-   * @default qs.parse // node:querystring
+   * @default qs.parse
    */
   get parser(): (str: string) => ParsedQs;
 
   /**
    * A custom query string parsing function will receive the complete query string,
    * and must return an object of query keys and their values.
-   * @default qs.parse // node:querystring
+   * @default qs.parse
    */
   set parser(parser: boolean | "extended" | "simple" | ((str: string) => ParsedQs));
 }

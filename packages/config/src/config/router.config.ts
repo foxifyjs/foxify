@@ -27,6 +27,33 @@ import Joi from "joi";
 import content from "#src/config-content";
 import { Node, Schema } from "#src/utils/index";
 
+export interface RouterConfigI {
+
+  /**
+   * Indicates whether the router should allow unsafe regex or not.
+   * @default false
+   */
+  allowUnsafeRegex?: boolean;
+
+  /**
+   * Indicates whether the router paths should be case-sensitive or not.
+   * @default true
+   */
+  caseSensitive?: boolean;
+
+  /**
+   * Indicates whether the router should ignore trailing slashes or not.
+   * @default false
+   */
+  ignoreTrailingSlash?: boolean;
+
+  /**
+   * Maximum allowed length for router parameter values.
+   * @default 100
+   */
+  maxParamLength?: number;
+}
+
 export class RouterConfig extends Node {
 
   public static SCHEMA: Schema<RouterConfig> = {
@@ -39,21 +66,25 @@ export class RouterConfig extends Node {
   };
 
   /**
+   * Indicates whether the router should allow unsafe regex or not.
    * @default false
    */
   public allowUnsafeRegex: boolean;
 
   /**
+   * Indicates whether the router paths should be case-sensitive or not.
    * @default true
    */
   public caseSensitive: boolean;
 
   /**
+   * Indicates whether the router should ignore trailing slashes or not.
    * @default false
    */
   public ignoreTrailingSlash: boolean;
 
   /**
+   * Maximum allowed length for router parameter values.
    * @default 100
    */
   public maxParamLength: number;
