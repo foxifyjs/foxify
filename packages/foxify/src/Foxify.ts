@@ -1,10 +1,5 @@
 import assert from "node:assert";
-import {
-  Request,
-  requestSettings,
-  Response,
-  responseSettings,
-} from "@foxify/http";
+import { Request, Response } from "@foxify/http";
 import inject, { InjectResultI, OptionsI as InjectOptionsI } from "@foxify/inject";
 import Router from "@foxify/router";
 import * as proxyAddr from "proxy-addr";
@@ -12,7 +7,6 @@ import * as qs from "qs";
 import serveStatic from "serve-static";
 import Server from "./Server.js";
 import * as utils from "./utils/index.js";
-import { Engine } from "./view/index.js";
 
 const SETTINGS: Array<keyof Foxify.UserSettings> = [
   "env",
@@ -120,8 +114,6 @@ class Foxify extends Router {
     etag                           : undefined as any,
   };
 
-  private _view?: Engine;
-
   public constructor() {
     super();
 
@@ -129,6 +121,7 @@ class Foxify extends Router {
     this.disable("trust.proxy");
   }
 
+  // TODO: remove in favor of @foxify/config
   public static dotenv(path: string): void {
     utils.assertType("path", "string", path);
 
@@ -136,22 +129,27 @@ class Foxify extends Router {
     require("dotenv").config({ path });
   }
 
+  // TODO: remove in favor of @foxify/config
   public disable(setting: keyof Foxify.Settings): this {
     return this.set(setting, false);
   }
 
+  // TODO: remove in favor of @foxify/config
   public disabled(setting: keyof Foxify.Settings): boolean {
     return !this.setting(setting);
   }
 
+  // TODO: remove in favor of @foxify/config
   public enable(setting: keyof Foxify.Settings): this {
     return this.set(setting, true);
   }
 
+  // TODO: remove in favor of @foxify/config
   public enabled(setting: keyof Foxify.Settings): boolean {
     return !this.disabled(setting);
   }
 
+  // TODO: remove in favor of @foxify/config
   /**
    * Handle view
    * @param extension view template file extension
@@ -159,8 +157,6 @@ class Foxify extends Router {
    * @param handler
    */
   public engine(extension: string, path: string, handler: () => void): this {
-    this._view = new Engine(path, extension, handler);
-
     return this;
   }
 
@@ -171,12 +167,6 @@ class Foxify extends Router {
     );
 
     if (typeof options === "string") options = { url: options };
-
-    requestSettings(this._settings as any);
-    responseSettings({
-      ...this._settings,
-      view: this._view,
-    } as any);
 
     // TODO: fix typescript issues
     return inject(this.lookup.bind(this), {
@@ -190,6 +180,7 @@ class Foxify extends Router {
     });
   }
 
+  // TODO: remove in favor of @foxify/config
   public set<T extends keyof Foxify.UserSettings>(
     setting: T,
     value: Foxify.UserSettings[T],
@@ -285,6 +276,7 @@ class Foxify extends Router {
     return this;
   }
 
+  // TODO: remove in favor of @foxify/config
   public setting<T extends keyof Foxify.Settings>(setting: T): Foxify.Settings[T] {
     assert(
       SETTINGS.includes(setting),
@@ -297,17 +289,10 @@ class Foxify extends Router {
   public start(callback?: Server.Callback): Server {
     if (callback != null) utils.assertType("callback", "function", callback);
 
-
     /* Set node env */
     process.env.NODE_ENV = this.setting("env");
 
-    const server = new Server(
-      {
-        ...this._settings,
-        view: this._view,
-      },
-      this.lookup.bind(this),
-    );
+    const server = new Server(this.lookup.bind(this));
 
     return server.start(callback);
   }

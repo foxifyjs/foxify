@@ -72,7 +72,7 @@ export class QueryConfig extends Node {
           case "extended":
             return (str: string): ParsedQs => parse(str, { allowPrototypes: true });
           default:
-            throw new Error(`Unexpected value: ${ value }`);
+            throw new TypeError(`Unexpected value: ${ value }`);
         }
       }),
     )

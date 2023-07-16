@@ -35,6 +35,7 @@ import { QueryConfig, type QueryConfigI } from "./query.config.js";
 import { RouterConfig, type RouterConfigI } from "./router.config.js";
 import { ServerConfig, type ServerConfigI } from "./server.config.js";
 import { SubdomainConfig, type SubdomainConfigI } from "./subdomain.config.js";
+import { ViewConfig, type ViewConfigI } from "./view.config.js";
 
 export interface ConfigI {
 
@@ -78,6 +79,11 @@ export interface ConfigI {
    * Subdomain config.
    */
   readonly subdomain?: SubdomainConfigI;
+
+  /**
+   * View config.
+   */
+  readonly view?: ViewConfigI;
 
   /**
    * Number of Node.js cluster workers to be created.
@@ -145,6 +151,11 @@ export class Config extends Node {
    * Subdomain config.
    */
   public subdomain = new SubdomainConfig;
+
+  /**
+   * View config.
+   */
+  public view = new ViewConfig;
 
   /**
    * Number of Node.js cluster workers to be created.

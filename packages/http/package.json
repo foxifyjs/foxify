@@ -56,6 +56,7 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
+    "@foxify/config": "workspace:^",
     "@types/node": ">=16"
   },
   "dependencies": {
@@ -75,6 +76,7 @@
     "type-is": "^1.6.18"
   },
   "devDependencies": {
+    "@foxify/config": "workspace:^",
     "@foxify/inject": "workspace:^",
     "@types/content-disposition": "^0.5.5",
     "@types/content-type": "^1.1.5",

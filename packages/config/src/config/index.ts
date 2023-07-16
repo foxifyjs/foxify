@@ -25,6 +25,8 @@
 
 import { Config, ConfigI } from "./config.js";
 
+export { type ViewRendererCallbackT, type ViewRendererT } from "./view.config.js";
+
 export type { Config, ConfigI };
 
 export const config = new Config;

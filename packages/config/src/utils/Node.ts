@@ -27,7 +27,7 @@ import Joi from "joi";
 import { events } from "#src/events";
 
 export type DirectConfigKey<T extends Node> = {
-  [K in keyof T]: T[K] extends object ? never : K;
+  [K in keyof T]: T[K] extends object ? T[K] extends (...args: any[]) => any ? K : never : K;
 }[keyof T];
 
 export type Schema<T extends Node> = Record<DirectConfigKey<T>, Joi.Schema>;

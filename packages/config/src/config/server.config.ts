@@ -108,7 +108,7 @@ export class ServerConfig extends Node {
           case "strong":
             return createETagGenerator(false);
           default:
-            throw new Error(`Unexpected value: ${ value }`);
+            throw new TypeError(`Unexpected value: ${ value }`);
         }
       }),
     ),
