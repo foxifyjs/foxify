@@ -1,13 +1,12 @@
-import { CONFIG_FILEPATH, ConfigI } from "#src/constants";
+import { CONFIG_FILEPATH } from "#src/constants/index";
 
 /* ------------------------- Read the config file ------------------------- */
 
 // TODO: Just to avoid the CommonJS build issue
 // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error,@typescript-eslint/ban-ts-comment
 // @ts-ignore
-const content: ConfigI = await import(CONFIG_FILEPATH)
+const content: any = await import(CONFIG_FILEPATH)
   .then(resolved => resolved.default)
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  .catch(() => ({}) as never);
+  .catch(() => null);
 
 export default content;

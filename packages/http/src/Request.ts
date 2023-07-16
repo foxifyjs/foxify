@@ -1,26 +1,11 @@
 import { IncomingHttpHeaders, IncomingMessage } from "node:http";
 import { isIP } from "node:net";
 import { UrlWithStringQuery } from "node:url";
-import proxyAddr, { compile as proxyAddrCompile, all as proxyAddrAll } from "proxy-addr";
-import * as qs from "qs";
+import { config } from "@foxify/config";
+import proxyAddr, { all as proxyAddrAll } from "proxy-addr";
 import typeIs from "type-is";
 import { MethodT, ProtocolT } from "./constants/index.js";
-import {
-  Accepts,
-  parseUrl,
-  RANGE_PARSER_RESULT,
-  rangeParser,
-  RangeParserRangesI,
-} from "./utils/index.js";
-
-// eslint-disable-next-line import/exports-last
-export const DEFAULT_SETTINGS: SettingsI = {
-  "query.parser"    : qs.parse,
-  "trust.proxy"     : proxyAddrCompile([]),
-  "subdomain.offset": 2,
-};
-
-const SETTINGS: SettingsI = { ...DEFAULT_SETTINGS };
+import { Accepts, parseUrl, RANGE_PARSER_RESULT, rangeParser, RangeParserRangesI } from "./utils/index.js";
 
 export default class Request extends IncomingMessage {
 
@@ -52,7 +37,7 @@ export default class Request extends IncomingMessage {
   public get hostname(): string | undefined {
     let host = this.get("x-forwarded-host");
 
-    if (!host || !SETTINGS["trust.proxy"](this.socket.remoteAddress!, 0)) {
+    if (!host || !config.proxy.trust(this.socket.remoteAddress!, 0)) {
       host = this.get("host")!;
     } else if (host.includes(",")) {
       // Note: X-Forwarded-Host is normally only ever a
@@ -77,7 +62,7 @@ export default class Request extends IncomingMessage {
    * "trust.proxy" is set.
    */
   public get ip(): string {
-    return proxyAddr(this, SETTINGS["trust.proxy"]);
+    return proxyAddr(this, config.proxy.trust);
   }
 
   /**
@@ -89,7 +74,7 @@ export default class Request extends IncomingMessage {
    * "proxy2" were trusted.
    */
   public get ips(): string[] {
-    const addresses = proxyAddrAll(this, SETTINGS["trust.proxy"]);
+    const addresses = proxyAddrAll(this, config.proxy.trust);
 
     // Reverse the order (to farthest -> closest)
     // and remove socket address
@@ -118,8 +103,7 @@ export default class Request extends IncomingMessage {
   public get protocol(): ProtocolT {
     const proto = (this.socket as any).encrypted ? "https" : "http";
 
-    if (!SETTINGS["trust.proxy"](this.socket.remoteAddress!, 0)) return proto;
-
+    if (!config.proxy.trust(this.socket.remoteAddress!, 0)) return proto;
 
     // Note: X-Forwarded-Proto is normally only ever a
     //       single value, but this is to be safe.
@@ -132,7 +116,7 @@ export default class Request extends IncomingMessage {
 
   public get query(): Record<string, unknown> {
     return (
-      this._queryCache ??= SETTINGS["query.parser"]((this._parsedUrl ??= parseUrl(this.url)).query!)
+      this._queryCache ??= config.query.parser((this._parsedUrl ??= parseUrl(this.url)).query!)
     );
   }
 
@@ -161,7 +145,7 @@ export default class Request extends IncomingMessage {
 
     if (!hostname) return [];
 
-    return (isIP(hostname) ? [hostname] : hostname.split(".").reverse()).slice(SETTINGS["subdomain.offset"]);
+    return (isIP(hostname) ? [hostname] : hostname.split(".").reverse()).slice(config.subdomain.offset);
   }
 
   /**
@@ -318,20 +302,9 @@ export default class Request extends IncomingMessage {
 
 }
 
-// eslint-disable-next-line @typescript-eslint/no-shadow
-export function settings(settings: Partial<SettingsI> = DEFAULT_SETTINGS): void {
-  Object.assign(SETTINGS, settings);
-}
-
 export interface HeadersI extends IncomingHttpHeaders {
   referrer: IncomingHttpHeaders["referer"];
   "x-forwarded-host"?: string;
   "x-forwarded-proto"?: string;
   "x-requested-with"?: string;
-}
-
-export interface SettingsI {
-  "subdomain.offset": number;
-  "query.parser"(str: string): Record<string, unknown>;
-  "trust.proxy"(ip: string, hopIndex: number): boolean;
 }

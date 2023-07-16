@@ -1,6 +1,7 @@
 import assert from "node:assert";
 import { OutgoingHttpHeaders, ServerResponse, STATUS_CODES } from "node:http";
 import { extname, resolve } from "node:path";
+import { config, type ViewRendererCallbackT } from "@foxify/config";
 import fresh from "@foxify/fresh";
 import contentDisposition from "content-disposition";
 import * as contentType from "content-type";
@@ -11,8 +12,7 @@ import onFinished from "on-finished";
 import send, { mime as sendMime } from "send";
 import Request from "./Request.js";
 import { ENCODING_UTF8, JsonT, METHOD, STATUS, StatusT, StringifyT } from "./constants/index.js";
-import { createETagGenerator, encodeUrl, vary } from "./utils/index.js";
-import { CallbackT as EngineCallbackT, Engine } from "./view/index.js";
+import { encodeUrl, vary } from "./utils/index.js";
 
 /**
  * Set the charset in a given Content-Type string.
@@ -277,15 +277,6 @@ const normalizeTypes = (types: string[]): any[] => {
 
   return ret;
 };
-
-// eslint-disable-next-line import/exports-last
-export const DEFAULT_SETTINGS: SettingsI = {
-  etag            : createETagGenerator(true),
-  "json.escape"   : false,
-  "jsonp.callback": "callback",
-};
-
-const SETTINGS: SettingsI = { ...DEFAULT_SETTINGS };
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -744,9 +735,9 @@ class Response extends ServerResponse<Request> {
       stringify(
         this.stringify[this.statusCode],
         body,
-        SETTINGS["json.replacer"],
-        SETTINGS["json.spaces"],
-        SETTINGS["json.escape"],
+        config.json.replacer,
+        config.json.spaces,
+        config.json.escape,
       ),
       ENCODING_UTF8,
     );
@@ -762,11 +753,11 @@ class Response extends ServerResponse<Request> {
     let str = stringify(
       this.stringify[this.statusCode],
       body,
-      SETTINGS["json.replacer"],
-      SETTINGS["json.spaces"],
-      SETTINGS["json.escape"],
+      config.json.replacer,
+      config.json.spaces,
+      config.json.escape,
     );
-    let callback = this.req.query[SETTINGS["jsonp.callback"]];
+    let callback = this.req.query[config.jsonp.callback];
 
     // Content-type
     if (!this.get("Content-Type")) {
@@ -886,31 +877,30 @@ class Response extends ServerResponse<Request> {
 
   public render(
     view: string,
-    data?: EngineCallbackT | Record<string, unknown>,
-    callback?: EngineCallbackT,
+    data: Record<string, unknown> | ViewRendererCallbackT = {},
+    callback?: ViewRendererCallbackT,
   ): void {
-    const { view: engine } = SETTINGS;
-
-    assert(engine, "View engine is not specified");
+    assert(config.view.renderer, "View renderer is not specified");
 
     if (typeof data === "function") {
       callback = data;
-      // eslint-disable-next-line no-undefined
-      data = undefined;
+      data = {};
     }
 
-    callback ??= (err, str): void => {
+    callback ??= (error: Error, result: string): void => {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (err != null) {
-        this.next(err);
+      if (error != null) {
+        this.next(error);
 
         return;
       }
 
-      this.send(str);
+      this.send(result);
     };
 
-    engine.render(view, data, callback);
+    if (config.view.extension) view += `.${ config.view.extension }`;
+
+    config.view.renderer(resolve(config.view.directory, view), data, callback);
   }
 
   /**
@@ -1082,10 +1072,8 @@ class Response extends ServerResponse<Request> {
   private $end(body?: Buffer | string, encoding?: BufferEncoding): this {
     // eslint-disable-next-line no-undefined
     if (body !== undefined) {
-      const { etag } = SETTINGS;
-
-      if (etag && !this.hasHeader("ETag")) {
-        const generatedETag = etag(body, encoding);
+      if (config.server.etag && !this.hasHeader("ETag")) {
+        const generatedETag = config.server.etag(body, encoding);
 
         if (generatedETag) this.setHeader("ETag", generatedETag);
       }
@@ -1123,26 +1111,6 @@ Response.prototype.get = Response.prototype.getHeader;
 
 export default Response;
 
-// eslint-disable-next-line @typescript-eslint/no-shadow
-export function settings(settings: Partial<SettingsI> = DEFAULT_SETTINGS): void {
-  Object.assign(SETTINGS, settings);
-}
-
 export interface HeadersI extends OutgoingHttpHeaders {
   "Content-Type"?: string;
-}
-
-export interface SettingsI {
-  "json.escape": boolean;
-  "json.spaces"?: number;
-  "jsonp.callback": string;
-  view?: Engine;
-
-  etag?(
-    body: Buffer | string,
-    encoding?: BufferEncoding,
-  ): string | undefined;
-
-  "json.replacer"?(key: string, value: any): any;
-
 }

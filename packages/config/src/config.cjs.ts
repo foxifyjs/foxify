@@ -1,4 +1,4 @@
-import { CONFIG_FILEPATH, ConfigI } from "#src/constants";
+import { CONFIG_FILEPATH } from "#src/constants/index";
 
 /* ------------------------- Read the config file ------------------------- */
 
@@ -14,6 +14,6 @@ try {
   resolved = {};
 }
 
-const content: ConfigI = resolved.default ?? {};
+const content: any = resolved.default ?? null;
 
 export default content;

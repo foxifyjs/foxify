@@ -1,21 +1,11 @@
 import cluster from "node:cluster";
 import http from "node:http";
 import https from "node:https";
-import {
-  Request,
-  requestSettings,
-  Response,
-  responseSettings,
-} from "@foxify/http";
-import { Engine } from "./view/index.js";
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import type Foxify from "./index.js";
+import { config, SERVER_PROTOCOL } from "@foxify/config";
+import { Request, Response } from "@foxify/http";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Server {
-  export interface Settings extends Foxify.Settings {
-    view?: Engine;
-  }
 
   export type Listener = (request: Request, response: Response) => void;
 
@@ -24,23 +14,13 @@ namespace Server {
 
 class Server {
 
-  protected _host: string;
-
   protected _listening = false;
-
-  protected _port: number;
 
   private readonly _instance?: http.Server | https.Server;
 
-  public constructor(settings: Server.Settings, listener: Server.Listener) {
-    this._host = settings.url;
-    this._port = settings.port;
-
-    const isHttps = settings.https;
+  public constructor(listener: Server.Listener) {
+    const isHttps = config.server.protocol === SERVER_PROTOCOL.HTTPS;
     const SERVER: any = isHttps ? https : http;
-
-    requestSettings(settings as any);
-    responseSettings(settings as any);
 
     const OPTIONS: any = {
       IncomingMessage: Request,
@@ -48,11 +28,11 @@ class Server {
     };
 
     if (isHttps) {
-      OPTIONS.cert = settings["https.cert"];
-      OPTIONS.key = settings["https.key"];
+      OPTIONS.cert = config.server.cert;
+      OPTIONS.key = config.server.key;
     }
 
-    const workers = settings.workers;
+    const workers = config.workers;
 
     if (workers > 1) {
       if (cluster.isPrimary) {
@@ -86,8 +66,8 @@ class Server {
 
     if (instance) {
       instance.listen(
-        this._port,
-        this._host,
+        config.server.port,
+        config.server.hostname,
         callback && ((): unknown => callback(this)),
       );
     }
